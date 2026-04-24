@@ -27,10 +27,6 @@ class CampscoutPortal(CustomerPortal):
         """
         values = super()._prepare_portal_layout_values()
         partner = http.request.env.user.partner_id
-        _logger.warning(
-            "[CS-HERO] _prepare_portal_layout_values partner=%s",
-            partner.id,
-        )
 
         try:
             # Standard Odoo portal pattern: use sudo() with explicit
