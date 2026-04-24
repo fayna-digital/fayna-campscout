@@ -117,6 +117,26 @@
                 <div class="cs-doc-grid mt-4">
                     <div class="row g-3">
                         <div class="col-md-4">
+                            <a href="/shop" class="cs-doc-card cs-doc-card-accent">
+                                <span class="cs-doc-icon">🏕️</span>
+                                <div class="cs-doc-body">
+                                    <h5 class="cs-doc-title">Забронювати табір</h5>
+                                    <p class="cs-doc-desc">Наступний сезон для дитини</p>
+                                    <span class="cs-doc-cta">Переглянути табори →</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="/my/bookings" class="cs-doc-card">
+                                <span class="cs-doc-icon">📋</span>
+                                <div class="cs-doc-body">
+                                    <h5 class="cs-doc-title">Мої замовлення</h5>
+                                    <p class="cs-doc-desc">Активні бронювання та архів</p>
+                                    <span class="cs-doc-cta">Переглянути →</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
                             <a href="/my/stories" class="cs-doc-card">
                                 <span class="cs-doc-icon">📖</span>
                                 <div class="cs-doc-body">
@@ -255,7 +275,7 @@
 
             <div class="row g-3 cs-doc-grid">
                 <div class="col-md-6 col-lg-6">
-                    <a href="/docs/rodo" target="_blank" class="cs-doc-card">
+                    <a href="/privacy-policy" target="_blank" class="cs-doc-card">
                         <span class="cs-doc-icon">🛡️</span>
                         <div class="cs-doc-body">
                             <h5 class="cs-doc-title">Обробка персональних даних</h5>
@@ -265,7 +285,7 @@
                     </a>
                 </div>
                 <div class="col-md-6 col-lg-6">
-                    <a href="/docs/child-protection" target="_blank" class="cs-doc-card">
+                    <a href="/child-protection" target="_blank" class="cs-doc-card">
                         <span class="cs-doc-icon">🧒</span>
                         <div class="cs-doc-body">
                             <h5 class="cs-doc-title">Безпека дітей</h5>
@@ -275,7 +295,7 @@
                     </a>
                 </div>
                 <div class="col-md-6 col-lg-6">
-                    <a href="/docs/regulamin-panelu" target="_blank" class="cs-doc-card">
+                    <a href="/regulamin-panelu-klienta" target="_blank" class="cs-doc-card">
                         <span class="cs-doc-icon">🔐</span>
                         <div class="cs-doc-body">
                             <h5 class="cs-doc-title">Умови користування кабінетом</h5>
@@ -285,11 +305,21 @@
                     </a>
                 </div>
                 <div class="col-md-6 col-lg-6">
-                    <a href="/docs/terms" target="_blank" class="cs-doc-card">
+                    <a href="/terms" target="_blank" class="cs-doc-card">
                         <span class="cs-doc-icon">📄</span>
                         <div class="cs-doc-body">
                             <h5 class="cs-doc-title">Загальні умови</h5>
                             <p class="cs-doc-desc">Основні умови надання послуг табору CampScout</p>
+                            <span class="cs-doc-cta">Читати →</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-6 col-lg-6">
+                    <a href="/cookie-policy" target="_blank" class="cs-doc-card">
+                        <span class="cs-doc-icon">🍪</span>
+                        <div class="cs-doc-body">
+                            <h5 class="cs-doc-title">Політика cookies</h5>
+                            <p class="cs-doc-desc">Які cookies ми використовуємо та навіщо</p>
                             <span class="cs-doc-cta">Читати →</span>
                         </div>
                     </a>
