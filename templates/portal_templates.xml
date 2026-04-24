@@ -8,6 +8,10 @@
 
 <template id="portal_my_home_campscout_hero" inherit_id="portal.portal_my_home" priority="10">
     <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+        <div class="alert alert-info mb-3">
+            CS-DEBUG: cs_has_hero=<t t-esc="cs_has_hero if 'cs_has_hero' in dir() else 'UNDEFINED'"/>
+            | participants=<t t-esc="len(cs_participants) if 'cs_participants' in dir() else 'UNDEFINED'"/>
+        </div>
         <t t-if="cs_has_hero">
             <div class="cs-hero mb-4">
 
