@@ -25,6 +25,11 @@ class CampscoutPortal(CustomerPortal):
         """
         values = super()._prepare_home_portal_values(counters)
         partner = http.request.env.user.partner_id
+        _logger.warning(
+            "[CS-HERO] _prepare_home_portal_values called partner=%s counters=%s",
+            partner.id,
+            counters,
+        )
 
         try:
             participants = http.request.env["camp.participant"].search(
