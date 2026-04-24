@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 
 from odoo import http
 from odoo.addons.portal.controllers.portal import CustomerPortal
@@ -14,8 +15,48 @@ class CampscoutPortal(CustomerPortal):
     """
 
     def _prepare_home_portal_values(self, counters):
-        """Odoo 17 pattern: prepare home portal values."""
+        """Inject children + current/upcoming camps for /my hero banner."""
         values = super()._prepare_home_portal_values(counters)
+        partner = http.request.env.user.partner_id
+
+        try:
+            participants = http.request.env["camp.participant"].search(
+                [("parent_partner_id", "=", partner.id)]
+            )
+            regs = http.request.env["event.registration"].search(
+                [
+                    ("partner_id", "=", partner.id),
+                    ("state", "!=", "cancel"),
+                ]
+            )
+            now = datetime.now()
+            active_regs = regs.filtered(
+                lambda r: r.event_id.date_begin
+                and r.event_id.date_end
+                and r.event_id.date_begin <= now <= r.event_id.date_end
+            )
+            upcoming_regs = regs.filtered(
+                lambda r: r.event_id.date_begin and r.event_id.date_begin > now
+            ).sorted("event_id.date_begin")
+
+            values.update(
+                {
+                    "cs_participants": participants,
+                    "cs_active_regs": active_regs,
+                    "cs_upcoming_regs": upcoming_regs[:3],
+                    "cs_has_hero": bool(participants or regs),
+                    "cs_today": now.date(),
+                }
+            )
+        except (AccessError, MissingError):
+            values.update(
+                {
+                    "cs_participants": http.request.env["camp.participant"],
+                    "cs_active_regs": http.request.env["event.registration"],
+                    "cs_upcoming_regs": http.request.env["event.registration"],
+                    "cs_has_hero": False,
+                }
+            )
         return values
 
     @http.route("/my/stories", type="http", auth="user", website=True)

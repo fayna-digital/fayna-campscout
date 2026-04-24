@@ -2,45 +2,98 @@
 <odoo>
 
 <!-- ============================================================================
-     Home Page Cards — add entries to /my dashboard
+     Home hero — children strip + active/upcoming camps + nav row
+     Replaces the 3 separate docs_entry cards with one structured block.
      ============================================================================ -->
 
-<template id="portal_my_home_stories" inherit_id="portal.portal_my_home" priority="65">
-    <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
-        <div class="card o_portal_doc_card">
-            <div class="card-body">
-                <h6 class="card-title mb-0">
-                    <a href="/my/stories" class="text-decoration-none">Щоденні історії з табору</a>
-                </h6>
-                <p class="card-text text-muted small mt-1">Щоденні звіти вожатих про життя дітей в таборі</p>
-            </div>
-        </div>
-    </xpath>
-</template>
+<template id="portal_my_home_campscout_hero" inherit_id="portal.portal_my_home" priority="10">
+    <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+        <t t-if="cs_has_hero">
+            <div class="cs-hero mb-4">
 
-<template id="portal_my_home_documents" inherit_id="portal.portal_my_home" priority="66">
-    <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
-        <div class="card o_portal_doc_card">
-            <div class="card-body">
-                <h6 class="card-title mb-0">
-                    <a href="/my/documents" class="text-decoration-none">Юридичні документи</a>
-                </h6>
-                <p class="card-text text-muted small mt-1">Інформація про обробку даних, умови, гарантії</p>
-            </div>
-        </div>
-    </xpath>
-</template>
+                <!-- Active camp banner (show only if any child is currently at a camp) -->
+                <t t-if="cs_active_regs">
+                    <div class="alert alert-success cs-active-camp mb-3" role="alert">
+                        <t t-foreach="cs_active_regs" t-as="reg">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <strong>
+                                        <t t-if="reg.participant_id" t-esc="reg.participant_id.display_name"/>
+                                        <t t-else="">Ваша дитина</t>
+                                    </strong>
+                                    зараз у таборі
+                                    <strong t-esc="reg.event_id.name"/>.
+                                    <br/>
+                                    <small class="text-muted">
+                                        Повернення: <t t-esc="reg.event_id.date_end.strftime('%d.%m.%Y')"/>
+                                    </small>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
 
-<template id="portal_my_home_loyalty" inherit_id="portal.portal_my_home" priority="67">
-    <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
-        <div class="card o_portal_doc_card">
-            <div class="card-body">
-                <h6 class="card-title mb-0">
-                    <a href="/my/loyalty" class="text-decoration-none">Програма лояльності</a>
-                </h6>
-                <p class="card-text text-muted small mt-1">Рівні, знижки, бонусні бали за повторні відвідання</p>
+                <!-- Children strip -->
+                <t t-if="cs_participants">
+                    <div class="cs-children-strip mb-3">
+                        <h5 class="mb-2">Ваші діти у CampScout</h5>
+                        <div class="row g-2">
+                            <t t-foreach="cs_participants" t-as="child">
+                                <div class="col-md-4 col-sm-6">
+                                    <a t-attf-href="/my/participants/#{child.id}" class="text-decoration-none">
+                                        <div class="card h-100 cs-child-card">
+                                            <div class="card-body py-2 px-3">
+                                                <div class="fw-semibold" t-esc="child.display_name"/>
+                                                <small class="text-muted">
+                                                    <t t-if="child.birth_date">
+                                                        <t t-esc="(cs_today - child.birth_date).days // 365"/>
+                                                        років
+                                                    </t>
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- Upcoming camps -->
+                <t t-if="cs_upcoming_regs">
+                    <div class="cs-upcoming mb-3">
+                        <h6 class="mb-2 text-muted">Наступні табори</h6>
+                        <ul class="list-unstyled mb-0">
+                            <t t-foreach="cs_upcoming_regs" t-as="reg">
+                                <li class="mb-1">
+                                    <span class="badge bg-light text-dark me-2">
+                                        <t t-esc="reg.event_id.date_begin.strftime('%d.%m')"/>
+                                    </span>
+                                    <t t-esc="reg.event_id.name"/>
+                                    <t t-if="reg.participant_id">
+                                        — <span class="text-muted" t-esc="reg.participant_id.display_name"/>
+                                    </t>
+                                </li>
+                            </t>
+                        </ul>
+                    </div>
+                </t>
+
+                <!-- Secondary nav row (thin, not cards) -->
+                <div class="cs-nav-row border-top pt-3">
+                    <a href="/my/stories" class="me-3 text-decoration-none">
+                        Щоденні історії
+                    </a>
+                    <a href="/my/loyalty" class="me-3 text-decoration-none">
+                        Програма лояльності
+                    </a>
+                    <a href="/my/documents" class="me-3 text-decoration-none">
+                        Юридичні документи
+                    </a>
+                </div>
+
             </div>
-        </div>
+        </t>
     </xpath>
 </template>
 
