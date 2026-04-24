@@ -1,4 +1,3 @@
-import json
 from odoo import http
 from odoo.http import request
 
@@ -28,9 +27,7 @@ class CampscoutAPI(http.Controller):
         """Get list of children for logged-in parent"""
         partner = request.env.user.partner_id
 
-        participants = request.env["camp.participant"].search(
-            [("partner_id", "=", partner.id)]
-        )
+        participants = request.env["camp.participant"].search([("partner_id", "=", partner.id)])
 
         return {
             "data": [
@@ -44,9 +41,7 @@ class CampscoutAPI(http.Controller):
             ]
         }
 
-    @http.route(
-        "/api/v1/participants/<int:participant_id>/camp", type="json", auth="user"
-    )
+    @http.route("/api/v1/participants/<int:participant_id>/camp", type="json", auth="user")
     def api_participant_camp(self, participant_id, **kw):
         """Get current camp info for a child"""
         participant = request.env["camp.participant"].browse(participant_id)
@@ -106,8 +101,7 @@ class CampscoutAPI(http.Controller):
             "content": story.content,
             "author": story.author_id.name,
             "photos": [
-                {"id": a.id, "name": a.name, "url": f"/web/image/{a.id}"}
-                for a in story.photo_ids
+                {"id": a.id, "name": a.name, "url": f"/web/image/{a.id}"} for a in story.photo_ids
             ],
         }
 

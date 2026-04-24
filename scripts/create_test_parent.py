@@ -10,6 +10,7 @@ Or interactively in Odoo shell:
 """
 
 from datetime import datetime, timedelta
+
 from odoo import fields as odoo_fields
 
 # Clean up if exists (for idempotency)
@@ -33,9 +34,7 @@ portal_partner = env["res.partner"].create(
 )
 
 # 2. Create portal user
-print(
-    "[TEST DATA] Creating test portal user (test.parent@campscout.eu / TestParent2026!)..."
-)
+print("[TEST DATA] Creating test portal user (test.parent@campscout.eu / TestParent2026!)...")
 test_user = env["res.users"].create(
     {
         "name": "Test Parent CampScout",

@@ -6,18 +6,14 @@ class CampscoutPortalSession(models.Model):
     _description = "Parent portal session tracking"
     _order = "last_activity desc"
 
-    partner_id = fields.Many2one(
-        "res.partner", required=True, ondelete="cascade", string="Parent"
-    )
+    partner_id = fields.Many2one("res.partner", required=True, ondelete="cascade", string="Parent")
 
     children_count = fields.Integer(string="Children registered", readonly=True)
 
     last_login = fields.Datetime(string="Last login")
     last_activity = fields.Datetime(string="Last activity")
 
-    active_camps = fields.Integer(
-        string="Active camps", compute="_compute_active_camps"
-    )
+    active_camps = fields.Integer(string="Active camps", compute="_compute_active_camps")
 
     unread_messages = fields.Integer(string="Unread messages")
     pending_actions = fields.Integer(string="Pending actions (docs to sign)")
