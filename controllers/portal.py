@@ -55,7 +55,7 @@ class CampscoutPortal(CustomerPortal):
             )
             upcoming_regs = regs.filtered(
                 lambda r: r.event_id.date_begin and r.event_id.date_begin > now
-            ).sorted("event_id.date_begin")
+            ).sorted(key=lambda r: r.event_id.date_begin)
 
             user = http.request.env.user
             is_parent_only = (
