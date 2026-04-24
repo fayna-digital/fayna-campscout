@@ -86,7 +86,7 @@ try:
             "stay_alone_permission": True,
             "emergency_contact_1_name": "Test Parent (Emergency)",
             "emergency_contact_1_phone": "+48501111111",
-            "emergency_contact_1_relationship": "mother",
+            "emergency_contact_1_relation": "mother",
         }
     )
 
