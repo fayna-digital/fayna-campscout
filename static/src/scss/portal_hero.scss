@@ -300,8 +300,15 @@ $cs-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.1);
 // ────────────────────────────────────────────────────────────────
 
 .cs-doc-grid {
+    .row {
+        // Ensure all cards in the row stretch to equal height (Bootstrap does
+        // this by default but we want to be explicit for consistent alignment).
+        align-items: stretch;
+    }
+
     .cs-doc-card {
         display: flex;
+        align-items: flex-start;
         gap: 1rem;
         padding: 1.25rem;
         background: #fff;
@@ -328,34 +335,45 @@ $cs-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.1);
     }
 
     .cs-doc-icon {
-        font-size: 2rem;
+        font-size: 1.75rem;
         line-height: 1;
-        flex: 0 0 auto;
+        flex: 0 0 2.25rem;
+        width: 2.25rem;
+        text-align: center;
+        margin-top: 0.15rem;
     }
 
     .cs-doc-body {
         flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
     }
 
     .cs-doc-title {
         font-size: 1rem;
-        font-weight: 600;
+        font-weight: 700;
         color: $cs-ink;
         margin: 0 0 0.4rem;
+        line-height: 1.3;
     }
 
     .cs-doc-desc {
         color: $cs-muted;
         font-size: 0.9rem;
-        margin: 0 0 0.6rem;
+        margin: 0;
         line-height: 1.4;
+        flex: 1 1 auto;
     }
 
     .cs-doc-cta {
         color: $cs-orange;
         font-size: 0.85rem;
         font-weight: 600;
+        margin-top: 0.75rem;
         transition: color 0.15s ease;
+        display: inline-block;
+        align-self: flex-start;
     }
 }
 
