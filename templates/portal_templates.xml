@@ -7,6 +7,12 @@
      ============================================================================ -->
 
 <template id="portal_my_home_campscout_hero" inherit_id="portal.portal_my_home" customize_show="True" name="Show CampScout Hero (children + camps)" priority="25">
+    <!-- Hide stock Odoo cards (Orders / Invoices / Security) for portal-only
+         parents — they never have orders or invoices; only internal staff
+         and other users keep the standard section. -->
+    <xpath expr="//div[hasclass('o_portal_docs')]" position="attributes">
+        <attribute name="t-if">not cs_has_hero or request.env.user.has_group('base.group_user')</attribute>
+    </xpath>
     <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
         <t t-if="cs_has_hero">
             <div class="cs-hero mb-4">

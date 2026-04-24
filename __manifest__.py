@@ -31,6 +31,11 @@ Parent-facing portal integration:
         "views/campscout_views.xml",
         "templates/portal_templates.xml",
     ],
+    "assets": {
+        "web.assets_frontend": [
+            "fayna_campscout/static/src/scss/portal_hero.scss",
+        ],
+    },
     "installable": True,
     "application": True,
 }

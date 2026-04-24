@@ -1,0 +1,77 @@
+// CampScout portal hero — styling for /my home banner.
+//
+// Tokens: orange = primary CampScout accent (per project_campscout_brand_colors memory)
+// Cards match the padding/radius of Odoo's .o_portal_index_card so the hero
+// sits visually on the same grid as any remaining standard cards below.
+
+$cs-orange: #ff7a00;
+$cs-orange-soft: #fff4e6;
+$cs-green: #20ac41;
+$cs-card-bg: #fafafa;
+$cs-card-border: #e9e9e9;
+
+.cs-hero {
+    .cs-children-strip {
+        h5 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #111;
+        }
+    }
+
+    .cs-child-card {
+        background-color: $cs-card-bg;
+        border: 1px solid $cs-card-border;
+        border-radius: 0.5rem;
+        transition:
+            transform 0.15s ease,
+            box-shadow 0.15s ease,
+            border-color 0.15s ease;
+        cursor: pointer;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-color: $cs-orange;
+        }
+
+        .card-body {
+            padding: 0.75rem 1rem;
+        }
+    }
+
+    .cs-active-camp {
+        border-left: 4px solid $cs-green;
+        background-color: lighten($cs-green, 50%);
+        color: #1a5a28;
+
+        strong {
+            color: #0f3d1a;
+        }
+    }
+
+    .cs-upcoming {
+        .badge {
+            background-color: $cs-orange-soft !important;
+            color: $cs-orange !important;
+            font-weight: 600;
+        }
+    }
+
+    .cs-nav-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+
+        a {
+            color: $cs-orange;
+            font-weight: 500;
+            padding: 0.25rem 0;
+
+            &:hover {
+                color: darken($cs-orange, 10%);
+                text-decoration: underline !important;
+            }
+        }
+    }
+}
