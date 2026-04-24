@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="portal_layout" name="Portal layout base" inherit_id="portal.portal_layout">
+    <xpath expr="//div[@class='o_portal_aside']" position="inside">
+        <div class="list-group">
+            <a href="/my/participants" class="list-group-item">
+                📚 Мої діти в таборах
+            </a>
+            <a href="/my/stories" class="list-group-item">
+                📖 Щоденні історії
+            </a>
+            <a href="/my/documents" class="list-group-item">
+                📋 Юридичні документи
+            </a>
+            <a href="/my/loyalty" class="list-group-item">
+                🏆 Програма лояльності
+            </a>
+        </div>
+    </xpath>
+</template>
+
+<template id="portal_participants" name="My Participants">
+    <t t-call="portal.portal_layout">
+        <h1>Мої діти в таборах</h1>
+        <t t-foreach="participants" t-as="child">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5><t t-esc="child.display_name"/></h5>
+                    <p>Вік: <t t-esc="child.age"/> років</p>
+                </div>
+            </div>
+        </t>
+    </t>
+</template>
+
+<template id="portal_stories" name="Camp Stories">
+    <t t-call="portal.portal_layout">
+        <h1>Щоденні історії з табору</h1>
+        <t t-foreach="stories" t-as="story">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5><t t-esc="story.title"/></h5>
+                    <small><t t-esc="story.date"/></small>
+                </div>
+                <div class="card-body">
+                    <t t-raw="story.content"/>
+                </div>
+            </div>
+        </t>
+    </t>
+</template>
+
+<template id="portal_documents" name="Legal Documents">
+    <t t-call="portal.portal_layout">
+        <h1>Юридичні документи</h1>
+        <t t-foreach="documents" t-as="doc">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5><t t-esc="doc.document_type"/></h5>
+                    <small>Версія <t t-esc="doc.version_number"/></small>
+                </div>
+                <div class="card-body">
+                    <t t-raw="doc.content"/>
+                </div>
+            </div>
+        </t>
+    </t>
+</template>
+
+<template id="portal_loyalty" name="Loyalty Program">
+    <t t-call="portal.portal_layout">
+        <h1>Програма лояльності</h1>
+        <t t-foreach="loyalties" t-as="loyalty">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5><t t-esc="loyalty.participant_id.display_name"/></h5>
+                    <p>Ярус: <strong><t t-esc="loyalty.loyalty_tier"/></strong></p>
+                    <p>Відвідав таборів: <t t-esc="loyalty.camp_count"/></p>
+                    <p>Бонусні бали: <t t-esc="loyalty.loyalty_points"/></p>
+                    <p t-if="loyalty.discount_eligible">
+                        Знижка: <strong><t t-esc="loyalty.discount_percentage"/>%</strong>
+                    </p>
+                </div>
+            </div>
+        </t>
+    </t>
+</template>
+</odoo>

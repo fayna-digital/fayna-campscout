@@ -1,9 +1,19 @@
 {
     "name": "CampScout Portal (Thin Client)",
-    "version": "17.0.0.1.0",
+    "version": "17.0.0.2.0",
     "category": "Tools/Camp Management",
-    "summary": "Parent portal client — family dashboard, messaging, document signing",
-    "description": "Portal UI integration and session tracking for parents",
+    "summary": "Parent portal with REST API — family dashboard, messaging, documents, loyalty",
+    "description": """
+CampScout Portal (Thin Client)
+===============================
+
+Parent-facing portal integration:
+- Portal dashboard: /my/participants, /my/stories, /my/documents, /my/loyalty
+- REST JSON API for mobile apps (login, participants, stories, loyalty, documents, messages)
+- Daily story publishing to families
+- Legal document signing workflow
+- Loyalty program tracking
+    """,
     "author": "Fayna Digital",
     "website": "https://fayna.agency",
     "license": "LGPL-3",
@@ -11,11 +21,18 @@
         "base",
         "website",
         "sale",
+        "portal",
+        "mail",
         "fayna_camp_template",
         "fayna_camp_qualification",
         "fayna_camp_stories",
+        "fayna_legal_versioning",
+        "fayna_reviews",
     ],
-    "data": ["views/campscout_views.xml"],
+    "data": [
+        "views/campscout_views.xml",
+        "templates/portal_templates.xml",
+    ],
     "installable": True,
-    "application": False,
+    "application": True,
 }
