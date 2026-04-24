@@ -48,24 +48,9 @@
      Sidebar Navigation — add links to portal menu
      ============================================================================ -->
 
-<template id="portal_sidebar_campscout" inherit_id="portal.portal_layout" priority="20">
-    <xpath expr="//div[hasclass('o_portal_aside')]" position="inside">
-        <div class="list-group">
-            <a href="/my/participants" class="list-group-item list-group-item-action">
-                Мої діти в таборах
-            </a>
-            <a href="/my/stories" class="list-group-item list-group-item-action">
-                Щоденні історії
-            </a>
-            <a href="/my/documents" class="list-group-item list-group-item-action">
-                Юридичні документи
-            </a>
-            <a href="/my/loyalty" class="list-group-item list-group-item-action">
-                Програма лояльності
-            </a>
-        </div>
-    </xpath>
-</template>
+<!-- Sidebar inherit disabled: Odoo 17 portal.portal_layout has no .o_portal_aside wrapper.
+     Nav is provided via home-page cards and breadcrumbs instead. Will restore once
+     /my/participants/<id> detail page (per TZ §2.7.2) is built with its own layout. -->
 
 <!-- ============================================================================
      Breadcrumbs
