@@ -14,52 +14,8 @@ class CampscoutPortal(CustomerPortal):
     """
 
     def _prepare_home_portal_values(self, counters):
-        """Odoo 17 pattern: add camp-specific counters."""
+        """Odoo 17 pattern: prepare home portal values."""
         values = super()._prepare_home_portal_values(counters)
-        partner = http.request.env.user.partner_id
-
-        if "stories_count" in counters:
-            try:
-                regs = (
-                    http.request.env["event.registration"]
-                    .sudo()
-                    .search(
-                        [("partner_id", "=", partner.id), ("state", "!=", "cancel")]
-                    )
-                )
-                event_ids = regs.mapped("event_id").ids
-                stories_count = http.request.env["camp.story"].search_count(
-                    [
-                        ("event_id", "in", event_ids) if event_ids else (1, "=", 0),
-                        ("state", "=", "published"),
-                        ("public", "=", True),
-                    ]
-                )
-                values["stories_count"] = stories_count
-            except (AccessError, AttributeError):
-                values["stories_count"] = 0
-
-        if "loyalty_count" in counters:
-            try:
-                participants = http.request.env["camp.participant"].search(
-                    [("parent_partner_id", "=", partner.id)]
-                )
-                loyalty_count = http.request.env["camp.loyalty"].search_count(
-                    [("participant_id", "in", participants.ids)]
-                )
-                values["loyalty_count"] = loyalty_count
-            except (AccessError, AttributeError):
-                values["loyalty_count"] = 0
-
-        if "documents_count" in counters:
-            try:
-                documents_count = http.request.env[
-                    "legal.document.version"
-                ].search_count([("is_active", "=", True)])
-                values["documents_count"] = documents_count
-            except (AccessError, AttributeError):
-                values["documents_count"] = 0
-
         return values
 
     @http.route("/my/stories", type="http", auth="user", website=True)

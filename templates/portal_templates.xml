@@ -7,31 +7,40 @@
 
 <template id="portal_my_home_stories" inherit_id="portal.portal_my_home" priority="65">
     <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
-        <t t-call="portal.portal_docs_entry">
-            <t t-set="title">Щоденні історії з табору</t>
-            <t t-set="url" t-value="'/my/stories'"/>
-            <t t-set="placeholder_count" t-value="'stories_count'"/>
-        </t>
+        <div class="card o_portal_docs_entry">
+            <div class="card-body">
+                <h6 class="card-title mb-0">
+                    <a href="/my/stories" class="text-decoration-none">Щоденні історії з табору</a>
+                </h6>
+                <p class="card-text text-muted small mt-1">Щоденні звіти вожатих про життя дітей в таборі</p>
+            </div>
+        </div>
     </xpath>
 </template>
 
 <template id="portal_my_home_documents" inherit_id="portal.portal_my_home" priority="66">
     <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
-        <t t-call="portal.portal_docs_entry">
-            <t t-set="title">Юридичні документи</t>
-            <t t-set="url" t-value="'/my/documents'"/>
-            <t t-set="placeholder_count" t-value="'documents_count'"/>
-        </t>
+        <div class="card o_portal_docs_entry">
+            <div class="card-body">
+                <h6 class="card-title mb-0">
+                    <a href="/my/documents" class="text-decoration-none">Юридичні документи</a>
+                </h6>
+                <p class="card-text text-muted small mt-1">Інформація про обробку даних, умови, гарантії</p>
+            </div>
+        </div>
     </xpath>
 </template>
 
 <template id="portal_my_home_loyalty" inherit_id="portal.portal_my_home" priority="67">
     <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
-        <t t-call="portal.portal_docs_entry">
-            <t t-set="title">Програма лояльності</t>
-            <t t-set="url" t-value="'/my/loyalty'"/>
-            <t t-set="placeholder_count" t-value="'loyalty_count'"/>
-        </t>
+        <div class="card o_portal_docs_entry">
+            <div class="card-body">
+                <h6 class="card-title mb-0">
+                    <a href="/my/loyalty" class="text-decoration-none">Програма лояльності</a>
+                </h6>
+                <p class="card-text text-muted small mt-1">Рівні, знижки, бонусні бали за повторні відвідання</p>
+            </div>
+        </div>
     </xpath>
 </template>
 
