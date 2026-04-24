@@ -595,6 +595,91 @@ $cs-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.1);
     }
 }
 
+// ────────────────────────────────────────────────────────────────
+// Mobile adjustments (< 576px)
+// ────────────────────────────────────────────────────────────────
+
+@media (max-width: 575.98px) {
+    .cs-page .cs-page-title {
+        font-size: 1.4rem;
+    }
+
+    .cs-loyalty-card {
+        .cs-loyalty-hero {
+            padding: 1.5rem 1.25rem;
+        }
+
+        .cs-loyalty-tier-label strong {
+            font-size: 1.5rem;
+        }
+
+        .cs-loyalty-discount {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.1rem;
+
+            .cs-discount-value {
+                font-size: 2.25rem;
+            }
+        }
+
+        .cs-loyalty-progress {
+            padding: 1rem 1.25rem;
+        }
+
+        .cs-loyalty-stats {
+            .cs-stat {
+                padding: 0 0.25rem;
+            }
+
+            .cs-stat-value {
+                font-size: 1.3rem;
+            }
+
+            .cs-stat-label {
+                font-size: 0.7rem;
+            }
+        }
+
+        .cs-loyalty-badges {
+            padding: 0.75rem 1.25rem;
+        }
+    }
+
+    .cs-tier-ladder {
+        padding: 1rem;
+
+        .cs-tier-row {
+            grid-template-columns: auto 1fr;
+            grid-template-areas:
+                'pill reward'
+                'req req';
+            row-gap: 0.35rem;
+            padding: 0.65rem 0;
+
+            .cs-tier-pill {
+                grid-area: pill;
+            }
+            .cs-tier-reward {
+                grid-area: reward;
+                text-align: right;
+            }
+            .cs-tier-req {
+                grid-area: req;
+                font-size: 0.85rem;
+            }
+        }
+    }
+
+    .cs-story-card .cs-story-title {
+        font-size: 1.05rem;
+    }
+
+    .cs-hero {
+        padding-bottom: 2rem;
+    }
+}
+
 // Tier ladder explanation
 .cs-tier-ladder {
     background: #fff;
