@@ -14,13 +14,17 @@ class CampscoutPortal(CustomerPortal):
     /my/participants is handled by fayna_camp_qualification module (not here).
     """
 
-    def _prepare_portal_layout_values(self):
-        """Inject children + current/upcoming camps for /my hero banner."""
-        values = super()._prepare_portal_layout_values()
+    def _prepare_home_portal_values(self, counters):
+        """Inject children + current/upcoming camps for /my hero banner.
+
+        This is the canonical hook used by every Odoo 17 core module
+        (sale, account, project, payment) and OCA modules (helpdesk,
+        contract, fieldservice) to extend the /my home template.
+        The /my route handler merges the result of this method into
+        the render context.
+        """
+        values = super()._prepare_home_portal_values(counters)
         partner = http.request.env.user.partner_id
-        _logger.warning(
-            "[CS-HERO] _prepare_portal_layout_values called for partner=%s", partner.id
-        )
 
         try:
             participants = http.request.env["camp.participant"].search(
@@ -51,7 +55,11 @@ class CampscoutPortal(CustomerPortal):
                     "cs_today": now.date(),
                 }
             )
-        except (AccessError, MissingError):
+        except Exception as e:
+            # Broad catch so any unexpected error still yields a valid
+            # values dict (earlier AccessError-only except let TypeError
+            # swallow cs_has_hero, producing a silent undefined in qweb).
+            _logger.exception("[CS-HERO] hero data prep failed: %s", e)
             empty_p = http.request.env["camp.participant"]
             empty_r = http.request.env["event.registration"]
             values.update(
