@@ -7,12 +7,10 @@
      ============================================================================ -->
 
 <template id="portal_my_home_campscout_hero" inherit_id="portal.portal_my_home" customize_show="True" name="Show CampScout Hero (children + camps)" priority="25">
-    <!-- Hide stock Odoo cards (Orders / Invoices / Security) for portal-only
-         parents — they never have orders or invoices; only internal staff
-         and other users keep the standard section. -->
-    <xpath expr="//div[hasclass('o_portal_docs')]" position="attributes">
-        <attribute name="t-if">not cs_has_hero or request.env.user.has_group('base.group_user')</attribute>
-    </xpath>
+    <!-- Stock Odoo cards (Orders / Invoices / Security) stay in place.
+         Hiding the .o_portal_docs wrapper broke Odoo's portal JS which
+         reaches into it to remove the spinner. Instead hide only the
+         individual stock entries via CSS for portal-only parents. -->
     <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
         <t t-if="cs_has_hero">
             <div class="cs-hero mb-4">
@@ -135,34 +133,49 @@
 
 <template id="portal_stories" name="Camp Stories">
     <t t-call="portal.portal_layout">
-        <t t-set="breadcrumbs_searchbar" t-value="True"/>
         <t t-set="additional_title">Щоденні історії з табору</t>
 
-        <div t-if="not stories" class="alert alert-info" role="alert">
-            <p>Поки що немає опублікованих історій з табору.</p>
-            <p class="text-muted">Історії з'являються тут, коли вожаті публікують щоденні звіти про участь дітей.</p>
-        </div>
+        <div class="cs-page">
+            <div class="cs-page-back mb-3">
+                <a href="/my" class="cs-back-link">← До кабінету</a>
+            </div>
 
-        <div t-foreach="stories" t-as="story" class="mb-4">
-            <div class="card h-100">
-                <div class="card-header bg-light">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h5 class="mb-1" t-esc="story.title"/>
-                            <small class="text-muted">
-                                <t t-esc="story.date.strftime('%d.%m.%Y')"/>
-                            </small>
-                        </div>
-                        <div class="col-auto">
-                            <span class="badge" t-attf-class="bg-#{'info' if story.story_type == 'daily_log' else 'success' if story.story_type == 'adventure' else 'warning' if story.story_type == 'lesson_learned' else 'primary'}">
-                                <t t-esc="dict([('daily_log', 'Щоденник'), ('participant_spotlight', 'Портрет'), ('adventure', 'Пригода'), ('lesson_learned', 'Урок'), ('team_moment', 'Команда'), ('life_skill', 'Навичка'), ('memory', 'Спомин')]).get(story.story_type, story.story_type)"/>
-                            </span>
-                        </div>
+            <div class="cs-page-header mb-4">
+                <h2 class="cs-page-title">Щоденні історії з табору</h2>
+                <p class="cs-page-subtitle">Звіти вожатих про життя дітей у таборі</p>
+            </div>
+
+            <div t-if="not stories" class="cs-empty-state">
+                <div class="cs-empty-icon">📖</div>
+                <h4>Поки що тихо</h4>
+                <p class="text-muted">
+                    Історії з'являться тут одразу як вожаті опублікують перший щоденний звіт.
+                </p>
+            </div>
+
+            <div t-foreach="stories" t-as="story" class="cs-story-card mb-3">
+                <div class="cs-story-head">
+                    <div class="cs-story-meta">
+                        <time class="cs-story-date"><t t-esc="story.date.strftime('%d.%m.%Y')"/></time>
+                        <span class="cs-story-type" t-attf-data-type="#{story.story_type}">
+                            <t t-esc="dict([
+                                ('daily_log', 'Щоденник'),
+                                ('participant_spotlight', 'Портрет'),
+                                ('adventure', 'Пригода'),
+                                ('lesson_learned', 'Урок'),
+                                ('team_moment', 'Команда'),
+                                ('life_skill', 'Навичка'),
+                                ('memory', 'Спомин')
+                            ]).get(story.story_type, story.story_type)"/>
+                        </span>
                     </div>
+                    <h3 class="cs-story-title" t-esc="story.title"/>
                 </div>
-                <div class="card-body">
-                    <t t-out="story.content[:200]"/>
-                    <t t-if="len(story.content) > 200">...</t>
+                <div class="cs-story-body">
+                    <div t-out="story.content[:300]"/>
+                    <t t-if="len(story.content) > 300">
+                        <span class="text-muted">...</span>
+                    </t>
                 </div>
             </div>
         </div>
@@ -175,77 +188,87 @@
 
 <template id="portal_documents" name="Legal Documents">
     <t t-call="portal.portal_layout">
-        <t t-set="breadcrumbs_searchbar" t-value="True"/>
         <t t-set="additional_title">Юридичні документи</t>
 
-        <!-- Static links to legal documents -->
-        <div class="row mb-5">
-            <div class="col-md-6">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Інформація про обробку даних</h5>
-                        <p class="card-text text-muted">Умови обробки персональних даних, включаючи дані про дітей</p>
-                        <a href="/docs/rodo" class="btn btn-sm btn-outline-primary" target="_blank">
-                            Прочитати (РODO)
-                        </a>
-                    </div>
-                </div>
+        <div class="cs-page">
+            <div class="cs-page-back mb-3">
+                <a href="/my" class="cs-back-link">← До кабінету</a>
             </div>
-            <div class="col-md-6">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Безпека дітей</h5>
-                        <p class="card-text text-muted">Політика захисту малолітніх, стандарти обслуговування</p>
-                        <a href="/docs/child-protection" class="btn btn-sm btn-outline-primary" target="_blank">
-                            Прочитати
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="row mb-5">
-            <div class="col-md-6">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Умови використання кабінету</h5>
-                        <p class="card-text text-muted">Правила користування батьківським кабінетом</p>
-                        <a href="/docs/regulamin-panelu" class="btn btn-sm btn-outline-primary" target="_blank">
-                            Прочитати
-                        </a>
-                    </div>
-                </div>
+            <div class="cs-page-header mb-4">
+                <h2 class="cs-page-title">Юридичні документи</h2>
+                <p class="cs-page-subtitle">Умови, політики та згоди, які регулюють ваші відносини з CampScout</p>
             </div>
-            <div class="col-md-6">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Загальні умови</h5>
-                        <p class="card-text text-muted">Основні умови надання послуг табору</p>
-                        <a href="/docs/terms" class="btn btn-sm btn-outline-primary" target="_blank">
-                            Прочитати
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Dynamic documents from database -->
-        <div t-if="documents" class="mt-5 pt-3 border-top">
-            <h6 class="mb-3">Оновлені версії документів</h6>
-            <t t-foreach="documents" t-as="doc">
-                <div class="card mb-3">
-                    <div class="card-header bg-light">
-                        <h6 class="mb-0">
-                            <t t-esc="dict([('terms_conditions', 'Умови та положення'), ('privacy_policy', 'Політика конфіденційності'), ('rodo_consent', 'Згода РODO'), ('parental_consent', 'Батьківська згода')]).get(doc.document_type, doc.document_type)"/>
-                        </h6>
-                        <small class="text-muted">Версія <t t-esc="doc.version_number"/> від <t t-esc="doc.version_date.strftime('%d.%m.%Y')"/></small>
-                    </div>
-                    <div class="card-body">
-                        <div t-out="doc.content[:300]"/>
-                        <t t-if="len(doc.content) > 300">...</t>
-                    </div>
+            <div class="row g-3 cs-doc-grid">
+                <div class="col-md-6 col-lg-6">
+                    <a href="/docs/rodo" target="_blank" class="cs-doc-card">
+                        <span class="cs-doc-icon">🛡️</span>
+                        <div class="cs-doc-body">
+                            <h5 class="cs-doc-title">Обробка персональних даних</h5>
+                            <p class="cs-doc-desc">Умови обробки даних, включаючи дані про дітей (RODO/GDPR)</p>
+                            <span class="cs-doc-cta">Читати →</span>
+                        </div>
+                    </a>
                 </div>
-            </t>
+                <div class="col-md-6 col-lg-6">
+                    <a href="/docs/child-protection" target="_blank" class="cs-doc-card">
+                        <span class="cs-doc-icon">🧒</span>
+                        <div class="cs-doc-body">
+                            <h5 class="cs-doc-title">Безпека дітей</h5>
+                            <p class="cs-doc-desc">Політика захисту малолітніх і стандарти обслуговування в таборі</p>
+                            <span class="cs-doc-cta">Читати →</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-6 col-lg-6">
+                    <a href="/docs/regulamin-panelu" target="_blank" class="cs-doc-card">
+                        <span class="cs-doc-icon">🔐</span>
+                        <div class="cs-doc-body">
+                            <h5 class="cs-doc-title">Умови користування кабінетом</h5>
+                            <p class="cs-doc-desc">Правила користування батьківським особистим кабінетом</p>
+                            <span class="cs-doc-cta">Читати →</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-6 col-lg-6">
+                    <a href="/docs/terms" target="_blank" class="cs-doc-card">
+                        <span class="cs-doc-icon">📄</span>
+                        <div class="cs-doc-body">
+                            <h5 class="cs-doc-title">Загальні умови</h5>
+                            <p class="cs-doc-desc">Основні умови надання послуг табору CampScout</p>
+                            <span class="cs-doc-cta">Читати →</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div t-if="documents" class="cs-doc-versions mt-5">
+                <h5 class="mb-3">Актуальні версії документів</h5>
+                <t t-foreach="documents" t-as="doc">
+                    <div class="cs-doc-version">
+                        <div class="cs-doc-version-head">
+                            <h6 class="mb-1">
+                                <t t-esc="dict([
+                                    ('terms_conditions', 'Умови та положення'),
+                                    ('privacy_policy', 'Політика конфіденційності'),
+                                    ('rodo_consent', 'Згода RODO'),
+                                    ('parental_consent', 'Батьківська згода')
+                                ]).get(doc.document_type, doc.document_type)"/>
+                            </h6>
+                            <small class="text-muted">
+                                Версія <t t-esc="doc.version_number"/> від <t t-esc="doc.version_date.strftime('%d.%m.%Y')"/>
+                            </small>
+                        </div>
+                        <div class="cs-doc-version-body">
+                            <div t-out="doc.content[:300]"/>
+                            <t t-if="len(doc.content) > 300">
+                                <span class="text-muted">…</span>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+            </div>
         </div>
     </t>
 </template>
@@ -256,85 +279,131 @@
 
 <template id="portal_loyalty" name="Loyalty Program">
     <t t-call="portal.portal_layout">
-        <t t-set="breadcrumbs_searchbar" t-value="True"/>
         <t t-set="additional_title">Програма лояльності CampScout</t>
 
-        <div t-if="not loyalties" class="alert alert-info" role="alert">
-            <h5>Ласкаво просимо до програми лояльності!</h5>
-            <p>Кожен табір, в якому бере участь ваша дитина, наносить їй досвід і почты в системі лояльності.</p>
-            <p class="mb-0">
-                <strong>Бронзовий рівень (Bronze)</strong> — відвідана 1 табір<br/>
-                <strong>Срібний рівень (Silver)</strong> — відвідано 2-3 табори (знижка 5%)<br/>
-                <strong>Золотий рівень (Gold)</strong> — відвідано 4-5 таборів (знижка 10%)<br/>
-                <strong>Платиновий рівень (Platinum)</strong> — відвідано 6+ таборів (знижка 15%)
-            </p>
-        </div>
+        <div class="cs-page">
+            <div class="cs-page-back mb-3">
+                <a href="/my" class="cs-back-link">← До кабінету</a>
+            </div>
 
-        <div t-foreach="loyalties" t-as="loyalty" class="mb-4">
-            <div class="card">
-                <div class="card-header">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h6 class="mb-0" t-esc="loyalty.participant_id.display_name"/>
-                            <small class="text-muted">Дата народження: <t t-esc="loyalty.participant_id.birth_date.strftime('%d.%m.%Y')"/></small>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <!-- Tier badge -->
-                            <div class="mb-3">
-                                <strong>Рівень лояльності:</strong>
-                                <br/>
-                                <span class="badge badge-lg" t-attf-class="bg-#{'secondary' if loyalty.loyalty_tier == 'bronze' else 'info' if loyalty.loyalty_tier == 'silver' else 'warning' if loyalty.loyalty_tier == 'gold' else 'danger'}">
-                                    <t t-esc="dict([('bronze', 'Бронзовий'), ('silver', 'Срібний'), ('gold', 'Золотий'), ('platinum', 'Платиновий')]).get(loyalty.loyalty_tier, loyalty.loyalty_tier)"/>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div>
-                                <strong>Отримав знижку:</strong>
-                                <t t-if="loyalty.discount_eligible">
-                                    <span class="text-success"><t t-esc="int(loyalty.discount_percentage)"/>%</span>
-                                </t>
-                                <t t-else="">
-                                    <span class="text-muted">Не дипломований</span>
-                                </t>
-                            </div>
-                        </div>
-                    </div>
+            <div class="cs-page-header mb-4">
+                <h2 class="cs-page-title">Програма лояльності</h2>
+                <p class="cs-page-subtitle">Чим більше таборів відвідала ваша дитина — тим вища знижка на наступні заїзди</p>
+            </div>
 
-                    <div class="row">
-                        <div class="col-md-4 text-center border-end">
-                            <div class="mb-2">
-                                <h4 class="mb-0" t-esc="loyalty.camp_count"/>
-                                <small class="text-muted">Таборів</small>
-                            </div>
+            <!-- Per-child premium tier card -->
+            <div t-foreach="loyalties" t-as="loyalty" class="cs-loyalty-card mb-4"
+                 t-attf-data-tier="#{loyalty.loyalty_tier}">
+                <div class="cs-loyalty-hero">
+                    <div class="cs-loyalty-hero-inner">
+                        <div class="cs-loyalty-child-name" t-esc="loyalty.participant_id.display_name"/>
+                        <div class="cs-loyalty-tier-label">
+                            Рівень
+                            <strong>
+                                <t t-esc="dict([
+                                    ('bronze', 'Бронзовий'),
+                                    ('silver', 'Срібний'),
+                                    ('gold', 'Золотий'),
+                                    ('platinum', 'Платиновий')
+                                ]).get(loyalty.loyalty_tier, loyalty.loyalty_tier)"/>
+                            </strong>
                         </div>
-                        <div class="col-md-4 text-center border-end">
-                            <div class="mb-2">
-                                <h4 class="mb-0" t-esc="loyalty.loyalty_points"/>
-                                <small class="text-muted">Балів</small>
-                            </div>
-                        </div>
-                        <div class="col-md-4 text-center">
-                            <t t-if="loyalty.badges">
-                                <div class="mb-2">
-                                    <small class="text-muted">Медалі:</small>
-                                    <br/>
-                                    <small t-esc="loyalty.badges"/>
-                                </div>
+                        <div class="cs-loyalty-discount">
+                            <t t-if="loyalty.discount_eligible">
+                                <span class="cs-discount-value"><t t-esc="int(loyalty.discount_percentage)"/>%</span>
+                                <span class="cs-discount-label">знижка на наступний табір</span>
+                            </t>
+                            <t t-else="">
+                                <span class="cs-discount-label cs-no-discount">Знижка ще не активна</span>
                             </t>
                         </div>
                     </div>
+                </div>
 
-                    <t t-if="loyalty.notes">
-                        <div class="mt-3 pt-3 border-top">
-                            <small class="text-muted" t-out="loyalty.notes"/>
+                <!-- Progress to next tier -->
+                <div class="cs-loyalty-progress">
+                    <t t-set="camps" t-value="loyalty.camp_count"/>
+                    <t t-set="next_target" t-value="2 if camps &lt; 2 else (4 if camps &lt; 4 else (6 if camps &lt; 6 else None))"/>
+                    <t t-set="next_name" t-value="'Срібного' if camps &lt; 2 else ('Золотого' if camps &lt; 4 else ('Платинового' if camps &lt; 6 else None))"/>
+                    <t t-if="next_target">
+                        <div class="cs-progress-label">
+                            <span>До <strong t-esc="next_name"/> рівня залишилось
+                                <strong t-esc="next_target - camps"/>
+                                <t t-if="(next_target - camps) == 1">табір</t>
+                                <t t-else="">табори</t>
+                            </span>
+                            <span class="text-muted"><t t-esc="camps"/>/<t t-esc="next_target"/></span>
+                        </div>
+                        <div class="cs-progress-bar">
+                            <div class="cs-progress-fill" t-attf-style="width: #{(camps * 100) // next_target}%"/>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="cs-progress-label cs-tier-max">
+                            🏆 Максимальний рівень досягнуто
                         </div>
                     </t>
                 </div>
+
+                <!-- Stats row -->
+                <div class="cs-loyalty-stats">
+                    <div class="cs-stat">
+                        <div class="cs-stat-value" t-esc="loyalty.camp_count"/>
+                        <div class="cs-stat-label">Таборів відвідано</div>
+                    </div>
+                    <div class="cs-stat">
+                        <div class="cs-stat-value" t-esc="loyalty.loyalty_points"/>
+                        <div class="cs-stat-label">Балів зібрано</div>
+                    </div>
+                    <div class="cs-stat">
+                        <div class="cs-stat-value">
+                            <t t-if="loyalty.first_visit_date" t-esc="loyalty.first_visit_date.strftime('%Y')"/>
+                            <t t-else="">—</t>
+                        </div>
+                        <div class="cs-stat-label">З нами з</div>
+                    </div>
+                </div>
+
+                <t t-if="loyalty.badges">
+                    <div class="cs-loyalty-badges">
+                        <span class="cs-badges-label">Відзнаки:</span>
+                        <span class="cs-badges-list" t-esc="loyalty.badges"/>
+                    </div>
+                </t>
+            </div>
+
+            <!-- Tier ladder / welcome info -->
+            <div class="cs-tier-ladder mt-5">
+                <h5 class="mb-3">Як працює програма</h5>
+                <div class="cs-tier-row" data-tier="bronze">
+                    <span class="cs-tier-pill">Бронзовий</span>
+                    <span class="cs-tier-req">1 табір</span>
+                    <span class="cs-tier-reward">знайомство</span>
+                </div>
+                <div class="cs-tier-row" data-tier="silver">
+                    <span class="cs-tier-pill">Срібний</span>
+                    <span class="cs-tier-req">2–3 табори</span>
+                    <span class="cs-tier-reward">−5% знижка</span>
+                </div>
+                <div class="cs-tier-row" data-tier="gold">
+                    <span class="cs-tier-pill">Золотий</span>
+                    <span class="cs-tier-req">4–5 таборів</span>
+                    <span class="cs-tier-reward">−10% знижка</span>
+                </div>
+                <div class="cs-tier-row" data-tier="platinum">
+                    <span class="cs-tier-pill">Платиновий</span>
+                    <span class="cs-tier-req">6+ таборів</span>
+                    <span class="cs-tier-reward">−15% знижка</span>
+                </div>
+            </div>
+
+            <div t-if="not loyalties" class="cs-empty-state mt-4">
+                <div class="cs-empty-icon">🏆</div>
+                <h4>Ласкаво просимо!</h4>
+                <p class="text-muted">
+                    Після першого табору вашої дитини тут з'явиться персональна картка лояльності
+                    з реальними знижками на наступні заїзди.
+                </p>
             </div>
         </div>
     </t>

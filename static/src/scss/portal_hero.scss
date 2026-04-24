@@ -1,77 +1,559 @@
-// CampScout portal hero — styling for /my home banner.
-//
-// Tokens: orange = primary CampScout accent (per project_campscout_brand_colors memory)
-// Cards match the padding/radius of Odoo's .o_portal_index_card so the hero
-// sits visually on the same grid as any remaining standard cards below.
+// CampScout parent portal — premium styling.
+// Brand tokens per project_campscout_brand_colors memory: orange accent.
+// Tier gradients inspired by real loyalty programs (flights/retail premium).
 
 $cs-orange: #ff7a00;
+$cs-orange-dark: #e56600;
 $cs-orange-soft: #fff4e6;
 $cs-green: #20ac41;
-$cs-card-bg: #fafafa;
-$cs-card-border: #e9e9e9;
+$cs-green-soft: #e8f5ea;
+$cs-ink: #1a1a1a;
+$cs-ink-soft: #4a4a4a;
+$cs-muted: #6b6b6b;
+$cs-border: #e8e8e8;
+$cs-bg: #fafafa;
+$cs-card-radius: 12px;
+$cs-shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.04);
+$cs-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.1);
 
-.cs-hero {
-    .cs-children-strip {
-        h5 {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #111;
+// ────────────────────────────────────────────────────────────────
+// Shared page chrome (back link + hero header + empty state)
+// ────────────────────────────────────────────────────────────────
+
+.cs-page {
+    max-width: 960px;
+
+    .cs-page-back {
+        .cs-back-link {
+            color: $cs-muted;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.15s ease;
+
+            &:hover {
+                color: $cs-orange;
+            }
         }
     }
 
+    .cs-page-header {
+        .cs-page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: $cs-ink;
+            margin-bottom: 0.25rem;
+            letter-spacing: -0.01em;
+        }
+
+        .cs-page-subtitle {
+            color: $cs-muted;
+            font-size: 1rem;
+            margin-bottom: 0;
+        }
+    }
+
+    .cs-empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        background: $cs-bg;
+        border-radius: $cs-card-radius;
+
+        .cs-empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.7;
+        }
+
+        h4 {
+            font-weight: 600;
+            color: $cs-ink;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            max-width: 28rem;
+            margin: 0 auto;
+        }
+    }
+}
+
+// ────────────────────────────────────────────────────────────────
+// /my hero (children strip + active camp + upcoming + nav)
+// ────────────────────────────────────────────────────────────────
+
+.cs-hero {
+    .cs-children-strip h5 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: $cs-ink;
+    }
+
     .cs-child-card {
-        background-color: $cs-card-bg;
-        border: 1px solid $cs-card-border;
-        border-radius: 0.5rem;
+        background: #fff;
+        border: 1px solid $cs-border;
+        border-radius: $cs-card-radius;
         transition:
             transform 0.15s ease,
             box-shadow 0.15s ease,
             border-color 0.15s ease;
         cursor: pointer;
+        box-shadow: $cs-shadow-soft;
 
         &:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            box-shadow: $cs-shadow-hover;
             border-color: $cs-orange;
         }
 
         .card-body {
-            padding: 0.75rem 1rem;
+            padding: 1rem 1.25rem;
         }
     }
 
     .cs-active-camp {
         border-left: 4px solid $cs-green;
-        background-color: lighten($cs-green, 50%);
-        color: #1a5a28;
+        background: $cs-green-soft;
+        color: darken($cs-green, 15%);
+        border-radius: 8px;
 
         strong {
-            color: #0f3d1a;
+            color: darken($cs-green, 25%);
         }
     }
 
-    .cs-upcoming {
-        .badge {
-            background-color: $cs-orange-soft !important;
-            color: $cs-orange !important;
-            font-weight: 600;
-        }
+    .cs-upcoming .badge {
+        background-color: $cs-orange-soft !important;
+        color: $cs-orange !important;
+        font-weight: 600;
     }
 
     .cs-nav-row {
         display: flex;
         flex-wrap: wrap;
-        gap: 1rem;
+        gap: 1.25rem;
+        border-top: 1px solid $cs-border;
+        padding-top: 1rem;
 
         a {
             color: $cs-orange;
             font-weight: 500;
-            padding: 0.25rem 0;
 
             &:hover {
-                color: darken($cs-orange, 10%);
+                color: $cs-orange-dark;
                 text-decoration: underline !important;
             }
         }
+    }
+}
+
+// ────────────────────────────────────────────────────────────────
+// /my/stories
+// ────────────────────────────────────────────────────────────────
+
+.cs-story-card {
+    background: #fff;
+    border: 1px solid $cs-border;
+    border-radius: $cs-card-radius;
+    overflow: hidden;
+    box-shadow: $cs-shadow-soft;
+    transition: box-shadow 0.15s ease;
+
+    &:hover {
+        box-shadow: $cs-shadow-hover;
+    }
+
+    .cs-story-head {
+        padding: 1rem 1.25rem 0.5rem;
+        background: $cs-bg;
+        border-bottom: 1px solid $cs-border;
+    }
+
+    .cs-story-meta {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .cs-story-date {
+        color: $cs-muted;
+        font-size: 0.85rem;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .cs-story-type {
+        display: inline-block;
+        padding: 0.2rem 0.7rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        background: $cs-orange-soft;
+        color: $cs-orange-dark;
+
+        &[data-type='adventure'] {
+            background: #fff1da;
+            color: #a25a00;
+        }
+        &[data-type='lesson_learned'] {
+            background: #e8f0ff;
+            color: #0b5ed7;
+        }
+        &[data-type='participant_spotlight'] {
+            background: #f3e8ff;
+            color: #6f42c1;
+        }
+        &[data-type='team_moment'] {
+            background: $cs-green-soft;
+            color: darken($cs-green, 15%);
+        }
+        &[data-type='life_skill'] {
+            background: #ffeaea;
+            color: #c23030;
+        }
+    }
+
+    .cs-story-title {
+        font-size: 1.15rem;
+        font-weight: 600;
+        color: $cs-ink;
+        margin: 0 0 0.75rem;
+    }
+
+    .cs-story-body {
+        padding: 1rem 1.25rem 1.25rem;
+        color: $cs-ink-soft;
+        line-height: 1.55;
+    }
+}
+
+// ────────────────────────────────────────────────────────────────
+// /my/documents
+// ────────────────────────────────────────────────────────────────
+
+.cs-doc-grid {
+    .cs-doc-card {
+        display: flex;
+        gap: 1rem;
+        padding: 1.25rem;
+        background: #fff;
+        border: 1px solid $cs-border;
+        border-radius: $cs-card-radius;
+        box-shadow: $cs-shadow-soft;
+        text-decoration: none !important;
+        color: inherit;
+        height: 100%;
+        transition:
+            transform 0.15s ease,
+            box-shadow 0.15s ease,
+            border-color 0.15s ease;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: $cs-shadow-hover;
+            border-color: $cs-orange;
+
+            .cs-doc-cta {
+                color: $cs-orange-dark;
+            }
+        }
+    }
+
+    .cs-doc-icon {
+        font-size: 2rem;
+        line-height: 1;
+        flex: 0 0 auto;
+    }
+
+    .cs-doc-body {
+        flex: 1 1 auto;
+    }
+
+    .cs-doc-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: $cs-ink;
+        margin: 0 0 0.4rem;
+    }
+
+    .cs-doc-desc {
+        color: $cs-muted;
+        font-size: 0.9rem;
+        margin: 0 0 0.6rem;
+        line-height: 1.4;
+    }
+
+    .cs-doc-cta {
+        color: $cs-orange;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: color 0.15s ease;
+    }
+}
+
+.cs-doc-versions {
+    .cs-doc-version {
+        background: #fff;
+        border: 1px solid $cs-border;
+        border-radius: $cs-card-radius;
+        overflow: hidden;
+        margin-bottom: 0.75rem;
+
+        .cs-doc-version-head {
+            padding: 0.75rem 1rem;
+            background: $cs-bg;
+            border-bottom: 1px solid $cs-border;
+
+            h6 {
+                font-weight: 600;
+                color: $cs-ink;
+            }
+        }
+
+        .cs-doc-version-body {
+            padding: 1rem;
+            color: $cs-ink-soft;
+        }
+    }
+}
+
+// ────────────────────────────────────────────────────────────────
+// /my/loyalty — premium tier card with gradient hero
+// ────────────────────────────────────────────────────────────────
+
+.cs-loyalty-card {
+    background: #fff;
+    border-radius: $cs-card-radius;
+    overflow: hidden;
+    box-shadow: $cs-shadow-hover;
+    border: 1px solid $cs-border;
+
+    // Hero — gradient per tier
+    .cs-loyalty-hero {
+        padding: 2rem 1.75rem;
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+
+        &::after {
+            content: '';
+            position: absolute;
+            top: -30%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            pointer-events: none;
+        }
+    }
+
+    &[data-tier='bronze'] .cs-loyalty-hero {
+        background: linear-gradient(135deg, #8b5a2b 0%, #cd7f32 100%);
+    }
+    &[data-tier='silver'] .cs-loyalty-hero {
+        background: linear-gradient(135deg, #707070 0%, #b8b8b8 100%);
+    }
+    &[data-tier='gold'] .cs-loyalty-hero {
+        background: linear-gradient(135deg, #b8860b 0%, #ffd700 100%);
+        color: #1a1200;
+    }
+    &[data-tier='platinum'] .cs-loyalty-hero {
+        background: linear-gradient(135deg, #2c3e50 0%, #5d7b9a 60%, #e5e4e2 100%);
+    }
+
+    .cs-loyalty-hero-inner {
+        position: relative;
+        z-index: 1;
+    }
+
+    .cs-loyalty-child-name {
+        font-size: 0.95rem;
+        opacity: 0.85;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-weight: 600;
+    }
+
+    .cs-loyalty-tier-label {
+        font-size: 1rem;
+        margin: 0.25rem 0 1rem;
+        opacity: 0.9;
+
+        strong {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            display: block;
+            line-height: 1.1;
+            margin-top: 0.1rem;
+        }
+    }
+
+    .cs-loyalty-discount {
+        display: flex;
+        align-items: baseline;
+        gap: 0.6rem;
+
+        .cs-discount-value {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -0.02em;
+        }
+
+        .cs-discount-label {
+            font-size: 0.9rem;
+            opacity: 0.85;
+        }
+
+        .cs-no-discount {
+            font-style: italic;
+            opacity: 0.75;
+        }
+    }
+
+    // Progress bar
+    .cs-loyalty-progress {
+        padding: 1.25rem 1.75rem;
+        background: $cs-bg;
+        border-bottom: 1px solid $cs-border;
+
+        .cs-progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: $cs-ink-soft;
+            margin-bottom: 0.5rem;
+
+            &.cs-tier-max {
+                justify-content: center;
+                color: $cs-orange;
+                font-weight: 600;
+            }
+        }
+
+        .cs-progress-bar {
+            height: 8px;
+            background: #e8e8e8;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .cs-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, $cs-orange 0%, $cs-orange-dark 100%);
+            border-radius: 999px;
+            transition: width 0.4s ease;
+        }
+    }
+
+    // Stats row
+    .cs-loyalty-stats {
+        display: flex;
+        padding: 1.25rem 0;
+        border-bottom: 1px solid $cs-border;
+
+        .cs-stat {
+            flex: 1;
+            text-align: center;
+            padding: 0 0.75rem;
+
+            &:not(:last-child) {
+                border-right: 1px solid $cs-border;
+            }
+        }
+
+        .cs-stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: $cs-ink;
+            line-height: 1;
+            margin-bottom: 0.25rem;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .cs-stat-label {
+            font-size: 0.8rem;
+            color: $cs-muted;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+    }
+
+    .cs-loyalty-badges {
+        padding: 0.85rem 1.75rem;
+        font-size: 0.9rem;
+
+        .cs-badges-label {
+            color: $cs-muted;
+            margin-right: 0.5rem;
+        }
+
+        .cs-badges-list {
+            color: $cs-ink;
+            font-weight: 500;
+        }
+    }
+}
+
+// Tier ladder explanation
+.cs-tier-ladder {
+    background: #fff;
+    border: 1px solid $cs-border;
+    border-radius: $cs-card-radius;
+    padding: 1.5rem;
+
+    h5 {
+        font-weight: 600;
+        color: $cs-ink;
+    }
+
+    .cs-tier-row {
+        display: grid;
+        grid-template-columns: 140px 1fr auto;
+        gap: 1rem;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid $cs-border;
+
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+
+    .cs-tier-pill {
+        display: inline-block;
+        padding: 0.3rem 0.9rem;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-align: center;
+        color: #fff;
+    }
+
+    .cs-tier-row[data-tier='bronze'] .cs-tier-pill {
+        background: linear-gradient(135deg, #8b5a2b 0%, #cd7f32 100%);
+    }
+    .cs-tier-row[data-tier='silver'] .cs-tier-pill {
+        background: linear-gradient(135deg, #707070 0%, #b8b8b8 100%);
+    }
+    .cs-tier-row[data-tier='gold'] .cs-tier-pill {
+        background: linear-gradient(135deg, #b8860b 0%, #ffd700 100%);
+        color: #1a1200;
+    }
+    .cs-tier-row[data-tier='platinum'] .cs-tier-pill {
+        background: linear-gradient(135deg, #2c3e50 0%, #5d7b9a 60%, #e5e4e2 100%);
+    }
+
+    .cs-tier-req {
+        color: $cs-ink-soft;
+        font-size: 0.95rem;
+    }
+
+    .cs-tier-reward {
+        font-weight: 700;
+        color: $cs-orange;
+        font-size: 0.95rem;
     }
 }

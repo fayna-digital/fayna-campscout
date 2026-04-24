@@ -3,7 +3,6 @@ from datetime import datetime
 
 from odoo import http
 from odoo.addons.portal.controllers.portal import CustomerPortal
-from odoo.exceptions import AccessError, MissingError
 
 _logger = logging.getLogger(__name__)
 
@@ -89,12 +88,11 @@ class CampscoutPortal(CustomerPortal):
     def portal_my_stories(self, **kw):
         """View published camp stories for parent's events."""
         partner = http.request.env.user.partner_id
+        env_sudo = http.request.env(su=True)
 
         try:
-            regs = (
-                http.request.env["event.registration"]
-                .sudo()
-                .search([("partner_id", "=", partner.id), ("state", "!=", "cancel")])
+            regs = env_sudo["event.registration"].search(
+                [("partner_id", "=", partner.id), ("state", "!=", "cancel")]
             )
             event_ids = regs.mapped("event_id").ids
             domain = [
@@ -106,14 +104,14 @@ class CampscoutPortal(CustomerPortal):
             else:
                 domain.insert(0, (1, "=", 0))
 
-            stories = http.request.env["camp.story"].search(
+            stories = env_sudo["camp.story"].search(
                 domain,
                 order="date desc",
                 limit=50,
             )
-        except (AccessError, MissingError):
-            http.request.redirect("/my")
-            return
+        except Exception:
+            _logger.exception("[CS] stories load failed")
+            stories = env_sudo["camp.story"]
 
         return http.request.render(
             "fayna_campscout.portal_stories",
@@ -126,12 +124,14 @@ class CampscoutPortal(CustomerPortal):
     @http.route("/my/documents", type="http", auth="user", website=True)
     def portal_my_documents(self, **kw):
         """View legal documents and policies."""
+        env_sudo = http.request.env(su=True)
         try:
-            documents = http.request.env["legal.document.version"].search(
+            documents = env_sudo["legal.document.version"].search(
                 [("is_active", "=", True)],
                 order="version_date desc",
             )
-        except (AccessError, MissingError):
+        except Exception:
+            _logger.exception("[CS] documents load failed")
             documents = False
 
         return http.request.render(
@@ -146,16 +146,18 @@ class CampscoutPortal(CustomerPortal):
     def portal_my_loyalty(self, **kw):
         """View loyalty program status for all children."""
         partner = http.request.env.user.partner_id
+        env_sudo = http.request.env(su=True)
 
         try:
-            participants = http.request.env["camp.participant"].search(
+            participants = env_sudo["camp.participant"].search(
                 [("parent_partner_id", "=", partner.id)]
             )
-            loyalty_records = http.request.env["camp.loyalty"].search(
+            loyalty_records = env_sudo["camp.loyalty"].search(
                 [("participant_id", "in", participants.ids)],
                 order="loyalty_tier desc, camp_count desc",
             )
-        except (AccessError, MissingError):
+        except Exception:
+            _logger.exception("[CS] loyalty load failed")
             loyalty_records = False
 
         return http.request.render(

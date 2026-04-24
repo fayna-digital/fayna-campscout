@@ -125,8 +125,8 @@ try:
     env["camp.story"].create(
         {
             "event_id": test_event.id,
-            "title": "Первый день в табору",
-            "content": "<p>Первый день в табору прошел отлично!</p>",
+            "title": "Перший день у таборі",
+            "content": "<p>Перший день у таборі пройшов чудово! Діти познайомились, обрали команди та заспівали пісні біля багаття.</p>",
             "date": datetime.now().date(),
             "state": "published",
             "public": True,
