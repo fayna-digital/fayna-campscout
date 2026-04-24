@@ -596,6 +596,220 @@ $cs-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
 // ────────────────────────────────────────────────────────────────
+// /my/participants/<id> — detail page (5 sections per TZ §2.7.2)
+// ────────────────────────────────────────────────────────────────
+
+.cs-participant-section {
+    background: #fff;
+    border: 1px solid $cs-border;
+    border-radius: $cs-card-radius;
+    overflow: hidden;
+    box-shadow: $cs-shadow-soft;
+
+    .cs-section-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.25rem;
+        background: $cs-bg;
+        border-bottom: 1px solid $cs-border;
+
+        h5 {
+            margin: 0;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: $cs-ink;
+        }
+    }
+
+    .cs-section-body {
+        padding: 1.25rem;
+    }
+
+    .cs-section-footer {
+        padding: 0.75rem 1.25rem 1.25rem;
+    }
+
+    .cs-subsection-title {
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: $cs-muted;
+        margin-bottom: 0.75rem;
+    }
+}
+
+// Definition list for card data
+.cs-dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem 1rem;
+
+    dt {
+        color: $cs-muted;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+    dd {
+        margin: 0;
+        color: $cs-ink;
+        font-weight: 500;
+    }
+}
+
+// Registration / camp card inside participant detail
+.cs-reg-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid $cs-border;
+    border-radius: 8px;
+    margin-bottom: 0.6rem;
+    background: #fff;
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    &:hover {
+        border-color: $cs-orange;
+        box-shadow: $cs-shadow-soft;
+    }
+
+    &.cs-reg-card-active {
+        border-left: 4px solid $cs-green;
+        background: $cs-green-soft;
+    }
+
+    &.cs-reg-card-archive {
+        opacity: 0.85;
+    }
+
+    .cs-reg-main {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .cs-reg-title {
+        font-weight: 600;
+        color: $cs-ink;
+        line-height: 1.3;
+    }
+
+    .cs-reg-dates {
+        font-size: 0.85rem;
+        color: $cs-muted;
+        margin-top: 0.1rem;
+        font-variant-numeric: tabular-nums;
+    }
+}
+
+// Status badges
+.cs-reg-badge {
+    display: inline-block;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    flex: 0 0 auto;
+    white-space: nowrap;
+
+    &.cs-badge-success {
+        background: $cs-green-soft;
+        color: darken($cs-green, 15%);
+    }
+    &.cs-badge-warning {
+        background: #fff1da;
+        color: #a25a00;
+    }
+    &.cs-badge-info {
+        background: #e8f0ff;
+        color: #0b5ed7;
+    }
+    &.cs-badge-muted {
+        background: $cs-bg;
+        color: $cs-muted;
+    }
+}
+
+// Buttons
+.cs-btn-primary {
+    display: inline-block;
+    padding: 0.55rem 1.2rem;
+    background: $cs-orange;
+    color: #fff !important;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none !important;
+    font-size: 0.9rem;
+    transition: background 0.15s ease;
+
+    &:hover {
+        background: $cs-orange-dark;
+        color: #fff !important;
+    }
+}
+
+.cs-btn-secondary {
+    display: inline-block;
+    padding: 0.55rem 1.2rem;
+    background: #fff;
+    color: $cs-orange !important;
+    border: 1px solid $cs-orange;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none !important;
+    font-size: 0.9rem;
+    transition: background 0.15s ease;
+
+    &:hover {
+        background: $cs-orange-soft;
+    }
+}
+
+.cs-btn-ghost {
+    display: inline-block;
+    padding: 0.5rem 0;
+    color: $cs-orange !important;
+    font-weight: 600;
+    text-decoration: none !important;
+    font-size: 0.9rem;
+
+    &:hover {
+        color: $cs-orange-dark !important;
+        text-decoration: underline !important;
+    }
+}
+
+// Alerts
+.cs-alert-migration {
+    border-left: 4px solid #a25a00;
+}
+
+.cs-alert-signed {
+    border-left: 4px solid $cs-green;
+}
+
+// Inbox placeholder (Phase 7 — mail.thread integration later)
+.cs-inbox-placeholder {
+    text-align: center;
+    padding: 1.5rem;
+    background: $cs-bg;
+    border-radius: 8px;
+    border: 1px dashed $cs-border;
+}
+
+// ────────────────────────────────────────────────────────────────
 // Mobile adjustments (< 576px)
 // ────────────────────────────────────────────────────────────────
 
@@ -677,6 +891,33 @@ $cs-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.1);
 
     .cs-hero {
         padding-bottom: 2rem;
+    }
+
+    .cs-participant-section {
+        .cs-section-head {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.6rem;
+        }
+
+        .cs-section-body {
+            padding: 1rem;
+        }
+    }
+
+    .cs-reg-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .cs-dl {
+        grid-template-columns: 1fr;
+        gap: 0.15rem 0;
+
+        dt {
+            margin-top: 0.5rem;
+        }
     }
 }
 
