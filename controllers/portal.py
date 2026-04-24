@@ -57,6 +57,12 @@ class CampscoutPortal(CustomerPortal):
                 lambda r: r.event_id.date_begin and r.event_id.date_begin > now
             ).sorted("event_id.date_begin")
 
+            user = http.request.env.user
+            is_parent_only = (
+                user.has_group("base.group_portal")
+                and not user.has_group("base.group_user")
+                and bool(participants or regs)
+            )
             values.update(
                 {
                     "cs_participants": participants,
@@ -64,6 +70,7 @@ class CampscoutPortal(CustomerPortal):
                     "cs_upcoming_regs": upcoming_regs[:3],
                     "cs_has_hero": bool(participants or regs),
                     "cs_today": now.date(),
+                    "cs_parent_only": is_parent_only,
                 }
             )
         except Exception as e:
@@ -80,6 +87,7 @@ class CampscoutPortal(CustomerPortal):
                     "cs_upcoming_regs": empty_r,
                     "cs_has_hero": False,
                     "cs_today": datetime.now().date(),
+                    "cs_parent_only": False,
                 }
             )
         return values

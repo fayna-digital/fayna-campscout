@@ -7,10 +7,12 @@
      ============================================================================ -->
 
 <template id="portal_my_home_campscout_hero" inherit_id="portal.portal_my_home" customize_show="True" name="Show CampScout Hero (children + camps)" priority="25">
-    <!-- Stock Odoo cards (Orders / Invoices / Security) stay in place.
-         Hiding the .o_portal_docs wrapper broke Odoo's portal JS which
-         reaches into it to remove the spinner. Instead hide only the
-         individual stock entries via CSS for portal-only parents. -->
+    <!-- For portal-only parents: tag the root container so CSS hides the
+         standard category rows (Orders/Invoices/Security). We don't touch
+         .o_portal_docs or the spinner — Odoo JS keeps working. -->
+    <xpath expr="//div[hasclass('o_portal_my_home')]" position="attributes">
+        <attribute name="t-att-data-cs-parent-only">1 if cs_parent_only else 0</attribute>
+    </xpath>
     <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
         <t t-if="cs_has_hero">
             <div class="cs-hero mb-4">

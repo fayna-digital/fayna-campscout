@@ -79,6 +79,17 @@ $cs-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
 // ────────────────────────────────────────────────────────────────
+// Parent-only home: hide stock Odoo category rows (Orders/Invoices/
+// Security). Spinner div stays (JS needs it), hero renders above.
+// ────────────────────────────────────────────────────────────────
+
+.o_portal_my_home[data-cs-parent-only='1'] {
+    .o_portal_category {
+        display: none !important;
+    }
+}
+
+// ────────────────────────────────────────────────────────────────
 // /my hero (children strip + active camp + upcoming + nav)
 // ────────────────────────────────────────────────────────────────
 
