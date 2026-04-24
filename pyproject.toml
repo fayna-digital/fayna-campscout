@@ -36,6 +36,7 @@ ignore = [
 "__manifest__.py" = ["S", "B018"]              # manifest file — bare dict literal (Odoo convention)
 "__init__.py" = ["F401", "N999"]               # Odoo init: F401 re-exports; N999 GitHub repo uses dashes у folder name, Python module use underscores у technical name
 "*/migrations/*" = ["ALL"]                     # migration scripts мають власну структуру
+"scripts/*" = ["F821", "S"]                    # odoo-shell scripts: env/self injected at runtime, hardcoded creds for test data ok
 
 [tool.ruff.format]
 quote-style = "double"
