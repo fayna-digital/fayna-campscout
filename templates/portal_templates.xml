@@ -161,8 +161,18 @@
                             <a href="/my/documents" class="cs-doc-card">
                                 <span class="cs-doc-icon">📄</span>
                                 <div class="cs-doc-body">
-                                    <h5 class="cs-doc-title">Документи</h5>
+                                    <h5 class="cs-doc-title">Юридичні документи</h5>
                                     <p class="cs-doc-desc">Умови, політики, згоди</p>
+                                    <span class="cs-doc-cta">Переглянути →</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="/my/invoices" class="cs-doc-card">
+                                <span class="cs-doc-icon">💳</span>
+                                <div class="cs-doc-body">
+                                    <h5 class="cs-doc-title">Фінансові документи</h5>
+                                    <p class="cs-doc-desc">Рахунки, оплати, повернення</p>
                                     <span class="cs-doc-cta">Переглянути →</span>
                                 </div>
                             </a>
