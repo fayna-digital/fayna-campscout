@@ -58,14 +58,32 @@
                                 <div class="col-md-4 col-sm-6">
                                     <a t-attf-href="/my/participants/#{child.id}" class="text-decoration-none">
                                         <div class="card h-100 cs-child-card">
-                                            <div class="card-body py-2 px-3">
-                                                <div class="fw-semibold" t-esc="child.display_name"/>
-                                                <small class="text-muted">
-                                                    <t t-if="child.birth_date">
-                                                        <t t-esc="(cs_today - child.birth_date).days // 365"/>
-                                                        років
+                                            <div class="card-body py-2 px-3 d-flex align-items-center gap-3">
+                                                <!-- Avatar slot: real image when available, gender emoji fallback.
+                                                     Source image comes from camp.day.photo tagging in Phase 5 (§2.7.6).
+                                                     Until then, shows boy/girl/neutral child emoji. -->
+                                                <div class="cs-child-avatar">
+                                                    <t t-if="child.image_128">
+                                                        <img t-attf-src="/web/image/camp.participant/#{child.id}/image_128"
+                                                             t-attf-alt="#{child.display_name}"/>
                                                     </t>
-                                                </small>
+                                                    <t t-else="">
+                                                        <span class="cs-child-emoji" t-attf-data-gender="#{child.gender or 'x'}">
+                                                            <t t-if="child.gender == 'f'">👧</t>
+                                                            <t t-elif="child.gender == 'm'">👦</t>
+                                                            <t t-else="">🧒</t>
+                                                        </span>
+                                                    </t>
+                                                </div>
+                                                <div class="flex-grow-1 min-w-0">
+                                                    <div class="fw-semibold text-truncate" t-esc="child.display_name"/>
+                                                    <small class="text-muted">
+                                                        <t t-if="child.birth_date">
+                                                            <t t-esc="(cs_today - child.birth_date).days // 365"/>
+                                                            років
+                                                        </t>
+                                                    </small>
+                                                </div>
                                             </div>
                                         </div>
                                     </a>
