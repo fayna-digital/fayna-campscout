@@ -14,9 +14,15 @@ class CampscoutPortal(CustomerPortal):
     /my/participants is handled by fayna_camp_qualification module (not here).
     """
 
-    def _prepare_home_portal_values(self, counters):
-        """Inject children + current/upcoming camps for /my hero banner."""
-        values = super()._prepare_home_portal_values(counters)
+    def _prepare_portal_layout_values(self):
+        """Inject children + current/upcoming camps for /my hero banner.
+
+        Odoo 17: /my HTTP route calls _prepare_portal_layout_values (not
+        _prepare_home_portal_values — that is used by the /my/counters AJAX
+        endpoint only). We override the layout method so the hero gets its
+        data when the page is first rendered.
+        """
+        values = super()._prepare_portal_layout_values()
         partner = http.request.env.user.partner_id
 
         try:
@@ -49,12 +55,15 @@ class CampscoutPortal(CustomerPortal):
                 }
             )
         except (AccessError, MissingError):
+            empty_p = http.request.env["camp.participant"]
+            empty_r = http.request.env["event.registration"]
             values.update(
                 {
-                    "cs_participants": http.request.env["camp.participant"],
-                    "cs_active_regs": http.request.env["event.registration"],
-                    "cs_upcoming_regs": http.request.env["event.registration"],
+                    "cs_participants": empty_p,
+                    "cs_active_regs": empty_r,
+                    "cs_upcoming_regs": empty_r,
                     "cs_has_hero": False,
+                    "cs_today": datetime.now().date(),
                 }
             )
         return values
