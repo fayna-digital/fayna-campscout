@@ -7,10 +7,11 @@
      ============================================================================ -->
 
 <!-- Rename "My account" → "Panel Klienta" / "Кабінет клієнта" per legal
-     documents (regulamin-panelu-klienta.html, rodo.html). Language
-     follows page lang via i18n .po files (uk_UA + pl_PL). -->
+     documents (regulamin-panelu-klienta.html). Match by structure, not
+     text — the 'My account' string is already translated at render
+     time in some locales, so text() XPath would fail. -->
 <template id="portal_layout_title_campscout" inherit_id="portal.portal_layout" priority="25">
-    <xpath expr="//h3[contains(text(), 'My account')]" position="replace">
+    <xpath expr="//div[hasclass('wrapper')]/h3[hasclass('my-3')]" position="replace">
         <h3 class="my-3">Кабінет клієнта</h3>
     </xpath>
 </template>
