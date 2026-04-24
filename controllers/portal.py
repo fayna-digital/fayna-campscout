@@ -14,32 +14,43 @@ class CampscoutPortal(CustomerPortal):
     /my/participants is handled by fayna_camp_qualification module (not here).
     """
 
-    def _prepare_home_portal_values(self, counters):
+    def _prepare_portal_layout_values(self):
         """Inject children + current/upcoming camps for /my hero banner.
 
-        This is the canonical hook used by every Odoo 17 core module
-        (sale, account, project, payment) and OCA modules (helpdesk,
-        contract, fieldservice) to extend the /my home template.
-        The /my route handler merges the result of this method into
-        the render context.
+        Odoo 17: portal.home() route calls THIS method to build the
+        HTML render context. _prepare_home_portal_values is only used
+        by the /my/counters JSON endpoint for badge counts — NOT for
+        template values. Core sale/account don't pass dynamic values
+        to HTML (all static text), but we need dynamic (child names,
+        event dates), so _prepare_portal_layout_values is the right
+        hook.
         """
-        values = super()._prepare_home_portal_values(counters)
+        values = super()._prepare_portal_layout_values()
         partner = http.request.env.user.partner_id
         _logger.warning(
-            "[CS-HERO] _prepare_home_portal_values called partner=%s counters=%s",
+            "[CS-HERO] _prepare_portal_layout_values partner=%s",
             partner.id,
-            counters,
         )
 
         try:
-            participants = http.request.env["camp.participant"].search(
-                [("parent_partner_id", "=", partner.id)]
+            # Standard Odoo portal pattern: use sudo() with explicit
+            # partner_id filter. The filter itself scopes the result to
+            # the logged-in user — we don't need record rules on
+            # event.event / event.registration on top of that.
+            participants = (
+                http.request.env["camp.participant"]
+                .sudo()
+                .search([("parent_partner_id", "=", partner.id)])
             )
-            regs = http.request.env["event.registration"].search(
-                [
-                    ("partner_id", "=", partner.id),
-                    ("state", "!=", "cancel"),
-                ]
+            regs = (
+                http.request.env["event.registration"]
+                .sudo()
+                .search(
+                    [
+                        ("partner_id", "=", partner.id),
+                        ("state", "!=", "cancel"),
+                    ]
+                )
             )
             now = datetime.now()
             active_regs = regs.filtered(
