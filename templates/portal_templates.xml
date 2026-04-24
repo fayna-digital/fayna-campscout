@@ -85,17 +85,37 @@
                     </div>
                 </t>
 
-                <!-- Secondary nav row (thin, not cards) -->
-                <div class="cs-nav-row border-top pt-3">
-                    <a href="/my/stories" class="me-3 text-decoration-none">
-                        Щоденні історії
-                    </a>
-                    <a href="/my/loyalty" class="me-3 text-decoration-none">
-                        Програма лояльності
-                    </a>
-                    <a href="/my/documents" class="me-3 text-decoration-none">
-                        Юридичні документи
-                    </a>
+                <!-- Nav blocks -->
+                <div class="cs-nav-blocks mt-4">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <a href="/my/stories" class="cs-nav-block">
+                                <span class="cs-nav-icon">📖</span>
+                                <div class="cs-nav-body">
+                                    <div class="cs-nav-title">Щоденні історії</div>
+                                    <div class="cs-nav-desc">Звіти вожатих з табору</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="/my/loyalty" class="cs-nav-block">
+                                <span class="cs-nav-icon">🏆</span>
+                                <div class="cs-nav-body">
+                                    <div class="cs-nav-title">Програма лояльності</div>
+                                    <div class="cs-nav-desc">Рівні та знижки</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="/my/documents" class="cs-nav-block">
+                                <span class="cs-nav-icon">📄</span>
+                                <div class="cs-nav-body">
+                                    <div class="cs-nav-title">Юридичні документи</div>
+                                    <div class="cs-nav-desc">Умови, політики, згоди</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
             </div>
