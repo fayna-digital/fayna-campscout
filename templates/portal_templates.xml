@@ -326,6 +326,14 @@
                 </div>
             </div>
 
+            <!-- Aggregation page on the main site that lists all current +
+                 archived versions of every parent-facing document. -->
+            <div class="cs-doc-allversions-link mt-3">
+                <a href="/dokumenty-dla-rodzicow" target="_blank" class="cs-btn-ghost">
+                    📚 Усі документи для батьків + архівні версії →
+                </a>
+            </div>
+
             <div t-if="documents" class="cs-doc-versions mt-5">
                 <h5 class="mb-3">Актуальні версії документів</h5>
                 <t t-foreach="documents" t-as="doc">
