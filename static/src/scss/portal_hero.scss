@@ -89,6 +89,21 @@ $cs-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.1);
     }
 }
 
+// Breadcrumb home link — replaces icon-only with text so parents on
+// stock Odoo pages (invoices, orders) always have a way back.
+.o_portal_submenu {
+    .cs-crumb-home {
+        color: $cs-orange !important;
+        font-weight: 500;
+        text-decoration: none;
+
+        &:hover {
+            color: $cs-orange-dark !important;
+            text-decoration: underline;
+        }
+    }
+}
+
 // ────────────────────────────────────────────────────────────────
 // /my hero (children strip + active camp + upcoming + nav)
 // ────────────────────────────────────────────────────────────────

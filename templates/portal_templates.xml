@@ -246,6 +246,16 @@
      ============================================================================ -->
 
 <template id="portal_breadcrumbs_campscout" inherit_id="portal.portal_breadcrumbs" priority="20">
+    <!-- Replace the icon-only home link with an explicit «Кабінет клієнта»
+         text so parents always see the way back, even on stock Odoo pages
+         (/my/invoices, /my/orders) where we don't render our own back link. -->
+    <xpath expr="//li[@class='breadcrumb-item ms-1']" position="replace">
+        <li class="breadcrumb-item ms-1">
+            <a href="/my/home" class="cs-crumb-home">
+                <i class="fa fa-home me-1"/>Кабінет клієнта
+            </a>
+        </li>
+    </xpath>
     <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
         <li t-if="page_name == 'stories'" class="breadcrumb-item active">
             Щоденні історії
