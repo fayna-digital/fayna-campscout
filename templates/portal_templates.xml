@@ -7,7 +7,7 @@
 
 <template id="portal_my_home_stories" inherit_id="portal.portal_my_home" priority="65">
     <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
-        <div class="card o_portal_docs_entry">
+        <div class="card o_portal_doc_card">
             <div class="card-body">
                 <h6 class="card-title mb-0">
                     <a href="/my/stories" class="text-decoration-none">Щоденні історії з табору</a>
@@ -20,7 +20,7 @@
 
 <template id="portal_my_home_documents" inherit_id="portal.portal_my_home" priority="66">
     <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
-        <div class="card o_portal_docs_entry">
+        <div class="card o_portal_doc_card">
             <div class="card-body">
                 <h6 class="card-title mb-0">
                     <a href="/my/documents" class="text-decoration-none">Юридичні документи</a>
@@ -33,7 +33,7 @@
 
 <template id="portal_my_home_loyalty" inherit_id="portal.portal_my_home" priority="67">
     <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
-        <div class="card o_portal_docs_entry">
+        <div class="card o_portal_doc_card">
             <div class="card-body">
                 <h6 class="card-title mb-0">
                     <a href="/my/loyalty" class="text-decoration-none">Програма лояльності</a>
