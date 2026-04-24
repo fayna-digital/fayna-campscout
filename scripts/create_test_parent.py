@@ -64,105 +64,105 @@ env["fayna.rodo.consent.log"].create(
     }
 )
 
-# 4. Create test child participant
-print("[TEST DATA] Creating test child (Anna Testova)...")
-test_child = env["camp.participant"].create(
-    {
-        "first_name": "Anna",
-        "last_name": "Testova",
-        "birth_date": "2015-06-10",
-        "gender": "f",
-        "nationality_id": env.ref("base.pl").id,
-        "parent_partner_id": portal_partner.id,
-        "diet_restrictions": "vegetarian",
-        "vaccination_status": "complete",
-        "swimming_ability": "deep",
-        "stay_alone_permission": True,
-    }
-)
+# --- PHASE 1 DONE: commit parent+user+consent before risky camp data ---
+env.cr.commit()
+print("[TEST DATA] ✅ Phase 1 committed — parent user can now log in.")
 
-# 5. Get or create test event (camp)
-print("[TEST DATA] Finding or creating test event...")
-test_event = env["event.event"].search([], limit=1)
-if not test_event:
-    print("  → Creating test event...")
-    test_event = env["event.event"].create(
+# Phase 2: Test camp data (child, event, registration, story, loyalty)
+# Wrapped in try/except — if any step fails, parent user is already committed and usable.
+try:
+    # 4. Create test child participant
+    print("[TEST DATA] Creating test child (Anna Testova)...")
+    test_child = env["camp.participant"].create(
         {
-            "name": "Test Camp 2026 - Summer",
-            "date_begin": datetime.now() + timedelta(days=30),
-            "date_end": datetime.now() + timedelta(days=40),
-            "event_type_id": env.ref("event.event_type_conference").id,
-            "seats_available": 50,
-            "seats_expected": 40,
+            "first_name": "Anna",
+            "last_name": "Testova",
+            "birth_date": "2015-06-10",
+            "gender": "f",
+            "nationality_id": env.ref("base.pl").id,
+            "parent_partner_id": portal_partner.id,
+            "diet_restrictions": "vegetarian",
+            "vaccination_status": "complete",
+            "swimming_ability": "deep",
+            "stay_alone_permission": True,
+            "emergency_contact_1_name": "Test Parent (Emergency)",
+            "emergency_contact_1_phone": "+48501111111",
+            "emergency_contact_1_relationship": "mother",
         }
     )
-else:
-    print(f"  → Using existing event: {test_event.name}")
 
-# 6. Create event registration (so parent has a camp)
-print("[TEST DATA] Creating event registration...")
-env["event.registration"].create(
-    {
-        "event_id": test_event.id,
-        "partner_id": portal_partner.id,
-        "participant_id": test_child.id,
-        "state": "done",
-        "name": f"{test_child.display_name} - {test_event.name}",
-    }
-)
+    # 5. Get or create test event (camp)
+    print("[TEST DATA] Finding or creating test event...")
+    test_event = env["event.event"].search([], limit=1)
+    if not test_event:
+        print("  → Creating test event...")
+        test_event = env["event.event"].create(
+            {
+                "name": "Test Camp 2026 - Summer",
+                "date_begin": datetime.now() + timedelta(days=30),
+                "date_end": datetime.now() + timedelta(days=40),
+                "event_type_id": env.ref("event.event_type_conference").id,
+                "seats_available": 50,
+                "seats_expected": 40,
+            }
+        )
+    else:
+        print(f"  → Using existing event: {test_event.name}")
 
-# 7. Create test story
-print("[TEST DATA] Creating test story...")
-test_story = env["camp.story"].create(
-    {
-        "event_id": test_event.id,
-        "title": "Первый день в табору",
-        "content": """<div class="o_portal_section">
-    <h4>Привет, мамы и папы!</h4>
-    <p>Первый день в табору прошел отлично! Все дети хорошо поселились в своих домиках и уже начали дружить.</p>
-    <p><strong>Сегодня мы:</strong></p>
-    <ul>
-        <li>Прошли регистрацию</li>
-        <li>Познакомились друг с другом</li>
-        <li>Пели песни в столовой</li>
-        <li>Играли в игры на свежем воздухе</li>
-    </ul>
-    <p>Завтра нас ждет множество интересных занятий!</p>
-    <p><em>Вожатые CampScout</em></p>
-</div>""",
-        "date": datetime.now().date(),
-        "state": "published",
-        "public": True,
-        "story_type": "daily_log",
-        "author_id": env.ref("base.user_admin").id,
-    }
-)
+    # 6. Create event registration (so parent has a camp)
+    print("[TEST DATA] Creating event registration...")
+    env["event.registration"].create(
+        {
+            "event_id": test_event.id,
+            "partner_id": portal_partner.id,
+            "participant_id": test_child.id,
+            "state": "done",
+            "name": f"{test_child.display_name} - {test_event.name}",
+        }
+    )
 
-# 8. Create loyalty record
-print("[TEST DATA] Creating loyalty record (Silver tier - 2 camps)...")
-env["camp.loyalty"].create(
-    {
-        "participant_id": test_child.id,
-        "camp_count": 2,
-        "first_visit_date": (datetime.now() - timedelta(days=365)).date(),
-        "last_visit_date": datetime.now().date(),
-        "loyalty_tier": "silver",
-        "loyalty_points": 150,
-        "discount_eligible": True,
-        "discount_percentage": 5.0,
-        "badges": "Новичок, Командный игрок",
-        "notes": "Test loyalty record for demo",
-    }
-)
+    # 7. Create test story
+    print("[TEST DATA] Creating test story...")
+    env["camp.story"].create(
+        {
+            "event_id": test_event.id,
+            "title": "Первый день в табору",
+            "content": "<p>Первый день в табору прошел отлично!</p>",
+            "date": datetime.now().date(),
+            "state": "published",
+            "public": True,
+            "story_type": "daily_log",
+            "author_id": env.ref("base.user_admin").id,
+        }
+    )
 
-print("\n✅ TEST DATA CREATED SUCCESSFULLY")
+    # 8. Create loyalty record
+    print("[TEST DATA] Creating loyalty record (Silver tier - 2 camps)...")
+    env["camp.loyalty"].create(
+        {
+            "participant_id": test_child.id,
+            "camp_count": 2,
+            "first_visit_date": (datetime.now() - timedelta(days=365)).date(),
+            "last_visit_date": datetime.now().date(),
+            "loyalty_tier": "silver",
+            "loyalty_points": 150,
+            "discount_eligible": True,
+            "discount_percentage": 5.0,
+            "badges": "Новичок, Командный игрок",
+            "notes": "Test loyalty record for demo",
+        }
+    )
+
+    env.cr.commit()
+    print("[TEST DATA] ✅ Phase 2 committed — camp data created.")
+
+except Exception as e:
+    env.cr.rollback()
+    print(f"[TEST DATA] ⚠️ Phase 2 failed: {type(e).__name__}: {e}")
+    print("[TEST DATA] Parent user still logs in, camp data missing.")
+
+print("\n✅ TEST DATA SCRIPT COMPLETED")
 print("\nLogin details:")
 print("  Email: test.parent@campscout.eu")
 print("  Password: TestParent2026!")
-print("\nNext steps:")
-print("  1. Open https://staging.campscout.eu/my in your browser")
-print("  2. Login with the credentials above")
-print("  3. Click on 'Мої діти в таборах' to see test child")
-print("  4. Click on 'Щоденні історії' to see test story")
-print("  5. Click on 'Програма лояльності' to see test loyalty tier (Silver)")
-print("  6. Click on 'Юридичні документи' to see legal documents")
+print("\nOpen https://staging.campscout.eu/my to test.")
