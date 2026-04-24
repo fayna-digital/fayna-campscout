@@ -356,6 +356,12 @@ $cs-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.1);
         color: $cs-ink;
         margin: 0 0 0.4rem;
         line-height: 1.3;
+        // Clamp to 2 lines so cards with short/long titles line up
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        min-height: 2.6em; // 2 lines × line-height 1.3
     }
 
     .cs-doc-desc {
@@ -364,6 +370,12 @@ $cs-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.1);
         margin: 0;
         line-height: 1.4;
         flex: 1 1 auto;
+        // Clamp to 2 lines
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        min-height: 2.8em; // 2 lines × line-height 1.4
     }
 
     .cs-doc-cta {
