@@ -63,6 +63,24 @@ class CampscoutPortal(CustomerPortal):
                 and not user.has_group("base.group_user")
                 and bool(participants or regs)
             )
+
+            # Upcoming camps for "Забронювати табір" modal — published
+            # events whose start is in the future, grouped by product when
+            # possible. We use event.event (not product.template) because
+            # that's what drives availability and has concrete dates.
+            cs_upcoming_camps = (
+                http.request.env["event.event"]
+                .sudo()
+                .search(
+                    [
+                        ("date_begin", ">", now),
+                        ("is_published", "=", True),
+                    ],
+                    order="date_begin asc",
+                    limit=24,
+                )
+            )
+
             values.update(
                 {
                     "cs_participants": participants,
@@ -71,6 +89,7 @@ class CampscoutPortal(CustomerPortal):
                     "cs_has_hero": bool(participants or regs),
                     "cs_today": now.date(),
                     "cs_parent_only": is_parent_only,
+                    "cs_upcoming_camps": cs_upcoming_camps,
                 }
             )
         except Exception as e:
@@ -88,6 +107,7 @@ class CampscoutPortal(CustomerPortal):
                     "cs_has_hero": False,
                     "cs_today": datetime.now().date(),
                     "cs_parent_only": False,
+                    "cs_upcoming_camps": http.request.env["event.event"],
                 }
             )
         return values

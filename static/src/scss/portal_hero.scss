@@ -836,6 +836,74 @@ $cs-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
 // ────────────────────────────────────────────────────────────────
+// Book-camp modal (opened from the accent nav-card)
+// ────────────────────────────────────────────────────────────────
+
+.cs-book-modal {
+    border-radius: $cs-card-radius;
+    border: none;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+
+    .modal-header {
+        border-bottom: 1px solid $cs-border;
+
+        .modal-title {
+            font-weight: 700;
+            color: $cs-ink;
+        }
+    }
+
+    .modal-body {
+        padding: 1.25rem 1.5rem;
+    }
+
+    .modal-footer {
+        border-top: 1px solid $cs-border;
+        padding: 0.75rem 1.5rem;
+    }
+
+    .cs-camp-option {
+        display: block;
+        padding: 0.9rem 1rem;
+        background: #fff;
+        border: 1px solid $cs-border;
+        border-radius: 8px;
+        text-decoration: none !important;
+        color: inherit;
+        height: 100%;
+        transition:
+            transform 0.15s ease,
+            box-shadow 0.15s ease,
+            border-color 0.15s ease;
+
+        &:hover {
+            transform: translateY(-1px);
+            box-shadow: $cs-shadow-hover;
+            border-color: $cs-orange;
+        }
+
+        .cs-camp-option-title {
+            font-weight: 600;
+            color: $cs-ink;
+            margin-bottom: 0.25rem;
+        }
+
+        .cs-camp-option-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: $cs-muted;
+
+            .cs-camp-option-seats {
+                color: $cs-green;
+                font-weight: 600;
+            }
+        }
+    }
+}
+
+// ────────────────────────────────────────────────────────────────
 // Mobile adjustments (< 576px)
 // ────────────────────────────────────────────────────────────────
 

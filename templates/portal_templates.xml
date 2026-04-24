@@ -117,12 +117,13 @@
                 <div class="cs-doc-grid mt-4">
                     <div class="row g-3">
                         <div class="col-md-4">
-                            <a href="/shop" class="cs-doc-card cs-doc-card-accent">
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#csBookCampModal"
+                               class="cs-doc-card cs-doc-card-accent">
                                 <span class="cs-doc-icon">🏕️</span>
                                 <div class="cs-doc-body">
                                     <h5 class="cs-doc-title">Забронювати табір</h5>
                                     <p class="cs-doc-desc">Наступний сезон для дитини</p>
-                                    <span class="cs-doc-cta">Переглянути табори →</span>
+                                    <span class="cs-doc-cta">Обрати табір →</span>
                                 </div>
                             </a>
                         </div>
@@ -165,6 +166,54 @@
                                     <span class="cs-doc-cta">Переглянути →</span>
                                 </div>
                             </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal: вибір табору для бронювання -->
+                <div class="modal fade" id="csBookCampModal" tabindex="-1" aria-labelledby="csBookCampLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content cs-book-modal">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="csBookCampLabel">Оберіть табір для бронювання</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрити"/>
+                            </div>
+                            <div class="modal-body">
+                                <t t-if="cs_upcoming_camps">
+                                    <div class="row g-3">
+                                        <t t-foreach="cs_upcoming_camps" t-as="camp">
+                                            <div class="col-md-6">
+                                                <a t-attf-href="/event/#{camp.id}" class="cs-camp-option">
+                                                    <div class="cs-camp-option-title" t-esc="camp.name"/>
+                                                    <div class="cs-camp-option-meta">
+                                                        <span class="cs-camp-option-date">
+                                                            <t t-if="camp.date_begin" t-esc="camp.date_begin.strftime('%d.%m.%Y')"/>
+                                                            <t t-if="camp.date_end"> — <t t-esc="camp.date_end.strftime('%d.%m.%Y')"/></t>
+                                                        </span>
+                                                        <t t-if="camp.seats_available">
+                                                            <span class="cs-camp-option-seats">
+                                                                вільно: <t t-esc="camp.seats_available"/>
+                                                            </span>
+                                                        </t>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <div class="cs-empty-state">
+                                        <div class="cs-empty-icon">🏕️</div>
+                                        <h4>Поки немає відкритих заїздів</h4>
+                                        <p class="text-muted">
+                                            Перевірте пізніше — графік наступного сезону зʼявиться тут одразу як відкриємо продажі.
+                                        </p>
+                                    </div>
+                                </t>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="/shop" class="cs-btn-ghost">Переглянути всі табори в магазині →</a>
+                            </div>
                         </div>
                     </div>
                 </div>
