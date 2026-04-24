@@ -23,7 +23,14 @@ TZ: fayna-digital-docs/contributing/CAMPSCOUT_MASTER_TZ.md §16 Phase 7
     "author": "Fayna Digital — Volodymyr Shevchenko",
     "website": "https://fayna.agency",
     "license": "LGPL-3",
-    "depends": ['fayna_camp_template', 'fayna_camp_qualification', 'fayna_camp_sales', 'fayna_legal_versioning', 'fayna_reviews', 'fayna_instructor_school'],
+    "depends": [
+        "fayna_camp_template",
+        "fayna_camp_qualification",
+        "fayna_camp_sales",
+        "fayna_legal_versioning",
+        "fayna_reviews",
+        "fayna_instructor_school",
+    ],
     "data": [
         "data/ir_config_parameter.xml",
     ],
