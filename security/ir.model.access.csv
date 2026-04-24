@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_campscout_portal_session_admin,campscout.portal.session admin,model_campscout_portal_session,base.group_system,1,1,1,1
+access_campscout_portal_session_portal,campscout.portal.session portal,model_campscout_portal_session,base.group_portal,1,0,0,0
+access_campscout_portal_session_user,campscout.portal.session user,model_campscout_portal_session,base.group_user,1,0,0,0
+access_campscout_portal_menu_admin,campscout.portal.menu admin,model_campscout_portal_menu,base.group_system,1,1,1,1
+access_campscout_portal_menu_user,campscout.portal.menu user,model_campscout_portal_menu,base.group_user,1,0,0,0

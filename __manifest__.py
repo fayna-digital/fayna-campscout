@@ -30,6 +30,7 @@ Parent-facing portal integration:
         "fayna_reviews",
     ],
     "data": [
+        "security/ir.model.access.csv",
         "views/campscout_views.xml",
         "templates/portal_templates.xml",
     ],
