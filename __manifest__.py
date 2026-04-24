@@ -25,9 +25,6 @@ Parent-facing portal integration:
         "mail",
         "fayna_camp_template",
         "fayna_camp_qualification",
-        "fayna_camp_stories",
-        "fayna_legal_versioning",
-        "fayna_reviews",
     ],
     "data": [
         "security/ir.model.access.csv",
