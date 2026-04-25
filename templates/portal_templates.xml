@@ -23,44 +23,6 @@
     <xpath expr="//div[hasclass('o_portal_my_home')]" position="attributes">
         <attribute name="t-att-data-cs-parent-only">1 if cs_parent_only else 0</attribute>
     </xpath>
-    <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
-        <!-- Stories card -->
-        <div data-counter-name="stories_count" class="o_portal_doc_item">
-            <a href="/my/stories">
-                <div class="o_portal_doc_content">
-                    <h3 class="o_portal_doc_title">📖 Щоденні історії</h3>
-                    <p class="text-muted">Звіти вожатих з табору</p>
-                </div>
-                <div class="o_portal_doc_count">
-                    <span t-esc="stories_count or 0"/>
-                </div>
-            </a>
-        </div>
-        <!-- Documents card -->
-        <div data-counter-name="documents_count" class="o_portal_doc_item">
-            <a href="/my/documents">
-                <div class="o_portal_doc_content">
-                    <h3 class="o_portal_doc_title">📄 Юридичні документи</h3>
-                    <p class="text-muted">Умови, політики, згоди</p>
-                </div>
-                <div class="o_portal_doc_count">
-                    <span t-esc="documents_count or 0"/>
-                </div>
-            </a>
-        </div>
-        <!-- Loyalty card -->
-        <div data-counter-name="loyalty_count" class="o_portal_doc_item">
-            <a href="/my/loyalty">
-                <div class="o_portal_doc_content">
-                    <h3 class="o_portal_doc_title">🏆 Програма лояльності</h3>
-                    <p class="text-muted">Рівні та знижки</p>
-                </div>
-                <div class="o_portal_doc_count">
-                    <span t-esc="loyalty_count or 0"/>
-                </div>
-            </a>
-        </div>
-    </xpath>
     <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
         <t t-if="cs_has_hero">
             <div class="cs-hero mb-4">
