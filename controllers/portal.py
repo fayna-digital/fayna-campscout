@@ -2,8 +2,8 @@ import logging
 from datetime import datetime
 
 from odoo import http
-from odoo.exceptions import AccessError, MissingError
 from odoo.addons.portal.controllers.portal import CustomerPortal
+from odoo.exceptions import AccessError, MissingError
 
 _logger = logging.getLogger(__name__)
 

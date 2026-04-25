@@ -25,7 +25,7 @@ from datetime import datetime, timedelta
 # env should be passed from caller (Odoo context already initialized)
 # If running standalone, skip this script
 try:
-    assert 'env' in locals() or 'env' in globals()
+    assert "env" in locals() or "env" in globals()
 except:
     print("[!] This script must be run within Odoo environment context")
     print("[!] Use: docker exec campscout_web odoo -d campscout shell < script.py")
