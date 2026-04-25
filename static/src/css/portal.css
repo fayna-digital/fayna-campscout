@@ -1,0 +1,4 @@
+/* Hide standard Odoo portal cards for parent-only users */
+.o_portal_my_home[data-cs-parent-only="1"] .o_portal_docs {
+    display: none;
+}
