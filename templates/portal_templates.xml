@@ -55,7 +55,7 @@
                     <div class="row g-2">
                         <t t-foreach="cs_participants" t-as="child">
                             <div class="col-md-4 col-sm-6">
-                                <a t-attf-href="/my/participants/#{child.id}" class="text-decoration-none">
+                                <a t-attf-href="/my/participants/#{child.id}" class="d-block text-decoration-none text-reset">
                                     <div class="card h-100 cs-child-card">
                                         <div class="card-body py-2 px-3 d-flex align-items-center gap-3">
                                             <!-- Avatar slot: real image when available, gender emoji fallback.
@@ -92,7 +92,7 @@
                              same grid as existing children so the «family
                              grows here» metaphor stays intact. -->
                         <div class="col-md-4 col-sm-6">
-                            <a href="/my/participants/new" class="text-decoration-none">
+                            <a href="/my/participants/new" class="d-block text-decoration-none text-reset">
                                 <div class="card h-100 cs-child-card cs-child-card-add">
                                     <div class="card-body py-2 px-3 d-flex align-items-center gap-3">
                                         <div class="cs-child-avatar">
