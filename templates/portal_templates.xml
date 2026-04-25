@@ -67,9 +67,9 @@
                                                          t-attf-alt="#{child.display_name}"/>
                                                 </t>
                                                 <t t-else="">
-                                                    <span class="cs-child-emoji" t-attf-data-gender="#{child.gender or 'x'}">
-                                                        <t t-if="child.gender == 'f'">👧</t>
-                                                        <t t-elif="child.gender == 'm'">👦</t>
+                                                    <span class="cs-child-emoji" t-attf-data-avatar="#{child.avatar_type or 'neutral'}">
+                                                        <t t-if="child.avatar_type == 'girl'">👧</t>
+                                                        <t t-elif="child.avatar_type == 'boy'">👦</t>
                                                         <t t-else="">🧒</t>
                                                     </span>
                                                 </t>
