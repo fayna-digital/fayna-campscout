@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 
 from odoo import http
+from odoo.exceptions import AccessError, MissingError
 from odoo.addons.portal.controllers.portal import CustomerPortal
 
 _logger = logging.getLogger(__name__)
@@ -94,10 +95,7 @@ class CampscoutPortal(CustomerPortal):
                     "cs_upcoming_camps": cs_upcoming_camps,
                 }
             )
-        except Exception as e:
-            # Broad catch so any unexpected error still yields a valid
-            # values dict (earlier AccessError-only except let TypeError
-            # swallow cs_has_hero, producing a silent undefined in qweb).
+        except (AccessError, MissingError, ValueError) as e:
             _logger.exception("[CS-HERO] hero data prep failed: %s", e)
             empty_p = http.request.env["camp.participant"]
             empty_r = http.request.env["event.registration"]
@@ -161,8 +159,8 @@ class CampscoutPortal(CustomerPortal):
                 order="date desc",
                 limit=50,
             )
-        except Exception:
-            _logger.exception("[CS] stories load failed")
+        except (AccessError, MissingError) as e:
+            _logger.exception("[CS] stories load failed: %s", e)
             stories = env_sudo["camp.story"]
 
         return http.request.render(
@@ -184,8 +182,8 @@ class CampscoutPortal(CustomerPortal):
                 [("is_active", "=", True)],
                 order="version_date desc",
             )
-        except Exception:
-            _logger.exception("[CS] documents load failed")
+        except (AccessError, MissingError) as e:
+            _logger.exception("[CS] documents load failed: %s", e)
             documents = False
 
         return http.request.render(
@@ -210,8 +208,8 @@ class CampscoutPortal(CustomerPortal):
                 [("participant_id", "in", participants.ids)],
                 order="loyalty_tier desc, camp_count desc",
             )
-        except Exception:
-            _logger.exception("[CS] loyalty load failed")
+        except (AccessError, MissingError) as e:
+            _logger.exception("[CS] loyalty load failed: %s", e)
             loyalty_records = False
 
         return http.request.render(
