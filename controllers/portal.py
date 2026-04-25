@@ -15,58 +15,11 @@ class CampscoutPortal(CustomerPortal):
     """
 
     def _prepare_home_portal_values(self, counters):
-        """Odoo 17: Add story, document, loyalty counters for /my dashboard.
+        """Odoo 17: Home portal values hook (for future dashboard integration).
 
-        Called by portal.home() route to populate dashboard badge counts.
+        Called by portal.home() route. Currently delegates to parent.
         """
-        counters = super()._prepare_home_portal_values(counters)
-        partner = http.request.env.user.partner_id
-
-        try:
-            participants = (
-                http.request.env["camp.participant"]
-                .sudo()
-                .search([("parent_partner_id", "=", partner.id)])
-            )
-
-            if participants:
-                stories_count = (
-                    http.request.env["camp.story"]
-                    .sudo()
-                    .search_count([
-                        ("state", "=", "published"),
-                        ("public", "=", True),
-                        ("event_id.registration_ids.partner_id", "=", partner.id),
-                    ])
-                )
-                loyalty_count = (
-                    http.request.env["camp.loyalty"]
-                    .sudo()
-                    .search_count([("participant_id", "in", participants.ids)])
-                )
-            else:
-                stories_count = 0
-                loyalty_count = 0
-
-            documents_count = (
-                http.request.env["legal.document.version"]
-                .sudo()
-                .search_count([("is_active", "=", True)])
-            )
-
-            counters.update({
-                'stories_count': stories_count,
-                'loyalty_count': loyalty_count,
-                'documents_count': documents_count,
-            })
-        except (AccessError, MissingError):
-            counters.update({
-                'stories_count': 0,
-                'loyalty_count': 0,
-                'documents_count': 0,
-            })
-
-        return counters
+        return super()._prepare_home_portal_values(counters)
 
     def _prepare_portal_layout_values(self):
         """Layout values for sidebar + hero banner.
