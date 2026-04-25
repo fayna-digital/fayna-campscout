@@ -49,9 +49,11 @@ class CampscoutPortal(CustomerPortal):
             )
             now = datetime.now()
             active_regs = regs.filtered(
-                lambda r: r.event_id.date_begin
-                and r.event_id.date_end
-                and r.event_id.date_begin <= now <= r.event_id.date_end
+                lambda r: (
+                    r.event_id.date_begin
+                    and r.event_id.date_end
+                    and r.event_id.date_begin <= now <= r.event_id.date_end
+                )
             )
             upcoming_regs = regs.filtered(
                 lambda r: r.event_id.date_begin and r.event_id.date_begin > now
@@ -113,15 +115,37 @@ class CampscoutPortal(CustomerPortal):
         return values
 
     @http.route("/my/stories", type="http", auth="user", website=True)
-    def portal_my_stories(self, **kw):
-        """View published camp stories for parent's events."""
+    def portal_my_stories(self, participant_id=None, **kw):
+        """View published camp stories — optionally filtered to one child.
+
+        Without `participant_id`: shows stories for всіх дітей цього батька
+        (всі реєстрації aggregate-ом).
+        With `participant_id` (must belong to this parent): scopes до events
+        where this specific child registered. Гарантує per-child privacy +
+        enables «Щоденники Anny» від лінку у детальному кабінеті дитини.
+        """
         partner = http.request.env.user.partner_id
         env_sudo = http.request.env(su=True)
+        selected_child = False
+        children = env_sudo["camp.participant"]
 
         try:
-            regs = env_sudo["event.registration"].search(
-                [("partner_id", "=", partner.id), ("state", "!=", "cancel")]
-            )
+            children = env_sudo["camp.participant"].search([("parent_partner_id", "=", partner.id)])
+            if participant_id:
+                try:
+                    candidate = children.filtered(lambda c: c.id == int(participant_id))
+                    if candidate:
+                        selected_child = candidate[:1]
+                except (ValueError, TypeError):
+                    selected_child = False
+
+            if selected_child:
+                regs = selected_child.registration_ids.filtered(lambda r: r.state != "cancel")
+            else:
+                regs = env_sudo["event.registration"].search(
+                    [("partner_id", "=", partner.id), ("state", "!=", "cancel")]
+                )
+
             event_ids = regs.mapped("event_id").ids
             domain = [
                 ("state", "=", "published"),
@@ -145,6 +169,8 @@ class CampscoutPortal(CustomerPortal):
             "fayna_campscout.portal_stories",
             {
                 "stories": stories,
+                "selected_child": selected_child,
+                "children": children,
                 "page_name": "stories",
             },
         )

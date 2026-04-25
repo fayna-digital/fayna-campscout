@@ -50,48 +50,64 @@
                 </t>
 
                 <!-- Children strip -->
-                <t t-if="cs_participants">
-                    <div class="cs-children-strip mb-3">
-                        <h5 class="mb-2">Ваші діти у CampScout</h5>
-                        <div class="row g-2">
-                            <t t-foreach="cs_participants" t-as="child">
-                                <div class="col-md-4 col-sm-6">
-                                    <a t-attf-href="/my/participants/#{child.id}" class="text-decoration-none">
-                                        <div class="card h-100 cs-child-card">
-                                            <div class="card-body py-2 px-3 d-flex align-items-center gap-3">
-                                                <!-- Avatar slot: real image when available, gender emoji fallback.
-                                                     Source image comes from camp.day.photo tagging in Phase 5 (§2.7.6).
-                                                     Until then, shows boy/girl/neutral child emoji. -->
-                                                <div class="cs-child-avatar">
-                                                    <t t-if="child.image_128">
-                                                        <img t-attf-src="/web/image/camp.participant/#{child.id}/image_128"
-                                                             t-attf-alt="#{child.display_name}"/>
+                <div class="cs-children-strip mb-3">
+                    <h5 class="mb-2">Ваші діти у CampScout</h5>
+                    <div class="row g-2">
+                        <t t-foreach="cs_participants" t-as="child">
+                            <div class="col-md-4 col-sm-6">
+                                <a t-attf-href="/my/participants/#{child.id}" class="text-decoration-none">
+                                    <div class="card h-100 cs-child-card">
+                                        <div class="card-body py-2 px-3 d-flex align-items-center gap-3">
+                                            <!-- Avatar slot: real image when available, gender emoji fallback.
+                                                 Source image comes from camp.day.photo tagging in Phase 5 (§2.7.6).
+                                                 Until then, shows boy/girl/neutral child emoji. -->
+                                            <div class="cs-child-avatar">
+                                                <t t-if="child.image_128">
+                                                    <img t-attf-src="/web/image/camp.participant/#{child.id}/image_128"
+                                                         t-attf-alt="#{child.display_name}"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <span class="cs-child-emoji" t-attf-data-gender="#{child.gender or 'x'}">
+                                                        <t t-if="child.gender == 'f'">👧</t>
+                                                        <t t-elif="child.gender == 'm'">👦</t>
+                                                        <t t-else="">🧒</t>
+                                                    </span>
+                                                </t>
+                                            </div>
+                                            <div class="flex-grow-1 min-w-0">
+                                                <div class="fw-semibold text-truncate" t-esc="child.display_name"/>
+                                                <small class="text-muted">
+                                                    <t t-if="child.birth_date">
+                                                        <t t-esc="(cs_today - child.birth_date).days // 365"/>
+                                                        років
                                                     </t>
-                                                    <t t-else="">
-                                                        <span class="cs-child-emoji" t-attf-data-gender="#{child.gender or 'x'}">
-                                                            <t t-if="child.gender == 'f'">👧</t>
-                                                            <t t-elif="child.gender == 'm'">👦</t>
-                                                            <t t-else="">🧒</t>
-                                                        </span>
-                                                    </t>
-                                                </div>
-                                                <div class="flex-grow-1 min-w-0">
-                                                    <div class="fw-semibold text-truncate" t-esc="child.display_name"/>
-                                                    <small class="text-muted">
-                                                        <t t-if="child.birth_date">
-                                                            <t t-esc="(cs_today - child.birth_date).days // 365"/>
-                                                            років
-                                                        </t>
-                                                    </small>
-                                                </div>
+                                                </small>
                                             </div>
                                         </div>
-                                    </a>
+                                    </div>
+                                </a>
+                            </div>
+                        </t>
+                        <!-- Always-visible CTA: add another child. Sits in the
+                             same grid as existing children so the «family
+                             grows here» metaphor stays intact. -->
+                        <div class="col-md-4 col-sm-6">
+                            <a href="/my/participants/new" class="text-decoration-none">
+                                <div class="card h-100 cs-child-card cs-child-card-add">
+                                    <div class="card-body py-2 px-3 d-flex align-items-center gap-3">
+                                        <div class="cs-child-avatar">
+                                            <span class="cs-child-emoji" data-gender="add">➕</span>
+                                        </div>
+                                        <div class="flex-grow-1 min-w-0">
+                                            <div class="fw-semibold">Додати дитину</div>
+                                            <small class="text-muted">Окрема картка + документи</small>
+                                        </div>
+                                    </div>
                                 </div>
-                            </t>
+                            </a>
                         </div>
                     </div>
-                </t>
+                </div>
 
                 <!-- Upcoming camps -->
                 <t t-if="cs_upcoming_regs">
@@ -284,7 +300,26 @@
 
             <div class="cs-page-header mb-4">
                 <h2 class="cs-page-title">Щоденні історії з табору</h2>
-                <p class="cs-page-subtitle">Звіти вожатих про життя дітей у таборі</p>
+                <p t-if="not selected_child" class="cs-page-subtitle">Звіти вожатих про життя дітей у таборі</p>
+                <p t-if="selected_child" class="cs-page-subtitle">
+                    Тільки історії з таборів <strong t-esc="selected_child.display_name"/>.
+                    <a href="/my/stories" class="cs-back-link ms-2">показати усіх дітей</a>
+                </p>
+            </div>
+
+            <!-- Per-child filter chips: live partition by participant. Без
+                 hardcoded children — list рендериться з queried records. -->
+            <div t-if="children and len(children) > 1" class="cs-stories-filter mb-3">
+                <a href="/my/stories"
+                   t-attf-class="cs-filter-chip #{('active' if not selected_child else '')}">
+                    Усі діти
+                </a>
+                <t t-foreach="children" t-as="child">
+                    <a t-attf-href="/my/stories?participant_id=#{child.id}"
+                       t-attf-class="cs-filter-chip #{('active' if selected_child and selected_child.id == child.id else '')}">
+                        <t t-esc="child.display_name"/>
+                    </a>
+                </t>
             </div>
 
             <div t-if="not stories" class="cs-empty-state">
