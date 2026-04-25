@@ -1,17 +1,35 @@
 #!/usr/bin/env python3
 """
-Create test parent user with test child and test data.
+Create test parent user with test child and test data for CampScout.
 
 Run via:
-  docker exec campscout_web odoo shell -d campscout < scripts/create_test_parent.py
+  docker exec campscout_web python3 -c "
+  import os, sys, django
+  os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'odoo.conf')
+  sys.path.insert(0, '/opt/campscout')
+  from odoo.api import Environment
+  from odoo import SUPERUSER_ID, registry as get_registry
+  with get_registry('campscout').cursor() as cr:
+    env = Environment(cr, SUPERUSER_ID, {})
+    exec(open('/opt/campscout/custom-addons/fayna_campscout/scripts/create_test_parent.py').read())
+  " 2>&1
 
-Or interactively in Odoo shell:
-  >>> exec(open('scripts/create_test_parent.py').read())
+Or via shell in container:
+  docker exec campscout_web bash -c "cd /opt/campscout && python3 << 'EOF'
+... script content here ...
+EOF"
 """
 
 from datetime import datetime, timedelta
 
-from odoo import fields as odoo_fields
+# env should be passed from caller (Odoo context already initialized)
+# If running standalone, skip this script
+try:
+    assert 'env' in locals() or 'env' in globals()
+except:
+    print("[!] This script must be run within Odoo environment context")
+    print("[!] Use: docker exec campscout_web odoo -d campscout shell < script.py")
+    exit(1)
 
 # Clean up if exists (for idempotency)
 print("[TEST DATA] Cleaning up existing test data...")

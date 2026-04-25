@@ -14,25 +14,69 @@ class CampscoutPortal(CustomerPortal):
     /my/participants is handled by fayna_camp_qualification module (not here).
     """
 
-    def _prepare_portal_layout_values(self):
-        """Inject children + current/upcoming camps for /my hero banner.
+    def _prepare_home_portal_values(self, counters):
+        """Odoo 17: Add story, document, loyalty counters for /my dashboard.
 
-        Odoo 17: portal.home() route calls THIS method to build the
-        HTML render context. _prepare_home_portal_values is only used
-        by the /my/counters JSON endpoint for badge counts — NOT for
-        template values. Core sale/account don't pass dynamic values
-        to HTML (all static text), but we need dynamic (child names,
-        event dates), so _prepare_portal_layout_values is the right
-        hook.
+        Called by portal.home() route to populate dashboard badge counts.
+        """
+        counters = super()._prepare_home_portal_values(counters)
+        partner = http.request.env.user.partner_id
+
+        try:
+            participants = (
+                http.request.env["camp.participant"]
+                .sudo()
+                .search([("parent_partner_id", "=", partner.id)])
+            )
+
+            if participants:
+                stories_count = (
+                    http.request.env["camp.story"]
+                    .sudo()
+                    .search_count([
+                        ("state", "=", "published"),
+                        ("public", "=", True),
+                        ("event_id.registration_ids.partner_id", "=", partner.id),
+                    ])
+                )
+                loyalty_count = (
+                    http.request.env["camp.loyalty"]
+                    .sudo()
+                    .search_count([("participant_id", "in", participants.ids)])
+                )
+            else:
+                stories_count = 0
+                loyalty_count = 0
+
+            documents_count = (
+                http.request.env["legal.document.version"]
+                .sudo()
+                .search_count([("is_active", "=", True)])
+            )
+
+            counters.update({
+                'stories_count': stories_count,
+                'loyalty_count': loyalty_count,
+                'documents_count': documents_count,
+            })
+        except (AccessError, MissingError):
+            counters.update({
+                'stories_count': 0,
+                'loyalty_count': 0,
+                'documents_count': 0,
+            })
+
+        return counters
+
+    def _prepare_portal_layout_values(self):
+        """Layout values for sidebar + hero banner.
+
+        Called by portal.layout template for render context (children, events, etc).
         """
         values = super()._prepare_portal_layout_values()
         partner = http.request.env.user.partner_id
 
         try:
-            # Standard Odoo portal pattern: use sudo() with explicit
-            # partner_id filter. The filter itself scopes the result to
-            # the logged-in user — we don't need record rules on
-            # event.event / event.registration on top of that.
             participants = (
                 http.request.env["camp.participant"]
                 .sudo()
@@ -67,10 +111,6 @@ class CampscoutPortal(CustomerPortal):
                 and bool(participants or regs)
             )
 
-            # Upcoming camps for "Забронювати табір" modal — published
-            # events whose start is in the future, grouped by product when
-            # possible. We use event.event (not product.template) because
-            # that's what drives availability and has concrete dates.
             cs_upcoming_camps = (
                 http.request.env["event.event"]
                 .sudo()
@@ -95,7 +135,7 @@ class CampscoutPortal(CustomerPortal):
                     "cs_upcoming_camps": cs_upcoming_camps,
                 }
             )
-        except (AccessError, MissingError, ValueError) as e:
+        except (AccessError, MissingError) as e:
             _logger.exception("[CS-HERO] hero data prep failed: %s", e)
             empty_p = http.request.env["camp.participant"]
             empty_r = http.request.env["event.registration"]
