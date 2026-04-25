@@ -25,7 +25,7 @@
     </xpath>
     <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
         <!-- Stories card -->
-        <div class="o_portal_doc_item">
+        <div data-counter-name="stories_count" class="o_portal_doc_item">
             <a href="/my/stories">
                 <div class="o_portal_doc_content">
                     <h3 class="o_portal_doc_title">📖 Щоденні історії</h3>
@@ -37,7 +37,7 @@
             </a>
         </div>
         <!-- Documents card -->
-        <div class="o_portal_doc_item">
+        <div data-counter-name="documents_count" class="o_portal_doc_item">
             <a href="/my/documents">
                 <div class="o_portal_doc_content">
                     <h3 class="o_portal_doc_title">📄 Юридичні документи</h3>
@@ -49,7 +49,7 @@
             </a>
         </div>
         <!-- Loyalty card -->
-        <div class="o_portal_doc_item">
+        <div data-counter-name="loyalty_count" class="o_portal_doc_item">
             <a href="/my/loyalty">
                 <div class="o_portal_doc_content">
                     <h3 class="o_portal_doc_title">🏆 Програма лояльності</h3>
