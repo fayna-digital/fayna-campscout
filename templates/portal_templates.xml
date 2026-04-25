@@ -35,7 +35,7 @@
                                 <div class="flex-grow-1">
                                     <strong>
                                         <t t-if="reg.participant_id" t-esc="reg.participant_id.display_name"/>
-                                        <t t-else="">Ваша дитина</t>
+                                        <t t-else="">Ваш учасник</t>
                                     </strong>
                                     зараз у таборі
                                     <strong t-esc="reg.event_id.name"/>.
@@ -51,7 +51,7 @@
 
                 <!-- Children strip -->
                 <div class="cs-children-strip mb-3">
-                    <h5 class="mb-2">Мої скаути</h5>
+                    <h5 class="mb-2">Мої учасники</h5>
                     <div class="row g-2">
                         <t t-foreach="cs_participants" t-as="child">
                             <div class="col-md-4 col-sm-6">
@@ -99,7 +99,7 @@
                                             <span class="cs-child-emoji" data-gender="add">➕</span>
                                         </div>
                                         <div class="flex-grow-1 min-w-0">
-                                            <div class="fw-semibold">Додати дитину</div>
+                                            <div class="fw-semibold">Додати учасника</div>
                                             <small class="text-muted">Окрема картка + документи</small>
                                         </div>
                                     </div>
@@ -138,7 +138,7 @@
                                 <span class="cs-doc-icon">🏕️</span>
                                 <div class="cs-doc-body">
                                     <h5 class="cs-doc-title">Забронювати табір</h5>
-                                    <p class="cs-doc-desc">Наступний сезон для дитини</p>
+                                    <p class="cs-doc-desc">Наступний сезон для учасника</p>
                                     <span class="cs-doc-cta">Обрати табір →</span>
                                 </div>
                             </a>
@@ -483,7 +483,7 @@
 
             <div class="cs-page-header mb-4">
                 <h2 class="cs-page-title">Програма лояльності</h2>
-                <p class="cs-page-subtitle">Чим більше таборів відвідала ваша дитина — тим вища знижка на наступні заїзди</p>
+                <p class="cs-page-subtitle">Чим більше таборів відвідав учасник — тим вища знижка на наступні заїзди</p>
             </div>
 
             <!-- Per-child premium tier card -->
@@ -596,7 +596,7 @@
                 <div class="cs-empty-icon">🏆</div>
                 <h4>Ласкаво просимо!</h4>
                 <p class="text-muted">
-                    Після першого табору вашої дитини тут з'явиться персональна картка лояльності
+                    Після першого табору учасника тут з'явиться персональна картка лояльності
                     з реальними знижками на наступні заїзди.
                 </p>
             </div>
