@@ -26,7 +26,7 @@ from datetime import datetime, timedelta
 # If running standalone, skip this script
 try:
     assert "env" in locals() or "env" in globals()
-except:
+except AssertionError:
     print("[!] This script must be run within Odoo environment context")
     print("[!] Use: docker exec campscout_web odoo -d campscout shell < script.py")
     exit(1)
