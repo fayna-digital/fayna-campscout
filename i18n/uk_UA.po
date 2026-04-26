@@ -1,0 +1,601 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* fayna_campscout
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-04-25 00:00+0000\n"
+"PO-Revision-Date: 2026-04-25 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Language: uk_UA\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#. module: fayna_campscout
+#: model:ir.model,name:fayna_campscout.model_campscout_portal_session
+msgid "Parent portal session tracking"
+msgstr ""
+
+#. module: fayna_campscout
+#: model:ir.model,name:fayna_campscout.model_campscout_portal_menu
+msgid "Portal menu customization per region"
+msgstr ""
+
+#. module: fayna_campscout
+#: model:ir.model.fields,field_description:fayna_campscout.field_campscout_portal_session__partner_id
+msgid "Parent"
+msgstr ""
+
+#. module: fayna_campscout
+#: model:ir.model.fields,field_description:fayna_campscout.field_campscout_portal_session__children_count
+msgid "Children registered"
+msgstr ""
+
+#. module: fayna_campscout
+#: model:ir.model.fields,field_description:fayna_campscout.field_campscout_portal_session__last_login
+msgid "Last login"
+msgstr ""
+
+#. module: fayna_campscout
+#: model:ir.model.fields,field_description:fayna_campscout.field_campscout_portal_session__last_activity
+msgid "Last activity"
+msgstr ""
+
+#. module: fayna_campscout
+#: model:ir.model.fields,field_description:fayna_campscout.field_campscout_portal_session__active_camps
+msgid "Active camps"
+msgstr ""
+
+#. module: fayna_campscout
+#: model:ir.model.fields,field_description:fayna_campscout.field_campscout_portal_session__unread_messages
+msgid "Unread messages"
+msgstr ""
+
+#. module: fayna_campscout
+#: model:ir.model.fields,field_description:fayna_campscout.field_campscout_portal_session__pending_actions
+msgid "Pending actions (docs to sign)"
+msgstr ""
+
+#. module: fayna_campscout
+#: model:ir.model.fields,field_description:fayna_campscout.field_campscout_portal_menu__region
+msgid "Region (e.g. 'PL', 'UA')"
+msgstr ""
+
+#. module: fayna_campscout
+#: model:ir.model.fields,field_description:fayna_campscout.field_campscout_portal_menu__show_shop
+msgid "Show camp shop?"
+msgstr ""
+
+#. module: fayna_campscout
+#: model:ir.model.fields,field_description:fayna_campscout.field_campscout_portal_menu__show_stories
+msgid "Show daily stories?"
+msgstr ""
+
+#. module: fayna_campscout
+#: model:ir.model.fields,field_description:fayna_campscout.field_campscout_portal_menu__show_loyalty
+msgid "Show loyalty program?"
+msgstr ""
+
+#. module: fayna_campscout
+#: model:ir.model.fields,field_description:fayna_campscout.field_campscout_portal_menu__show_reviews
+msgid "Show reviews?"
+msgstr ""
+
+#. module: fayna_campscout
+#: model:ir.model.fields,field_description:fayna_campscout.field_campscout_portal_menu__show_blog
+msgid "Show blog?"
+msgstr ""
+
+#. module: fayna_campscout
+#: model:ir.model.fields,field_description:fayna_campscout.field_campscout_portal_menu__custom_links
+msgid "Custom links (JSON)"
+msgstr ""
+
+#. module: fayna_campscout
+#: code:addons/fayna_campscout/controllers/api.py:0
+#, python-format
+msgid "Invalid credentials"
+msgstr ""
+
+#. module: fayna_campscout
+#: code:addons/fayna_campscout/controllers/api.py:0
+#, python-format
+msgid "No active camp found"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_layout_title_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_breadcrumbs_campscout
+msgid "Кабінет клієнта"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
+msgid "Ваш учасник"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
+msgid "зараз у таборі"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
+msgid "Повернення:"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
+msgid "Мої учасники"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
+msgid "років"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
+msgid "Додати учасника"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
+msgid "Окрема картка + документи"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
+msgid "Наступні табори"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
+msgid "Забронювати табір"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
+msgid "Переглянути доступні заїзди та зареєструвати учасника"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
+msgid "Обрати табір →"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
+msgid "Мої замовлення"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
+msgid "Активні бронювання та архів"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_breadcrumbs_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
+msgid "Щоденні історії"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
+msgid "Звіти вожатих з табору"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
+msgid "Переглянути →"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
+msgid "Лояльність"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
+msgid "Рівні та знижки"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_breadcrumbs_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
+msgid "Юридичні документи"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
+msgid "Умови, політики, згоди"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
+msgid "Фінансові документи"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
+msgid "Рахунки, оплати, повернення"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
+msgid "Оберіть табір для бронювання"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
+msgid "Закрити"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
+msgid "вільно:"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
+msgid "Поки немає відкритих заїздів"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
+msgid "Перевірте пізніше — графік наступного сезону зʼявиться тут одразу як відкриємо продажі."
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
+msgid "Переглянути всі табори в магазині →"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_breadcrumbs_campscout
+msgid "Програма лояльності"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "← До кабінету"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
+msgid "Щоденні історії з табору"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
+msgid "Звіти вожатих про життя дітей у таборі"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
+msgid "Тільки історії з таборів"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
+msgid "показати усіх дітей"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
+msgid "Усі діти"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
+msgid "Поки що тихо"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
+msgid "Історії з'являться тут одразу як вожаті опублікують перший щоденний звіт."
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
+msgid "Щоденник"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
+msgid "Портрет"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
+msgid "Пригода"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
+msgid "Урок"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
+msgid "Команда"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
+msgid "Навичка"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
+msgid "Спомин"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
+msgid "Умови, політики та згоди, які регулюють ваші відносини з CampScout"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
+msgid "Обробка персональних даних"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
+msgid "Умови обробки даних, включаючи дані про дітей (RODO/GDPR)"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
+msgid "Читати →"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
+msgid "Безпека дітей"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
+msgid "Політика захисту малолітніх і стандарти обслуговування в таборі"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
+msgid "Умови користування кабінетом"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
+msgid "Правила користування батьківським особистим кабінетом"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
+msgid "Загальні умови"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
+msgid "Основні умови надання послуг табору CampScout"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
+msgid "Політика cookies"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
+msgid "Які cookies ми використовуємо та навіщо"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
+msgid "📚 Усі документи для батьків + архівні версії →"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
+msgid "Актуальні версії документів"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
+msgid "Умови та положення"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
+msgid "Політика конфіденційності"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
+msgid "Згода RODO"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
+msgid "Батьківська згода"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
+msgid "Версія"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
+msgid "від"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "Програма лояльності CampScout"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "Чим більше таборів відвідав учасник — тим вища знижка на наступні заїзди"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "Рівень"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "Бронзовий"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "Срібний"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "Золотий"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "Платиновий"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "знижка на наступний табір"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "Знижка ще не активна"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "Срібного"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "Золотого"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "Платинового"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "До"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "рівня залишилось"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "табір"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "табори"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "🏆 Максимальний рівень досягнуто"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "Таборів відвідано"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "Балів зібрано"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "З нами з"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "Відзнаки:"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "Як працює програма"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "1 табір"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "знайомство"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "2–3 табори"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "−5% знижка"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "4–5 таборів"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "−10% знижка"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "6+ таборів"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "−15% знижка"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "Ласкаво просимо!"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
+msgid "Після першого табору учасника тут з'явиться персональна картка лояльності з реальними знижками на наступні заїзди."
+msgstr ""

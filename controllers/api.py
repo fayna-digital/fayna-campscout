@@ -1,4 +1,4 @@
-from odoo import http
+from odoo import _, http
 from odoo.http import request
 
 
@@ -14,7 +14,7 @@ class CampscoutAPI(http.Controller):
         user = request.env["res.users"].search([("login", "=", username)], limit=1)
 
         if not user or not user._check_credentials(password):
-            return {"error": "Invalid credentials"}
+            return {"error": _("Invalid credentials")}
 
         return {
             "success": True,
@@ -53,7 +53,7 @@ class CampscoutAPI(http.Controller):
         )
 
         if not registration:
-            return {"error": "No active camp found"}
+            return {"error": _("No active camp found")}
 
         return {
             "camp": {
