@@ -15,11 +15,76 @@ class CampscoutPortal(CustomerPortal):
     """
 
     def _prepare_home_portal_values(self, counters):
-        """Odoo 17: Home portal values hook (for future dashboard integration).
+        """Odoo 17: Home portal values hook — adds CampScout hero + upcoming camps.
 
-        Called by portal.home() route. Currently delegates to parent.
+        Called by portal.home() route to render /my hero block.
         """
-        return super()._prepare_home_portal_values(counters)
+        values = super()._prepare_home_portal_values(counters)
+        partner = http.request.env.user.partner_id
+        env_sudo = http.request.env(su=True)
+
+        try:
+            participants = env_sudo["camp.participant"].search(
+                [("parent_partner_id", "=", partner.id)]
+            )
+            regs = env_sudo["event.registration"].search(
+                [("partner_id", "=", partner.id), ("state", "!=", "cancel")]
+            )
+
+            now = datetime.now()
+            active_regs = regs.filtered(
+                lambda r: (
+                    r.event_id.date_begin
+                    and r.event_id.date_end
+                    and r.event_id.date_begin <= now <= r.event_id.date_end
+                )
+            )
+            upcoming_regs = regs.filtered(
+                lambda r: r.event_id.date_begin and r.event_id.date_begin > now
+            ).sorted(key=lambda r: r.event_id.date_begin)
+
+            user = http.request.env.user
+            is_parent_only = (
+                user.has_group("base.group_portal")
+                and not user.has_group("base.group_user")
+                and bool(participants or regs)
+            )
+
+            cs_upcoming_camps = env_sudo["event.event"].sudo().search(
+                [
+                    ("date_begin", ">", now),
+                    ("is_published", "=", True),
+                ],
+                order="date_begin asc",
+                limit=24,
+            )
+
+            values.update(
+                {
+                    "cs_participants": participants,
+                    "cs_active_regs": active_regs,
+                    "cs_upcoming_regs": upcoming_regs[:3],
+                    "cs_has_hero": bool(participants or regs),
+                    "cs_today": now.date(),
+                    "cs_parent_only": is_parent_only,
+                    "cs_upcoming_camps": cs_upcoming_camps,
+                }
+            )
+        except (AccessError, MissingError) as e:
+            _logger.exception("[CS-HERO] home values prep failed: %s", e)
+            values.update(
+                {
+                    "cs_participants": env_sudo["camp.participant"],
+                    "cs_active_regs": env_sudo["event.registration"],
+                    "cs_upcoming_regs": env_sudo["event.registration"],
+                    "cs_has_hero": False,
+                    "cs_today": datetime.now().date(),
+                    "cs_parent_only": False,
+                    "cs_upcoming_camps": env_sudo["event.event"],
+                }
+            )
+
+        return values
 
     def _prepare_portal_layout_values(self):
         """Layout values for sidebar + hero banner.
