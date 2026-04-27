@@ -16,7 +16,7 @@
     </xpath>
 </template>
 
-<template id="portal_my_home_campscout_hero" inherit_id="portal.portal_my_home" customize_show="True" name="Show CampScout Hero (children + camps)" priority="25">
+<template id="portal_my_home_campscout_hero" inherit_id="portal.portal_my_home" name="CampScout Hero (children + camps)" priority="25">
     <!-- For portal-only parents: tag the root container so CSS hides the
          standard category rows (Orders/Invoices/Security). We don't touch
          .o_portal_docs or the spinner — Odoo JS keeps working. -->
