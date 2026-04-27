@@ -15,6 +15,12 @@ class CampscoutPortal(CustomerPortal):
     /my/loyalty is handled by fayna_camp_loyalty module (not here).
     """
 
+    @http.route(["/my", "/my/home"], type="http", auth="user", website=True)
+    def home(self, **kw):
+        # Explicit override so Odoo routing uses this class for /my,
+        # which makes _prepare_home_portal_values below get called (BP-010).
+        return super().home(**kw)
+
     def _prepare_home_portal_values(self, counters):
         """Odoo 17: Home portal values hook — adds CampScout hero + counters.
 
