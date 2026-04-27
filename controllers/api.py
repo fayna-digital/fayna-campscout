@@ -5,23 +5,6 @@ from odoo.http import request
 class CampscoutAPI(http.Controller):
     """REST API for mobile apps and portals"""
 
-    @http.route("/api/v1/auth/login", type="json", auth="none", methods=["POST"])
-    def api_login(self, **kw):
-        """Authenticate user and return token"""
-        username = kw.get("username")
-        password = kw.get("password")
-
-        user = request.env["res.users"].search([("login", "=", username)], limit=1)
-
-        if not user or not user._check_credentials(password):
-            return {"error": _("Invalid credentials")}
-
-        return {
-            "success": True,
-            "user_id": user.id,
-            "partner_id": user.partner_id.id,
-        }
-
     @http.route("/api/v1/participants", type="json", auth="user")
     def api_get_participants(self, **kw):
         """Get list of children for logged-in parent"""
