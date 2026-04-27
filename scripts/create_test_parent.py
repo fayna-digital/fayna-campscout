@@ -21,6 +21,7 @@ EOF"
 """
 
 from datetime import datetime, timedelta
+from odoo import fields
 
 # env should be passed from caller (Odoo context already initialized)
 # If running standalone, skip this script
@@ -75,7 +76,7 @@ env["fayna.rodo.consent.log"].create(
         "legal_basis": "contract",
         "consent_given": True,
         "source": "admin_manual",
-        "consent_timestamp": odoo_fields.Datetime.now(),
+        "consent_timestamp": fields.Datetime.now(),
         "exact_user_response": "Test data creation",
         "notes": "Test parent created for staging verification",
     }
@@ -165,7 +166,7 @@ try:
             "loyalty_points": 150,
             "discount_eligible": True,
             "discount_percentage": 5.0,
-            "badges": "Новичок, Командный игрок",
+            "badges": "Починаючий, Командний гравець",
             "notes": "Test loyalty record for demo",
         }
     )
