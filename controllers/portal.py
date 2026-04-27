@@ -9,20 +9,25 @@ _logger = logging.getLogger(__name__)
 
 
 class CampscoutPortal(CustomerPortal):
-    """Parent portal for CampScout — stories, documents, loyalty.
+    """Parent portal for CampScout — stories, documents.
 
     /my/participants is handled by fayna_camp_qualification module (not here).
+    /my/loyalty is handled by fayna_camp_loyalty module (not here).
     """
 
     def _prepare_home_portal_values(self, counters):
-        """Odoo 17: Home portal values hook — adds CampScout hero + upcoming camps.
+        """Odoo 17: Home portal values hook — adds CampScout hero + counters.
 
-        Called by portal.home() route to render /my hero block.
+        Called by portal.home() route to render /my home page.
+        Adds:
+          - Hero block data (children, active/upcoming registrations)
+          - stories_count / documents_count for portal entry cards
         """
         values = super()._prepare_home_portal_values(counters)
         partner = http.request.env.user.partner_id
         env_sudo = http.request.env(su=True)
 
+        # --- Hero block data ---
         try:
             participants = env_sudo["camp.participant"].search(
                 [("parent_partner_id", "=", partner.id)]
@@ -50,7 +55,7 @@ class CampscoutPortal(CustomerPortal):
                 and bool(participants or regs)
             )
 
-            cs_upcoming_camps = env_sudo["event.event"].sudo().search(
+            cs_upcoming_camps = env_sudo["event.event"].search(
                 [
                     ("date_begin", ">", now),
                     ("is_published", "=", True),
@@ -84,90 +89,30 @@ class CampscoutPortal(CustomerPortal):
                 }
             )
 
-        return values
-
-    def _prepare_portal_layout_values(self):
-        """Layout values for sidebar + hero banner.
-
-        Called by portal.layout template for render context (children, events, etc).
-        """
-        values = super()._prepare_portal_layout_values()
-        partner = http.request.env.user.partner_id
-
-        try:
-            participants = (
-                http.request.env["camp.participant"]
-                .sudo()
-                .search([("parent_partner_id", "=", partner.id)])
-            )
-            regs = (
-                http.request.env["event.registration"]
-                .sudo()
-                .search(
-                    [
-                        ("partner_id", "=", partner.id),
-                        ("state", "!=", "cancel"),
-                    ]
+        # --- Portal entry card counters ---
+        if "stories_count" in counters:
+            try:
+                event_ids = (
+                    env_sudo["event.registration"]
+                    .search([("partner_id", "=", partner.id), ("state", "!=", "cancel")])
+                    .mapped("event_id")
+                    .ids
                 )
-            )
-            now = datetime.now()
-            active_regs = regs.filtered(
-                lambda r: (
-                    r.event_id.date_begin
-                    and r.event_id.date_end
-                    and r.event_id.date_begin <= now <= r.event_id.date_end
+                domain = [("state", "=", "published"), ("public", "=", True)]
+                if event_ids:
+                    domain.append(("event_id", "in", event_ids))
+                values["stories_count"] = env_sudo["camp.story"].search_count(domain)
+            except (AccessError, MissingError):
+                values["stories_count"] = 0
+
+        if "documents_count" in counters:
+            try:
+                values["documents_count"] = env_sudo["legal.document.version"].search_count(
+                    [("is_active", "=", True)]
                 )
-            )
-            upcoming_regs = regs.filtered(
-                lambda r: r.event_id.date_begin and r.event_id.date_begin > now
-            ).sorted(key=lambda r: r.event_id.date_begin)
+            except (AccessError, MissingError):
+                values["documents_count"] = 0
 
-            user = http.request.env.user
-            is_parent_only = (
-                user.has_group("base.group_portal")
-                and not user.has_group("base.group_user")
-                and bool(participants or regs)
-            )
-
-            cs_upcoming_camps = (
-                http.request.env["event.event"]
-                .sudo()
-                .search(
-                    [
-                        ("date_begin", ">", now),
-                        ("is_published", "=", True),
-                    ],
-                    order="date_begin asc",
-                    limit=24,
-                )
-            )
-
-            values.update(
-                {
-                    "cs_participants": participants,
-                    "cs_active_regs": active_regs,
-                    "cs_upcoming_regs": upcoming_regs[:3],
-                    "cs_has_hero": bool(participants or regs),
-                    "cs_today": now.date(),
-                    "cs_parent_only": is_parent_only,
-                    "cs_upcoming_camps": cs_upcoming_camps,
-                }
-            )
-        except (AccessError, MissingError) as e:
-            _logger.exception("[CS-HERO] hero data prep failed: %s", e)
-            empty_p = http.request.env["camp.participant"]
-            empty_r = http.request.env["event.registration"]
-            values.update(
-                {
-                    "cs_participants": empty_p,
-                    "cs_active_regs": empty_r,
-                    "cs_upcoming_regs": empty_r,
-                    "cs_has_hero": False,
-                    "cs_today": datetime.now().date(),
-                    "cs_parent_only": False,
-                    "cs_upcoming_camps": http.request.env["event.event"],
-                }
-            )
         return values
 
     @http.route("/my/stories", type="http", auth="user", website=True)
@@ -175,7 +120,8 @@ class CampscoutPortal(CustomerPortal):
         """View published camp stories — optionally filtered to one child.
 
         Without `participant_id`: shows stories for всіх дітей цього батька
-        (всі реєстрації aggregate-ом).
+        (всі реєстрації aggregate-ом). Falls back to latest public stories
+        if the parent has no registrations yet.
         With `participant_id` (must belong to this parent): scopes до events
         where this specific child registered. Гарантує per-child privacy +
         enables «Щоденники Anny» від лінку у детальному кабінеті дитини.
@@ -203,20 +149,22 @@ class CampscoutPortal(CustomerPortal):
                 )
 
             event_ids = regs.mapped("event_id").ids
-            domain = [
-                ("state", "=", "published"),
-                ("public", "=", True),
-            ]
-            if event_ids:
-                domain.insert(0, ("event_id", "in", event_ids))
-            else:
-                domain.insert(0, (1, "=", 0))
+            base_domain = [("state", "=", "published"), ("public", "=", True)]
 
-            stories = env_sudo["camp.story"].search(
-                domain,
-                order="date desc",
-                limit=50,
-            )
+            if event_ids:
+                # Show stories from events this parent's children attended
+                stories = env_sudo["camp.story"].search(
+                    [("event_id", "in", event_ids)] + base_domain,
+                    order="date desc",
+                    limit=50,
+                )
+            else:
+                # No registrations yet — show recent public stories as a preview
+                stories = env_sudo["camp.story"].search(
+                    base_domain,
+                    order="date desc",
+                    limit=10,
+                )
         except (AccessError, MissingError) as e:
             _logger.exception("[CS] stories load failed: %s", e)
             stories = env_sudo["camp.story"]
@@ -249,31 +197,5 @@ class CampscoutPortal(CustomerPortal):
             {
                 "documents": documents,
                 "page_name": "documents",
-            },
-        )
-
-    @http.route("/my/loyalty", type="http", auth="user", website=True)
-    def portal_my_loyalty(self, **kw):
-        """View loyalty program status for all children."""
-        partner = http.request.env.user.partner_id
-        env_sudo = http.request.env(su=True)
-
-        try:
-            participants = env_sudo["camp.participant"].search(
-                [("parent_partner_id", "=", partner.id)]
-            )
-            loyalty_records = env_sudo["camp.loyalty"].search(
-                [("participant_id", "in", participants.ids)],
-                order="loyalty_tier desc, camp_count desc",
-            )
-        except (AccessError, MissingError) as e:
-            _logger.exception("[CS] loyalty load failed: %s", e)
-            loyalty_records = False
-
-        return http.request.render(
-            "fayna_campscout.portal_loyalty",
-            {
-                "loyalties": loyalty_records,
-                "page_name": "loyalty",
             },
         )

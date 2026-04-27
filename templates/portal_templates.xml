@@ -250,12 +250,34 @@
 </template>
 
 <!-- ============================================================================
-     Sidebar Navigation — add links to portal menu
+     Home portal entry cards — shown in the standard .o_portal_docs grid
+     These cards appear for ALL portal users (not only parents with children).
+     Counter values are populated by _prepare_home_portal_values via counters.
      ============================================================================ -->
 
-<!-- Sidebar inherit disabled: Odoo 17 portal.portal_layout has no .o_portal_aside wrapper.
-     Nav is provided via home-page cards and breadcrumbs instead. Will restore once
-     /my/participants/<id> detail page (per TZ §2.7.2) is built with its own layout. -->
+<template id="portal_my_home_stories" inherit_id="portal.portal_my_home" priority="65">
+    <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+        <t t-call="portal.portal_docs_entry">
+            <t t-set="title">Щоденні історії</t>
+            <t t-set="url">/my/stories</t>
+            <t t-set="placeholder_count">stories_count</t>
+        </t>
+    </xpath>
+</template>
+
+<template id="portal_my_home_documents" inherit_id="portal.portal_my_home" priority="67">
+    <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+        <t t-call="portal.portal_docs_entry">
+            <t t-set="title">Юридичні документи</t>
+            <t t-set="url">/my/documents</t>
+            <t t-set="placeholder_count">documents_count</t>
+        </t>
+    </xpath>
+</template>
+
+<!-- ============================================================================
+     Sidebar Navigation — add CampScout section links to portal sidebar
+     ============================================================================ -->
 
 <!-- ============================================================================
      Breadcrumbs
@@ -468,140 +490,5 @@
     </t>
 </template>
 
-<!-- ============================================================================
-     /my/loyalty — Loyalty program status
-     ============================================================================ -->
-
-<template id="portal_loyalty" name="Loyalty Program">
-    <t t-call="portal.portal_layout">
-        <t t-set="additional_title">Програма лояльності CampScout</t>
-
-        <div class="cs-page">
-            <div class="cs-page-back mb-3">
-                <a href="/my" class="cs-back-link">← До кабінету</a>
-            </div>
-
-            <div class="cs-page-header mb-4">
-                <h2 class="cs-page-title">Програма лояльності</h2>
-                <p class="cs-page-subtitle">Чим більше таборів відвідав учасник — тим вища знижка на наступні заїзди</p>
-            </div>
-
-            <!-- Per-child premium tier card -->
-            <div t-foreach="loyalties" t-as="loyalty" class="cs-loyalty-card mb-4"
-                 t-attf-data-tier="#{loyalty.loyalty_tier}">
-                <div class="cs-loyalty-hero">
-                    <div class="cs-loyalty-hero-inner">
-                        <div class="cs-loyalty-child-name" t-esc="loyalty.participant_id.display_name"/>
-                        <div class="cs-loyalty-tier-label">
-                            Рівень
-                            <strong>
-                                <t t-esc="dict([
-                                    ('bronze', 'Бронзовий'),
-                                    ('silver', 'Срібний'),
-                                    ('gold', 'Золотий'),
-                                    ('platinum', 'Платиновий')
-                                ]).get(loyalty.loyalty_tier, loyalty.loyalty_tier)"/>
-                            </strong>
-                        </div>
-                        <div class="cs-loyalty-discount">
-                            <t t-if="loyalty.discount_eligible">
-                                <span class="cs-discount-value"><t t-esc="int(loyalty.discount_percentage)"/>%</span>
-                                <span class="cs-discount-label">знижка на наступний табір</span>
-                            </t>
-                            <t t-else="">
-                                <span class="cs-discount-label cs-no-discount">Знижка ще не активна</span>
-                            </t>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Progress to next tier -->
-                <div class="cs-loyalty-progress">
-                    <t t-set="camps" t-value="loyalty.camp_count"/>
-                    <t t-set="next_target" t-value="2 if camps &lt; 2 else (4 if camps &lt; 4 else (6 if camps &lt; 6 else None))"/>
-                    <t t-set="next_name" t-value="'Срібного' if camps &lt; 2 else ('Золотого' if camps &lt; 4 else ('Платинового' if camps &lt; 6 else None))"/>
-                    <t t-if="next_target">
-                        <div class="cs-progress-label">
-                            <span>До <strong t-esc="next_name"/> рівня залишилось
-                                <strong t-esc="next_target - camps"/>
-                                <t t-if="(next_target - camps) == 1">табір</t>
-                                <t t-else="">табори</t>
-                            </span>
-                            <span class="text-muted"><t t-esc="camps"/>/<t t-esc="next_target"/></span>
-                        </div>
-                        <div class="cs-progress-bar">
-                            <div class="cs-progress-fill" t-attf-style="width: #{(camps * 100) // next_target}%"/>
-                        </div>
-                    </t>
-                    <t t-else="">
-                        <div class="cs-progress-label cs-tier-max">
-                            🏆 Максимальний рівень досягнуто
-                        </div>
-                    </t>
-                </div>
-
-                <!-- Stats row -->
-                <div class="cs-loyalty-stats">
-                    <div class="cs-stat">
-                        <div class="cs-stat-value" t-esc="loyalty.camp_count"/>
-                        <div class="cs-stat-label">Таборів відвідано</div>
-                    </div>
-                    <div class="cs-stat">
-                        <div class="cs-stat-value" t-esc="loyalty.loyalty_points"/>
-                        <div class="cs-stat-label">Балів зібрано</div>
-                    </div>
-                    <div class="cs-stat">
-                        <div class="cs-stat-value">
-                            <t t-if="loyalty.first_visit_date" t-esc="loyalty.first_visit_date.strftime('%Y')"/>
-                            <t t-else="">—</t>
-                        </div>
-                        <div class="cs-stat-label">З нами з</div>
-                    </div>
-                </div>
-
-                <t t-if="loyalty.badges">
-                    <div class="cs-loyalty-badges">
-                        <span class="cs-badges-label">Відзнаки:</span>
-                        <span class="cs-badges-list" t-esc="loyalty.badges"/>
-                    </div>
-                </t>
-            </div>
-
-            <!-- Tier ladder / welcome info -->
-            <div class="cs-tier-ladder mt-5">
-                <h5 class="mb-3">Як працює програма</h5>
-                <div class="cs-tier-row" data-tier="bronze">
-                    <span class="cs-tier-pill">Бронзовий</span>
-                    <span class="cs-tier-req">1 табір</span>
-                    <span class="cs-tier-reward">знайомство</span>
-                </div>
-                <div class="cs-tier-row" data-tier="silver">
-                    <span class="cs-tier-pill">Срібний</span>
-                    <span class="cs-tier-req">2–3 табори</span>
-                    <span class="cs-tier-reward">−5% знижка</span>
-                </div>
-                <div class="cs-tier-row" data-tier="gold">
-                    <span class="cs-tier-pill">Золотий</span>
-                    <span class="cs-tier-req">4–5 таборів</span>
-                    <span class="cs-tier-reward">−10% знижка</span>
-                </div>
-                <div class="cs-tier-row" data-tier="platinum">
-                    <span class="cs-tier-pill">Платиновий</span>
-                    <span class="cs-tier-req">6+ таборів</span>
-                    <span class="cs-tier-reward">−15% знижка</span>
-                </div>
-            </div>
-
-            <div t-if="not loyalties" class="cs-empty-state mt-4">
-                <div class="cs-empty-icon">🏆</div>
-                <h4>Ласкаво просимо!</h4>
-                <p class="text-muted">
-                    Після першого табору учасника тут з'явиться персональна картка лояльності
-                    з реальними знижками на наступні заїзди.
-                </p>
-            </div>
-        </div>
-    </t>
-</template>
 
 </odoo>
