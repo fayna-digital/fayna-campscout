@@ -51,7 +51,7 @@
 
                 <!-- Children strip -->
                 <div class="cs-children-strip mb-3">
-                    <h5 class="mb-2">Мої учасники</h5>
+                    <h5 class="mb-2">Учасники</h5>
                     <div class="row g-2">
                         <t t-foreach="cs_participants" t-as="child">
                             <div class="col-md-4 col-sm-6">

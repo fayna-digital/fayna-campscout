@@ -27,7 +27,9 @@ class CampscoutAPI(http.Controller):
         """Get list of children for logged-in parent"""
         partner = request.env.user.partner_id
 
-        participants = request.env["camp.participant"].search([("parent_partner_id", "=", partner.id)])
+        participants = request.env["camp.participant"].search(
+            [("parent_partner_id", "=", partner.id)]
+        )
 
         return {
             "data": [

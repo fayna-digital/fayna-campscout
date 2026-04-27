@@ -21,6 +21,7 @@ EOF"
 """
 
 from datetime import datetime, timedelta
+
 from odoo import fields
 
 # env should be passed from caller (Odoo context already initialized)
