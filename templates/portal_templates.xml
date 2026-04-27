@@ -21,10 +21,9 @@
          standard category rows (Orders/Invoices/Security). We don't touch
          .o_portal_docs or the spinner — Odoo JS keeps working. -->
     <xpath expr="//div[hasclass('o_portal_my_home')]" position="attributes">
-        <attribute name="data-cs-debug">1</attribute>
+        <attribute name="t-att-data-cs-parent-only">1 if cs_parent_only else 0</attribute>
     </xpath>
     <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
-        <div class="cs-debug-probe alert alert-info">cs-hero-probe-visible</div>
         <t t-if="cs_has_hero">
             <div class="cs-hero mb-4">
 

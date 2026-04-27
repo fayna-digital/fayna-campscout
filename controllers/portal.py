@@ -17,23 +17,21 @@ class CampscoutPortal(CustomerPortal):
 
     @http.route(["/my", "/my/home"], type="http", auth="user", website=True)
     def home(self, **kw):
-        # Explicit override so Odoo routing uses this class for /my,
-        # which makes _prepare_home_portal_values below get called (BP-010).
-        return super().home(**kw)
+        """Override home to inject hero block data into the initial render.
 
-    def _prepare_home_portal_values(self, counters):
-        """Odoo 17: Home portal values hook — adds CampScout hero + counters.
-
-        Called by portal.home() route to render /my home page.
-        Adds:
-          - Hero block data (children, active/upcoming registrations)
-          - stories_count / documents_count for portal entry cards
+        In Odoo 17, CustomerPortal.home() only calls _prepare_portal_layout_values()
+        which returns minimal values. _prepare_home_portal_values() is only called
+        via the /my/counters AJAX endpoint (for badge counts). Hero data (participants,
+        active/upcoming registrations) must be added to the initial render here.
         """
-        values = super()._prepare_home_portal_values(counters)
+        values = self._prepare_portal_layout_values()
+        values.update(self._prepare_campscout_hero_values())
+        return http.request.render("portal.portal_my_home", values)
+
+    def _prepare_campscout_hero_values(self):
+        """Gather hero block data for the /my home page initial render."""
         partner = http.request.env.user.partner_id
         env_sudo = http.request.env(su=True)
-
-        # --- Hero block data ---
         try:
             participants = env_sudo["camp.participant"].search(
                 [("parent_partner_id", "=", partner.id)]
@@ -70,32 +68,33 @@ class CampscoutPortal(CustomerPortal):
                 limit=24,
             )
 
-            values.update(
-                {
-                    "cs_participants": participants,
-                    "cs_active_regs": active_regs,
-                    "cs_upcoming_regs": upcoming_regs[:3],
-                    "cs_has_hero": bool(participants or regs),
-                    "cs_today": now.date(),
-                    "cs_parent_only": is_parent_only,
-                    "cs_upcoming_camps": cs_upcoming_camps,
-                }
-            )
+            return {
+                "cs_participants": participants,
+                "cs_active_regs": active_regs,
+                "cs_upcoming_regs": upcoming_regs[:3],
+                "cs_has_hero": bool(participants or regs),
+                "cs_today": now.date(),
+                "cs_parent_only": is_parent_only,
+                "cs_upcoming_camps": cs_upcoming_camps,
+            }
         except (AccessError, MissingError) as e:
             _logger.exception("[CS-HERO] home values prep failed: %s", e)
-            values.update(
-                {
-                    "cs_participants": env_sudo["camp.participant"],
-                    "cs_active_regs": env_sudo["event.registration"],
-                    "cs_upcoming_regs": env_sudo["event.registration"],
-                    "cs_has_hero": False,
-                    "cs_today": datetime.now().date(),
-                    "cs_parent_only": False,
-                    "cs_upcoming_camps": env_sudo["event.event"],
-                }
-            )
+            return {
+                "cs_participants": env_sudo["camp.participant"],
+                "cs_active_regs": env_sudo["event.registration"],
+                "cs_upcoming_regs": env_sudo["event.registration"],
+                "cs_has_hero": False,
+                "cs_today": datetime.now().date(),
+                "cs_parent_only": False,
+                "cs_upcoming_camps": env_sudo["event.event"],
+            }
 
-        # --- Portal entry card counters ---
+    def _prepare_home_portal_values(self, counters):
+        """Odoo 17 /my/counters AJAX endpoint — badge counts for portal cards."""
+        values = super()._prepare_home_portal_values(counters)
+        partner = http.request.env.user.partner_id
+        env_sudo = http.request.env(su=True)
+
         if "stories_count" in counters:
             try:
                 event_ids = (
