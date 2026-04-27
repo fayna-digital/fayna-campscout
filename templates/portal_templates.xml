@@ -279,6 +279,36 @@
      Sidebar Navigation — add CampScout section links to portal sidebar
      ============================================================================ -->
 
+<template id="portal_sidebar_campscout" inherit_id="portal.portal_layout" priority="20">
+    <xpath expr="//ul[hasclass('o_portal_submenu')]" position="inside">
+        <li>
+            <a href="/my/participants" t-attf-class="#{('active' if page_name == 'participants' else '')}">
+                Діти та картки
+            </a>
+        </li>
+        <li>
+            <a href="/my/stories" t-attf-class="#{('active' if page_name == 'stories' else '')}">
+                Щоденні новини
+            </a>
+        </li>
+        <li>
+            <a href="/my/documents" t-attf-class="#{('active' if page_name == 'documents' else '')}">
+                Документи
+            </a>
+        </li>
+        <li>
+            <a href="/my/loyalty" t-attf-class="#{('active' if page_name == 'loyalty' else '')}">
+                Програма лояльності
+            </a>
+        </li>
+        <li>
+            <a href="/my/support" t-attf-class="#{('active' if page_name == 'support' else '')}">
+                Звернення
+            </a>
+        </li>
+    </xpath>
+</template>
+
 <!-- ============================================================================
      Breadcrumbs
      ============================================================================ -->
@@ -303,6 +333,9 @@
         </li>
         <li t-if="page_name == 'loyalty'" class="breadcrumb-item active">
             Програма лояльності
+        </li>
+        <li t-if="page_name == 'support'" class="breadcrumb-item active">
+            Звернення
         </li>
     </xpath>
 </template>
@@ -488,6 +521,62 @@
             </div>
         </div>
     </t>
+</template>
+
+<!-- ============================================================================
+     Home portal entry card — Support (Звернення)
+     ============================================================================ -->
+
+<template id="portal_my_home_support" inherit_id="portal.portal_my_home" priority="68">
+    <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+        <t t-call="portal.portal_docs_entry">
+            <t t-set="title">Звернення</t>
+            <t t-set="url">/my/support</t>
+            <t t-set="placeholder_count">support_count</t>
+        </t>
+    </xpath>
+</template>
+
+<!-- ============================================================================
+     Reviews CTAs on /my/participants/<id> detail page
+     Injected into fayna_camp_qualification participant detail template.
+     Shows per-registration review CTA based on review state.
+     ============================================================================ -->
+
+<template id="portal_participant_reviews_cta" inherit_id="fayna_camp_qualification.portal_participant_detail" priority="20">
+    <!-- Append reviews section after the last element inside the cs-page div.
+         Each past/completed registration shows one CTA button based on review state. -->
+    <xpath expr="//div[hasclass('cs-page')]" position="inside">
+        <div t-if="past_registrations" class="cs-reviews-section mt-4">
+            <h5 class="mb-3">Відгуки</h5>
+            <t t-foreach="past_registrations" t-as="reg">
+                <div class="cs-review-row d-flex align-items-center justify-content-between mb-2 p-3 border rounded">
+                    <div class="cs-review-camp-name">
+                        <strong t-esc="reg.event_id.name"/>
+                        <t t-if="reg.event_id.date_begin">
+                            <small class="text-muted ms-2">
+                                <t t-esc="reg.event_id.date_begin.strftime('%Y')"/>
+                            </small>
+                        </t>
+                    </div>
+                    <div class="cs-review-cta">
+                        <t t-if="reg.review_state == 'published'">
+                            <span class="badge bg-success">Відгук опубліковано</span>
+                        </t>
+                        <t t-elif="reg.review_state == 'submitted'">
+                            <span class="badge bg-warning text-dark">Відгук на модерації</span>
+                        </t>
+                        <t t-else="">
+                            <a t-attf-href="/my/reviews/new?registration_id=#{reg.id}"
+                               class="btn btn-sm btn-outline-primary">
+                                Залишити відгук
+                            </a>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </xpath>
 </template>
 
 

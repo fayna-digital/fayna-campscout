@@ -1,4 +1,4 @@
-from odoo.tests.common import TransactionCase, tagged
+from odoo.tests.common import HttpCase, TransactionCase, tagged
 
 
 class TestCampscout(TransactionCase):
@@ -112,3 +112,39 @@ class TestCampscoutPortalValues(TransactionCase):
             }
         )
         self.assertEqual(session.children_count, 3)
+
+
+@tagged("post_install", "-at_install", "fayna_campscout")
+class TestCampscoutPortalHttp(HttpCase):
+    """HttpCase smoke tests: portal pages return HTTP 200 for logged-in portal user."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.parent_partner = cls.env["res.partner"].create(
+            {
+                "name": "HTTP Test Parent",
+                "email": "http_test@campscout.test",
+            }
+        )
+        cls.portal_user = cls.env["res.users"].create(
+            {
+                "name": "HTTP Test Portal User",
+                "login": "http_portal_campscout@campscout.test",
+                "password": "TestPortal1234!",
+                "partner_id": cls.parent_partner.id,
+                "groups_id": [(6, 0, [cls.env.ref("base.group_portal").id])],
+            }
+        )
+
+    def test_portal_home_loads(self):
+        """GET /my returns 200 for authenticated portal user."""
+        self.authenticate("http_portal_campscout@campscout.test", "TestPortal1234!")
+        resp = self.url_open("/my")
+        self.assertEqual(resp.status_code, 200)
+
+    def test_portal_stories_loads(self):
+        """GET /my/stories returns 200 for authenticated portal user."""
+        self.authenticate("http_portal_campscout@campscout.test", "TestPortal1234!")
+        resp = self.url_open("/my/stories")
+        self.assertEqual(resp.status_code, 200)

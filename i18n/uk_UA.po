@@ -605,3 +605,45 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
 msgid "📚 Усі документи для батьків + архівні версії →"
 msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_sidebar_campscout
+msgid "Діти та картки"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_sidebar_campscout
+msgid "Щоденні новини"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_sidebar_campscout
+msgid "Документи"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_sidebar_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_breadcrumbs_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_support
+msgid "Звернення"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_participant_reviews_cta
+msgid "Відгуки"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_participant_reviews_cta
+msgid "Відгук опубліковано"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_participant_reviews_cta
+msgid "Відгук на модерації"
+msgstr ""
+
+#. module: fayna_campscout
+#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_participant_reviews_cta
+msgid "Залишити відгук"
+msgstr ""

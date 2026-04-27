@@ -1,6 +1,6 @@
 {
     "name": "CampScout Portal (Thin Client)",
-    "version": "17.0.0.3.0",
+    "version": "17.0.0.4.0",
     "category": "Tools/Camp Management",
     "summary": "Parent portal with REST API — family dashboard, messaging, documents, loyalty",
     "description": """

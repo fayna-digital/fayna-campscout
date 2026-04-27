@@ -118,6 +118,15 @@ class CampscoutPortal(CustomerPortal):
             except (AccessError, MissingError):
                 values["documents_count"] = 0
 
+        if "support_count" in counters:
+            try:
+                support_count = env_sudo["camp.support.request"].search_count(
+                    [("partner_id", "=", partner.id)]
+                )
+                values["support_count"] = support_count
+            except (AccessError, MissingError):
+                values["support_count"] = 0
+
         return values
 
     @http.route("/my/stories", type="http", auth="user", website=True)
