@@ -27,7 +27,7 @@ class CampscoutAPI(http.Controller):
         """Get list of children for logged-in parent"""
         partner = request.env.user.partner_id
 
-        participants = request.env["camp.participant"].search([("partner_id", "=", partner.id)])
+        participants = request.env["camp.participant"].search([("parent_partner_id", "=", partner.id)])
 
         return {
             "data": [
@@ -46,9 +46,9 @@ class CampscoutAPI(http.Controller):
         """Get current camp info for a child"""
         participant = request.env["camp.participant"].browse(participant_id)
 
-        # Find active registration
+        # Find active registration for this child's parent
         registration = request.env["event.registration"].search(
-            [("partner_id", "=", participant.partner_id.id), ("state", "!=", "cancel")],
+            [("participant_id", "=", participant.id), ("state", "!=", "cancel")],
             limit=1,
         )
 
@@ -107,11 +107,14 @@ class CampscoutAPI(http.Controller):
 
     @http.route("/api/v1/loyalty", type="json", auth="user")
     def api_get_loyalty(self, **kw):
-        """Get loyalty program status"""
+        """Get loyalty program status for all children"""
         partner = request.env.user.partner_id
 
+        participants = request.env["camp.participant"].search(
+            [("parent_partner_id", "=", partner.id)]
+        )
         loyalty = request.env["camp.loyalty"].search(
-            [("participant_id.partner_id", "=", partner.id)], limit=1
+            [("participant_id", "in", participants.ids)], limit=1
         )
 
         if not loyalty:
@@ -151,7 +154,7 @@ class CampscoutAPI(http.Controller):
         partner = request.env.user.partner_id
 
         messages = request.env["mail.message"].search(
-            [("partner_ids", "=", partner.id), ("is_discussion", "=", False)],
+            [("partner_ids", "=", partner.id), ("message_type", "!=", "notification")],
             order="date desc",
             limit=20,
         )
