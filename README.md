@@ -1,70 +1,77 @@
-# Odoo 17 Fayna CampScout (client data) — scaffold (Phase 7)
+# CampScout Portal (Thin Client)
 
 ![Odoo Version](https://img.shields.io/badge/Odoo-17.0%20Community-purple)
 ![Python](https://img.shields.io/badge/Python-3.10+-blue)
-![Phase](https://img.shields.io/badge/Phase-7-red)
 ![License](https://img.shields.io/badge/License-LGPL--3-green.svg)
-![Status](https://img.shields.io/badge/Status-Scaffold-orange)
+![Status](https://img.shields.io/badge/Status-Live-brightgreen)
 
-**Developed by [Fayna Digital](https://www.fayna.agency) for CampScout and the broader Fayna Camp vertical stack.**
-**Author: Volodymyr Shevchenko**
-
----
-
-Thin client-specific data layer for CampScout (product records, legal pages, brand).
-
-Phase 7 of the master plan: `CAMPSCOUT_MASTER_TZ.md §16`.
-
-Current state: **scaffold only** — installable but inert. Feature flag
-`fayna_campscout.active` defaults to `False`. Implementation proceeds in
-increments listed in `docs/TZ.md`.
+**Розроблено [Fayna Digital](https://www.fayna.agency) для платформи CampScout.**
+**Автор: Volodymyr Shevchenko**
 
 ---
 
-## Features (planned)
+## Призначення
 
-Client-specific records ONLY (21 product.template + events + FAQ + legal copy + brand theme).
+Портальний thin client для батьків: особистий кабінет `/my` з дашбордом учасників, щоденними stories від вихователів, документами для підписання та програмою лояльності. Окремий REST JSON API для мобільного застосунку (авторизація, учасники, stories, документи, повідомлення). Модуль виступає точкою інтеграції між платформою CampScout і батьківським досвідом.
 
----
+## Поточний стан
 
-## Architecture
+| Параметр | Значення |
+|---|---|
+| Версія | 17.0.0.4.0 |
+| Фаза проекту | Phase 7 з 9 |
+| Статус | Live |
+| Staging | ✅ |
 
-```
-fayna_campscout/
-├── __manifest__.py
-├── __init__.py
-├── data/ir_config_parameter.xml       # feature flag
-├── models/                             # Phase 7 implementation
-├── tests/test_scaffold.py              # install + flag + deps sanity
-├── docs/TZ.md                          # per-module TZ
-├── .github/workflows/ci.yml            # gate-2 CI
-├── .pre-commit-config.yaml             # gate-1 pre-commit
-├── pyproject.toml
-├── LICENSE
-├── CHANGELOG.md
-└── README.md
-```
+## Моделі
 
----
+| Модель | Опис |
+|---|---|
+| `campscout.portal.session` | Трекінг сесії батька в порталі: кількість дітей, активні табори, непрочитані повідомлення, очікувані дії. |
+| `campscout.portal.menu` | Кастомізація меню порталу залежно від регіону (PL/UA). |
 
-## Installation
+## Контролери
+
+| Контролер | Маршрути |
+|---|---|
+| `controllers/portal.py` | `home()` override для `/my` — рендерить hero-блок кабінету батька; `/my/participants`, `/my/stories`, `/my/documents`, `/my/loyalty` |
+| `controllers/api.py` | REST JSON API для мобільного: авторизація, учасники, stories, документи, повідомлення |
+
+## Залежності
+
+- `base`, `website`, `sale`, `portal`, `mail`
+- `fayna_camp_template`
+- `fayna_camp_qualification`
+- `fayna_camp_loyalty`
+- `fayna_camp_stories`
+- `fayna_legal_versioning`
+- `fayna_rodo_compliance`
+
+## Безпека
+
+### ACL (`ir.model.access.csv`)
+
+Портальні користувачі мають обмежений доступ лише до власних сесій.
+
+### Правила доступу до рядків (`ir.rule`)
+
+| Правило | Умова |
+|---|---|
+| Portal: власна сесія | `partner_id = user.partner_id` — батько бачить тільки свій запис |
+
+## Тести
+
+2 тести: `test_campscout.py` (TransactionCase — portal menu, portal session values), `test_scaffold.py`. Мінімальне тестування, потребує розширення.
 
 ```bash
-cd /opt/campscout/custom-addons
-sudo -u \#1000 git clone https://github.com/VladSh77/fayna-campscout.git fayna_campscout
 docker exec campscout_web odoo -c /etc/odoo/odoo.conf -d campscout \
-    -i fayna_campscout --stop-after-init --no-http
-docker restart campscout_web
+    --test-enable --stop-after-init --no-http -u fayna_campscout
 ```
 
-Module installs as **inert** (feature flag `False`). No behaviour change until flip.
+## Локалізація
 
----
+`i18n/uk_UA.po` + `i18n/pl_PL.po`
 
-## License
+## Ліцензія
 
-LGPL-3 — see [LICENSE](LICENSE).
-
----
-
-*Developed by [Fayna Digital](https://www.fayna.agency) · Volodymyr Shevchenko*
+LGPL-3 — © 2026 Fayna Digital
