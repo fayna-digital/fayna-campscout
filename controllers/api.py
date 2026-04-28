@@ -95,8 +95,10 @@ class CampscoutAPI(http.Controller):
         """Get loyalty program status for the logged-in parent."""
         partner = request.env.user.partner_id
 
-        loyalty = request.env["camp.loyalty.participant"].sudo().search(
-            [("partner_id", "=", partner.id)], limit=1
+        loyalty = (
+            request.env["camp.loyalty.participant"]
+            .sudo()
+            .search([("partner_id", "=", partner.id)], limit=1)
         )
 
         if not loyalty:
