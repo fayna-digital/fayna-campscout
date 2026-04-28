@@ -56,9 +56,7 @@ class CampscoutAPI(http.Controller):
     def api_get_stories(self, **kw):
         """Get published stories scoped to the logged-in parent's events."""
         partner = request.env.user.partner_id
-        regs = request.env["event.registration"].search(
-            [("partner_id", "=", partner.id)]
-        )
+        regs = request.env["event.registration"].search([("partner_id", "=", partner.id)])
         event_ids = regs.mapped("event_id").ids
         domain = [("state", "=", "published"), ("public", "=", True)]
         if event_ids:
