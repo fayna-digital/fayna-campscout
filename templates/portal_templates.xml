@@ -275,39 +275,8 @@
     </xpath>
 </template>
 
-<!-- ============================================================================
-     Sidebar Navigation — add CampScout section links to portal sidebar
-     ============================================================================ -->
-
-<template id="portal_sidebar_campscout" inherit_id="portal.portal_layout" priority="20">
-    <xpath expr="//ul[hasclass('o_portal_submenu')]" position="inside">
-        <li>
-            <a href="/my/participants" t-attf-class="#{('active' if page_name == 'participants' else '')}">
-                Діти та картки
-            </a>
-        </li>
-        <li>
-            <a href="/my/stories" t-attf-class="#{('active' if page_name == 'stories' else '')}">
-                Щоденні новини
-            </a>
-        </li>
-        <li>
-            <a href="/my/documents" t-attf-class="#{('active' if page_name == 'documents' else '')}">
-                Документи
-            </a>
-        </li>
-        <li>
-            <a href="/my/loyalty" t-attf-class="#{('active' if page_name == 'loyalty' else '')}">
-                Програма лояльності
-            </a>
-        </li>
-        <li>
-            <a href="/my/support" t-attf-class="#{('active' if page_name == 'support' else '')}">
-                Звернення
-            </a>
-        </li>
-    </xpath>
-</template>
+<!-- Sidebar nav removed: //ul[hasclass('o_portal_submenu')] does not exist in Odoo 17.
+     Portal navigation is provided through the hero cards on /my. -->
 
 <!-- ============================================================================
      Breadcrumbs
