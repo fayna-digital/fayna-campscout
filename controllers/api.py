@@ -54,9 +54,17 @@ class CampscoutAPI(http.Controller):
 
     @http.route("/api/v1/stories", type="json", auth="user")
     def api_get_stories(self, **kw):
-        """Get published stories"""
+        """Get published stories scoped to the logged-in parent's events."""
+        partner = request.env.user.partner_id
+        regs = request.env["event.registration"].search(
+            [("partner_id", "=", partner.id)]
+        )
+        event_ids = regs.mapped("event_id").ids
+        domain = [("state", "=", "published"), ("public", "=", True)]
+        if event_ids:
+            domain.append(("event_id", "in", event_ids))
         stories = request.env["camp.story"].search(
-            [("public", "=", True), ("state", "=", "published")],
+            domain,
             order="date desc",
             limit=20,
         )
