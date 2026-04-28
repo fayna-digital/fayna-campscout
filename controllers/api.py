@@ -92,25 +92,22 @@ class CampscoutAPI(http.Controller):
 
     @http.route("/api/v1/loyalty", type="json", auth="user")
     def api_get_loyalty(self, **kw):
-        """Get loyalty program status for all children"""
+        """Get loyalty program status for the logged-in parent."""
         partner = request.env.user.partner_id
 
-        participants = request.env["camp.participant"].search(
-            [("parent_partner_id", "=", partner.id)]
-        )
-        loyalty = request.env["camp.loyalty"].search(
-            [("participant_id", "in", participants.ids)], limit=1
+        loyalty = request.env["camp.loyalty.participant"].sudo().search(
+            [("partner_id", "=", partner.id)], limit=1
         )
 
         if not loyalty:
             return {"status": "not_enrolled"}
 
         return {
-            "tier": loyalty.loyalty_tier,
-            "camps_attended": loyalty.camp_count,
-            "points": loyalty.loyalty_points,
-            "discount": loyalty.discount_percentage,
-            "next_tier": "gold" if loyalty.loyalty_tier == "silver" else None,
+            "tier": loyalty.tier,
+            "camps_attended": loyalty.camps_count,
+            "points": loyalty.points,
+            "discount": loyalty.discount,
+            "next_tier": "gold" if loyalty.tier == "silver" else None,
         }
 
     @http.route("/api/v1/documents", type="json", auth="user")

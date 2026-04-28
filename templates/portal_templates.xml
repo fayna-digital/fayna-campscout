@@ -259,8 +259,8 @@
     <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
         <t t-call="portal.portal_docs_entry">
             <t t-set="title">Щоденні історії</t>
-            <t t-set="url">/my/stories</t>
-            <t t-set="placeholder_count">stories_count</t>
+            <t t-set="url" t-value="'/my/stories'"/>
+            <t t-set="placeholder_count" t-value="'stories_count'"/>
         </t>
     </xpath>
 </template>
@@ -269,8 +269,8 @@
     <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
         <t t-call="portal.portal_docs_entry">
             <t t-set="title">Юридичні документи</t>
-            <t t-set="url">/my/documents</t>
-            <t t-set="placeholder_count">documents_count</t>
+            <t t-set="url" t-value="'/my/documents'"/>
+            <t t-set="placeholder_count" t-value="'documents_count'"/>
         </t>
     </xpath>
 </template>
@@ -293,20 +293,9 @@
             </a>
         </li>
     </xpath>
-    <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
-        <li t-if="page_name == 'stories'" class="breadcrumb-item active">
-            Щоденні історії
-        </li>
-        <li t-if="page_name == 'documents'" class="breadcrumb-item active">
-            Юридичні документи
-        </li>
-        <li t-if="page_name == 'loyalty'" class="breadcrumb-item active">
-            Програма лояльності
-        </li>
-        <li t-if="page_name == 'support'" class="breadcrumb-item active">
-            Звернення
-        </li>
-    </xpath>
+    <!-- NOTE: o_portal_submenu does not exist in Odoo 17 portal breadcrumbs.
+         Page-level breadcrumb items are rendered by each page template via
+         the `additional_title` t-set variable passed to portal.portal_layout. -->
 </template>
 
 <!-- ============================================================================
@@ -500,8 +489,8 @@
     <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
         <t t-call="portal.portal_docs_entry">
             <t t-set="title">Звернення</t>
-            <t t-set="url">/my/support</t>
-            <t t-set="placeholder_count">support_count</t>
+            <t t-set="url" t-value="'/my/support'"/>
+            <t t-set="placeholder_count" t-value="'support_count'"/>
         </t>
     </xpath>
 </template>
