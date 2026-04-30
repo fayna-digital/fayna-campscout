@@ -67,12 +67,30 @@ def post_init_hook(env):
     )
 
     for module_name in modules_to_migrate:
+        # Delete source records that would collide with existing fayna_camp_portal entries
+        cr.execute(
+            """
+            DELETE FROM ir_model_data
+            WHERE module = %s
+              AND name IN (
+                  SELECT name FROM ir_model_data WHERE module = 'fayna_camp_portal'
+              )
+            """,
+            (module_name,),
+        )
+        deleted = cr.rowcount
+        if deleted:
+            _logger.info(
+                "fayna_camp_portal post_init_hook: skipped %d duplicate records from %s",
+                deleted,
+                module_name,
+            )
+
         cr.execute(
             """
             UPDATE ir_model_data
             SET module = 'fayna_camp_portal'
             WHERE module = %s
-              AND module != 'fayna_camp_portal'
             """,
             (module_name,),
         )
