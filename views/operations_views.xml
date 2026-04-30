@@ -187,7 +187,7 @@
             <field name="name">camp.staff.medical.tree</field>
             <field name="model">camp.staff.medical</field>
             <field name="arch" type="xml">
-                <tree groups="fayna_campscout.group_medical_officer">
+                <tree>
                     <field name="staff_id"/>
                     <field name="consent_given"/>
                     <field name="consent_date"/>
@@ -199,7 +199,7 @@
             <field name="name">camp.staff.medical.form</field>
             <field name="model">camp.staff.medical</field>
             <field name="arch" type="xml">
-                <form groups="fayna_campscout.group_medical_officer">
+                <form>
                     <sheet>
                         <group>
                             <field name="staff_id"/>
