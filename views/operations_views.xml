@@ -695,8 +695,10 @@
             <field name="model">fayna.camp.dziennik</field>
             <field name="arch" type="xml">
                 <tree>
-                    <field name="name"/>
+                    <field name="display_name"/>
                     <field name="event_id"/>
+                    <field name="state"/>
+                    <field name="date_start"/>
                 </tree>
             </field>
         </record>
@@ -706,29 +708,46 @@
             <field name="model">fayna.camp.dziennik</field>
             <field name="arch" type="xml">
                 <form>
+                    <header>
+                        <field name="state" widget="statusbar"/>
+                    </header>
                     <sheet>
                         <group>
-                            <field name="name"/>
+                            <field name="group_name"/>
                             <field name="event_id"/>
+                            <field name="kierownik_id"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
                         </group>
-                        <group string="Activities">
+                        <group string="Wychowawcy">
+                            <field name="wychowawca_ids" nolabel="1" widget="many2many_tags"/>
+                        </group>
+                        <group string="Aktivності">
                             <field name="activity_ids" nolabel="1">
                                 <tree editable="bottom">
-                                    <field name="name"/>
+                                    <field name="datetime"/>
+                                    <field name="content"/>
+                                    <field name="author_id"/>
                                 </tree>
                             </field>
                         </group>
-                        <group string="Notes">
+                        <group string="Нотатки">
                             <field name="note_ids" nolabel="1">
                                 <tree editable="bottom">
-                                    <field name="name"/>
+                                    <field name="date"/>
+                                    <field name="note_type"/>
+                                    <field name="content"/>
+                                    <field name="author_id"/>
                                 </tree>
                             </field>
                         </group>
-                        <group string="Plan Lines">
+                        <group string="Тижневий план">
                             <field name="plan_line_ids" nolabel="1">
                                 <tree editable="bottom">
-                                    <field name="name"/>
+                                    <field name="week_number"/>
+                                    <field name="task"/>
+                                    <field name="deadline"/>
+                                    <field name="responsible_id"/>
                                 </tree>
                             </field>
                         </group>
@@ -740,108 +759,6 @@
         <record id="action_fayna_camp_dziennik" model="ir.actions.act_window">
             <field name="name">Dziennik Zajęć</field>
             <field name="res_model">fayna.camp.dziennik</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
-        <!-- ================================================================ -->
-        <!-- camp.analytics.snapshot                                         -->
-        <!-- ================================================================ -->
-
-        <record id="view_camp_analytics_snapshot_tree" model="ir.ui.view">
-            <field name="name">camp.analytics.snapshot.tree</field>
-            <field name="model">camp.analytics.snapshot</field>
-            <field name="arch" type="xml">
-                <tree>
-                    <field name="name"/>
-                </tree>
-            </field>
-        </record>
-
-        <record id="view_camp_analytics_snapshot_form" model="ir.ui.view">
-            <field name="name">camp.analytics.snapshot.form</field>
-            <field name="model">camp.analytics.snapshot</field>
-            <field name="arch" type="xml">
-                <form>
-                    <sheet>
-                        <group>
-                            <field name="name"/>
-                        </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
-
-        <record id="action_camp_analytics_snapshot" model="ir.actions.act_window">
-            <field name="name">Analytics Snapshots</field>
-            <field name="res_model">camp.analytics.snapshot</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
-        <!-- ================================================================ -->
-        <!-- camp.marketing.report                                           -->
-        <!-- ================================================================ -->
-
-        <record id="view_camp_marketing_report_tree" model="ir.ui.view">
-            <field name="name">camp.marketing.report.tree</field>
-            <field name="model">camp.marketing.report</field>
-            <field name="arch" type="xml">
-                <tree>
-                    <field name="name"/>
-                </tree>
-            </field>
-        </record>
-
-        <record id="view_camp_marketing_report_form" model="ir.ui.view">
-            <field name="name">camp.marketing.report.form</field>
-            <field name="model">camp.marketing.report</field>
-            <field name="arch" type="xml">
-                <form>
-                    <sheet>
-                        <group>
-                            <field name="name"/>
-                        </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
-
-        <record id="action_camp_marketing_report" model="ir.actions.act_window">
-            <field name="name">Marketing Reports</field>
-            <field name="res_model">camp.marketing.report</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
-        <!-- ================================================================ -->
-        <!-- camp.stats.snapshot                                             -->
-        <!-- ================================================================ -->
-
-        <record id="view_camp_stats_snapshot_tree" model="ir.ui.view">
-            <field name="name">camp.stats.snapshot.tree</field>
-            <field name="model">camp.stats.snapshot</field>
-            <field name="arch" type="xml">
-                <tree>
-                    <field name="name"/>
-                </tree>
-            </field>
-        </record>
-
-        <record id="view_camp_stats_snapshot_form" model="ir.ui.view">
-            <field name="name">camp.stats.snapshot.form</field>
-            <field name="model">camp.stats.snapshot</field>
-            <field name="arch" type="xml">
-                <form>
-                    <sheet>
-                        <group>
-                            <field name="name"/>
-                        </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
-
-        <record id="action_camp_stats_snapshot" model="ir.actions.act_window">
-            <field name="name">Stats Snapshots</field>
-            <field name="res_model">camp.stats.snapshot</field>
             <field name="view_mode">tree,form</field>
         </record>
 
