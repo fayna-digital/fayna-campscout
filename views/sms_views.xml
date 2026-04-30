@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ================================================================ -->
+        <!-- fayna.sms.routing.rule                                           -->
+        <!-- ================================================================ -->
+
+        <record id="view_fayna_sms_routing_rule_tree" model="ir.ui.view">
+            <field name="name">fayna.sms.routing.rule.tree</field>
+            <field name="model">fayna.sms.routing.rule</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="phone_prefix"/>
+                    <field name="provider_key"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_fayna_sms_routing_rule_form" model="ir.ui.view">
+            <field name="name">fayna.sms.routing.rule.form</field>
+            <field name="model">fayna.sms.routing.rule</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="sequence"/>
+                            <field name="phone_prefix"/>
+                            <field name="provider_key"/>
+                            <field name="active"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_fayna_sms_routing_rule_search" model="ir.ui.view">
+            <field name="name">fayna.sms.routing.rule.search</field>
+            <field name="model">fayna.sms.routing.rule</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="phone_prefix"/>
+                    <field name="provider_key"/>
+                    <filter name="active" string="Active" domain="[('active','=',True)]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_fayna_sms_routing_rule" model="ir.actions.act_window">
+            <field name="name">SMS Routing Rules</field>
+            <field name="res_model">fayna.sms.routing.rule</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.sms.template                                                -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_sms_template_tree" model="ir.ui.view">
+            <field name="name">camp.sms.template.tree</field>
+            <field name="model">camp.sms.template</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="template_type"/>
+                    <field name="lang"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_sms_template_form" model="ir.ui.view">
+            <field name="name">camp.sms.template.form</field>
+            <field name="model">camp.sms.template</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="template_type"/>
+                                <field name="lang"/>
+                                <field name="active"/>
+                            </group>
+                        </group>
+                        <group string="Message Body">
+                            <field name="body" nolabel="1" widget="text"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_camp_sms_template_search" model="ir.ui.view">
+            <field name="name">camp.sms.template.search</field>
+            <field name="model">camp.sms.template</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <filter name="active" string="Active" domain="[('active','=',True)]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="by_type" string="Type" context="{'group_by':'template_type'}"/>
+                        <filter name="by_lang" string="Language" context="{'group_by':'lang'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_camp_sms_template" model="ir.actions.act_window">
+            <field name="name">SMS Templates</field>
+            <field name="res_model">camp.sms.template</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

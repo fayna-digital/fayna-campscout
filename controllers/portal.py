@@ -9,11 +9,7 @@ _logger = logging.getLogger(__name__)
 
 
 class CampscoutPortal(CustomerPortal):
-    """Parent portal for CampScout — stories, documents.
-
-    /my/participants is handled by fayna_camp_qualification module (not here).
-    /my/loyalty is handled by fayna_camp_loyalty module (not here).
-    """
+    """Parent portal for CampScout — hero, participants list, stories, documents, loyalty."""
 
     @http.route(["/my", "/my/home"], type="http", auth="user", website=True)
     def home(self, **kw):
@@ -120,14 +116,63 @@ class CampscoutPortal(CustomerPortal):
 
         if "support_count" in counters:
             try:
-                support_count = env_sudo["camp.support.request"].search_count(
+                values["support_count"] = env_sudo["camp.support.request"].search_count(
                     [("partner_id", "=", partner.id)]
                 )
-                values["support_count"] = support_count
             except (AccessError, MissingError):
                 values["support_count"] = 0
 
+        if "loyalty_count" in counters:
+            try:
+                values["loyalty_count"] = env_sudo["camp.loyalty.participant"].search_count(
+                    [("partner_id", "=", partner.id)]
+                )
+            except (AccessError, MissingError):
+                values["loyalty_count"] = 0
+
         return values
+
+    @http.route("/my/participants", type="http", auth="user", website=True)
+    def portal_my_participants(self, **kw):
+        """List all children (camp.participant) linked to this parent."""
+        partner = http.request.env.user.partner_id
+        env_sudo = http.request.env(su=True)
+        try:
+            participants = env_sudo["camp.participant"].search(
+                [("parent_partner_id", "=", partner.id)],
+                order="name asc",
+            )
+        except (AccessError, MissingError) as e:
+            _logger.exception("[CS] participants list load failed: %s", e)
+            participants = env_sudo["camp.participant"]
+        return http.request.render(
+            "fayna_campscout.portal_participants",
+            {
+                "participants": participants,
+                "page_name": "participants",
+            },
+        )
+
+    @http.route("/my/loyalty", type="http", auth="user", website=True)
+    def portal_my_loyalty(self, **kw):
+        """Show loyalty tier, points and discount for this partner."""
+        partner = http.request.env.user.partner_id
+        env_sudo = http.request.env(su=True)
+        loyalty = False
+        try:
+            rec = env_sudo["camp.loyalty.participant"].search(
+                [("partner_id", "=", partner.id)], limit=1
+            )
+            loyalty = rec or False
+        except (AccessError, MissingError) as e:
+            _logger.exception("[CS] loyalty load failed: %s", e)
+        return http.request.render(
+            "fayna_campscout.portal_loyalty",
+            {
+                "loyalty": loyalty,
+                "page_name": "loyalty",
+            },
+        )
 
     @http.route("/my/stories", type="http", auth="user", website=True)
     def portal_my_stories(self, participant_id=None, **kw):

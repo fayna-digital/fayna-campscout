@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ================================================================ -->
+        <!-- camp.category                                                    -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_category_tree" model="ir.ui.view">
+            <field name="name">camp.category.tree</field>
+            <field name="model">camp.category</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="icon"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_category_form" model="ir.ui.view">
+            <field name="name">camp.category.form</field>
+            <field name="model">camp.category</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="icon"/>
+                                <field name="sequence"/>
+                            </group>
+                            <group>
+                                <field name="active"/>
+                            </group>
+                        </group>
+                        <group string="Description">
+                            <field name="description" nolabel="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_camp_category_search" model="ir.ui.view">
+            <field name="name">camp.category.search</field>
+            <field name="model">camp.category</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <filter name="active" string="Active" domain="[('active','=',True)]"/>
+                    <filter name="archived" string="Archived" domain="[('active','=',False)]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_camp_category" model="ir.actions.act_window">
+            <field name="name">Camp Categories</field>
+            <field name="res_model">camp.category</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.activity                                                    -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_activity_tree" model="ir.ui.view">
+            <field name="name">camp.activity.tree</field>
+            <field name="model">camp.activity</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="category_id"/>
+                    <field name="icon"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_activity_form" model="ir.ui.view">
+            <field name="name">camp.activity.form</field>
+            <field name="model">camp.activity</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="category_id"/>
+                            <field name="icon"/>
+                            <field name="active"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_camp_activity_search" model="ir.ui.view">
+            <field name="name">camp.activity.search</field>
+            <field name="model">camp.activity</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="category_id"/>
+                    <filter name="active" string="Active" domain="[('active','=',True)]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_camp_activity" model="ir.actions.act_window">
+            <field name="name">Camp Activities</field>
+            <field name="res_model">camp.activity</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.room.type                                                   -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_room_type_tree" model="ir.ui.view">
+            <field name="name">camp.room.type.tree</field>
+            <field name="model">camp.room.type</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_room_type_form" model="ir.ui.view">
+            <field name="name">camp.room.type.form</field>
+            <field name="model">camp.room.type</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_camp_room_type" model="ir.actions.act_window">
+            <field name="name">Room Types</field>
+            <field name="res_model">camp.room.type</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.faq                                                         -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_faq_tree" model="ir.ui.view">
+            <field name="name">camp.faq.tree</field>
+            <field name="model">camp.faq</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="product_tmpl_id"/>
+                    <field name="sequence" widget="handle"/>
+                    <field name="question"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_faq_form" model="ir.ui.view">
+            <field name="name">camp.faq.form</field>
+            <field name="model">camp.faq</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="product_tmpl_id"/>
+                            <field name="sequence"/>
+                            <field name="question"/>
+                        </group>
+                        <group string="Answer">
+                            <field name="answer" nolabel="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_camp_faq_search" model="ir.ui.view">
+            <field name="name">camp.faq.search</field>
+            <field name="model">camp.faq</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="question"/>
+                    <field name="product_tmpl_id"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_camp_faq" model="ir.actions.act_window">
+            <field name="name">Camp FAQ</field>
+            <field name="res_model">camp.faq</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.schedule.entry                                              -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_schedule_entry_tree" model="ir.ui.view">
+            <field name="name">camp.schedule.entry.tree</field>
+            <field name="model">camp.schedule.entry</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="product_tmpl_id"/>
+                    <field name="sequence" widget="handle"/>
+                    <field name="time"/>
+                    <field name="activity_a"/>
+                    <field name="activity_b"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_schedule_entry_form" model="ir.ui.view">
+            <field name="name">camp.schedule.entry.form</field>
+            <field name="model">camp.schedule.entry</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="product_tmpl_id"/>
+                            <field name="sequence"/>
+                            <field name="time"/>
+                        </group>
+                        <group>
+                            <group string="Plan A (Sunny day)">
+                                <field name="activity_a"/>
+                                <field name="description_a"/>
+                            </group>
+                            <group string="Plan B (Rainy day)">
+                                <field name="activity_b"/>
+                                <field name="description_b"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_camp_schedule_entry" model="ir.actions.act_window">
+            <field name="name">Daily Schedule</field>
+            <field name="res_model">camp.schedule.entry</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- event.event — camp fields extension                              -->
+        <!-- ================================================================ -->
+
+        <record id="view_event_event_camp_form" model="ir.ui.view">
+            <field name="name">event.event.camp.form</field>
+            <field name="model">event.event</field>
+            <field name="inherit_id" ref="event.view_event_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="inside">
+                    <group string="Camp Settings" name="camp_settings">
+                        <field name="camp_program_id"/>
+                        <field name="camp_shift_color"/>
+                        <field name="camp_season_id"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

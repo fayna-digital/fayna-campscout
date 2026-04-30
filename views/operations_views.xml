@@ -1,0 +1,848 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ================================================================ -->
+        <!-- camp.staff                                                       -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_staff_tree" model="ir.ui.view">
+            <field name="name">camp.staff.tree</field>
+            <field name="model">camp.staff</field>
+            <field name="arch" type="xml">
+                <tree decoration-success="is_eligible_for_camp" decoration-danger="not is_eligible_for_camp and state == 'confirmed'">
+                    <field name="name"/>
+                    <field name="event_id"/>
+                    <field name="role"/>
+                    <field name="state"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="has_valid_krk"/>
+                    <field name="has_valid_rps"/>
+                    <field name="has_valid_course"/>
+                    <field name="is_eligible_for_camp"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_staff_form" model="ir.ui.view">
+            <field name="name">camp.staff.form</field>
+            <field name="model">camp.staff</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,confirmed,active,finished"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="event_id"/>
+                                <field name="role"/>
+                                <field name="user_id"/>
+                            </group>
+                            <group>
+                                <field name="phone"/>
+                                <field name="email"/>
+                                <field name="date_from"/>
+                                <field name="date_to"/>
+                                <field name="active"/>
+                            </group>
+                        </group>
+                        <group string="Assigned Groups">
+                            <field name="assigned_groups"/>
+                        </group>
+                        <group string="Emergency Contact">
+                            <field name="emergency_contact"/>
+                            <field name="emergency_phone"/>
+                        </group>
+                        <group string="PL-law Documents">
+                            <group>
+                                <field name="krk_attachment"/>
+                                <field name="krk_expiry_date"/>
+                            </group>
+                            <group>
+                                <field name="course_certificate_attachment"/>
+                                <field name="course_date"/>
+                                <field name="contract_attachment"/>
+                            </group>
+                        </group>
+                        <group string="Responsibilities (A7)">
+                            <field name="responsibility_text" nolabel="1"/>
+                        </group>
+                        <group string="Eligibility">
+                            <field name="has_valid_krk" readonly="1"/>
+                            <field name="has_valid_rps" readonly="1"/>
+                            <field name="has_valid_course" readonly="1"/>
+                            <field name="is_eligible_for_camp" readonly="1"/>
+                        </group>
+                        <group string="Certifications">
+                            <field name="cert_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="cert_type"/>
+                                    <field name="cert_number"/>
+                                    <field name="issue_date"/>
+                                    <field name="expiry_date"/>
+                                    <field name="is_valid" readonly="1"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group string="Notes">
+                            <field name="notes" nolabel="1"/>
+                        </group>
+                        <group string="Medical Info" groups="fayna_campscout.group_medical_officer">
+                            <field name="medical_notes" groups="fayna_campscout.group_medical_officer"/>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_camp_staff_search" model="ir.ui.view">
+            <field name="name">camp.staff.search</field>
+            <field name="model">camp.staff</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="event_id"/>
+                    <filter name="eligible" string="Eligible" domain="[('is_eligible_for_camp','=',True)]"/>
+                    <filter name="active" string="Active Status" domain="[('state','=','active')]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="by_event" string="Event" context="{'group_by':'event_id'}"/>
+                        <filter name="by_role" string="Role" context="{'group_by':'role'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_camp_staff" model="ir.actions.act_window">
+            <field name="name">Camp Staff</field>
+            <field name="res_model">camp.staff</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.staff.cert                                                  -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_staff_cert_tree" model="ir.ui.view">
+            <field name="name">camp.staff.cert.tree</field>
+            <field name="model">camp.staff.cert</field>
+            <field name="arch" type="xml">
+                <tree decoration-danger="not is_valid" decoration-success="is_valid">
+                    <field name="staff_id"/>
+                    <field name="cert_type"/>
+                    <field name="cert_number"/>
+                    <field name="issue_date"/>
+                    <field name="expiry_date"/>
+                    <field name="is_valid" readonly="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_staff_cert_form" model="ir.ui.view">
+            <field name="name">camp.staff.cert.form</field>
+            <field name="model">camp.staff.cert</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="staff_id"/>
+                                <field name="cert_type"/>
+                                <field name="cert_number"/>
+                            </group>
+                            <group>
+                                <field name="issue_date"/>
+                                <field name="expiry_date"/>
+                                <field name="is_valid" readonly="1"/>
+                                <field name="attachment_id"/>
+                            </group>
+                        </group>
+                        <group string="Notes">
+                            <field name="notes" nolabel="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_camp_staff_cert" model="ir.actions.act_window">
+            <field name="name">Staff Certifications</field>
+            <field name="res_model">camp.staff.cert</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.staff.medical                                               -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_staff_medical_tree" model="ir.ui.view">
+            <field name="name">camp.staff.medical.tree</field>
+            <field name="model">camp.staff.medical</field>
+            <field name="arch" type="xml">
+                <tree groups="fayna_campscout.group_medical_officer">
+                    <field name="staff_id"/>
+                    <field name="consent_given"/>
+                    <field name="consent_date"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_staff_medical_form" model="ir.ui.view">
+            <field name="name">camp.staff.medical.form</field>
+            <field name="model">camp.staff.medical</field>
+            <field name="arch" type="xml">
+                <form groups="fayna_campscout.group_medical_officer">
+                    <sheet>
+                        <group>
+                            <field name="staff_id"/>
+                            <field name="consent_given"/>
+                            <field name="consent_date"/>
+                        </group>
+                        <group string="Medical Data (RODO art.9)">
+                            <field name="allergies"/>
+                            <field name="chronic_conditions"/>
+                            <field name="medications"/>
+                            <field name="emergency_medical_notes"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_camp_staff_medical" model="ir.actions.act_window">
+            <field name="name">Staff Medical Data</field>
+            <field name="res_model">camp.staff.medical</field>
+            <field name="view_mode">tree,form</field>
+            <field name="groups_id" eval="[(4, ref('fayna_campscout.group_medical_officer'))]"/>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.journal                                                     -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_journal_tree" model="ir.ui.view">
+            <field name="name">camp.journal.tree</field>
+            <field name="model">camp.journal</field>
+            <field name="arch" type="xml">
+                <tree decoration-danger="category == 'incident' and severity == 'high'" decoration-warning="category == 'medical'">
+                    <field name="event_id"/>
+                    <field name="date"/>
+                    <field name="category"/>
+                    <field name="title"/>
+                    <field name="author_id"/>
+                    <field name="severity"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_journal_form" model="ir.ui.view">
+            <field name="name">camp.journal.form</field>
+            <field name="model">camp.journal</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="event_id"/>
+                                <field name="date"/>
+                                <field name="time"/>
+                                <field name="category"/>
+                            </group>
+                            <group>
+                                <field name="author_id"/>
+                                <field name="group_ids"/>
+                                <field name="participant_count"/>
+                                <field name="severity" invisible="category not in ('incident','medical')"/>
+                                <field name="active"/>
+                            </group>
+                        </group>
+                        <group string="Entry">
+                            <field name="title"/>
+                            <field name="content" nolabel="1"/>
+                        </group>
+                        <group string="Attachments">
+                            <field name="attachment_ids" widget="many2many_binary" nolabel="1"/>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_camp_journal_search" model="ir.ui.view">
+            <field name="name">camp.journal.search</field>
+            <field name="model">camp.journal</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="event_id"/>
+                    <field name="title"/>
+                    <filter name="incidents" string="Incidents" domain="[('category','=','incident')]"/>
+                    <filter name="medical" string="Medical" domain="[('category','=','medical')]"/>
+                    <filter name="published" string="Published" domain="[('state','=','published')]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="by_event" string="Event" context="{'group_by':'event_id'}"/>
+                        <filter name="by_category" string="Category" context="{'group_by':'category'}"/>
+                        <filter name="by_date" string="Date" context="{'group_by':'date'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_camp_journal" model="ir.actions.act_window">
+            <field name="name">Camp Journal</field>
+            <field name="res_model">camp.journal</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.daily.report                                                -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_daily_report_tree" model="ir.ui.view">
+            <field name="name">camp.daily.report.tree</field>
+            <field name="model">camp.daily.report</field>
+            <field name="arch" type="xml">
+                <tree decoration-success="state == 'approved'" decoration-info="state == 'submitted'">
+                    <field name="name"/>
+                    <field name="event_id"/>
+                    <field name="report_date"/>
+                    <field name="author_id"/>
+                    <field name="participants_present"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_daily_report_form" model="ir.ui.view">
+            <field name="name">camp.daily.report.form</field>
+            <field name="model">camp.daily.report</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_submit" string="Submit" type="object"
+                                invisible="state != 'draft'" class="btn-primary"/>
+                        <button name="action_approve" string="Approve" type="object"
+                                invisible="state != 'submitted'"
+                                groups="fayna_campscout.group_fayna_camp_manager"/>
+                        <button name="action_back_to_draft" string="Back to Draft" type="object"
+                                invisible="state == 'draft'"
+                                groups="fayna_campscout.group_camp_admin"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1><field name="name" readonly="1"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="event_id"/>
+                                <field name="report_date"/>
+                                <field name="author_id"/>
+                            </group>
+                            <group>
+                                <field name="participants_present"/>
+                                <field name="participants_absent"/>
+                                <field name="staff_count_present"/>
+                                <field name="weather_condition"/>
+                            </group>
+                        </group>
+                        <group string="Daily Activities">
+                            <field name="morning_activities"/>
+                            <field name="afternoon_activities"/>
+                            <field name="evening_activities"/>
+                        </group>
+                        <group string="Summary">
+                            <field name="activities_summary"/>
+                            <field name="meals_summary"/>
+                            <field name="health_incidents"/>
+                            <field name="discipline_notes"/>
+                            <field name="external_visits"/>
+                            <field name="incidents"/>
+                            <field name="achievements"/>
+                            <field name="challenges"/>
+                            <field name="next_day_plan"/>
+                        </group>
+                        <group string="Medical Notes (restricted)" groups="fayna_campscout.group_medical_officer">
+                            <field name="medical_notes" groups="fayna_campscout.group_medical_officer"/>
+                        </group>
+                        <group string="Kierownik Private Notes" groups="fayna_campscout.group_camp_kierownik">
+                            <field name="kierownik_notes" groups="fayna_campscout.group_camp_kierownik"/>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_camp_daily_report_search" model="ir.ui.view">
+            <field name="name">camp.daily.report.search</field>
+            <field name="model">camp.daily.report</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="event_id"/>
+                    <field name="report_date"/>
+                    <filter name="draft" string="Draft" domain="[('state','=','draft')]"/>
+                    <filter name="submitted" string="Submitted" domain="[('state','=','submitted')]"/>
+                    <filter name="approved" string="Approved" domain="[('state','=','approved')]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="by_event" string="Event" context="{'group_by':'event_id'}"/>
+                        <filter name="by_date" string="Date" context="{'group_by':'report_date'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_camp_daily_report" model="ir.actions.act_window">
+            <field name="name">Daily Reports</field>
+            <field name="res_model">camp.daily.report</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.report                                                      -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_report_tree" model="ir.ui.view">
+            <field name="name">camp.report.tree</field>
+            <field name="model">camp.report</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="title"/>
+                    <field name="event_id"/>
+                    <field name="report_type"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="author_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_report_form" model="ir.ui.view">
+            <field name="name">camp.report.form</field>
+            <field name="model">camp.report</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="title"/>
+                                <field name="event_id"/>
+                                <field name="report_type"/>
+                                <field name="author_id"/>
+                                <field name="kierownik_id"/>
+                            </group>
+                            <group>
+                                <field name="date_from"/>
+                                <field name="date_to"/>
+                                <field name="participant_count_total"/>
+                                <field name="participant_count_male"/>
+                                <field name="participant_count_female"/>
+                            </group>
+                        </group>
+                        <group string="Content">
+                            <field name="summary" nolabel="1"/>
+                        </group>
+                        <group string="Sections">
+                            <field name="section_program"/>
+                            <field name="section_staff"/>
+                            <field name="section_children"/>
+                            <field name="section_events"/>
+                            <field name="section_kierownik_work"/>
+                            <field name="section_recommendations"/>
+                        </group>
+                        <group string="Summary">
+                            <field name="general_assessment"/>
+                            <field name="incidents_summary"/>
+                            <field name="recommendations"/>
+                            <field name="highlights"/>
+                            <field name="issues"/>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_camp_report" model="ir.actions.act_window">
+            <field name="name">Camp Reports (Sprawozdanie)</field>
+            <field name="res_model">camp.report</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.program.wypoczynku (Załącznik 9)                           -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_program_wypoczynku_tree" model="ir.ui.view">
+            <field name="name">camp.program.wypoczynku.tree</field>
+            <field name="model">camp.program.wypoczynku</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="event_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_program_wypoczynku_form" model="ir.ui.view">
+            <field name="name">camp.program.wypoczynku.form</field>
+            <field name="model">camp.program.wypoczynku</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="event_id"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_camp_program_wypoczynku" model="ir.actions.act_window">
+            <field name="name">Program Wypoczynku (Załącznik 9)</field>
+            <field name="res_model">camp.program.wypoczynku</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.program                                                     -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_program_tree" model="ir.ui.view">
+            <field name="name">camp.program.tree</field>
+            <field name="model">camp.program</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_program_form" model="ir.ui.view">
+            <field name="name">camp.program.form</field>
+            <field name="model">camp.program</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_camp_program" model="ir.actions.act_window">
+            <field name="name">Programs</field>
+            <field name="res_model">camp.program</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.program.structured                                          -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_program_structured_tree" model="ir.ui.view">
+            <field name="name">camp.program.structured.tree</field>
+            <field name="model">camp.program.structured</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_program_structured_form" model="ir.ui.view">
+            <field name="name">camp.program.structured.form</field>
+            <field name="model">camp.program.structured</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_camp_program_structured" model="ir.actions.act_window">
+            <field name="name">Structured Programs</field>
+            <field name="res_model">camp.program.structured</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.activity.template                                           -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_activity_template_tree" model="ir.ui.view">
+            <field name="name">camp.activity.template.tree</field>
+            <field name="model">camp.activity.template</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_activity_template_form" model="ir.ui.view">
+            <field name="name">camp.activity.template.form</field>
+            <field name="model">camp.activity.template</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_camp_activity_template" model="ir.actions.act_window">
+            <field name="name">Activity Templates</field>
+            <field name="res_model">camp.activity.template</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.kuratorium.notification                                     -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_kuratorium_notification_tree" model="ir.ui.view">
+            <field name="name">camp.kuratorium.notification.tree</field>
+            <field name="model">camp.kuratorium.notification</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="event_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_kuratorium_notification_form" model="ir.ui.view">
+            <field name="name">camp.kuratorium.notification.form</field>
+            <field name="model">camp.kuratorium.notification</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="event_id"/>
+                        </group>
+                        <group string="Staff">
+                            <field name="staff_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group string="Checklist">
+                            <field name="checklist_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_camp_kuratorium_notification" model="ir.actions.act_window">
+            <field name="name">Kuratorium Notifications</field>
+            <field name="res_model">camp.kuratorium.notification</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- fayna.camp.dziennik                                              -->
+        <!-- ================================================================ -->
+
+        <record id="view_fayna_camp_dziennik_tree" model="ir.ui.view">
+            <field name="name">fayna.camp.dziennik.tree</field>
+            <field name="model">fayna.camp.dziennik</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="event_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_fayna_camp_dziennik_form" model="ir.ui.view">
+            <field name="name">fayna.camp.dziennik.form</field>
+            <field name="model">fayna.camp.dziennik</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="event_id"/>
+                        </group>
+                        <group string="Activities">
+                            <field name="activity_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group string="Notes">
+                            <field name="note_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group string="Plan Lines">
+                            <field name="plan_line_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_fayna_camp_dziennik" model="ir.actions.act_window">
+            <field name="name">Dziennik Zajęć</field>
+            <field name="res_model">fayna.camp.dziennik</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.analytics.snapshot                                         -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_analytics_snapshot_tree" model="ir.ui.view">
+            <field name="name">camp.analytics.snapshot.tree</field>
+            <field name="model">camp.analytics.snapshot</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_analytics_snapshot_form" model="ir.ui.view">
+            <field name="name">camp.analytics.snapshot.form</field>
+            <field name="model">camp.analytics.snapshot</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_camp_analytics_snapshot" model="ir.actions.act_window">
+            <field name="name">Analytics Snapshots</field>
+            <field name="res_model">camp.analytics.snapshot</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.marketing.report                                           -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_marketing_report_tree" model="ir.ui.view">
+            <field name="name">camp.marketing.report.tree</field>
+            <field name="model">camp.marketing.report</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_marketing_report_form" model="ir.ui.view">
+            <field name="name">camp.marketing.report.form</field>
+            <field name="model">camp.marketing.report</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_camp_marketing_report" model="ir.actions.act_window">
+            <field name="name">Marketing Reports</field>
+            <field name="res_model">camp.marketing.report</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.stats.snapshot                                             -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_stats_snapshot_tree" model="ir.ui.view">
+            <field name="name">camp.stats.snapshot.tree</field>
+            <field name="model">camp.stats.snapshot</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_stats_snapshot_form" model="ir.ui.view">
+            <field name="name">camp.stats.snapshot.form</field>
+            <field name="model">camp.stats.snapshot</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_camp_stats_snapshot" model="ir.actions.act_window">
+            <field name="name">Stats Snapshots</field>
+            <field name="res_model">camp.stats.snapshot</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

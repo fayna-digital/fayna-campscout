@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ================================================================ -->
+        <!-- camp.participant                                                 -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_participant_tree" model="ir.ui.view">
+            <field name="name">camp.participant.tree</field>
+            <field name="model">camp.participant</field>
+            <field name="arch" type="xml">
+                <tree decoration-warning="auto_refusal_state == 'pending'" decoration-danger="auto_refusal_state == 'refused'">
+                    <field name="display_name"/>
+                    <field name="birth_date"/>
+                    <field name="age"/>
+                    <field name="gender"/>
+                    <field name="parent_partner_id"/>
+                    <field name="qualification_signed"/>
+                    <field name="auto_refusal_state"/>
+                    <field name="migration_needs_review"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_participant_form" model="ir.ui.view">
+            <field name="name">camp.participant.form</field>
+            <field name="model">camp.participant</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_open_clear_auto_refusal_wizard"
+                                string="Clear Auto-Refusal"
+                                type="object"
+                                groups="fayna_campscout.group_camp_leader"
+                                invisible="auto_refusal_state != 'pending'"/>
+                        <field name="auto_refusal_state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="display_name" readonly="1"/>
+                            </h1>
+                        </div>
+
+                        <group string="Section I — Identity">
+                            <group>
+                                <field name="first_name"/>
+                                <field name="last_name"/>
+                                <field name="birth_date"/>
+                                <field name="age" readonly="1"/>
+                                <field name="gender"/>
+                            </group>
+                            <group>
+                                <field name="nationality_id"/>
+                                <field name="pesel"/>
+                                <field name="passport_number"/>
+                                <field name="parent_partner_id"/>
+                                <field name="partner_id"/>
+                            </group>
+                        </group>
+
+                        <group string="Section II — Medical (restricted)" groups="fayna_campscout.group_medical_officer">
+                            <group>
+                                <field name="allergies" groups="fayna_campscout.group_medical_officer"/>
+                                <field name="medications" groups="fayna_campscout.group_medical_officer"/>
+                                <field name="chronic_conditions" groups="fayna_campscout.group_medical_officer"/>
+                            </group>
+                            <group>
+                                <field name="vaccination_status"/>
+                                <field name="diet_restrictions"/>
+                                <field name="doctor_notes" groups="fayna_campscout.group_medical_officer"/>
+                            </group>
+                        </group>
+
+                        <group string="Special Needs">
+                            <field name="special_needs"/>
+                            <field name="swimming_ability"/>
+                            <field name="stay_alone_permission"/>
+                        </group>
+
+                        <group string="Emergency Contacts">
+                            <group>
+                                <field name="emergency_contact_1_name"/>
+                                <field name="emergency_contact_1_phone"/>
+                                <field name="emergency_contact_1_relation"/>
+                            </group>
+                            <group>
+                                <field name="emergency_contact_2_name"/>
+                                <field name="emergency_contact_2_phone"/>
+                                <field name="emergency_contact_2_relation"/>
+                            </group>
+                        </group>
+
+                        <group string="Qualification Card — Sign-off">
+                            <group>
+                                <field name="qualification_signed"/>
+                                <field name="qualification_signed_date"/>
+                                <field name="qualification_signed_by"/>
+                                <field name="qualification_signed_by_name"/>
+                            </group>
+                            <group>
+                                <field name="qualification_signed_ip"/>
+                                <field name="rodo_consent_id"/>
+                                <field name="retention_until"/>
+                                <field name="migration_needs_review"/>
+                            </group>
+                        </group>
+
+                        <group string="Section III — Adaptation (kierownik)">
+                            <field name="iii_adaptation_notes"/>
+                            <field name="iii_health_events" groups="fayna_campscout.group_medical_officer"/>
+                            <field name="iii_medication_given" groups="fayna_campscout.group_medical_officer"/>
+                            <group>
+                                <field name="iii_completed_by"/>
+                                <field name="iii_completed_date"/>
+                            </group>
+                        </group>
+
+                        <group string="Section IV — Presence Intervals">
+                            <field name="iv_presence_interval_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="from_date"/>
+                                    <field name="to_date"/>
+                                    <field name="interval_type"/>
+                                    <field name="notes"/>
+                                </tree>
+                            </field>
+                        </group>
+
+                        <group string="Section IV — Educational Assessment">
+                            <field name="iv_objectives_achieved"/>
+                            <field name="iv_group_dynamics"/>
+                            <group>
+                                <field name="iv_signed_place"/>
+                                <field name="iv_signed_date"/>
+                                <field name="iv_signed_by"/>
+                            </group>
+                        </group>
+
+                        <group string="Section V — Health Notes (kierownik)" groups="fayna_campscout.group_medical_officer">
+                            <field name="v_health_notes" groups="fayna_campscout.group_medical_officer"/>
+                            <field name="v_recommendations"/>
+                            <group>
+                                <field name="v_signed_place"/>
+                                <field name="v_signed_date"/>
+                                <field name="v_signed_by"/>
+                            </group>
+                        </group>
+
+                        <group string="Section VI — Wychowawca Observations">
+                            <field name="vi_observations"/>
+                            <field name="vi_recommendations"/>
+                            <group>
+                                <field name="vi_signed_place"/>
+                                <field name="vi_signed_date"/>
+                                <field name="vi_signed_by"/>
+                            </group>
+                        </group>
+
+                        <group string="Consents (Dodatki 4a/4b)">
+                            <group>
+                                <field name="image_consent_state"/>
+                                <field name="image_consent_signed_date"/>
+                            </group>
+                            <group>
+                                <field name="marketing_consent"/>
+                                <field name="marketing_consent_signed_date"/>
+                            </group>
+                        </group>
+
+                        <group string="Registrations">
+                            <field name="registration_ids" nolabel="1">
+                                <tree>
+                                    <field name="event_id"/>
+                                    <field name="state"/>
+                                    <field name="date_open"/>
+                                </tree>
+                            </field>
+                        </group>
+
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_camp_participant_search" model="ir.ui.view">
+            <field name="name">camp.participant.search</field>
+            <field name="model">camp.participant</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="display_name"/>
+                    <field name="parent_partner_id"/>
+                    <field name="pesel"/>
+                    <filter name="signed" string="Qualification Signed" domain="[('qualification_signed','=',True)]"/>
+                    <filter name="unsigned" string="Unsigned" domain="[('qualification_signed','=',False)]"/>
+                    <filter name="pending_refusal" string="Auto-Refusal Pending" domain="[('auto_refusal_state','=','pending')]"/>
+                    <filter name="refused" string="Auto-Refused" domain="[('auto_refusal_state','=','refused')]"/>
+                    <filter name="needs_review" string="Needs Migration Review" domain="[('migration_needs_review','=',True)]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="by_gender" string="Gender" context="{'group_by':'gender'}"/>
+                        <filter name="by_refusal_state" string="Auto-Refusal State" context="{'group_by':'auto_refusal_state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_camp_participant" model="ir.actions.act_window">
+            <field name="name">Participants</field>
+            <field name="res_model">camp.participant</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_signed': 0}</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.presence.interval                                           -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_presence_interval_tree" model="ir.ui.view">
+            <field name="name">camp.presence.interval.tree</field>
+            <field name="model">camp.presence.interval</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="participant_id"/>
+                    <field name="from_date"/>
+                    <field name="to_date"/>
+                    <field name="interval_type"/>
+                    <field name="notes"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_presence_interval_form" model="ir.ui.view">
+            <field name="name">camp.presence.interval.form</field>
+            <field name="model">camp.presence.interval</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="participant_id"/>
+                            <field name="from_date"/>
+                            <field name="to_date"/>
+                            <field name="interval_type"/>
+                            <field name="notes"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_camp_presence_interval" model="ir.actions.act_window">
+            <field name="name">Presence Intervals</field>
+            <field name="res_model">camp.presence.interval</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

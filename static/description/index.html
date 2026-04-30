@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 0; background: #fff; color: #222; }
+  .header { background: linear-gradient(135deg, #FF6B00 0%, #e85a00 100%); color: white; padding: 40px 32px; }
+  .header h1 { margin: 0 0 8px; font-size: 2rem; font-weight: 700; letter-spacing: -0.5px; }
+  .header p { margin: 0; font-size: 1.05rem; opacity: 0.92; }
+  .badge { display: inline-block; background: rgba(255,255,255,0.22); border-radius: 4px; padding: 3px 10px; font-size: 0.82rem; font-weight: 600; margin-right: 6px; }
+  .content { padding: 32px; max-width: 800px; }
+  h2 { color: #FF6B00; font-size: 1.2rem; font-weight: 700; margin: 28px 0 12px; border-left: 4px solid #FF6B00; padding-left: 12px; }
+  ul { margin: 0 0 16px; padding-left: 22px; line-height: 1.7; }
+  li { margin-bottom: 4px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .card { border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px; }
+  .card-icon { font-size: 1.6rem; margin-bottom: 8px; }
+  .card-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; }
+  .card-desc { font-size: 0.85rem; color: #555; line-height: 1.5; }
+  .footer { background: #f7f7f7; border-top: 1px solid #eee; padding: 20px 32px; font-size: 0.85rem; color: #666; }
+  .footer a { color: #FF6B00; text-decoration: none; }
+  .tag { display: inline-block; background: #fff3e8; color: #c14d00; border-radius: 4px; padding: 2px 8px; font-size: 0.78rem; font-weight: 600; margin: 2px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Fayna CampScout</h1>
+  <p>Повна система управління дитячим табором — один модуль, все необхідне.</p>
+  <br>
+  <span class="badge">Odoo 17.0 Community</span>
+  <span class="badge">LGPL-3</span>
+  <span class="badge">Fayna Digital</span>
+</div>
+
+<div class="content">
+
+  <h2>Що це</h2>
+  <p>Єдиний Odoo-модуль для управління дитячим табором CampScout.<br>
+  Один install — отримуєш все необхідне для роботи табору від реєстрації до звіту керівника.</p>
+
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">&#127979;</div>
+      <div class="card-title">Учасники</div>
+      <div class="card-desc">Кваліфікаційна картка дитини (5 секцій, PL закон), RODO consent, медичні дані з ACL</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">&#128197;</div>
+      <div class="card-title">Операції табору</div>
+      <div class="card-desc">Журнал дня, Załącznik 9, склад персоналу, розклад, звіт керівника, Kuratorium</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">&#127860;</div>
+      <div class="card-title">Харчування</div>
+      <div class="card-desc">Плани харчування, EU-14 алергени (Regulation 1169/2011), дієтичні профілі</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">&#128680;</div>
+      <div class="card-title">Надзвичайні ситуації</div>
+      <div class="card-desc">Протокол НС — 7-станова машина, 18 типів дій, Ustawa Kamilka 2024, immutable ledger</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">&#128179;</div>
+      <div class="card-title">Комерція</div>
+      <div class="card-desc">Розстрочки, програма лояльності (loyalty.program), відгуки батьків, підтримка</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">&#127891;</div>
+      <div class="card-title">Навчання персоналу</div>
+      <div class="card-desc">Курс виховника 36h через native eLearning, MEN compliance, сертифікати</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">&#128241;</div>
+      <div class="card-title">SMS</div>
+      <div class="card-desc">Multi-provider routing (UA/PL), TurboSMS adapter, шаблони повідомлень</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">&#128101;</div>
+      <div class="card-title">Батьківський портал</div>
+      <div class="card-desc">/my — heroes, діти, stories, документи, лояльність. Mobile-first, WCAG AA</div>
+    </div>
+  </div>
+
+  <h2>Залежності Odoo (native)</h2>
+  <span class="tag">event</span>
+  <span class="tag">event_sale</span>
+  <span class="tag">sale</span>
+  <span class="tag">account</span>
+  <span class="tag">loyalty</span>
+  <span class="tag">slide</span>
+  <span class="tag">sms</span>
+  <span class="tag">website_rating</span>
+  <span class="tag">portal</span>
+  <span class="tag">website</span>
+  <span class="tag">mail</span>
+  <br><br>
+  <span class="tag" style="background:#e8f4e8;color:#1a6b1a;">fayna_rodo_compliance</span>
+
+  <h2>Відповідність законодавству</h2>
+  <ul>
+    <li><strong>RODO / GDPR</strong> — consent log, medical ACL (Art.9), 7-річний retention</li>
+    <li><strong>Rozp. MEN 2016</strong> — Karta Kwalifikacyjna (5 секцій), kurs wychowawcy 36h</li>
+    <li><strong>Ustawa Kamilka 2024</strong> — RPS перевірки, immutable incident ledger</li>
+    <li><strong>EU Regulation 1169/2011</strong> — 14 major allergens tracking</li>
+    <li><strong>Załącznik 9 MEN</strong> — Program wypoczynku (required legal document)</li>
+  </ul>
+
+  <h2>Архітектура</h2>
+  <ul>
+    <li>«Hotel pattern» — один модуль, все в Python-файлах</li>
+    <li>Strangler Fig — поступова міграція з bs_campscout_addon без втрати даних</li>
+    <li>OCA-first — нативні Odoo модулі замість кастомних (loyalty, slide.channel, website_rating)</li>
+    <li>i18n — українська + польська через native Odoo .po файли</li>
+    <li>Безпека — OWASP Top 10, field-level ACL, record rules, audit trail</li>
+  </ul>
+
+</div>
+
+<div class="footer">
+  <strong>Fayna Digital</strong> — <a href="https://fayna.agency">fayna.agency</a><br>
+  Автор: Volodymyr Shevchenko &lt;admin@fayna.agency&gt;<br>
+  Ліцензія: LGPL-3 | Версія: 17.0.1.0.0
+</div>
+
+</body>
+</html>

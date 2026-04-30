@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ================================================================ -->
+        <!-- camp.incident.report                                            -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_incident_report_tree" model="ir.ui.view">
+            <field name="name">camp.incident.report.tree</field>
+            <field name="model">camp.incident.report</field>
+            <field name="arch" type="xml">
+                <tree decoration-danger="state in ('active_response',) or sla_breaches != ''"
+                      decoration-warning="state == 'under_investigation'"
+                      decoration-success="state == 'closed'"
+                      decoration-info="state == 'protocol_ready'">
+                    <field name="incident_datetime"/>
+                    <field name="event_id"/>
+                    <field name="severity"/>
+                    <field name="injury_type"/>
+                    <field name="location"/>
+                    <field name="state"/>
+                    <field name="sla_breaches" optional="show"/>
+                    <field name="rpd_notified" optional="show"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_incident_report_form" model="ir.ui.view">
+            <field name="name">camp.incident.report.form</field>
+            <field name="model">camp.incident.report</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_start_response" string="Start Response" type="object"
+                                invisible="state != 'draft'" class="btn-primary"/>
+                        <button name="action_start_investigation" string="Start Investigation" type="object"
+                                invisible="state != 'active_response'"/>
+                        <button name="action_protocol_ready" string="Protocol Ready" type="object"
+                                invisible="state != 'under_investigation'"/>
+                        <button name="action_deliver" string="Deliver Protocol" type="object"
+                                invisible="state != 'protocol_ready'"/>
+                        <button name="action_dispute" string="Mark Disputed" type="object"
+                                invisible="state != 'delivered'"/>
+                        <button name="action_close" string="Close" type="object"
+                                invisible="state not in ('delivered', 'disputed')"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,active_response,under_investigation,protocol_ready,delivered,closed"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1><field name="display_name" readonly="1"/></h1>
+                        </div>
+
+                        <group string="Incident Details">
+                            <group>
+                                <field name="event_id"/>
+                                <field name="incident_datetime"/>
+                                <field name="detected_at"/>
+                                <field name="location"/>
+                            </group>
+                            <group>
+                                <field name="severity"/>
+                                <field name="injury_type"/>
+                                <field name="reporter_id"/>
+                            </group>
+                        </group>
+
+                        <group string="Affected Participants">
+                            <field name="participant_ids" widget="many2many_tags" nolabel="1"/>
+                        </group>
+
+                        <group string="Description">
+                            <field name="description" nolabel="1"/>
+                            <field name="pre_incident_state"/>
+                        </group>
+
+                        <group string="SLA Compliance (BP-006)">
+                            <group>
+                                <field name="first_aid_within_2min"/>
+                                <field name="safety_secured_within_15min"/>
+                            </group>
+                            <group>
+                                <field name="parents_notified_within_30min"/>
+                                <field name="authorities_notified_within_24h"/>
+                                <field name="sla_breaches"/>
+                            </group>
+                        </group>
+
+                        <group string="Ustawa Kamilka 2024" invisible="injury_type != 'abuse_suspected'">
+                            <field name="rpd_notified"/>
+                            <field name="rpd_notification_date"/>
+                        </group>
+
+                        <group string="Protocol Content">
+                            <field name="witness_name"/>
+                            <field name="witness_statement"/>
+                            <field name="wnioski"/>
+                        </group>
+
+                        <group string="Submission">
+                            <field name="submitted_at"/>
+                            <field name="submitted_by_id"/>
+                            <field name="protocol_pdf"/>
+                        </group>
+
+                        <group string="Action Ledger">
+                            <field name="action_ids" nolabel="1">
+                                <tree decoration-info="action_type in ('first_aid','paramedic_call')"
+                                      decoration-warning="action_type in ('parent_notified','kurator_notified')">
+                                    <field name="performed_at"/>
+                                    <field name="action_type"/>
+                                    <field name="actor_id"/>
+                                    <field name="contact_method"/>
+                                    <field name="receiver_name"/>
+                                    <field name="notes"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="action_type"/>
+                                        <field name="actor_id"/>
+                                        <field name="performed_at"/>
+                                        <field name="contact_method"/>
+                                        <field name="receiver_name"/>
+                                        <field name="receiver_response"/>
+                                        <field name="notes"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </group>
+
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_camp_incident_report_search" model="ir.ui.view">
+            <field name="name">camp.incident.report.search</field>
+            <field name="model">camp.incident.report</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="event_id"/>
+                    <field name="location"/>
+                    <filter name="open" string="Open" domain="[('state','in',('draft','active_response','under_investigation','protocol_ready'))]"/>
+                    <filter name="with_sla_breach" string="SLA Breaches" domain="[('sla_breaches','!=','')]"/>
+                    <filter name="abuse_suspected" string="Abuse Suspected (Kamilka)" domain="[('injury_type','=','abuse_suspected')]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="by_severity" string="Severity" context="{'group_by':'severity'}"/>
+                        <filter name="by_state" string="State" context="{'group_by':'state'}"/>
+                        <filter name="by_event" string="Camp Event" context="{'group_by':'event_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_camp_incident_report" model="ir.actions.act_window">
+            <field name="name">Incident Reports</field>
+            <field name="res_model">camp.incident.report</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_open': 1}</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.incident.action                                            -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_incident_action_tree" model="ir.ui.view">
+            <field name="name">camp.incident.action.tree</field>
+            <field name="model">camp.incident.action</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="report_id"/>
+                    <field name="performed_at"/>
+                    <field name="action_type"/>
+                    <field name="actor_id"/>
+                    <field name="contact_method"/>
+                    <field name="receiver_name"/>
+                    <field name="notes"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_incident_action_form" model="ir.ui.view">
+            <field name="name">camp.incident.action.form</field>
+            <field name="model">camp.incident.action</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="report_id"/>
+                                <field name="action_type"/>
+                                <field name="actor_id"/>
+                                <field name="performed_at"/>
+                            </group>
+                            <group>
+                                <field name="contact_method"/>
+                                <field name="receiver_name"/>
+                                <field name="receiver_response"/>
+                            </group>
+                        </group>
+                        <group string="Notes">
+                            <field name="notes" nolabel="1"/>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_camp_incident_action" model="ir.actions.act_window">
+            <field name="name">Incident Actions</field>
+            <field name="res_model">camp.incident.action</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

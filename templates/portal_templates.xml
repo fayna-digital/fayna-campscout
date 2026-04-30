@@ -265,6 +265,16 @@
     </xpath>
 </template>
 
+<template id="portal_my_home_loyalty" inherit_id="portal.portal_my_home" priority="66">
+    <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+        <t t-call="portal.portal_docs_entry">
+            <t t-set="title">Лояльність</t>
+            <t t-set="url" t-value="'/my/loyalty'"/>
+            <t t-set="placeholder_count" t-value="'loyalty_count'"/>
+        </t>
+    </xpath>
+</template>
+
 <template id="portal_my_home_documents" inherit_id="portal.portal_my_home" priority="67">
     <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
         <t t-call="portal.portal_docs_entry">
@@ -493,6 +503,207 @@
             <t t-set="placeholder_count" t-value="'support_count'"/>
         </t>
     </xpath>
+</template>
+
+<!-- ============================================================================
+     /my/participants — List of children with qualification card status
+     ============================================================================ -->
+
+<template id="portal_participants" name="My Participants">
+    <t t-call="portal.portal_layout">
+        <t t-set="additional_title">Учасники</t>
+
+        <div class="cs-page">
+            <div class="cs-page-back mb-3">
+                <a href="/my" class="cs-back-link">&#8592; До кабінету</a>
+            </div>
+
+            <div class="cs-page-header mb-4">
+                <h2 class="cs-page-title">Учасники</h2>
+                <p class="cs-page-subtitle">Кваліфікаційні картки ваших дітей</p>
+            </div>
+
+            <t t-if="not participants">
+                <div class="cs-empty-state">
+                    <div class="cs-empty-icon">&#128104;&#8205;&#128102;</div>
+                    <h4>Учасників ще немає</h4>
+                    <p class="text-muted">
+                        Додайте першого учасника, щоб розпочати реєстрацію на табір.
+                    </p>
+                    <a href="/my/participants/new" class="btn btn-primary mt-2">Додати учасника</a>
+                </div>
+            </t>
+
+            <div t-if="participants" class="row g-3">
+                <t t-foreach="participants" t-as="child">
+                    <div class="col-md-6">
+                        <a t-attf-href="/my/participants/#{child.id}"
+                           class="cs-doc-card text-decoration-none">
+                            <span class="cs-doc-icon">
+                                <t t-if="child.avatar_type == 'girl'">&#128103;</t>
+                                <t t-elif="child.avatar_type == 'boy'">&#128102;</t>
+                                <t t-else="">&#129490;</t>
+                            </span>
+                            <div class="cs-doc-body">
+                                <h5 class="cs-doc-title" t-esc="child.display_name"/>
+                                <p class="cs-doc-desc">
+                                    <t t-if="child.birth_date">
+                                        <t t-esc="(request.env.context.get('today', child.birth_date) - child.birth_date).days // 365"/>
+                                        &#160;
+                                    </t>
+                                    <span t-attf-class="badge #{
+                                        'bg-success' if child.qualification_signed else
+                                        'bg-warning text-dark'
+                                    }">
+                                        <t t-if="child.qualification_signed">Картка підписана</t>
+                                        <t t-else="">Картка не заповнена</t>
+                                    </span>
+                                </p>
+                                <span class="cs-doc-cta">Переглянути &#8594;</span>
+                            </div>
+                        </a>
+                    </div>
+                </t>
+                <div class="col-md-6">
+                    <a href="/my/participants/new" class="cs-doc-card cs-doc-card-add text-decoration-none">
+                        <span class="cs-doc-icon">&#10133;</span>
+                        <div class="cs-doc-body">
+                            <h5 class="cs-doc-title">Додати учасника</h5>
+                            <p class="cs-doc-desc">Окрема картка + документи</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </t>
+</template>
+
+<!-- ============================================================================
+     /my/loyalty — Loyalty tier, points and discount
+     ============================================================================ -->
+
+<template id="portal_loyalty" name="Loyalty Program">
+    <t t-call="portal.portal_layout">
+        <t t-set="additional_title">Програма лояльності</t>
+
+        <div class="cs-page">
+            <div class="cs-page-back mb-3">
+                <a href="/my" class="cs-back-link">&#8592; До кабінету</a>
+            </div>
+
+            <div class="cs-page-header mb-4">
+                <h2 class="cs-page-title">Програма лояльності</h2>
+                <p class="cs-page-subtitle">Ваш статус у програмі CampScout</p>
+            </div>
+
+            <t t-if="not loyalty">
+                <div class="cs-empty-state">
+                    <div class="cs-empty-icon">&#127942;</div>
+                    <h4>Ви ще не у програмі</h4>
+                    <p class="text-muted">
+                        Після першого підтвердженого заїзду ваш профіль лояльності створюється автоматично.
+                        Накопичуйте очки &#8212; отримуйте знижки до 10%.
+                    </p>
+                    <div class="mt-3">
+                        <h6 class="mb-2">Як це працює:</h6>
+                        <ul class="list-unstyled">
+                            <li>&#127881; <strong>Bronze</strong> &#8212; стартовий рівень (0% знижка)</li>
+                            <li>&#129398; <strong>Silver</strong> &#8212; 2+ заїзди (2% знижка)</li>
+                            <li>&#127881; <strong>Gold</strong> &#8212; 5+ заїздів (5% знижка)</li>
+                            <li>&#129451; <strong>Platinum</strong> &#8212; 10+ заїздів (7% знижка)</li>
+                            <li>&#127942; <strong>BANDA</strong> &#8212; особливий статус (10% знижка)</li>
+                        </ul>
+                    </div>
+                </div>
+            </t>
+
+            <t t-if="loyalty">
+                <!-- Tier badge card -->
+                <div t-attf-class="cs-loyalty-tier cs-loyalty-tier-#{loyalty.tier} mb-4">
+                    <div class="cs-loyalty-tier-icon">
+                        <t t-if="loyalty.tier == 'bronze'">&#127881;</t>
+                        <t t-elif="loyalty.tier == 'silver'">&#129398;</t>
+                        <t t-elif="loyalty.tier == 'gold'">&#127881;</t>
+                        <t t-elif="loyalty.tier == 'platinum'">&#129451;</t>
+                        <t t-else="">&#127942;</t>
+                    </div>
+                    <div class="cs-loyalty-tier-body">
+                        <div class="cs-loyalty-tier-name">
+                            <t t-esc="dict([
+                                ('bronze',   'Bronze'),
+                                ('silver',   'Silver'),
+                                ('gold',     'Gold'),
+                                ('platinum', 'Platinum'),
+                                ('banda',    'BANDA')
+                            ]).get(loyalty.tier, loyalty.tier)"/>
+                        </div>
+                        <div class="cs-loyalty-tier-sub">Ваш рівень</div>
+                    </div>
+                </div>
+
+                <!-- Stats row -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="cs-stat-card">
+                            <div class="cs-stat-value" t-esc="loyalty.points"/>
+                            <div class="cs-stat-label">Очок</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="cs-stat-card">
+                            <div class="cs-stat-value" t-esc="loyalty.camps_count"/>
+                            <div class="cs-stat-label">Заїздів</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="cs-stat-card">
+                            <div class="cs-stat-value">
+                                <t t-esc="'{:.0f}'.format(loyalty.discount)"/>%
+                            </div>
+                            <div class="cs-stat-label">Знижка</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History -->
+                <t t-if="loyalty.history_ids">
+                    <h5 class="mb-3">Останні події</h5>
+                    <div class="table-responsive">
+                        <table class="table table-sm cs-loyalty-history">
+                            <thead>
+                                <tr>
+                                    <th>Дата</th>
+                                    <th>Подія</th>
+                                    <th class="text-end">Очки</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="loyalty.history_ids[:20]" t-as="h">
+                                    <tr>
+                                        <td>
+                                            <t t-if="h.create_date">
+                                                <t t-esc="h.create_date.strftime('%d.%m.%Y')"/>
+                                            </t>
+                                        </td>
+                                        <td t-esc="h.note or h.event_type or ''"/>
+                                        <td class="text-end">
+                                            <span t-attf-class="#{
+                                                'text-success' if (h.points_delta or 0) > 0 else
+                                                'text-danger' if (h.points_delta or 0) &lt; 0 else ''
+                                            }">
+                                                <t t-if="(h.points_delta or 0) > 0">+</t>
+                                                <t t-esc="h.points_delta or 0"/>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </div>
+    </t>
 </template>
 
 <!-- ============================================================================

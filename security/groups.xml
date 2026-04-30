@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             Module category
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <record id="module_category_fayna_campscout" model="ir.module.category">
+            <field name="name">Fayna CampScout</field>
+            <field name="description">Roles for camp management: medical, kierownik, emergency, nutrition, admin.</field>
+            <field name="sequence">25</field>
+        </record>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             Medical Officer — RODO Art.9 special-category health data.
+             Grants read/write access to medical fields on camp.participant
+             (allergies, medications, chronic_conditions, doctor_notes).
+             Only camp medical personnel should be assigned this group.
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <record id="group_medical_officer" model="res.groups">
+            <field name="name">Camp Medical Officer</field>
+            <field name="category_id" ref="module_category_fayna_campscout"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">
+                Medical officer — read/write access to RODO Art.9 special-category
+                health fields: allergies, medications, chronic_conditions, doctor_notes
+                on camp.participant. Requires signed DPA with organizer.
+            </field>
+        </record>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             Camp Kierownik — shift director / camp leader.
+             Can create/edit camp journal entries, daily reports (own),
+             and view qualification cards of their own shift participants.
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <record id="group_camp_kierownik" model="res.groups">
+            <field name="name">Camp Kierownik</field>
+            <field name="category_id" ref="module_category_fayna_campscout"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">
+                Kierownik (camp shift director) — can create/edit camp.journal,
+                camp.daily.report, camp.staff entries. Cannot approve Załącznik 9
+                (that requires group_fayna_camp_manager).
+            </field>
+        </record>
+
+        <!-- Camp Leader — alias for kierownik used in qualification card ACL.
+             Grants ability to sign/approve the qualification card (Section V). -->
+
+        <record id="group_camp_leader" model="res.groups">
+            <field name="name">Camp Leader</field>
+            <field name="category_id" ref="module_category_fayna_campscout"/>
+            <field name="implied_ids" eval="[(4, ref('group_camp_kierownik'))]"/>
+            <field name="comment">
+                Camp leader — extends Kierownik with sign-off rights:
+                can invoke sign_qualification() and complete_section_iii()
+                on camp.participant. Required by PL law (Rozp. MEN 2016 §5).
+            </field>
+        </record>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             Camp HR Manager — certification record management.
+             Can add/edit staff certificates (KRK, RPS, course certs).
+             Required by Rozp. MEN 2016 §4 for verified cert management.
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <record id="group_camp_hr" model="res.groups">
+            <field name="name">Camp HR Manager</field>
+            <field name="category_id" ref="module_category_fayna_campscout"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">
+                Camp HR manager — can add and edit staff certifications
+                (KRK, RPS, course certs). PL law: Rozp. MEN 2016 §4.
+            </field>
+        </record>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             Camp Operations Admin — full ops access.
+             Implied by group_fayna_camp_manager.
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <record id="group_camp_admin" model="res.groups">
+            <field name="name">Camp Operations Admin</field>
+            <field name="category_id" ref="module_category_fayna_campscout"/>
+            <field name="implied_ids" eval="[(4, ref('group_camp_kierownik'))]"/>
+            <field name="comment">
+                Camp operations admin — full access to camp.report including
+                revert-to-draft on submitted reports. Implied by camp_manager.
+            </field>
+        </record>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             Camp Manager — full management access.
+             Top-level camp group. Implies camp_admin → camp_kierownik.
+             Can approve Program Wypoczynku (Załącznik 9).
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <record id="group_fayna_camp_manager" model="res.groups">
+            <field name="name">Camp Manager</field>
+            <field name="category_id" ref="module_category_fayna_campscout"/>
+            <field name="implied_ids" eval="[(4, ref('group_camp_admin'))]"/>
+            <field name="comment">
+                Camp manager — full access to camp.program (Program Wypoczynku,
+                Załącznik 9) including approve/submit workflow. Can override
+                immutability where PL law permits (incident post-closure edits).
+            </field>
+        </record>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             Emergency Responder — first-responder access.
+             Can create and update incident reports and action records.
+             Cannot close or reopen closed incidents.
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <record id="group_emergency_responder" model="res.groups">
+            <field name="name">Camp Emergency Responder</field>
+            <field name="category_id" ref="module_category_fayna_campscout"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">
+                First-responder — can create/update camp.incident reports and
+                camp.incident.action entries. Cannot close or reopen incidents.
+                Required by BP-006 SLA (10s first action trigger).
+            </field>
+        </record>
+
+        <!-- Emergency Manager — can close, reopen, and override incident state.
+             Implied by fayna_camp_manager. -->
+
+        <record id="group_emergency_manager" model="res.groups">
+            <field name="name">Camp Emergency Manager</field>
+            <field name="category_id" ref="module_category_fayna_campscout"/>
+            <field name="implied_ids" eval="[(4, ref('group_emergency_responder'))]"/>
+            <field name="comment">
+                Emergency manager — full access to incident lifecycle including
+                close, reopen, and override state. Immutable ledger enforcement
+                applies post-close (BP-006, Ustawa Kamilka 2024).
+            </field>
+        </record>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             Nutrition Officer — dietary/allergen data management.
+             Gates field-level access to RODO Art.9 dietary fields.
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <record id="group_nutrition_officer" model="res.groups">
+            <field name="name">Camp Nutrition Officer</field>
+            <field name="category_id" ref="module_category_fayna_campscout"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">
+                Nutrition officer — read/write access to dietary and allergen data
+                on camp.participant.diet (RODO Art.9 special-category data).
+                EU Regulation 1169/2011 (14 major allergens).
+            </field>
+        </record>
+
+    </data>
+</odoo>

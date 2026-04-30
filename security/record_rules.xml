@@ -13,5 +13,43 @@
             <field name="perm_unlink" eval="False"/>
         </record>
 
+        <!-- Portal parent sees only their own children's qualification cards -->
+        <record id="rule_portal_participant_own_children" model="ir.rule">
+            <field name="name">Portal: own children only</field>
+            <field name="model_id" ref="model_camp_participant"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">[('parent_partner_id', '=', user.partner_id.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Portal users see only published reviews -->
+        <record id="rule_portal_review_published" model="ir.rule">
+            <field name="name">Portal: published reviews only</field>
+            <field name="model_id" ref="model_camp_review"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">[('state', '=', 'published')]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Kierownik (emergency responder) sees only incidents from events they staff -->
+        <!-- Domain uses event_id.staff_ids.user_id — staff_ids O2M added to event.event -->
+        <!-- by emergency.py _inherit; user_id FK added by camp.staff emergency mixin   -->
+        <record id="rule_incident_kierownik_own_event" model="ir.rule">
+            <field name="name">Emergency responder: own event incidents only</field>
+            <field name="model_id" ref="model_camp_incident_report"/>
+            <field name="groups" eval="[(4, ref('fayna_campscout.group_emergency_responder'))]"/>
+            <field name="domain_force">[('event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
     </data>
 </odoo>

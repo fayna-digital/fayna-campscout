@@ -1,0 +1,532 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ================================================================ -->
+        <!-- fayna.camp.season                                                -->
+        <!-- ================================================================ -->
+
+        <record id="view_fayna_camp_season_tree" model="ir.ui.view">
+            <field name="name">fayna.camp.season.tree</field>
+            <field name="model">fayna.camp.season</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="year"/>
+                    <field name="season_type"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="event_count"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_fayna_camp_season_form" model="ir.ui.view">
+            <field name="name">fayna.camp.season.form</field>
+            <field name="model">fayna.camp.season</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="year"/>
+                                <field name="season_type"/>
+                            </group>
+                            <group>
+                                <field name="date_from"/>
+                                <field name="date_to"/>
+                                <field name="color"/>
+                                <field name="active"/>
+                            </group>
+                        </group>
+                        <group string="Camp Shifts">
+                            <field name="event_ids" nolabel="1">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="date_begin"/>
+                                    <field name="date_end"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_fayna_camp_season_search" model="ir.ui.view">
+            <field name="name">fayna.camp.season.search</field>
+            <field name="model">fayna.camp.season</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="year"/>
+                    <filter name="active" string="Active" domain="[('active','=',True)]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="by_year" string="Year" context="{'group_by':'year'}"/>
+                        <filter name="by_type" string="Season Type" context="{'group_by':'season_type'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_fayna_camp_season" model="ir.actions.act_window">
+            <field name="name">Camp Seasons</field>
+            <field name="res_model">fayna.camp.season</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.loyalty.participant                                         -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_loyalty_participant_tree" model="ir.ui.view">
+            <field name="name">camp.loyalty.participant.tree</field>
+            <field name="model">camp.loyalty.participant</field>
+            <field name="arch" type="xml">
+                <tree decoration-success="tier == 'banda'" decoration-info="tier == 'platinum'">
+                    <field name="partner_id"/>
+                    <field name="tier"/>
+                    <field name="points"/>
+                    <field name="discount"/>
+                    <field name="camps_count"/>
+                    <field name="history_count"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_loyalty_participant_form" model="ir.ui.view">
+            <field name="name">camp.loyalty.participant.form</field>
+            <field name="model">camp.loyalty.participant</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="partner_id"/>
+                                <field name="tier"/>
+                                <field name="points"/>
+                            </group>
+                            <group>
+                                <field name="discount" readonly="1"/>
+                                <field name="camps_count"/>
+                            </group>
+                        </group>
+                        <group string="History">
+                            <field name="history_ids" nolabel="1">
+                                <tree>
+                                    <field name="create_date"/>
+                                    <field name="event_type"/>
+                                    <field name="points_delta"/>
+                                    <field name="description"/>
+                                    <field name="sale_order_id"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <div>
+                            <button name="action_reset_points" string="Reset Points"
+                                    type="object" groups="base.group_system" class="btn-danger"/>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_camp_loyalty_participant_search" model="ir.ui.view">
+            <field name="name">camp.loyalty.participant.search</field>
+            <field name="model">camp.loyalty.participant</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="partner_id"/>
+                    <filter name="banda" string="BANDA Tier" domain="[('tier','=','banda')]"/>
+                    <filter name="platinum" string="Platinum" domain="[('tier','=','platinum')]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="by_tier" string="Tier" context="{'group_by':'tier'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_camp_loyalty_participant" model="ir.actions.act_window">
+            <field name="name">Loyalty Participants</field>
+            <field name="res_model">camp.loyalty.participant</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.loyalty.history                                             -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_loyalty_history_tree" model="ir.ui.view">
+            <field name="name">camp.loyalty.history.tree</field>
+            <field name="model">camp.loyalty.history</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="create_date"/>
+                    <field name="participant_id"/>
+                    <field name="event_type"/>
+                    <field name="points_delta"/>
+                    <field name="description"/>
+                    <field name="sale_order_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_camp_loyalty_history" model="ir.actions.act_window">
+            <field name="name">Loyalty History</field>
+            <field name="res_model">camp.loyalty.history</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.review                                                      -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_review_tree" model="ir.ui.view">
+            <field name="name">camp.review.tree</field>
+            <field name="model">camp.review</field>
+            <field name="arch" type="xml">
+                <tree decoration-success="state == 'published'" decoration-warning="state == 'submitted'" decoration-danger="state == 'rejected'">
+                    <field name="product_template_id"/>
+                    <field name="event_id"/>
+                    <field name="author_display_name"/>
+                    <field name="rating"/>
+                    <field name="title"/>
+                    <field name="state"/>
+                    <field name="submitted_date"/>
+                    <field name="is_public"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_review_form" model="ir.ui.view">
+            <field name="name">camp.review.form</field>
+            <field name="model">camp.review</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_submit" string="Submit for Review" type="object"
+                                invisible="state != 'draft'"/>
+                        <button name="action_publish" string="Publish" type="object"
+                                invisible="state != 'submitted'" class="btn-primary"/>
+                        <button name="action_reject" string="Reject" type="object"
+                                invisible="state not in ('submitted','published')"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="product_template_id"/>
+                                <field name="event_id"/>
+                                <field name="participant_id"/>
+                                <field name="registration_id"/>
+                            </group>
+                            <group>
+                                <field name="author_partner_id"/>
+                                <field name="author_display_name" readonly="1"/>
+                                <field name="is_anonymous"/>
+                                <field name="is_public"/>
+                            </group>
+                        </group>
+                        <group string="Review Content">
+                            <field name="rating"/>
+                            <field name="title"/>
+                            <field name="content"/>
+                            <field name="highlight"/>
+                            <field name="improvement"/>
+                        </group>
+                        <group string="Extras">
+                            <group>
+                                <field name="would_return"/>
+                                <field name="recommend"/>
+                                <field name="helpful_count"/>
+                            </group>
+                            <group>
+                                <field name="tags"/>
+                                <field name="submitted_date"/>
+                            </group>
+                        </group>
+                        <group string="Moderation">
+                            <field name="moderation_notes"/>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_camp_review_search" model="ir.ui.view">
+            <field name="name">camp.review.search</field>
+            <field name="model">camp.review</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="product_template_id"/>
+                    <field name="title"/>
+                    <filter name="published" string="Published" domain="[('state','=','published')]"/>
+                    <filter name="pending_moderation" string="Pending Review" domain="[('state','=','submitted')]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="by_product" string="Camp" context="{'group_by':'product_template_id'}"/>
+                        <filter name="by_state" string="State" context="{'group_by':'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_camp_review" model="ir.actions.act_window">
+            <field name="name">Camp Reviews</field>
+            <field name="res_model">camp.review</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.support.request                                             -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_support_request_tree" model="ir.ui.view">
+            <field name="name">camp.support.request.tree</field>
+            <field name="model">camp.support.request</field>
+            <field name="arch" type="xml">
+                <tree decoration-danger="priority == 'urgent'" decoration-warning="priority == 'high'">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="request_type"/>
+                    <field name="subject"/>
+                    <field name="priority"/>
+                    <field name="state"/>
+                    <field name="submission_date"/>
+                    <field name="assigned_to"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_support_request_form" model="ir.ui.view">
+            <field name="name">camp.support.request.form</field>
+            <field name="model">camp.support.request</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_submit" string="Submit" type="object" invisible="state != 'draft'"/>
+                        <button name="action_start_review" string="Start Review" type="object" invisible="state != 'submitted'"/>
+                        <button name="action_approve" string="Approve" type="object" invisible="state not in ('submitted','under_review')"/>
+                        <button name="action_reject" string="Reject" type="object" invisible="state not in ('submitted','under_review')"/>
+                        <button name="action_start_refund" string="Start Refund" type="object" invisible="state != 'approved'"/>
+                        <button name="action_complete" string="Complete" type="object" invisible="state not in ('approved','refund_processing')"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" readonly="1"/>
+                                <field name="partner_id"/>
+                                <field name="request_type"/>
+                                <field name="category"/>
+                                <field name="priority"/>
+                            </group>
+                            <group>
+                                <field name="event_id"/>
+                                <field name="registration_id"/>
+                                <field name="participant_id" readonly="1"/>
+                                <field name="assigned_to"/>
+                                <field name="submission_date"/>
+                            </group>
+                        </group>
+                        <group string="Request">
+                            <field name="subject"/>
+                            <field name="description"/>
+                        </group>
+                        <group string="Cancellation Details" invisible="request_type != 'cancel'">
+                            <group>
+                                <field name="reason"/>
+                                <field name="days_to_event" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="retention_pct" readonly="1"/>
+                                <field name="refund_pct" readonly="1"/>
+                                <field name="estimated_refund" readonly="1"/>
+                                <field name="refund_due_date" readonly="1"/>
+                            </group>
+                            <field name="note"/>
+                            <field name="medical_cert" groups="fayna_campscout.group_medical_officer"/>
+                        </group>
+                        <group string="Response">
+                            <field name="response"/>
+                            <field name="moderator_response"/>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_camp_support_request_search" model="ir.ui.view">
+            <field name="name">camp.support.request.search</field>
+            <field name="model">camp.support.request</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="partner_id"/>
+                    <field name="subject"/>
+                    <filter name="open" string="Open" domain="[('state','not in',('completed','closed','rejected'))]"/>
+                    <filter name="cancellations" string="Cancellations" domain="[('request_type','=','cancel')]"/>
+                    <filter name="urgent" string="Urgent" domain="[('priority','=','urgent')]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="by_type" string="Type" context="{'group_by':'request_type'}"/>
+                        <filter name="by_state" string="State" context="{'group_by':'state'}"/>
+                        <filter name="by_priority" string="Priority" context="{'group_by':'priority'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_camp_support_request" model="ir.actions.act_window">
+            <field name="name">Support Requests</field>
+            <field name="res_model">camp.support.request</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_open': 1}</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- fayna.payment.installment.plan                                   -->
+        <!-- ================================================================ -->
+
+        <record id="view_fayna_payment_installment_plan_tree" model="ir.ui.view">
+            <field name="name">fayna.payment.installment.plan.tree</field>
+            <field name="model">fayna.payment.installment.plan</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="plan_type"/>
+                    <field name="installment_count"/>
+                    <field name="deposit_pct"/>
+                    <field name="interval_days"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_fayna_payment_installment_plan_form" model="ir.ui.view">
+            <field name="name">fayna.payment.installment.plan.form</field>
+            <field name="model">fayna.payment.installment.plan</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="plan_type"/>
+                                <field name="active"/>
+                            </group>
+                            <group>
+                                <field name="installment_count"/>
+                                <field name="deposit_pct" invisible="plan_type != 'deposit_plus_equal'"/>
+                                <field name="interval_days" invisible="plan_type == 'custom'"/>
+                            </group>
+                        </group>
+                        <group string="Custom Lines" invisible="plan_type != 'custom'">
+                            <field name="installment_line_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="day_offset"/>
+                                    <field name="percent"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_fayna_payment_installment_plan" model="ir.actions.act_window">
+            <field name="name">Installment Plans</field>
+            <field name="res_model">fayna.payment.installment.plan</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- fayna.payment.installment                                        -->
+        <!-- ================================================================ -->
+
+        <record id="view_fayna_payment_installment_tree" model="ir.ui.view">
+            <field name="name">fayna.payment.installment.tree</field>
+            <field name="model">fayna.payment.installment</field>
+            <field name="arch" type="xml">
+                <tree decoration-danger="state == 'overdue'" decoration-success="state == 'paid'" decoration-info="state == 'pending'">
+                    <field name="name"/>
+                    <field name="sale_order_id"/>
+                    <field name="installment_number"/>
+                    <field name="due_date"/>
+                    <field name="amount"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="state"/>
+                    <field name="payment_date"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_fayna_payment_installment_form" model="ir.ui.view">
+            <field name="name">fayna.payment.installment.form</field>
+            <field name="model">fayna.payment.installment</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_mark_paid" string="Mark Paid" type="object"
+                                invisible="state in ('paid','cancelled')" class="btn-primary"/>
+                        <button name="action_cancel" string="Cancel" type="object"
+                                invisible="state in ('paid','cancelled')"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="sale_order_id"/>
+                                <field name="installment_plan_id"/>
+                                <field name="installment_number"/>
+                                <field name="sequence"/>
+                            </group>
+                            <group>
+                                <field name="due_date"/>
+                                <field name="amount"/>
+                                <field name="payment_date"/>
+                                <field name="payment_reference"/>
+                                <field name="invoice_id"/>
+                            </group>
+                        </group>
+                        <group string="Notes">
+                            <field name="notes" nolabel="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_fayna_payment_installment_search" model="ir.ui.view">
+            <field name="name">fayna.payment.installment.search</field>
+            <field name="model">fayna.payment.installment</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="sale_order_id"/>
+                    <filter name="overdue" string="Overdue" domain="[('state','=','overdue')]"/>
+                    <filter name="pending" string="Pending" domain="[('state','=','pending')]"/>
+                    <filter name="paid" string="Paid" domain="[('state','=','paid')]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="by_order" string="Sale Order" context="{'group_by':'sale_order_id'}"/>
+                        <filter name="by_state" string="State" context="{'group_by':'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_fayna_payment_installment" model="ir.actions.act_window">
+            <field name="name">Installments</field>
+            <field name="res_model">fayna.payment.installment</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

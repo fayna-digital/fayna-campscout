@@ -1,77 +1,134 @@
-# CampScout Portal (Thin Client)
+# Fayna CampScout
 
 ![Odoo Version](https://img.shields.io/badge/Odoo-17.0%20Community-purple)
 ![Python](https://img.shields.io/badge/Python-3.10+-blue)
 ![License](https://img.shields.io/badge/License-LGPL--3-green.svg)
 ![Status](https://img.shields.io/badge/Status-Live-brightgreen)
 
-**Розроблено [Fayna Digital](https://www.fayna.agency) для платформи CampScout.**
+**Розроблено [Fayna Digital](https://www.fayna.agency)**
 **Автор: Volodymyr Shevchenko**
 
 ---
 
-## Призначення
+## Що це
 
-Портальний thin client для батьків: особистий кабінет `/my` з дашбордом учасників, щоденними stories від вихователів, документами для підписання та програмою лояльності. Окремий REST JSON API для мобільного застосунку (авторизація, учасники, stories, документи, повідомлення). Модуль виступає точкою інтеграції між платформою CampScout і батьківським досвідом.
+Єдиний Odoo-модуль для управління дитячим табором CampScout.
+Один install — отримуєш все необхідне для роботи табору.
 
-## Поточний стан
+Побудований на базі нативних модулів Odoo 17: `event`, `sale`, `loyalty`, `slide`, `sms`, `website_rating`.
 
-| Параметр | Значення |
-|---|---|
-| Версія | 17.0.0.4.0 |
-| Фаза проекту | Phase 7 з 9 |
-| Статус | Live |
-| Staging | ✅ |
+---
 
-## Моделі
+## Можливості
 
-| Модель | Опис |
-|---|---|
-| `campscout.portal.session` | Трекінг сесії батька в порталі: кількість дітей, активні табори, непрочитані повідомлення, очікувані дії. |
-| `campscout.portal.menu` | Кастомізація меню порталу залежно від регіону (PL/UA). |
+### Табори та реєстрація
+- Табори як `event.event` (заїзди) + `product.template` (магазин)
+- Онлайн запис через website shop
+- Управління місцями та ціноутворенням
 
-## Контролери
+### Учасники (діти)
+- Кваліфікаційна картка дитини — 5 секцій за польським законом
+- RODO consent log (через `fayna_rodo_compliance`)
+- Медичні дані з ACL-обмеженням (тільки медперсонал)
+- Immutability після підпису керівником
 
-| Контролер | Маршрути |
-|---|---|
-| `controllers/portal.py` | `home()` override для `/my` — рендерить hero-блок кабінету батька; `/my/participants`, `/my/stories`, `/my/documents`, `/my/loyalty` |
-| `controllers/api.py` | REST JSON API для мобільного: авторизація, учасники, stories, документи, повідомлення |
+### Операції табору
+- Журнал дня (dziennik zajęć)
+- Програма wypoczynku — Załącznik 9 (обов'язковий документ PL)
+- Склад персоналу по змінах
+- Розклад активностей
+- Звіт керівника (sprawozdanie kierownika)
+- Сповіщення кураторіуму
+
+### Харчування
+- Плани харчування по днях
+- EU-14 алергени (Regulation 1169/2011)
+- Дієтичні профілі учасників
+
+### Надзвичайні ситуації
+- Протокол НС — 7-станова машина станів
+- 18 типів дій (Ustawa Kamilka 2024 + Rozp. MEN §6)
+- Immutable ledger — не можна змінити після закриття
+
+### Комерція
+- Підтримка батьків (запити, скасування, переноси)
+- Розстрочки (через `account.payment.term`)
+- Програма лояльності (через `loyalty.program` + camp tier)
+- Відгуки батьків (через `website_rating`)
+
+### Навчання персоналу
+- Курс виховника 36h (через `slide.channel`)
+- MEN compliance tracking (Rozp. MEN 2016)
+- Сертифікати завершення
+
+### Комунікації
+- SMS через TurboSMS (через `sms`)
+- Мульти-провайдер routing (UA/PL номери)
+- Meta CAPI events (Facebook Pixel)
+
+### Батьківський портал
+- `/my` — головна панель батька
+- `/my/participants` — діти та картки
+- `/my/stories` — новини з табору
+- `/my/documents` — юридичні документи
+- `/my/loyalty` — програма лояльності
+- REST API для мобільного додатку
+
+---
+
+## Встановлення
+
+```bash
+# На staging:
+docker stop campscout_web
+docker run --rm ... odoo -i fayna_campscout --stop-after-init
+docker start campscout_web
+```
+
+**Одна команда — весь функціонал.**
+
+---
 
 ## Залежності
 
-- `base`, `website`, `sale`, `portal`, `mail`
-- `fayna_camp_template`
-- `fayna_camp_qualification`
-- `fayna_camp_loyalty`
-- `fayna_camp_stories`
-- `fayna_legal_versioning`
-- `fayna_rodo_compliance`
-
-## Безпека
-
-### ACL (`ir.model.access.csv`)
-
-Портальні користувачі мають обмежений доступ лише до власних сесій.
-
-### Правила доступу до рядків (`ir.rule`)
-
-| Правило | Умова |
+| Odoo native | Призначення |
 |---|---|
-| Portal: власна сесія | `partner_id = user.partner_id` — батько бачить тільки свій запис |
+| `event`, `event_sale` | Заїзди табору |
+| `sale`, `account` | Продажі та оплати |
+| `loyalty` | Програма лояльності |
+| `slide` | Навчання персоналу |
+| `sms` | SMS-розсилки |
+| `website_rating` | Відгуки |
+| `portal`, `website` | Батьківський кабінет |
 
-## Тести
+| Fayna shared | Призначення |
+|---|---|
+| `fayna_rodo_compliance` | RODO consent log (shared з sendpulse) |
 
-2 тести: `test_campscout.py` (TransactionCase — portal menu, portal session values), `test_scaffold.py`. Мінімальне тестування, потребує розширення.
+---
 
-```bash
-docker exec campscout_web odoo -c /etc/odoo/odoo.conf -d campscout \
-    --test-enable --stop-after-init --no-http -u fayna_campscout
+## Структура
+
+```
+fayna_campscout/
+  models/
+    camp.py          # event.event + product.template розширення
+    participant.py   # camp.participant, кваліфікаційна картка
+    operations.py    # журнал, програма, персонал, кураторіум
+    nutrition.py     # харчування, алергени
+    emergency.py     # протокол НС
+    commercial.py    # підтримка, лояльність, відгуки
+    training.py      # навчання (extends slide.channel)
+    sms.py           # SMS adapter TurboSMS
+  views/             # XML views для кожного розділу
+  templates/         # Portal + website QWeb шаблони
+  i18n/
+    uk_UA.po         # Українська
+    pl_PL.po         # Польська
 ```
 
-## Локалізація
-
-`i18n/uk_UA.po` + `i18n/pl_PL.po`
+---
 
 ## Ліцензія
 
-LGPL-3 — © 2026 Fayna Digital
+LGPL-3 · [Fayna Digital](https://www.fayna.agency) · Volodymyr Shevchenko

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ================================================================ -->
+        <!-- slide.channel — MEN extension                                   -->
+        <!-- ================================================================ -->
+
+        <record id="view_slide_channel_camp_form" model="ir.ui.view">
+            <field name="name">slide.channel.camp.form</field>
+            <field name="model">slide.channel</field>
+            <field name="inherit_id" ref="slide.slide_channel_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="inside">
+                    <group string="MEN Compliance" name="men_compliance">
+                        <field name="camp_course_type"/>
+                        <field name="required_hours"/>
+                        <field name="is_men_course"/>
+                        <button name="action_view_training_records"
+                                string="Training Records"
+                                type="object"
+                                class="btn-secondary oe_stat_button"
+                                icon="fa-graduation-cap"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.staff.training.record                                       -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_staff_training_record_tree" model="ir.ui.view">
+            <field name="name">camp.staff.training.record.tree</field>
+            <field name="model">camp.staff.training.record</field>
+            <field name="arch" type="xml">
+                <tree decoration-success="state == 'certified'" decoration-warning="state == 'expired'" decoration-info="state == 'completed'">
+                    <field name="display_name"/>
+                    <field name="partner_id"/>
+                    <field name="channel_id"/>
+                    <field name="course_type"/>
+                    <field name="hours_completed"/>
+                    <field name="required_hours"/>
+                    <field name="completion_pct"/>
+                    <field name="state"/>
+                    <field name="certificate_number"/>
+                    <field name="issue_date"/>
+                    <field name="expiry_date"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_staff_training_record_form" model="ir.ui.view">
+            <field name="name">camp.staff.training.record.form</field>
+            <field name="model">camp.staff.training.record</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_start" string="Start Training" type="object"
+                                invisible="state != 'enrolled'"/>
+                        <button name="action_complete" string="Mark Complete" type="object"
+                                invisible="state not in ('enrolled', 'in_progress')"/>
+                        <button name="action_certify" string="Issue Certificate" type="object"
+                                invisible="state != 'completed'" class="btn-primary"/>
+                        <button name="action_expire" string="Expire" type="object"
+                                invisible="state != 'certified'"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="enrolled,in_progress,completed,certified"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1><field name="display_name" readonly="1"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="partner_id"/>
+                                <field name="channel_id"/>
+                                <field name="course_type" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="hours_completed"/>
+                                <field name="required_hours" readonly="1"/>
+                                <field name="completion_pct" readonly="1" widget="progressbar"/>
+                                <field name="slides_completed"/>
+                            </group>
+                        </group>
+                        <group string="Certificate" invisible="state not in ('certified', 'expired')">
+                            <group>
+                                <field name="certificate_number"/>
+                                <field name="issue_date"/>
+                            </group>
+                            <group>
+                                <field name="expiry_date"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_camp_staff_training_record_search" model="ir.ui.view">
+            <field name="name">camp.staff.training.record.search</field>
+            <field name="model">camp.staff.training.record</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="partner_id"/>
+                    <field name="channel_id"/>
+                    <field name="certificate_number"/>
+                    <filter name="certified" string="Certified" domain="[('state','=','certified')]"/>
+                    <filter name="expired" string="Expired" domain="[('state','=','expired')]"/>
+                    <filter name="in_progress" string="In Progress" domain="[('state','in',('enrolled','in_progress','completed'))]"/>
+                    <filter name="men_courses" string="MEN Courses" domain="[('channel_id.is_men_course','=',True)]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="by_partner" string="Staff Member" context="{'group_by':'partner_id'}"/>
+                        <filter name="by_course_type" string="Course Type" context="{'group_by':'course_type'}"/>
+                        <filter name="by_state" string="State" context="{'group_by':'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_camp_staff_training_record" model="ir.actions.act_window">
+            <field name="name">Training Records</field>
+            <field name="res_model">camp.staff.training.record</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_slide_channel_camp" model="ir.actions.act_window">
+            <field name="name">Training Courses</field>
+            <field name="res_model">slide.channel</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('camp_course_type', '!=', False)]</field>
+        </record>
+
+    </data>
+</odoo>

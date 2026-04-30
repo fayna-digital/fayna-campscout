@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             Root application menu
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <menuitem id="menu_campscout_root"
+            name="CampScout"
+            sequence="50"
+            groups="base.group_user"/>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             Camp Management
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <menuitem id="menu_camp_management"
+            name="Табори"
+            parent="menu_campscout_root"
+            sequence="10"/>
+
+        <menuitem id="menu_camp_events"
+            name="Заїзди (Events)"
+            parent="menu_camp_management"
+            action="event.event_event_action_main"
+            sequence="10"/>
+
+        <menuitem id="menu_camp_products"
+            name="Програми (Products)"
+            parent="menu_camp_management"
+            action="product.product_template_action_all"
+            sequence="20"/>
+
+        <menuitem id="menu_camp_categories"
+            name="Категорії"
+            parent="menu_camp_management"
+            action="action_camp_category"
+            sequence="30"/>
+
+        <menuitem id="menu_camp_activities"
+            name="Активності"
+            parent="menu_camp_management"
+            action="action_camp_activity"
+            sequence="40"/>
+
+        <menuitem id="menu_camp_schedule"
+            name="Розклад"
+            parent="menu_camp_management"
+            action="action_camp_schedule_entry"
+            sequence="50"/>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             Participants
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <menuitem id="menu_participants"
+            name="Учасники"
+            parent="menu_campscout_root"
+            sequence="20"/>
+
+        <menuitem id="menu_participant_list"
+            name="Кваліфікаційні картки"
+            parent="menu_participants"
+            action="action_camp_participant"
+            sequence="10"/>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             Operations
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <menuitem id="menu_operations"
+            name="Операції"
+            parent="menu_campscout_root"
+            sequence="30"/>
+
+        <menuitem id="menu_camp_staff"
+            name="Персонал"
+            parent="menu_operations"
+            action="action_camp_staff"
+            sequence="10"/>
+
+        <menuitem id="menu_camp_journal"
+            name="Журнал дня"
+            parent="menu_operations"
+            action="action_camp_journal"
+            sequence="20"/>
+
+        <menuitem id="menu_camp_dziennik"
+            name="Dziennik zajęć"
+            parent="menu_operations"
+            action="action_fayna_camp_dziennik"
+            sequence="30"/>
+
+        <menuitem id="menu_camp_program_wypoczynku"
+            name="Program Wypoczynku (Załącznik 9)"
+            parent="menu_operations"
+            action="action_camp_program_wypoczynku"
+            sequence="40"/>
+
+        <menuitem id="menu_camp_kuratorium"
+            name="Kuratorium"
+            parent="menu_operations"
+            action="action_camp_kuratorium_notification"
+            sequence="50"/>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             Nutrition
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <menuitem id="menu_nutrition"
+            name="Харчування"
+            parent="menu_campscout_root"
+            sequence="40"/>
+
+        <menuitem id="menu_meal_plans"
+            name="Плани харчування"
+            parent="menu_nutrition"
+            action="action_camp_meal_plan"
+            sequence="10"/>
+
+        <menuitem id="menu_allergens"
+            name="Алергени"
+            parent="menu_nutrition"
+            action="action_camp_allergen"
+            sequence="20"/>
+
+        <menuitem id="menu_diet_profiles"
+            name="Дієтичні профілі"
+            parent="menu_nutrition"
+            action="action_camp_diet_profile"
+            sequence="30"/>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             Emergency
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <menuitem id="menu_emergency"
+            name="Надзвичайні ситуації"
+            parent="menu_campscout_root"
+            sequence="50"
+            groups="fayna_campscout.group_emergency_responder"/>
+
+        <menuitem id="menu_incidents"
+            name="Протоколи НС"
+            parent="menu_emergency"
+            action="action_camp_incident_report"
+            sequence="10"/>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             Commercial
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <menuitem id="menu_commercial"
+            name="Комерція"
+            parent="menu_campscout_root"
+            sequence="60"/>
+
+        <menuitem id="menu_loyalty"
+            name="Програма лояльності"
+            parent="menu_commercial"
+            action="action_camp_loyalty_participant"
+            sequence="10"/>
+
+        <menuitem id="menu_support_requests"
+            name="Запити батьків"
+            parent="menu_commercial"
+            action="action_camp_support_request"
+            sequence="20"/>
+
+        <menuitem id="menu_installment_plans"
+            name="Розстрочки"
+            parent="menu_commercial"
+            action="action_fayna_payment_installment_plan"
+            sequence="30"/>
+
+        <menuitem id="menu_reviews"
+            name="Відгуки"
+            parent="menu_commercial"
+            action="action_camp_review"
+            sequence="40"/>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             Training
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <menuitem id="menu_training"
+            name="Навчання"
+            parent="menu_campscout_root"
+            sequence="70"/>
+
+        <menuitem id="menu_training_courses"
+            name="Курси (eLearning)"
+            parent="menu_training"
+            action="slide.action_slide_channel"
+            sequence="10"/>
+
+        <menuitem id="menu_training_records"
+            name="Записи навчання"
+            parent="menu_training"
+            action="action_camp_staff_training_record"
+            sequence="20"/>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             Configuration
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <menuitem id="menu_config"
+            name="Налаштування"
+            parent="menu_campscout_root"
+            sequence="90"
+            groups="base.group_system"/>
+
+        <menuitem id="menu_sms_routing"
+            name="SMS маршрути"
+            parent="menu_config"
+            action="action_fayna_sms_routing_rule"
+            sequence="10"/>
+
+        <menuitem id="menu_sms_templates"
+            name="SMS шаблони"
+            parent="menu_config"
+            action="action_camp_sms_template"
+            sequence="20"/>
+
+        <menuitem id="menu_camp_faq"
+            name="FAQ"
+            parent="menu_config"
+            action="action_camp_faq"
+            sequence="30"/>
+
+    </data>
+</odoo>

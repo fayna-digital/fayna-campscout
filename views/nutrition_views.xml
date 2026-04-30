@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ================================================================ -->
+        <!-- camp.allergen                                                    -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_allergen_tree" model="ir.ui.view">
+            <field name="name">camp.allergen.tree</field>
+            <field name="model">camp.allergen</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="color" widget="color_picker"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_allergen_form" model="ir.ui.view">
+            <field name="name">camp.allergen.form</field>
+            <field name="model">camp.allergen</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="color"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Description">
+                            <field name="description" nolabel="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_camp_allergen_search" model="ir.ui.view">
+            <field name="name">camp.allergen.search</field>
+            <field name="model">camp.allergen</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <filter name="active" string="Active" domain="[('active','=',True)]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_camp_allergen" model="ir.actions.act_window">
+            <field name="name">Allergens</field>
+            <field name="res_model">camp.allergen</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.diet.profile                                                -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_diet_profile_tree" model="ir.ui.view">
+            <field name="name">camp.diet.profile.tree</field>
+            <field name="model">camp.diet.profile</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="display_name"/>
+                    <field name="participant_id"/>
+                    <field name="partner_id"/>
+                    <field name="diet_type"/>
+                    <field name="allergen_summary"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_diet_profile_form" model="ir.ui.view">
+            <field name="name">camp.diet.profile.form</field>
+            <field name="model">camp.diet.profile</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="participant_id"/>
+                            <field name="partner_id" invisible="participant_id != False"/>
+                            <field name="diet_type"/>
+                        </group>
+                        <group string="Allergens">
+                            <field name="allergen_ids" widget="many2many_tags" nolabel="1"/>
+                        </group>
+                        <group string="Notes">
+                            <field name="notes" nolabel="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_camp_diet_profile" model="ir.actions.act_window">
+            <field name="name">Diet Profiles</field>
+            <field name="res_model">camp.diet.profile</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.meal.plan                                                   -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_meal_plan_tree" model="ir.ui.view">
+            <field name="name">camp.meal.plan.tree</field>
+            <field name="model">camp.meal.plan</field>
+            <field name="arch" type="xml">
+                <tree decoration-success="state == 'confirmed'" decoration-info="state == 'draft'">
+                    <field name="name"/>
+                    <field name="event_id"/>
+                    <field name="date"/>
+                    <field name="meal_type"/>
+                    <field name="participant_count"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_meal_plan_form" model="ir.ui.view">
+            <field name="name">camp.meal.plan.form</field>
+            <field name="model">camp.meal.plan</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_confirm" string="Confirm" type="object"
+                                invisible="state != 'draft'" class="btn-primary"/>
+                        <button name="action_reset_draft" string="Reset to Draft" type="object"
+                                invisible="state != 'confirmed'"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="event_id"/>
+                                <field name="date"/>
+                                <field name="meal_type"/>
+                            </group>
+                            <group>
+                                <field name="participant_count" readonly="1"/>
+                            </group>
+                        </group>
+                        <group string="Description">
+                            <field name="description" nolabel="1"/>
+                            <field name="notes"/>
+                        </group>
+                        <group string="Menu Items">
+                            <field name="line_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id"/>
+                                    <field name="quantity"/>
+                                    <field name="unit"/>
+                                    <field name="allergen_names" readonly="1"/>
+                                    <field name="notes"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_camp_meal_plan_search" model="ir.ui.view">
+            <field name="name">camp.meal.plan.search</field>
+            <field name="model">camp.meal.plan</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="event_id"/>
+                    <filter name="draft" string="Draft" domain="[('state','=','draft')]"/>
+                    <filter name="confirmed" string="Confirmed" domain="[('state','=','confirmed')]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="by_event" string="Event" context="{'group_by':'event_id'}"/>
+                        <filter name="by_date" string="Date" context="{'group_by':'date'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_camp_meal_plan" model="ir.actions.act_window">
+            <field name="name">Meal Plans</field>
+            <field name="res_model">camp.meal.plan</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.menu.day                                                    -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_menu_day_tree" model="ir.ui.view">
+            <field name="name">camp.menu.day.tree</field>
+            <field name="model">camp.menu.day</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="display_name"/>
+                    <field name="event_id"/>
+                    <field name="menu_date"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_menu_day_form" model="ir.ui.view">
+            <field name="name">camp.menu.day.form</field>
+            <field name="model">camp.menu.day</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="event_id"/>
+                            <field name="menu_date"/>
+                        </group>
+                        <group string="Meals">
+                            <field name="breakfast"/>
+                            <field name="second_breakfast"/>
+                            <field name="lunch"/>
+                            <field name="afternoon_snack"/>
+                            <field name="dinner"/>
+                        </group>
+                        <group string="Nutritionist Notes">
+                            <field name="notes" nolabel="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_camp_menu_day_search" model="ir.ui.view">
+            <field name="name">camp.menu.day.search</field>
+            <field name="model">camp.menu.day</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="event_id"/>
+                    <field name="menu_date"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_camp_menu_day" model="ir.actions.act_window">
+            <field name="name">Daily Menus</field>
+            <field name="res_model">camp.menu.day</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.nutrition (legacy)                                          -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_nutrition_tree" model="ir.ui.view">
+            <field name="name">camp.nutrition.tree</field>
+            <field name="model">camp.nutrition</field>
+            <field name="arch" type="xml">
+                <tree decoration-success="state == 'confirmed'" decoration-info="state == 'draft'">
+                    <field name="event_id"/>
+                    <field name="menu_date"/>
+                    <field name="state"/>
+                    <field name="prepared_by"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_nutrition_form" model="ir.ui.view">
+            <field name="name">camp.nutrition.form</field>
+            <field name="model">camp.nutrition</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_confirm" string="Confirm" type="object"
+                                invisible="state != 'draft'" class="btn-primary"/>
+                        <button name="action_reset_to_draft" string="Reset to Draft" type="object"
+                                invisible="state != 'confirmed'"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="event_id"/>
+                            <field name="menu_date"/>
+                            <field name="prepared_by"/>
+                        </group>
+                        <group string="Meals">
+                            <field name="breakfast"/>
+                            <field name="lunch"/>
+                            <field name="dinner"/>
+                            <field name="snacks"/>
+                        </group>
+                        <group string="Special Diet Counts">
+                            <group>
+                                <field name="vegetarian_count"/>
+                                <field name="vegan_count"/>
+                            </group>
+                            <group>
+                                <field name="gluten_free_count"/>
+                                <field name="lactose_free_count"/>
+                            </group>
+                            <field name="allergy_notes"/>
+                        </group>
+                        <group string="Notes">
+                            <field name="notes" nolabel="1"/>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_camp_nutrition" model="ir.actions.act_window">
+            <field name="name">Daily Nutrition (legacy)</field>
+            <field name="res_model">camp.nutrition</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.participant.diet                                            -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_participant_diet_tree" model="ir.ui.view">
+            <field name="name">camp.participant.diet.tree</field>
+            <field name="model">camp.participant.diet</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="participant_id"/>
+                    <field name="allergen_names" readonly="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_participant_diet_form" model="ir.ui.view">
+            <field name="name">camp.participant.diet.form</field>
+            <field name="model">camp.participant.diet</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group groups="fayna_campscout.group_nutrition_officer">
+                            <field name="participant_id"/>
+                            <field name="allergen_ids" widget="many2many_tags" groups="fayna_campscout.group_nutrition_officer"/>
+                            <field name="dietary_restrictions" groups="fayna_campscout.group_nutrition_officer"/>
+                            <field name="notes" groups="fayna_campscout.group_nutrition_officer"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_camp_participant_diet" model="ir.actions.act_window">
+            <field name="name">Participant Diets</field>
+            <field name="res_model">camp.participant.diet</field>
+            <field name="view_mode">tree,form</field>
+            <field name="groups_id" eval="[(4, ref('fayna_campscout.group_nutrition_officer'))]"/>
+        </record>
+
+    </data>
+</odoo>

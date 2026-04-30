@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Auto-refusal cron: daily check for unsigned qualification cards
+             past the 24h-before-camp deadline.
+             Legal: RODO + PL Rozp. MEN invariant. -->
+        <record id="cron_auto_refusal_unsigned" model="ir.cron">
+            <field name="name">CampScout: Auto-refusal for unsigned qualification cards</field>
+            <field name="model_id" ref="model_camp_participant"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_auto_refusal_scan()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active">True</field>
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+
+        <!-- Qualification card reminder emails: 14d / 7d / 3d before camp -->
+        <record id="cron_qualification_reminders" model="ir.cron">
+            <field name="name">CampScout: Qualification card reminder emails</field>
+            <field name="model_id" ref="model_camp_participant"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_auto_refusal_reminders()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active">True</field>
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+
+        <!-- Payment installment overdue check: daily -->
+        <record id="cron_installment_overdue" model="ir.cron">
+            <field name="name">CampScout: Mark overdue payment installments</field>
+            <field name="model_id" ref="model_fayna_payment_installment"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_mark_overdue()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active">True</field>
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+
+    </data>
+</odoo>
