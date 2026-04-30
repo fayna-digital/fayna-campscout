@@ -9,7 +9,7 @@
         <record id="view_slide_channel_camp_form" model="ir.ui.view">
             <field name="name">slide.channel.camp.form</field>
             <field name="model">slide.channel</field>
-            <field name="inherit_id" ref="slide.slide_channel_view_form"/>
+            <field name="inherit_id" ref="website_slides.view_slide_channel_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//sheet" position="inside">
                     <group string="MEN Compliance" name="men_compliance">
