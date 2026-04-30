@@ -23,7 +23,7 @@
         <menuitem id="menu_camp_events"
             name="Заїзди (Events)"
             parent="menu_camp_management"
-            action="event.event_event_action_main"
+            action="event.action_event_view"
             sequence="10"/>
 
         <menuitem id="menu_camp_products"
@@ -192,7 +192,7 @@
         <menuitem id="menu_training_courses"
             name="Курси (eLearning)"
             parent="menu_training"
-            action="slide.action_slide_channel"
+            action="website_slides.slide_channel_action_overview"
             sequence="10"/>
 
         <menuitem id="menu_training_records"
