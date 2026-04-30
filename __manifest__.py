@@ -43,9 +43,7 @@ Fayna CampScout
         "event_sale",
         "account",
         "loyalty",
-        "website_slides",
         "sms",
-        "website_rating",
         "fayna_rodo_compliance",
     ],
     "data": [
