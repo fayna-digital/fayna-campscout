@@ -156,5 +156,69 @@
             </field>
         </record>
 
+        <!-- ═══════════════════════════════════════════════════════════════
+             NEW ROLES (TZ §5.1 — 6-role design 2026-04-30)
+             Sales / Wychowawca / Instructor / Camp Admin (top-level)
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <!-- 💼 Sales Manager — каталог, ціни, продажі, маркетинг -->
+        <record id="group_camp_sales" model="res.groups">
+            <field name="name">Camp Sales Manager</field>
+            <field name="category_id" ref="module_category_fayna_camp_portal"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">
+                Sales/marketing manager — catalog, prices, sale.order, support
+                requests, marketing reports, public stories. NO access to medical
+                data, kuratorium, dziennik, daily reports, incidents.
+            </field>
+        </record>
+
+        <!-- 🧑‍🏫 Wychowawca — counselor, group leader -->
+        <record id="group_camp_wychowawca" model="res.groups">
+            <field name="name">Camp Wychowawca (Counselor)</field>
+            <field name="category_id" ref="module_category_fayna_camp_portal"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">
+                Wychowawca — runs activities for own group of children. Sees own
+                group only via record rule camp.staff.event_id == self. Sees
+                allergies + emergency_contact (children) but NOT medications/
+                doctor_notes. Załącznik 5 MEN dziennik signing rights.
+            </field>
+        </record>
+
+        <!-- 🎯 Instructor — activity specialist -->
+        <record id="group_camp_instructor" model="res.groups">
+            <field name="name">Camp Instructor (Activity Specialist)</field>
+            <field name="category_id" ref="module_category_fayna_camp_portal"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">
+                Instructor — specialist for one or more activities (swimming,
+                climbing, archery). Sees own activities via record rule
+                camp.activity.responsible_id == self. Sees only attendees with
+                relevant medical info (e.g., asthma for running).
+            </field>
+        </record>
+
+        <!-- 🔴 Camp Portal Admin — TOP-LEVEL, view-as + dashboard -->
+        <record id="group_camp_portal_admin" model="res.groups">
+            <field name="name">Camp Portal Admin (top-level)</field>
+            <field name="category_id" ref="module_category_fayna_camp_portal"/>
+            <field name="implied_ids" eval="[
+                (4, ref('base.group_system')),
+                (4, ref('group_fayna_camp_manager')),
+                (4, ref('group_emergency_manager')),
+                (4, ref('group_nutrition_officer')),
+                (4, ref('group_medical_officer')),
+                (4, ref('group_camp_hr')),
+                (4, ref('group_camp_sales'))
+            ]"/>
+            <field name="comment">
+                Top-level admin — bypasses all record rules (via base.group_system),
+                lands on /admin/dashboard, can /admin/as-{role} impersonate any
+                role for support/inspection. Each impersonation logged in
+                camp.admin.access.log (RODO art.30, 7-year retention).
+            </field>
+        </record>
+
     </data>
 </odoo>
