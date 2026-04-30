@@ -118,3 +118,25 @@ access_camp_report_admin,camp.report admin,model_camp_report,base.group_system,1
 access_camp_report_user,camp.report user,model_camp_report,base.group_user,1,0,0,0
 access_camp_report_kierownik,camp.report kierownik,model_camp_report,fayna_camp_portal.group_camp_kierownik,1,1,1,0
 access_camp_report_camp_admin,camp.report camp admin,model_camp_report,fayna_camp_portal.group_camp_admin,1,1,1,1
+access_camp_admin_access_log_organizator,camp.admin.access.log organizator,model_camp_admin_access_log,fayna_camp_portal.group_camp_organizator,1,1,1,0
+access_camp_admin_access_log_admin,camp.admin.access.log admin,model_camp_admin_access_log,base.group_system,1,1,1,0
+access_camp_staff_sms_log_organizator,camp.staff.sms.log organizator,model_camp_staff_sms_log,fayna_camp_portal.group_camp_organizator,1,1,1,0
+access_camp_staff_sms_log_kierownik,camp.staff.sms.log kierownik,model_camp_staff_sms_log,fayna_camp_portal.group_camp_kierownik,1,0,0,0
+access_camp_staff_sms_log_wychowawca,camp.staff.sms.log wychowawca,model_camp_staff_sms_log,fayna_camp_portal.group_camp_wychowawca,1,0,0,0
+access_camp_staff_sms_composer_user,camp.staff.sms.composer user,model_camp_staff_sms_composer,fayna_camp_portal.group_camp_wychowawca,1,1,1,1
+access_camp_staff_sms_composer_kierownik,camp.staff.sms.composer kierownik,model_camp_staff_sms_composer,fayna_camp_portal.group_camp_kierownik,1,1,1,1
+access_camp_incident_notification_log_organizator,camp.incident.notification.log organizator,model_camp_incident_notification_log,fayna_camp_portal.group_camp_organizator,1,1,1,0
+access_camp_incident_notification_log_kierownik,camp.incident.notification.log kierownik,model_camp_incident_notification_log,fayna_camp_portal.group_camp_kierownik,1,0,0,0
+access_camp_participant_sales,camp.participant sales,model_camp_participant,fayna_camp_portal.group_camp_sales,1,0,0,0
+access_camp_participant_wychowawca,camp.participant wychowawca,model_camp_participant,fayna_camp_portal.group_camp_wychowawca,1,1,0,0
+access_camp_participant_instructor,camp.participant instructor,model_camp_participant,fayna_camp_portal.group_camp_instructor,1,0,0,0
+access_camp_journal_wychowawca,camp.journal wychowawca,model_camp_journal,fayna_camp_portal.group_camp_wychowawca,1,1,1,0
+access_camp_journal_kierownik,camp.journal kierownik,model_camp_journal,fayna_camp_portal.group_camp_kierownik,1,1,1,0
+access_camp_daily_report_kierownik,camp.daily.report kierownik,model_camp_daily_report,fayna_camp_portal.group_camp_kierownik,1,1,1,0
+access_camp_staff_kierownik,camp.staff kierownik,model_camp_staff,fayna_camp_portal.group_camp_kierownik,1,1,1,0
+access_camp_staff_wychowawca,camp.staff wychowawca,model_camp_staff,fayna_camp_portal.group_camp_wychowawca,1,0,0,0
+access_camp_staff_instructor,camp.staff instructor,model_camp_staff,fayna_camp_portal.group_camp_instructor,1,0,0,0
+access_camp_story_wychowawca,camp.story wychowawca,model_camp_story,fayna_camp_portal.group_camp_wychowawca,1,1,1,0
+access_camp_story_kierownik,camp.story kierownik,model_camp_story,fayna_camp_portal.group_camp_kierownik,1,1,1,0
+access_camp_support_request_sales,camp.support.request sales,model_camp_support_request,fayna_camp_portal.group_camp_sales,1,1,1,0
+access_camp_activity_instructor,camp.activity instructor,model_camp_activity,fayna_camp_portal.group_camp_instructor,1,1,0,0

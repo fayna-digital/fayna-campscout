@@ -12,5 +12,22 @@
             <field name="value">False</field>
         </record>
 
+        <!--
+          Wychowawca / kierownik staff-broadcast SMS — cost guard parameters.
+          Defaults align with PL market pricing 2026 (TurboSMS PL ≈ 0.05 PLN/segment).
+        -->
+        <record id="cfg_sms_wychowawca_limit" model="ir.config_parameter">
+            <field name="key">fayna_camp_portal.sms_wychowawca_monthly_limit</field>
+            <field name="value">100</field>
+        </record>
+        <record id="cfg_sms_kierownik_limit" model="ir.config_parameter">
+            <field name="key">fayna_camp_portal.sms_kierownik_monthly_limit</field>
+            <field name="value">300</field>
+        </record>
+        <record id="cfg_sms_cost_per_segment" model="ir.config_parameter">
+            <field name="key">fayna_camp_portal.sms_cost_per_segment_pln</field>
+            <field name="value">0.05</field>
+        </record>
+
     </data>
 </odoo>

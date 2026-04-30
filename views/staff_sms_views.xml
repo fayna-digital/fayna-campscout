@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ================================================================ -->
+        <!-- Wizard: camp.staff.sms.composer                                  -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_staff_sms_composer_form" model="ir.ui.view">
+            <field name="name">camp.staff.sms.composer.form</field>
+            <field name="model">camp.staff.sms.composer</field>
+            <field name="arch" type="xml">
+                <form string="Send SMS to my group">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>📨 SMS broadcast — my group</h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="staff_id" readonly="1"/>
+                                <field name="event_id" readonly="1"/>
+                                <field name="template_id"/>
+                            </group>
+                            <group>
+                                <field name="recipient_count" readonly="1"/>
+                                <field name="cost_estimate_pln"
+                                       widget="monetary"
+                                       readonly="1"/>
+                            </group>
+                        </group>
+                        <group string="Message body (≤ 70 cyrillic chars = 1 SMS segment)">
+                            <field name="body" nolabel="1" widget="text" placeholder="🏕 Збір через 10 хв на майданчику"/>
+                        </group>
+                        <group string="Recipients (preview)">
+                            <field name="recipient_ids" nolabel="1" readonly="1">
+                                <tree>
+                                    <field name="display_name"/>
+                                    <field name="child_mobile"/>
+                                    <field name="parent_partner_id"/>
+                                    <field name="sms_consent"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <div class="alert alert-info" role="alert">
+                            <strong>RODO:</strong>
+                            Only participants with <code>sms_consent = True</code>
+                            and a reachable mobile (own or parent's) appear above.
+                            All sends are logged to <em>SMS Broadcast Log</em>
+                            (immutable, 7-year retention).
+                        </div>
+                    </sheet>
+                    <footer>
+                        <button name="action_send"
+                                type="object"
+                                string="📨 Send"
+                                class="btn-primary"/>
+                        <button special="cancel"
+                                string="Cancel"
+                                class="btn-secondary"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.staff form button — open the wizard                         -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_staff_form_inherit_sms" model="ir.ui.view">
+            <field name="name">camp.staff.form.inherit.sms</field>
+            <field name="model">camp.staff</field>
+            <field name="inherit_id" ref="fayna_camp_portal.view_camp_staff_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <button name="action_open_sms_composer"
+                            type="object"
+                            string="📨 Send SMS to my group"
+                            class="btn-primary"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.staff.sms.log — list view                                   -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_staff_sms_log_tree" model="ir.ui.view">
+            <field name="name">camp.staff.sms.log.tree</field>
+            <field name="model">camp.staff.sms.log</field>
+            <field name="arch" type="xml">
+                <tree create="0" delete="0" edit="0">
+                    <field name="sent_at"/>
+                    <field name="staff_id"/>
+                    <field name="event_id"/>
+                    <field name="recipient_count"/>
+                    <field name="delivery_sent"/>
+                    <field name="delivery_error"/>
+                    <field name="cost_pln"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_staff_sms_log_form" model="ir.ui.view">
+            <field name="name">camp.staff.sms.log.form</field>
+            <field name="model">camp.staff.sms.log</field>
+            <field name="arch" type="xml">
+                <form create="0" delete="0" edit="0">
+                    <sheet>
+                        <div class="alert alert-warning" role="alert">
+                            🔒 Immutable record — RODO + PL law (7-year retention).
+                        </div>
+                        <group>
+                            <group>
+                                <field name="sent_at" readonly="1"/>
+                                <field name="staff_id" readonly="1"/>
+                                <field name="event_id" readonly="1"/>
+                                <field name="template_id" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="recipient_count" readonly="1"/>
+                                <field name="delivery_sent" readonly="1"/>
+                                <field name="delivery_error" readonly="1"/>
+                                <field name="cost_pln" readonly="1"/>
+                            </group>
+                        </group>
+                        <group string="Message body">
+                            <field name="body" nolabel="1" readonly="1"/>
+                        </group>
+                        <group string="Recipients">
+                            <field name="recipient_ids" nolabel="1" readonly="1">
+                                <tree>
+                                    <field name="display_name"/>
+                                    <field name="child_mobile"/>
+                                    <field name="parent_partner_id"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_camp_staff_sms_log_search" model="ir.ui.view">
+            <field name="name">camp.staff.sms.log.search</field>
+            <field name="model">camp.staff.sms.log</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="staff_id"/>
+                    <field name="event_id"/>
+                    <field name="body"/>
+                    <filter name="this_month"
+                            string="This month"
+                            domain="[('sent_at','&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="by_staff" string="Staff" context="{'group_by':'staff_id'}"/>
+                        <filter name="by_event" string="Camp shift" context="{'group_by':'event_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_camp_staff_sms_log" model="ir.actions.act_window">
+            <field name="name">SMS Broadcast Log</field>
+            <field name="res_model">camp.staff.sms.log</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_camp_staff_sms_log_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No SMS broadcasts yet
+                </p>
+                <p>
+                    Each broadcast a wychowawca / kierownik sends to their group
+                    is recorded here. Records are immutable (RODO + PL law,
+                    7-year retention).
+                </p>
+            </field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- Menu — under Camp Operations                                     -->
+        <!-- ================================================================ -->
+
+        <menuitem id="menu_camp_staff_sms_log"
+            name="SMS Broadcast Log"
+            parent="menu_operations"
+            action="action_camp_staff_sms_log"
+            sequence="60"/>
+
+    </data>
+</odoo>

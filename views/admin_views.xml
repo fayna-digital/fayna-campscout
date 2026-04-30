@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ============================================================== -->
+        <!-- camp.admin.access.log — read-only RODO art.30 register.        -->
+        <!-- ============================================================== -->
+
+        <record id="view_camp_admin_access_log_tree" model="ir.ui.view">
+            <field name="name">camp.admin.access.log.tree</field>
+            <field name="model">camp.admin.access.log</field>
+            <field name="arch" type="xml">
+                <tree create="false" edit="false" delete="false"
+                      default_order="accessed_at desc"
+                      decoration-info="impersonated_role == 'parent'"
+                      decoration-warning="impersonated_role in ('kierownik','wychowawca','instructor')">
+                    <field name="accessed_at"/>
+                    <field name="user_id"/>
+                    <field name="impersonated_role"/>
+                    <field name="target_user_id"/>
+                    <field name="target_partner_id"/>
+                    <field name="target_event_id"/>
+                    <field name="ip_address"/>
+                    <field name="reason" optional="hide"/>
+                    <field name="session_id" optional="hide"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_admin_access_log_form" model="ir.ui.view">
+            <field name="name">camp.admin.access.log.form</field>
+            <field name="model">camp.admin.access.log</field>
+            <field name="arch" type="xml">
+                <form create="false" edit="false" delete="false">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="accessed_at"/>
+                                <field name="user_id"/>
+                                <field name="impersonated_role"/>
+                            </group>
+                            <group>
+                                <field name="target_user_id"/>
+                                <field name="target_partner_id"/>
+                                <field name="target_event_id"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="reason"/>
+                            <field name="ip_address"/>
+                            <field name="session_id"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_camp_admin_access_log_search" model="ir.ui.view">
+            <field name="name">camp.admin.access.log.search</field>
+            <field name="model">camp.admin.access.log</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="user_id"/>
+                    <field name="target_user_id"/>
+                    <field name="target_partner_id"/>
+                    <field name="target_event_id"/>
+                    <field name="ip_address"/>
+                    <filter name="role_kierownik" string="As Kierownik"
+                            domain="[('impersonated_role','=','kierownik')]"/>
+                    <filter name="role_wychowawca" string="As Wychowawca"
+                            domain="[('impersonated_role','=','wychowawca')]"/>
+                    <filter name="role_instructor" string="As Instructor"
+                            domain="[('impersonated_role','=','instructor')]"/>
+                    <filter name="role_parent" string="As Parent"
+                            domain="[('impersonated_role','=','parent')]"/>
+                    <separator/>
+                    <filter name="last_24h" string="Last 24h"
+                            domain="[('accessed_at','&gt;=', (context_today() - relativedelta(days=1)).strftime('%Y-%m-%d'))]"/>
+                    <filter name="last_7d" string="Last 7 days"
+                            domain="[('accessed_at','&gt;=', (context_today() - relativedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="by_user" string="Organizator"
+                                context="{'group_by':'user_id'}"/>
+                        <filter name="by_role" string="Impersonated role"
+                                context="{'group_by':'impersonated_role'}"/>
+                        <filter name="by_day" string="Day"
+                                context="{'group_by':'accessed_at:day'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_camp_admin_access_log" model="ir.actions.act_window">
+            <field name="name">Admin Access Log (RODO)</field>
+            <field name="res_model">camp.admin.access.log</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_camp_admin_access_log_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Жодного view-as ще не записано.
+                </p>
+                <p>
+                    Усі дії /admin/as-{role} автоматично залишають слід у цьому
+                    реєстрі (RODO art.30, 7 років зберігання).
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_admin_access_log"
+                  name="Admin Access Log (RODO)"
+                  parent="menu_config"
+                  action="action_camp_admin_access_log"
+                  sequence="40"/>
+
+        <!-- ============================================================== -->
+        <!-- ir.actions.act_url that lands Organizators on /admin/dashboard -->
+        <!-- after login (referenced by res.users._get_login_action()).     -->
+        <!-- ============================================================== -->
+
+        <record id="action_admin_dashboard" model="ir.actions.act_url">
+            <field name="name">CampScout Admin Dashboard</field>
+            <field name="url">/admin/dashboard</field>
+            <field name="target">self</field>
+        </record>
+
+    </data>
+</odoo>

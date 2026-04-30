@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================== -->
+    <!-- Organizator (admin) dashboard — server-rendered KPI overview.   -->
+    <!-- TZ §5.1 (six-role design 2026-04-30).                           -->
+    <!-- ============================================================== -->
+
+    <template id="admin_dashboard" name="CampScout Admin Dashboard">
+        <t t-call="website.layout">
+            <div id="wrap" class="container my-4">
+
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <div>
+                        <h1 class="mb-1">Кабінет Організатора</h1>
+                        <small class="text-muted">
+                            Organizator Wypoczynku · Rozp. MEN 30.03.2016 §2.1
+                        </small>
+                    </div>
+                    <span class="badge bg-success">
+                        <t t-esc="now.strftime('%d.%m.%Y %H:%M')"/>
+                    </span>
+                </div>
+
+                <!-- 1. Огляд бізнесу -->
+                <section class="mb-4">
+                    <h3 class="mb-3">📊 Огляд бізнесу</h3>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h6 class="text-muted mb-1">Активні табори</h6>
+                                    <div class="display-6 fw-bold" t-esc="kpi_active_events"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h6 class="text-muted mb-1">Оплачені реєстрації (місяць)</h6>
+                                    <div class="display-6 fw-bold" t-esc="kpi_paid_registrations"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h6 class="text-muted mb-1">Дохід місяця</h6>
+                                    <div class="display-6 fw-bold">
+                                        <t t-esc="'%.2f' % (kpi_revenue_month or 0)"/>
+                                        <small class="text-muted ms-2" t-esc="kpi_revenue_currency"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. Тривоги -->
+                <section class="mb-4">
+                    <h3 class="mb-3">🚨 Тривоги</h3>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="card h-100 shadow-sm border-danger">
+                                <div class="card-body">
+                                    <h6 class="text-muted mb-1">Непідписані картки (&lt;14 днів)</h6>
+                                    <div class="display-6 fw-bold text-danger" t-esc="alarm_unsigned_cards"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100 shadow-sm border-warning">
+                                <div class="card-body">
+                                    <h6 class="text-muted mb-1">Відкриті інциденти</h6>
+                                    <div class="display-6 fw-bold text-warning" t-esc="alarm_open_incidents"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100 shadow-sm border-info">
+                                <div class="card-body">
+                                    <h6 class="text-muted mb-1">Кураторіум — у роботі</h6>
+                                    <div class="display-6 fw-bold text-info" t-esc="alarm_kuratorium_pending"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. Активні табори -->
+                <section class="mb-4">
+                    <h3 class="mb-3">🏕 Активні табори</h3>
+                    <div class="card shadow-sm">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0 align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Табір</th>
+                                        <th>Kierownik</th>
+                                        <th class="text-end">Реєстрації</th>
+                                        <th>Статус</th>
+                                        <th class="text-end">Дії</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-if="not active_camps">
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted py-3">
+                                                Немає активних таборів у найближчі 6 місяців.
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <t t-foreach="active_camps" t-as="row">
+                                        <tr>
+                                            <td>
+                                                <strong t-esc="row['name']"/>
+                                            </td>
+                                            <td t-esc="row['kierownik']"/>
+                                            <td class="text-end" t-esc="row['registrations']"/>
+                                            <td>
+                                                <span t-attf-class="badge bg-#{row['badge']}" t-esc="row['status']"/>
+                                            </td>
+                                            <td class="text-end">
+                                                <a t-attf-href="/admin/as-kierownik?event_id=#{row['id']}"
+                                                   class="btn btn-sm btn-outline-primary">
+                                                    Переглянути як kierownik
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. Команда -->
+                <section class="mb-4">
+                    <h3 class="mb-3">👥 Команда</h3>
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h6 class="card-title">Сертифікати, що закінчуються (30 днів)</h6>
+                            <t t-if="not expiring_certs">
+                                <p class="text-muted mb-0">Усі сертифікати дійсні мінімум 30 днів.</p>
+                            </t>
+                            <t t-else="">
+                                <ul class="list-group list-group-flush">
+                                    <t t-foreach="expiring_certs" t-as="cert">
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span>
+                                                <strong t-esc="cert.partner_id.name"/>
+                                                <t t-if="cert.course_type">
+                                                    — <span t-esc="cert.course_type"/>
+                                                </t>
+                                            </span>
+                                            <span class="text-warning">
+                                                <t t-esc="cert.expiry_date"/>
+                                            </span>
+                                        </li>
+                                    </t>
+                                </ul>
+                            </t>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. Комунікації -->
+                <section class="mb-4">
+                    <h3 class="mb-3">💬 Комунікації</h3>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h6 class="text-muted mb-1">Відкриті запити батьків</h6>
+                                    <div class="display-6 fw-bold" t-esc="open_support_requests"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h6 class="text-muted mb-1">RODO consent rate</h6>
+                                    <div class="display-6 fw-bold">
+                                        <t t-esc="rodo_consent_rate"/>%
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. Маркетинг -->
+                <section class="mb-4">
+                    <h3 class="mb-3">📈 Маркетинг</h3>
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h6 class="card-title">Топ-3 табори за продажами (місяць)</h6>
+                            <t t-if="not top_camps">
+                                <p class="text-muted mb-0">Немає даних за поточний місяць.</p>
+                            </t>
+                            <t t-else="">
+                                <ol class="list-group list-group-numbered">
+                                    <t t-foreach="top_camps" t-as="camp_row">
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span t-esc="camp_row['name']"/>
+                                            <strong>
+                                                <t t-esc="'%.2f' % camp_row['amount']"/>
+                                            </strong>
+                                        </li>
+                                    </t>
+                                </ol>
+                            </t>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 7. Audit -->
+                <section class="mb-4">
+                    <h3 class="mb-3">🔐 Audit (RODO art.30)</h3>
+                    <div class="card shadow-sm">
+                        <div class="table-responsive">
+                            <table class="table table-sm mb-0 align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Час</th>
+                                        <th>Організатор</th>
+                                        <th>Як хто</th>
+                                        <th>Об'єкт</th>
+                                        <th>IP</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-if="not recent_access_log">
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted py-3">
+                                                Жодного view-as ще не записано.
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <t t-foreach="recent_access_log" t-as="log">
+                                        <tr>
+                                            <td>
+                                                <small t-esc="log.accessed_at.strftime('%d.%m %H:%M') if log.accessed_at else ''"/>
+                                            </td>
+                                            <td t-esc="log.user_id.name"/>
+                                            <td>
+                                                <span class="badge bg-secondary" t-esc="log.impersonated_role"/>
+                                            </td>
+                                            <td>
+                                                <t t-if="log.target_event_id">
+                                                    <span t-esc="log.target_event_id.name"/>
+                                                </t>
+                                                <t t-elif="log.target_partner_id">
+                                                    <span t-esc="log.target_partner_id.name"/>
+                                                </t>
+                                                <t t-elif="log.target_user_id">
+                                                    <span t-esc="log.target_user_id.name"/>
+                                                </t>
+                                            </td>
+                                            <td>
+                                                <small class="text-muted" t-esc="log.ip_address or ''"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </t>
+    </template>
+
+    <!-- ============================================================== -->
+    <!-- Shared "you are viewing as X" banner used by all view-as pages. -->
+    <!-- ============================================================== -->
+
+    <template id="admin_view_as_banner" name="View-as banner">
+        <div class="alert alert-warning d-flex justify-content-between align-items-center mb-3" role="alert">
+            <div>
+                <strong>Ви переглядаєте кабінет як</strong>
+                <span class="badge bg-dark ms-1" t-esc="impersonated_role"/>
+                <span class="ms-2">
+                    (<t t-esc="viewed_user.name"/>)
+                </span>
+                <small class="d-block text-muted mt-1">
+                    Ця дія записана у camp.admin.access.log (RODO art.30).
+                </small>
+            </div>
+            <a href="/admin/dashboard" class="btn btn-sm btn-outline-dark">
+                ← Повернутися у кабінет
+            </a>
+        </div>
+    </template>
+
+    <!-- ============================================================== -->
+    <!-- /admin/as-kierownik                                              -->
+    <!-- ============================================================== -->
+
+    <template id="admin_as_kierownik" name="View as kierownik">
+        <t t-call="website.layout">
+            <div id="wrap" class="container my-4">
+                <t t-call="fayna_camp_portal.admin_view_as_banner"/>
+
+                <h2>
+                    <span t-esc="event.name"/>
+                </h2>
+                <p class="text-muted">
+                    Перегляд як kierownik —
+                    <strong t-esc="viewed_user.name"/>
+                </p>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h6 class="text-muted mb-1">Дати</h6>
+                                <div>
+                                    <t t-esc="event.date_begin"/>
+                                    →
+                                    <t t-esc="event.date_end"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h6 class="text-muted mb-1">Учасники</h6>
+                                <div class="display-6 fw-bold" t-esc="len(registrations)"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Персонал</h5>
+                        <t t-if="not staff">
+                            <p class="text-muted mb-0">Персонал не призначено.</p>
+                        </t>
+                        <t t-else="">
+                            <ul class="list-group list-group-flush">
+                                <t t-foreach="staff" t-as="s">
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <span t-esc="s.name"/>
+                                        <span class="text-muted" t-esc="s.role"/>
+                                    </li>
+                                </t>
+                            </ul>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ============================================================== -->
+    <!-- /admin/as-wychowawca                                             -->
+    <!-- ============================================================== -->
+
+    <template id="admin_as_wychowawca" name="View as wychowawca">
+        <t t-call="website.layout">
+            <div id="wrap" class="container my-4">
+                <t t-call="fayna_camp_portal.admin_view_as_banner"/>
+
+                <h2>Перегляд як wychowawca</h2>
+                <p class="text-muted">
+                    <strong t-esc="staff.name"/>
+                    <t t-if="event">
+                        — <span t-esc="event.name"/>
+                    </t>
+                </p>
+
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Dziennik zajęć</h5>
+                        <t t-if="not dzienniki">
+                            <p class="text-muted mb-0">Немає записів dziennika.</p>
+                        </t>
+                        <t t-else="">
+                            <ul class="list-group list-group-flush">
+                                <t t-foreach="dzienniki" t-as="dz">
+                                    <li class="list-group-item">
+                                        <span t-esc="dz.display_name"/>
+                                    </li>
+                                </t>
+                            </ul>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ============================================================== -->
+    <!-- /admin/as-instructor                                             -->
+    <!-- ============================================================== -->
+
+    <template id="admin_as_instructor" name="View as instructor">
+        <t t-call="website.layout">
+            <div id="wrap" class="container my-4">
+                <t t-call="fayna_camp_portal.admin_view_as_banner"/>
+
+                <h2>Перегляд як instructor</h2>
+                <p class="text-muted">
+                    <strong t-esc="staff.name"/>
+                    <t t-if="event">
+                        — <span t-esc="event.name"/>
+                    </t>
+                </p>
+
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Активності</h5>
+                        <t t-if="not activities">
+                            <p class="text-muted mb-0">Активності не призначено.</p>
+                        </t>
+                        <t t-else="">
+                            <ul class="list-group list-group-flush">
+                                <t t-foreach="activities" t-as="act">
+                                    <li class="list-group-item">
+                                        <span t-esc="act.display_name"/>
+                                    </li>
+                                </t>
+                            </ul>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ============================================================== -->
+    <!-- /admin/as-parent — render /my-style portal as that parent       -->
+    <!-- ============================================================== -->
+
+    <template id="admin_as_parent" name="View as parent">
+        <t t-call="website.layout">
+            <div id="wrap" class="container my-4">
+                <t t-call="fayna_camp_portal.admin_view_as_banner"/>
+
+                <h2>
+                    Кабінет батька:
+                    <span t-esc="partner.name"/>
+                </h2>
+
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Учасники</h5>
+                        <t t-if="not participants">
+                            <p class="text-muted mb-0">Дітей не зареєстровано.</p>
+                        </t>
+                        <t t-else="">
+                            <ul class="list-group list-group-flush">
+                                <t t-foreach="participants" t-as="p">
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <span t-esc="p.display_name"/>
+                                        <small class="text-muted">
+                                            <t t-if="p.birth_date" t-esc="p.birth_date"/>
+                                        </small>
+                                    </li>
+                                </t>
+                            </ul>
+                        </t>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Реєстрації</h5>
+                        <t t-if="not registrations">
+                            <p class="text-muted mb-0">Реєстрацій немає.</p>
+                        </t>
+                        <t t-else="">
+                            <ul class="list-group list-group-flush">
+                                <t t-foreach="registrations" t-as="r">
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <span t-esc="r.event_id.name"/>
+                                        <span class="badge bg-secondary" t-esc="r.state"/>
+                                    </li>
+                                </t>
+                            </ul>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

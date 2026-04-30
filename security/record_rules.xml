@@ -38,13 +38,183 @@
         </record>
 
         <!-- Kierownik (emergency responder) sees only incidents from events they staff -->
-        <!-- Domain uses event_id.staff_ids.user_id — staff_ids O2M added to event.event -->
-        <!-- by emergency.py _inherit; user_id FK added by camp.staff emergency mixin   -->
         <record id="rule_incident_kierownik_own_event" model="ir.rule">
             <field name="name">Emergency responder: own event incidents only</field>
             <field name="model_id" ref="model_camp_incident_report"/>
             <field name="groups" eval="[(4, ref('fayna_camp_portal.group_emergency_responder'))]"/>
             <field name="domain_force">[('event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             Record rules per TZ §5.3 — 5-role design 2026-04-30
+             group_camp_sales / kierownik / wychowawca / instructor / portal
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <!-- ─── camp.participant ──────────────────────────────────────── -->
+        <!-- Kierownik sees participants of THEIR camps (event.user_id == self) -->
+        <record id="rule_participant_kierownik_own" model="ir.rule">
+            <field name="name">Kierownik: participants of own camps</field>
+            <field name="model_id" ref="model_camp_participant"/>
+            <field name="groups" eval="[(4, ref('group_camp_kierownik'))]"/>
+            <field name="domain_force">['|', ('registration_ids.event_id.user_id', '=', user.id), ('registration_ids.event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Wychowawca sees participants in events where they staff -->
+        <record id="rule_participant_wychowawca_own" model="ir.rule">
+            <field name="name">Wychowawca: participants of own group</field>
+            <field name="model_id" ref="model_camp_participant"/>
+            <field name="groups" eval="[(4, ref('group_camp_wychowawca'))]"/>
+            <field name="domain_force">[('registration_ids.event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Instructor sees only participants registered to THEIR activities -->
+        <record id="rule_participant_instructor_own" model="ir.rule">
+            <field name="name">Instructor: participants in own activities</field>
+            <field name="model_id" ref="model_camp_participant"/>
+            <field name="groups" eval="[(4, ref('group_camp_instructor'))]"/>
+            <field name="domain_force">[('registration_ids.event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Sales sees participants only via sale.order linkage (NO medical fields via groups=) -->
+        <record id="rule_participant_sales" model="ir.rule">
+            <field name="name">Sales: participants of own sale orders</field>
+            <field name="model_id" ref="model_camp_participant"/>
+            <field name="groups" eval="[(4, ref('group_camp_sales'))]"/>
+            <field name="domain_force">[('parent_partner_id.sale_order_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- ─── camp.story ────────────────────────────────────────────── -->
+        <!-- Portal: only stories from events where this parent's children are registered -->
+        <record id="rule_story_portal_own_events" model="ir.rule">
+            <field name="name">Portal: stories from own children events</field>
+            <field name="model_id" ref="model_camp_story"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">[('state', '=', 'published'), ('public', '=', True), ('event_id.registration_ids.partner_id', '=', user.partner_id.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Wychowawca creates/edits draft stories of own events -->
+        <record id="rule_story_wychowawca_own" model="ir.rule">
+            <field name="name">Wychowawca: own stories drafts</field>
+            <field name="model_id" ref="model_camp_story"/>
+            <field name="groups" eval="[(4, ref('group_camp_wychowawca'))]"/>
+            <field name="domain_force">[('event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Kierownik approves/publishes stories of their camp -->
+        <record id="rule_story_kierownik_own" model="ir.rule">
+            <field name="name">Kierownik: stories of own camp</field>
+            <field name="model_id" ref="model_camp_story"/>
+            <field name="groups" eval="[(4, ref('group_camp_kierownik'))]"/>
+            <field name="domain_force">['|', ('event_id.user_id', '=', user.id), ('event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- ─── camp.journal (dziennik) ───────────────────────────────── -->
+        <record id="rule_journal_wychowawca_own" model="ir.rule">
+            <field name="name">Wychowawca: own journal entries</field>
+            <field name="model_id" ref="model_camp_journal"/>
+            <field name="groups" eval="[(4, ref('group_camp_wychowawca'))]"/>
+            <field name="domain_force">[('staff_id.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_journal_kierownik_own_camp" model="ir.rule">
+            <field name="name">Kierownik: all journals of own camp</field>
+            <field name="model_id" ref="model_camp_journal"/>
+            <field name="groups" eval="[(4, ref('group_camp_kierownik'))]"/>
+            <field name="domain_force">['|', ('event_id.user_id', '=', user.id), ('event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- ─── camp.daily.report ─────────────────────────────────────── -->
+        <record id="rule_daily_report_kierownik_own" model="ir.rule">
+            <field name="name">Kierownik: daily reports of own camp</field>
+            <field name="model_id" ref="model_camp_daily_report"/>
+            <field name="groups" eval="[(4, ref('group_camp_kierownik'))]"/>
+            <field name="domain_force">['|', ('event_id.user_id', '=', user.id), ('event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- ─── camp.staff ────────────────────────────────────────────── -->
+        <record id="rule_staff_kierownik_own_camp" model="ir.rule">
+            <field name="name">Kierownik: staff of own camp</field>
+            <field name="model_id" ref="model_camp_staff"/>
+            <field name="groups" eval="[(4, ref('group_camp_kierownik'))]"/>
+            <field name="domain_force">[('event_id.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_staff_self" model="ir.rule">
+            <field name="name">Staff: see own record</field>
+            <field name="model_id" ref="model_camp_staff"/>
+            <field name="groups" eval="[(4, ref('group_camp_wychowawca')), (4, ref('group_camp_instructor'))]"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- ─── camp.support.request ──────────────────────────────────── -->
+        <record id="rule_support_portal_own" model="ir.rule">
+            <field name="name">Portal: own support requests</field>
+            <field name="model_id" ref="model_camp_support_request"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_support_sales_all" model="ir.rule">
+            <field name="name">Sales: all support requests</field>
+            <field name="model_id" ref="model_camp_support_request"/>
+            <field name="groups" eval="[(4, ref('group_camp_sales'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
             <field name="perm_create" eval="True"/>

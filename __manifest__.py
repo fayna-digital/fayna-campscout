@@ -45,6 +45,7 @@ Camp Portal
         "loyalty",
         "sms",
         "fayna_rodo_compliance",
+        "fayna_sms_base",
     ],
     "data": [
         "security/groups.xml",
@@ -52,6 +53,9 @@ Camp Portal
         "security/record_rules.xml",
         "data/ir_config_parameter.xml",
         "data/cron.xml",
+        "data/cron_kamilka_escalation.xml",
+        "data/sms_templates.xml",
+        "data/sms_child_templates.xml",
         "views/camp_views.xml",
         "views/participant_views.xml",
         "views/operations_views.xml",
@@ -60,9 +64,12 @@ Camp Portal
         "views/commercial_views.xml",
         "views/training_views.xml",
         "views/sms_views.xml",
+        "views/admin_views.xml",
         "views/menus.xml",
+        "views/staff_sms_views.xml",
         "templates/portal_templates.xml",
         "templates/website_templates.xml",
+        "templates/admin_dashboard.xml",
     ],
     "assets": {
         "web.assets_frontend": [

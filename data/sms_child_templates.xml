@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            Wychowawca → child group broadcast templates.
+            Bound to model camp.participant so the composer wizard's domain
+            (model='camp.participant') filters them in. Keep cyrillic body
+            ≤ 70 chars to stay in 1 SMS segment.
+        -->
+
+        <record id="sms_template_child_gather_10min" model="sms.template">
+            <field name="name">CampScout — Збір через 10 хв</field>
+            <field name="model_id" ref="fayna_camp_portal.model_camp_participant"/>
+            <field name="body">🏕 Збір через 10 хв: {{ ctx.get('place') or 'майданчик' }}</field>
+            <field name="lang">{{ object.lang or 'uk_UA' }}</field>
+        </record>
+
+        <record id="sms_template_child_wakeup" model="sms.template">
+            <field name="name">CampScout — Підйом 8:00</field>
+            <field name="model_id" ref="fayna_camp_portal.model_camp_participant"/>
+            <field name="body">🏕 Підйом! 8:00 майданчик</field>
+            <field name="lang">{{ object.lang or 'uk_UA' }}</field>
+        </record>
+
+        <record id="sms_template_child_lights_out" model="sms.template">
+            <field name="name">CampScout — Відбій 22:00</field>
+            <field name="model_id" ref="fayna_camp_portal.model_camp_participant"/>
+            <field name="body">🏕 Відбій 22:00</field>
+            <field name="lang">{{ object.lang or 'uk_UA' }}</field>
+        </record>
+
+        <record id="sms_template_child_lunch_5min" model="sms.template">
+            <field name="name">CampScout — Обід через 5 хв</field>
+            <field name="model_id" ref="fayna_camp_portal.model_camp_participant"/>
+            <field name="body">🏕 Обід через 5 хв</field>
+            <field name="lang">{{ object.lang or 'uk_UA' }}</field>
+        </record>
+
+        <record id="sms_template_child_emergency_kamilka" model="sms.template">
+            <field name="name">CampScout — НЕГАЙНО у табір (Ustawa Kamilka)</field>
+            <field name="model_id" ref="fayna_camp_portal.model_camp_participant"/>
+            <field name="body">🚨 НЕГАЙНО у табір! (Ustawa Kamilka)</field>
+            <field name="lang">{{ object.lang or 'uk_UA' }}</field>
+        </record>
+
+        <record id="sms_template_child_swim_training" model="sms.template">
+            <field name="name">CampScout — Тренування басейн</field>
+            <field name="model_id" ref="fayna_camp_portal.model_camp_participant"/>
+            <field name="body">🏊 Тренування {{ ctx.get('time') or '17:00' }} басейн</field>
+            <field name="lang">{{ object.lang or 'uk_UA' }}</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,1 +1,1 @@
-from . import api, portal
+from . import admin, api, portal

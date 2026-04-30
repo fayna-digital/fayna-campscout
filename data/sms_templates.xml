@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            CampScout SMS templates.
+
+            Format constraints:
+              - Cyrillic body  ≤ 70 chars  → 1 SMS segment (UCS-2)
+              - Latin body     ≤ 160 chars → 1 SMS segment (GSM-7)
+            Keep messages short. Templates use Odoo 17 inline-template syntax
+            (Jinja-like {{ ... }}); rendering is handled by ``sms.template``.
+        -->
+
+        <!-- ============================================================
+             Universal CRITICAL — incidents, unsigned cards <3d, etc.
+             ============================================================ -->
+        <record id="sms_template_default_critical" model="sms.template">
+            <field name="name">CampScout — CRITICAL (universal)</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="body">🚨 CampScout КРИТИЧНО
+{{ ctx.get('short_url') or '' }}</field>
+            <field name="lang">{{ object.lang or 'pl_PL' }}</field>
+        </record>
+
+        <!-- ============================================================
+             Universal IMPORTANT — journal comments, daily reports.
+             Note: IMPORTANT priority does NOT trigger SMS by default
+             (bell + email + push only); this template is available for
+             models that explicitly opt their IMPORTANT msgs into SMS.
+             ============================================================ -->
+        <record id="sms_template_default_important" model="sms.template">
+            <field name="name">CampScout — IMPORTANT (universal)</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="body">📨 CampScout: нове повідомлення
+{{ ctx.get('short_url') or '' }}</field>
+            <field name="lang">{{ object.lang or 'pl_PL' }}</field>
+        </record>
+
+        <!-- ============================================================
+             Ustawa Kamilka legal override — bypasses sms_opt_in.
+             Phone of camp leader (kierownik) MUST be in ctx.
+             ============================================================ -->
+        <record id="sms_template_kamilka" model="sms.template">
+            <field name="name">CampScout — USTAWA KAMILKA (legal override)</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="body">🚨🚨 USTAWA KAMILKA
+Tel kierownik: {{ ctx.get('kierownik_phone') or '' }}
+{{ ctx.get('short_url') or '' }}</field>
+            <field name="lang">{{ object.lang or 'pl_PL' }}</field>
+        </record>
+
+        <!-- ============================================================
+             Qualification card unsigned — 3 days before camp start.
+             ============================================================ -->
+        <record id="sms_template_card_unsigned_3d" model="sms.template">
+            <field name="name">CampScout — Card unsigned (3 days before)</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="body">⏰ CampScout: підпис картки до табору
+{{ ctx.get('short_url') or '' }}</field>
+            <field name="lang">{{ object.lang or 'pl_PL' }}</field>
+        </record>
+
+        <!-- ============================================================
+             Qualification card unsigned — 24 hours before camp start.
+             Final reminder before auto-refusal cron triggers.
+             ============================================================ -->
+        <record id="sms_template_card_unsigned_24h" model="sms.template">
+            <field name="name">CampScout — Card unsigned (24h before)</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="body">⏰ CampScout: 24 год до табору — підпис картки
+{{ ctx.get('short_url') or '' }}</field>
+            <field name="lang">{{ object.lang or 'pl_PL' }}</field>
+        </record>
+
+        <!-- ============================================================
+             Payment overdue — invoice past due date.
+             ============================================================ -->
+        <record id="sms_template_payment_overdue" model="sms.template">
+            <field name="name">CampScout — Payment overdue</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="body">💰 CampScout: рахунок прострочено
+{{ ctx.get('short_url') or '' }}</field>
+            <field name="lang">{{ object.lang or 'pl_PL' }}</field>
+        </record>
+
+    </data>
+</odoo>

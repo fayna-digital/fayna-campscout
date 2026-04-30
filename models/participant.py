@@ -186,7 +186,7 @@ class CampParticipant(models.Model):
 
     allergies = fields.Text(
         string=_("Allergies"),
-        groups="fayna_camp_portal.group_medical_officer",
+        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
         tracking=True,
         help=_(
             "RODO art. 9 — list of known allergies (food, medication, environmental). "
@@ -195,7 +195,7 @@ class CampParticipant(models.Model):
     )
     medications = fields.Text(
         string=_("Regular medications"),
-        groups="fayna_camp_portal.group_medical_officer",
+        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
         tracking=True,
         help=_(
             "RODO art. 9 — list of medications the child takes regularly during the camp. "
@@ -220,7 +220,7 @@ class CampParticipant(models.Model):
     )
     chronic_conditions = fields.Text(
         string=_("Chronic conditions"),
-        groups="fayna_camp_portal.group_medical_officer",
+        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
         tracking=True,
         help=_(
             "RODO art. 9 — chronic health conditions the camp staff should know about "
@@ -242,7 +242,7 @@ class CampParticipant(models.Model):
     )
     doctor_notes = fields.Html(
         string=_("Doctor / medical notes"),
-        groups="fayna_camp_portal.group_medical_officer",
+        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
         help=_(
             "RODO art. 9 — free-form medical notes from the child's physician. "
             "Attach relevant certificates or diagnoses. Medical Officers only."
@@ -390,7 +390,7 @@ class CampParticipant(models.Model):
     )
     iii_health_events = fields.Text(
         string=_("Zdarzenia zdrowotne"),
-        groups="fayna_camp_portal.group_medical_officer",
+        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
         tracking=True,
         help=_(
             "RODO art. 9 — zdarzenia zdrowotne uczestnika podczas wypoczynku: "
@@ -400,7 +400,7 @@ class CampParticipant(models.Model):
     )
     iii_medication_given = fields.Text(
         string=_("Podane leki w czasie wypoczynku"),
-        groups="fayna_camp_portal.group_medical_officer",
+        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
         tracking=True,
         help=_(
             "RODO art. 9 — lista leków podanych uczestnikowi podczas wypoczynku "
@@ -487,7 +487,7 @@ class CampParticipant(models.Model):
 
     v_health_notes = fields.Text(
         string=_("V. Notatki zdrowotne (kierownik)"),
-        groups="fayna_camp_portal.group_medical_officer",
+        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
         tracking=True,
         help=_(
             "RODO art. 9 — notatki kierownika o stanie zdrowia uczestnika podczas "
