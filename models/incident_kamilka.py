@@ -41,7 +41,7 @@ class CampIncidentReportKamilka(models.Model):
 
     severity = fields.Selection(
         selection_add=[("kamilka", "Ustawa Kamilka — vital interest")],
-        ondelete={"kamilka": "severe"},
+        ondelete={"kamilka": "cascade"},
     )
     backup_notified_at = fields.Datetime(
         string=_("Backup notified at"),
