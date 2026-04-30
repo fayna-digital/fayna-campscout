@@ -663,7 +663,8 @@
                         <group string="Staff">
                             <field name="staff_ids" nolabel="1">
                                 <tree editable="bottom">
-                                    <field name="name"/>
+                                    <field name="partner_id"/>
+                                    <field name="role"/>
                                 </tree>
                             </field>
                         </group>
