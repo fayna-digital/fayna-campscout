@@ -1,9 +1,11 @@
-from . import campscout_portal
-from . import camp
-from . import participant
-from . import operations
-from . import nutrition
-from . import emergency
-from . import commercial
-from . import training
-from . import sms
+from . import (
+    camp,
+    campscout_portal,
+    commercial,
+    emergency,
+    nutrition,
+    operations,
+    participant,
+    sms,
+    training,
+)

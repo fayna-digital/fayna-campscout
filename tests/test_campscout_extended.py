@@ -24,17 +24,13 @@ class TestCampscoutPortalSession(TransactionCase):
 
     def test_session_create_minimal(self):
         """A session record can be created with only partner_id."""
-        session = self.env["campscout.portal.session"].create(
-            {"partner_id": self.partner_a.id}
-        )
+        session = self.env["campscout.portal.session"].create({"partner_id": self.partner_a.id})
         self.assertTrue(session.id)
         self.assertEqual(session.partner_id, self.partner_a)
 
     def test_session_children_count_zero_by_default(self):
         """children_count defaults to 0 when not specified."""
-        session = self.env["campscout.portal.session"].create(
-            {"partner_id": self.partner_a.id}
-        )
+        session = self.env["campscout.portal.session"].create({"partner_id": self.partner_a.id})
         self.assertEqual(session.children_count, 0)
 
     def test_session_unread_messages_field(self):
@@ -71,17 +67,13 @@ class TestCampscoutPortalSession(TransactionCase):
 
     def test_compute_active_camps_returns_int(self):
         """_compute_active_camps always returns an integer (not None/False)."""
-        session = self.env["campscout.portal.session"].create(
-            {"partner_id": self.partner_b.id}
-        )
+        session = self.env["campscout.portal.session"].create({"partner_id": self.partner_b.id})
         # active_camps is a computed field returning 0 (scaffold placeholder)
         self.assertIsInstance(session.active_camps, int)
 
     def test_session_last_login_field_nullable(self):
         """last_login Datetime field can be left empty."""
-        session = self.env["campscout.portal.session"].create(
-            {"partner_id": self.partner_a.id}
-        )
+        session = self.env["campscout.portal.session"].create({"partner_id": self.partner_a.id})
         self.assertFalse(session.last_login)
 
     def test_session_write_children_count(self):
@@ -110,9 +102,7 @@ class TestCampscoutPortalMenuExtended(TransactionCase):
     def test_menu_custom_links_text(self):
         """custom_links Text field stores arbitrary JSON string."""
         links = '[{"label": "Shop", "url": "/shop"}]'
-        menu = self.env["campscout.portal.menu"].create(
-            {"region": "PL", "custom_links": links}
-        )
+        menu = self.env["campscout.portal.menu"].create({"region": "PL", "custom_links": links})
         self.assertEqual(menu.custom_links, links)
 
     def test_menu_show_blog_default_true(self):

@@ -291,10 +291,7 @@ class CampProduct(models.Model):
         string="Camp Status",
         tracking=True,
         copy=False,
-        help=_(
-            "Lifecycle state of the camp program. "
-            "Controls visibility on the website."
-        ),
+        help=_("Lifecycle state of the camp program. " "Controls visibility on the website."),
     )
 
     def action_publish(self):
@@ -417,10 +414,7 @@ class CampProduct(models.Model):
         string="Daily routine (legacy HTML)",
         translate=True,
         sanitize=True,
-        help=_(
-            "Free-text HTML fallback. "
-            "Prefer the structured Plan A/B schedule below."
-        ),
+        help=_("Free-text HTML fallback. " "Prefer the structured Plan A/B schedule below."),
     )
     schedule_ids = fields.One2many(
         "camp.schedule.entry",
@@ -553,10 +547,7 @@ class CampProduct(models.Model):
         "product_tmpl_id",
         "attachment_id",
         string="Gallery",
-        help=_(
-            "Extra photos for the camp gallery "
-            "— in addition to the main product images."
-        ),
+        help=_("Extra photos for the camp gallery " "— in addition to the main product images."),
     )
     camp_program_pdf_id = fields.Many2one(
         "ir.attachment",
@@ -570,10 +561,7 @@ class CampProduct(models.Model):
         string="TOP rendered",
         compute="_compute_camp_rendered_html",
         sanitize=False,
-        help=_(
-            "Preview of the top banner of the camp page "
-            "— auto-built from the fields above."
-        ),
+        help=_("Preview of the top banner of the camp page " "— auto-built from the fields above."),
     )
     camp_bot_html = fields.Html(
         string="BOT rendered",
@@ -591,11 +579,7 @@ class CampProduct(models.Model):
 
     def _camp_render_mode(self):
         """Return current feature flag value ('legacy' | 'qweb')."""
-        return (
-            self.env["ir.config_parameter"]
-            .sudo()
-            .get_param(self._CAMP_RENDER_PARAM, "legacy")
-        )
+        return self.env["ir.config_parameter"].sudo().get_param(self._CAMP_RENDER_PARAM, "legacy")
 
     def apply_qweb_render(self, force=False):
         """Copy computed camp_top_html / camp_bot_html into the core website fields

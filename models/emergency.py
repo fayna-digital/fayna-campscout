@@ -513,9 +513,7 @@ class CampIncidentReport(models.Model):
 
         Falls back gracefully if the group does not exist (test isolation).
         """
-        group = self.env.ref(
-            "fayna_campscout.group_emergency_manager", raise_if_not_found=False
-        )
+        group = self.env.ref("fayna_campscout.group_emergency_manager", raise_if_not_found=False)
         partner_ids = group.users.mapped("partner_id").ids if group else []
         for rec in self:
             rec.message_post(
@@ -789,7 +787,9 @@ class CampIncidentAction(models.Model):
     )
     receiver_response = fields.Text(
         string=_("Odpowiedź adresata"),
-        help=_("Summary of the receiver's response or confirmation. May be updated after creation."),
+        help=_(
+            "Summary of the receiver's response or confirmation. May be updated after creation."
+        ),
     )
 
     # ------------------------------------------------------------------
@@ -816,9 +816,7 @@ class CampIncidentAction(models.Model):
                     )
                 )
             if rec.state in ("delivered", "disputed", "closed"):
-                raise UserError(
-                    _("Cannot modify actions on a delivered/closed incident report.")
-                )
+                raise UserError(_("Cannot modify actions on a delivered/closed incident report."))
         return super().write(vals)
 
     def unlink(self):
@@ -919,9 +917,5 @@ class EventEvent(models.Model):
         for event in self:
             reports = event.incident_report_ids
             event.incident_count = len(reports)
-            event.incident_open_count = len(
-                reports.filtered(lambda r: r.state in _OPEN_STATES)
-            )
-            event.incident_sla_breach_count = len(
-                reports.filtered(lambda r: r.sla_breaches)
-            )
+            event.incident_open_count = len(reports.filtered(lambda r: r.state in _OPEN_STATES))
+            event.incident_sla_breach_count = len(reports.filtered(lambda r: r.sla_breaches))

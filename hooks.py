@@ -6,6 +6,7 @@ from old module names to fayna_campscout so that existing data
 
 This is a one-time migration — safe to run multiple times (idempotent).
 """
+
 import logging
 
 _logger = logging.getLogger(__name__)

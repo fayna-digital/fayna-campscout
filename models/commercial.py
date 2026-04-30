@@ -66,6 +66,7 @@ BANDA_REFERRER_PROGRAM_XMLID = "fayna_campscout.program_banda_referrer"
 # fayna.camp.season  (CUSTOM — no native equivalent)
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class FaynaCampSeason(models.Model):
     """Logical grouping of camp shifts for cross-camp business rules.
 
@@ -122,6 +123,7 @@ class FaynaCampSeason(models.Model):
 # event.event  ← _inherit  (add camp_season_id FK)
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class EventEvent(models.Model):
     _inherit = "event.event"
 
@@ -140,6 +142,7 @@ class EventEvent(models.Model):
 # ──────────────────────────────────────────────────────────────────────────────
 # loyalty.program  ← _inherit  (add Fayna camp rule type)
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class CampLoyaltyProgram(models.Model):
     """Extend the native loyalty.program with camp-specific qualification rules.
@@ -169,6 +172,7 @@ class CampLoyaltyProgram(models.Model):
 # ──────────────────────────────────────────────────────────────────────────────
 # res.partner  ← _inherit  (KDR, large-family flag, BANDA referral code)
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class ResPartner(models.Model):
     _inherit = "res.partner"
@@ -301,6 +305,7 @@ class ResPartner(models.Model):
 # tier tracker (one record per partner, accumulates cross-program points and
 # drives the tier upgrade path). These are complementary, not duplicates.
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class CampLoyaltyParticipant(models.Model):
     """Per-partner loyalty record — tier + accumulated points + referral log."""
@@ -456,9 +461,7 @@ class CampLoyaltyParticipant(models.Model):
                 "participant_id": self.id,
                 "event_type": "reset",
                 "points_delta": -old_points,
-                "description": _(
-                    "Points reset by administrator (was: %(pts)d pts, tier: %(tier)s)"
-                )
+                "description": _("Points reset by administrator (was: %(pts)d pts, tier: %(tier)s)")
                 % {"pts": old_points, "tier": old_tier},
             }
         )
@@ -477,6 +480,7 @@ class CampLoyaltyParticipant(models.Model):
 # ──────────────────────────────────────────────────────────────────────────────
 # camp.loyalty.history  (CUSTOM — immutable audit trail)
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class CampLoyaltyHistory(models.Model):
     """Immutable audit trail: each row is one point-earning / reset event."""
@@ -522,6 +526,7 @@ class CampLoyaltyHistory(models.Model):
 # ──────────────────────────────────────────────────────────────────────────────
 # sale.order  ← _inherit  (loyalty gate + BANDA issuance + RODO consent)
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class SaleOrderCommercial(models.Model):
     _inherit = "sale.order"
@@ -607,11 +612,7 @@ class SaleOrderCommercial(models.Model):
 
     @api.model
     def _fayna_sales_active(self):
-        param = (
-            self.env["ir.config_parameter"]
-            .sudo()
-            .get_param(_PARAM_SALES_ACTIVE, "False")
-        )
+        param = self.env["ir.config_parameter"].sudo().get_param(_PARAM_SALES_ACTIVE, "False")
         return str(param).lower() == "true"
 
     # ── Loyalty qualifiers ────────────────────────────────────────────────────
@@ -756,15 +757,13 @@ class SaleOrderCommercial(models.Model):
                 # acceptable here because this is a backend audit hook and
                 # a logged failure is the correct degradation (not a 500).
                 _logger.exception(
-                    "fayna_campscout commercial: failed to record RODO consent "
-                    "for order=%s",
+                    "fayna_campscout commercial: failed to record RODO consent " "for order=%s",
                     order.id,
                 )
                 continue
             order.write({"rodo_consent_id": consent.id})
             _logger.info(
-                "fayna_campscout commercial: RODO consent=%s linked to "
-                "order=%s partner=%s",
+                "fayna_campscout commercial: RODO consent=%s linked to " "order=%s partner=%s",
                 consent.id,
                 order.id,
                 partner.id,
@@ -825,9 +824,7 @@ class SaleOrderCommercial(models.Model):
             and code.upper().startswith(BANDA_PREFIX)
             and not result.get("error")
         ):
-            banda_card = self.env["loyalty.card"].search(
-                [("code", "=ilike", code)], limit=1
-            )
+            banda_card = self.env["loyalty.card"].search([("code", "=ilike", code)], limit=1)
             if banda_card:
                 self._fayna_grant_banda_referrer_reward(banda_card)
 
@@ -846,15 +843,11 @@ class SaleOrderCommercial(models.Model):
             )
             if not participant:
                 participant = (
-                    self.env["camp.loyalty.participant"]
-                    .sudo()
-                    .create({"partner_id": partner.id})
+                    self.env["camp.loyalty.participant"].sudo().create({"partner_id": partner.id})
                 )
             return participant
         except Exception as exc:  # noqa: BLE001
-            _logger.exception(
-                "Failed to get/create loyalty participant for %s: %s", partner, exc
-            )
+            _logger.exception("Failed to get/create loyalty participant for %s: %s", partner, exc)
             return False
 
     def _fayna_grant_banda_referrer_reward(self, banda_card):
@@ -931,9 +924,7 @@ class SaleOrderCommercial(models.Model):
         """
         self.ensure_one()
         if not self.installment_plan_id:
-            raise UserError(
-                _("Please select an installment plan before generating the schedule.")
-            )
+            raise UserError(_("Please select an installment plan before generating the schedule."))
         if not self.amount_total:
             raise UserError(_("The order total must be greater than zero."))
         return self.installment_plan_id.generate_installments(self)
@@ -946,6 +937,7 @@ class SaleOrderCommercial(models.Model):
 # ──────────────────────────────────────────────────────────────────────────────
 # sale.order.line  ← _inherit  (auto-link camp event + promo pricing)
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class SaleOrderLineCommercial(models.Model):
     _inherit = "sale.order.line"
@@ -973,15 +965,13 @@ class SaleOrderLineCommercial(models.Model):
         if not events:
             return empty_event, empty_ticket
         now = fields.Datetime.now()
-        upcoming = events.filtered(
-            lambda e: e.date_begin and e.date_begin > now
-        ).sorted(key=lambda e: e.date_begin)
+        upcoming = events.filtered(lambda e: e.date_begin and e.date_begin > now).sorted(
+            key=lambda e: e.date_begin
+        )
         if not upcoming:
             return empty_event, empty_ticket
         event = upcoming[:1]
-        ticket_match = event.event_ticket_ids.filtered(
-            lambda t: t.product_id == self.product_id
-        )
+        ticket_match = event.event_ticket_ids.filtered(lambda t: t.product_id == self.product_id)
         ticket = ticket_match[:1] if ticket_match else event.event_ticket_ids[:1]
         return event, ticket
 
@@ -1046,9 +1036,7 @@ class SaleOrderLineCommercial(models.Model):
             and tmpl.camp_early_bird_discount
             and tmpl.list_price
         ):
-            candidates.append(
-                min(100.0, 100.0 * tmpl.camp_early_bird_discount / tmpl.list_price)
-            )
+            candidates.append(min(100.0, 100.0 * tmpl.camp_early_bird_discount / tmpl.list_price))
 
         # Sibling
         if partner and tmpl.camp_sibling_discount_pct:
@@ -1132,6 +1120,7 @@ class SaleOrderLineCommercial(models.Model):
 # ──────────────────────────────────────────────────────────────────────────────
 # product.template  ← _inherit  (camp pricing + FOMO + review stats)
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class ProductTemplateCommercial(models.Model):
     _inherit = "product.template"
@@ -1265,6 +1254,7 @@ class ProductTemplateCommercial(models.Model):
 #   display name, product_template → event linkage.
 # - website_rating is in depends for the widget JS only; the model is custom.
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class CampReview(models.Model):
     """Parent review of a camp, tied to the stable product.template.
@@ -1458,6 +1448,7 @@ class CampReview(models.Model):
 #   equal / deposit+equal / custom plan types, interval_days, deposit_pct.
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class FaynaPaymentInstallmentPlanLine(models.Model):
     _name = "fayna.payment.installment.plan.line"
     _description = "Installment Plan Line (for custom plans)"
@@ -1579,9 +1570,7 @@ class FaynaPaymentInstallmentPlan(models.Model):
                         _("Deposit+equal plan must have at least 2 installments (deposit + 1).")
                     )
             if plan.plan_type == "custom" and not plan.installment_line_ids:
-                raise ValidationError(
-                    _("Custom plan must have at least one installment line.")
-                )
+                raise ValidationError(_("Custom plan must have at least one installment line."))
 
     def generate_installments(self, sale_order):
         """Generate fayna.payment.installment records for the given sale.order.
@@ -1671,6 +1660,7 @@ class FaynaPaymentInstallmentPlan(models.Model):
 #   machine (pending → paid/overdue/cancelled), payment_date, invoice link,
 #   overdue cron, and email notification.
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class FaynaPaymentInstallment(models.Model):
     _name = "fayna.payment.installment"
@@ -1844,6 +1834,7 @@ class FaynaPaymentInstallment(models.Model):
 # ──────────────────────────────────────────────────────────────────────────────
 # camp.support.request  (CUSTOM — no helpdesk in Community)
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class CampSupportRequest(models.Model):
     """Parent feedback / cancellation requests (CAMPSCOUT_MASTER_TZ §2.7.7).
@@ -2082,9 +2073,7 @@ class CampSupportRequest(models.Model):
     def _check_registration_for_cancel(self):
         for r in self:
             if r.request_type in ("cancel", "transfer") and not r.registration_id:
-                raise ValidationError(
-                    _("Реєстрація обов'язкова для скасування або переносу.")
-                )
+                raise ValidationError(_("Реєстрація обов'язкова для скасування або переносу."))
 
     @api.constrains("request_type", "reason", "medical_cert")
     def _check_medical_cert(self):
@@ -2305,9 +2294,7 @@ class CampSupportRequest(models.Model):
                 "consent_given": True,
                 "source": "support_request",
                 "consent_timestamp": fields.Datetime.now(),
-                "exact_user_response": (
-                    f"Support request {self.name} type={self.request_type}"
-                ),
+                "exact_user_response": (f"Support request {self.name} type={self.request_type}"),
                 "notes": self.note or "",
             }
         )
@@ -2316,6 +2303,7 @@ class CampSupportRequest(models.Model):
 # ──────────────────────────────────────────────────────────────────────────────
 # fayna.rodo.consent.log  ← _inherit  (extend evidence_model dropdown)
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class FaynaRodoConsentLog(models.Model):
     _inherit = "fayna.rodo.consent.log"

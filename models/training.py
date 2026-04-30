@@ -8,6 +8,7 @@ Extends slide.channel with:
 
 ADR-001 decision: do not build a custom LMS; extend native slide.channel instead.
 """
+
 import uuid
 
 from odoo import _, api, fields, models
@@ -256,9 +257,7 @@ class CampStaffTrainingRecord(models.Model):
         """Mark as completed. Does NOT issue certificate automatically — use action_certify."""
         for rec in self:
             if rec.state not in ("enrolled", "in_progress"):
-                raise UserError(
-                    _("Only enrolled or in-progress records can be marked complete.")
-                )
+                raise UserError(_("Only enrolled or in-progress records can be marked complete."))
             rec.state = "completed"
 
     def action_certify(self):

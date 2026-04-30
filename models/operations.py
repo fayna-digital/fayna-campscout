@@ -256,13 +256,9 @@ class CampStaff(models.Model):
     def cron_archive_old_records(self):
         """Archive staff records from events that ended more than 7 years ago."""
         cutoff = fields.Date.today() - timedelta(days=7 * 365)
-        old_staff = self.search(
-            [("event_id.date_end", "<", cutoff), ("active", "=", True)]
-        )
+        old_staff = self.search([("event_id.date_end", "<", cutoff), ("active", "=", True)])
         old_staff.write({"active": False})
-        _logger.info(
-            "[camp_operations] Archived %d old staff records (7y cutoff)", len(old_staff)
-        )
+        _logger.info("[camp_operations] Archived %d old staff records (7y cutoff)", len(old_staff))
         return True
 
     @api.model
@@ -382,11 +378,12 @@ class CampStaffCert(models.Model):
     def name_get(self):
         result = []
         for rec in self:
-            cert_label = dict(self._fields["cert_type"].selection).get(
-                rec.cert_type, rec.cert_type
-            )
+            cert_label = dict(self._fields["cert_type"].selection).get(rec.cert_type, rec.cert_type)
             result.append(
-                (rec.id, _("%(staff)s — %(cert)s") % {"staff": rec.staff_id.name, "cert": cert_label})
+                (
+                    rec.id,
+                    _("%(staff)s — %(cert)s") % {"staff": rec.staff_id.name, "cert": cert_label},
+                )
             )
         return result
 
@@ -566,9 +563,7 @@ class CampJournal(models.Model):
     def cron_archive_old_records(self):
         """Archive journal records from events that ended more than 7 years ago."""
         cutoff = fields.Date.today() - timedelta(days=7 * 365)
-        old_records = self.search(
-            [("event_id.date_end", "<", cutoff), ("active", "=", True)]
-        )
+        old_records = self.search([("event_id.date_end", "<", cutoff), ("active", "=", True)])
         old_records.write({"active": False})
         _logger.info(
             "[camp_operations] Archived %d old journal records (7y cutoff)", len(old_records)
@@ -785,7 +780,10 @@ class CampDailyReport(models.Model):
         self.write({"state": "submitted"})
         _logger.info(
             "[camp_daily_report] Report %d submitted by uid=%d (event %s, date %s)",
-            self.id, self.env.uid, self.event_id.name, self.report_date,
+            self.id,
+            self.env.uid,
+            self.event_id.name,
+            self.report_date,
         )
         return True
 
@@ -802,15 +800,17 @@ class CampDailyReport(models.Model):
         self.write({"state": "approved"})
         _logger.info(
             "[camp_daily_report] Report %d approved by uid=%d (event %s, date %s)",
-            self.id, self.env.uid, self.event_id.name, self.report_date,
+            self.id,
+            self.env.uid,
+            self.event_id.name,
+            self.report_date,
         )
         return True
 
     def action_back_to_draft(self):
         self.ensure_one()
         if not (
-            self.env.user.has_group("base.group_system")
-            or self.env.user.has_group(_ADMIN_GROUP)
+            self.env.user.has_group("base.group_system") or self.env.user.has_group(_ADMIN_GROUP)
         ):
             raise UserError(_("Only admins can revert a daily report to draft."))
         self.write({"state": "draft"})
@@ -825,9 +825,13 @@ class CampDailyReport(models.Model):
 
     _APPROVED_WRITABLE_FIELDS = frozenset(
         {
-            "state", "active",
-            "message_ids", "message_follower_ids", "message_partner_ids",
-            "activity_ids", "message_main_attachment_id",
+            "state",
+            "active",
+            "message_ids",
+            "message_follower_ids",
+            "message_partner_ids",
+            "activity_ids",
+            "message_main_attachment_id",
         }
     )
 
@@ -854,9 +858,7 @@ class CampDailyReport(models.Model):
     @api.model
     def cron_archive_old_records(self):
         cutoff = fields.Date.today() - timedelta(days=7 * 365)
-        old_records = self.search(
-            [("event_id.date_end", "<", cutoff), ("active", "=", True)]
-        )
+        old_records = self.search([("event_id.date_end", "<", cutoff), ("active", "=", True)])
         old_records.write({"active": False})
         _logger.info(
             "[camp_daily_report] Archived %d old daily report records (7y cutoff)",
@@ -1018,7 +1020,9 @@ class CampReport(models.Model):
     approver_id = fields.Many2one(
         "res.users",
         string=_("Legacy approver"),
-        help=_("Legacy approver field — kept for backward compat; use approved_by_id for new records."),
+        help=_(
+            "Legacy approver field — kept for backward compat; use approved_by_id for new records."
+        ),
         index=True,
     )
 
@@ -1143,8 +1147,7 @@ class CampReport(models.Model):
     def action_back_to_draft(self):
         self.ensure_one()
         if not (
-            self.env.user.has_group("base.group_system")
-            or self.env.user.has_group(_ADMIN_GROUP)
+            self.env.user.has_group("base.group_system") or self.env.user.has_group(_ADMIN_GROUP)
         ):
             raise UserError(_("Only admin can revert a submitted report."))
         self.write({"state": "draft"})
@@ -1251,10 +1254,17 @@ class CampReport(models.Model):
 
     _SUBMITTED_WRITABLE_FIELDS = frozenset(
         {
-            "state", "submitted_pdf", "submitted_date",
-            "kierownik_signed_date", "kierownik_signed_by", "approved_by_id",
-            "message_ids", "message_follower_ids", "message_partner_ids",
-            "activity_ids", "message_main_attachment_id",
+            "state",
+            "submitted_pdf",
+            "submitted_date",
+            "kierownik_signed_date",
+            "kierownik_signed_by",
+            "approved_by_id",
+            "message_ids",
+            "message_follower_ids",
+            "message_partner_ids",
+            "activity_ids",
+            "message_main_attachment_id",
         }
     )
 
@@ -1295,9 +1305,7 @@ class CampReport(models.Model):
     @api.model
     def cron_archive_old_records(self):
         cutoff = fields.Date.today() - timedelta(days=7 * 365)
-        old_records = self.search(
-            [("event_id.date_end", "<", cutoff), ("active", "=", True)]
-        )
+        old_records = self.search([("event_id.date_end", "<", cutoff), ("active", "=", True)])
         old_records.write({"active": False})
         _logger.info(
             "[camp_operations] Archived %d old report records (7y cutoff)", len(old_records)
@@ -1464,7 +1472,9 @@ class CampProgramWypoczynku(models.Model):
         )
         _logger.info(
             "[camp_program] Program %d approved by uid=%d (event %s)",
-            self.id, self.env.uid, self.event_id.name,
+            self.id,
+            self.env.uid,
+            self.event_id.name,
         )
         return True
 
@@ -1475,7 +1485,8 @@ class CampProgramWypoczynku(models.Model):
         self.write({"state": "submitted", "submitted_date": fields.Date.today()})
         _logger.info(
             "[camp_program] Program %d submitted to kuratoria (event %s)",
-            self.id, self.event_id.name,
+            self.id,
+            self.event_id.name,
         )
         return True
 
@@ -1493,7 +1504,9 @@ class CampProgramWypoczynku(models.Model):
         )
         _logger.info(
             "[camp_program] Program %d reset to draft v%d (event %s)",
-            self.id, self.version, self.event_id.name,
+            self.id,
+            self.version,
+            self.event_id.name,
         )
         return True
 
@@ -1510,7 +1523,9 @@ class CampProgramWypoczynku(models.Model):
         )
         _logger.info(
             "[camp_program] New version %d created from record %d (event %s)",
-            new_program.version, self.id, self.event_id.name,
+            new_program.version,
+            self.id,
+            self.event_id.name,
         )
         return {
             "type": "ir.actions.act_window",
@@ -2278,9 +2293,8 @@ class FaynaCampDziennik(models.Model):
     def _compute_header_from_event(self):
         for rec in self:
             ev = rec.event_id
-            rec.location = (
-                (ev.address_inline if ev and hasattr(ev, "address_inline") else "")
-                or (ev and ev.address_id.display_name or "")
+            rec.location = (ev.address_inline if ev and hasattr(ev, "address_inline") else "") or (
+                ev and ev.address_id.display_name or ""
             )
             rec.organizer = ev.company_id.name if ev and ev.company_id else ""
 
@@ -2304,9 +2318,7 @@ class FaynaCampDziennik(models.Model):
             if rec.state != "draft":
                 raise UserError(_("Only draft dzienniki can be activated."))
             if not rec.kierownik_id or not rec.wychowawca_ids:
-                raise UserError(
-                    _("Set kierownik and at least one wychowawca before activating.")
-                )
+                raise UserError(_("Set kierownik and at least one wychowawca before activating."))
             rec.state = "active"
 
     def action_submit(self):
@@ -2315,9 +2327,7 @@ class FaynaCampDziennik(models.Model):
             if rec.state != "active":
                 raise UserError(_("Only active dzienniki can be submitted."))
             if not rec.activity_ids:
-                raise UserError(
-                    _("Cannot submit an empty journal — add at least one activity.")
-                )
+                raise UserError(_("Cannot submit an empty journal — add at least one activity."))
             unsigned = rec.activity_ids.filtered(lambda a: not a.signature)
             if unsigned:
                 raise UserError(

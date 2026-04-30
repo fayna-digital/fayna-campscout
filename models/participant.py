@@ -519,8 +519,7 @@ class CampParticipant(models.Model):
         string=_("Podpis kierownika (Sekcja V)"),
         attachment=True,
         help=_(
-            "Podpis kierownika przechwycony przez wizard Sekcji IV-V. "
-            "Zamraża pola Sekcji V."
+            "Podpis kierownika przechwycony przez wizard Sekcji IV-V. " "Zamraża pola Sekcji V."
         ),
     )
     v_signed_by = fields.Many2one(
@@ -701,7 +700,9 @@ class CampParticipant(models.Model):
         "fayna.rodo.consent.log",
         string=_("Marketing consent RODO log"),
         ondelete="set null",
-        help=_("RODO consent log entry for marketing consent. Created by update_marketing_consent()."),
+        help=_(
+            "RODO consent log entry for marketing consent. Created by update_marketing_consent()."
+        ),
     )
 
     # --- absorb-compat fields (fn_*) used by qualification_card_template ---
@@ -1036,9 +1037,7 @@ class CampParticipant(models.Model):
                 rec.current_registration_id = False
                 rec.current_sale_order_id = False
                 continue
-            future = regs.filtered(
-                lambda r: r.event_id.date_begin and r.event_id.date_begin > now
-            )
+            future = regs.filtered(lambda r: r.event_id.date_begin and r.event_id.date_begin > now)
             if future:
                 chosen = future.sorted(lambda r: r.event_id.date_begin)[0]
             else:
@@ -1109,9 +1108,7 @@ class CampParticipant(models.Model):
             rec.fn_event_date_from = (
                 event.date_begin.date() if event and event.date_begin else False
             )
-            rec.fn_event_date_to = (
-                event.date_end.date() if event and event.date_end else False
-            )
+            rec.fn_event_date_to = event.date_end.date() if event and event.date_end else False
             rec.fn_event_address = camp.camp_location if camp else False
             rec.fn_hiking_route = camp.camp_hiking_route if camp else False
             rec.fn_country_name = (
@@ -1123,9 +1120,7 @@ class CampParticipant(models.Model):
             )
             rec.fn_qc_place = camp.camp_location if camp else False
             rec.fn_qc_date = (
-                rec.qualification_signed_date.date()
-                if rec.qualification_signed_date
-                else False
+                rec.qualification_signed_date.date() if rec.qualification_signed_date else False
             )
 
     @api.depends(
@@ -1162,9 +1157,7 @@ class CampParticipant(models.Model):
             rec.fn_parents_names = parent.name if parent else False
             rec.fn_birth_date = su.birth_date.strftime("%Y-%m-%d") if su.birth_date else False
 
-            child_addr = ", ".join(
-                p for p in [su.street or "", su.city or "", su.zip or ""] if p
-            )
+            child_addr = ", ".join(p for p in [su.street or "", su.city or "", su.zip or ""] if p)
             rec.fn_child_address = child_addr or False
 
             if parent:
@@ -1224,13 +1217,9 @@ class CampParticipant(models.Model):
             calc_sum = sum(digits[i] * weights[i] for i in range(10))
             checksum = (10 - calc_sum % 10) % 10
             if checksum != digits[10]:
-                raise ValidationError(
-                    _("PESEL checksum invalid — please double-check the number.")
-                )
+                raise ValidationError(_("PESEL checksum invalid — please double-check the number."))
 
-    @api.constrains(
-        "qualification_signed", "emergency_contact_1_name", "emergency_contact_1_phone"
-    )
+    @api.constrains("qualification_signed", "emergency_contact_1_name", "emergency_contact_1_phone")
     def _check_emergency_before_signoff(self):
         for rec in self:
             if rec.qualification_signed and not (
@@ -1461,9 +1450,7 @@ class CampParticipant(models.Model):
             )
         except Exception as exc:  # noqa: BLE001
             # RODO log is critical but must never block the refusal flow.
-            _logger.exception(
-                "auto_refusal: RODO log failed participant=%s: %s", self.id, exc
-            )
+            _logger.exception("auto_refusal: RODO log failed participant=%s: %s", self.id, exc)
             return False
 
     def _schedule_refund(self):
@@ -1828,18 +1815,14 @@ class CampParticipant(models.Model):
 
             name_parts = (first.bs_child_name or "").strip().split(None, 1)
             if not name_parts or not name_parts[0]:
-                report["failed"].append(
-                    {"partner_id": partner_id, "reason": "bs_child_name empty"}
-                )
+                report["failed"].append({"partner_id": partner_id, "reason": "bs_child_name empty"})
                 continue
             first_name = name_parts[0]
             last_name = name_parts[1] if len(name_parts) > 1 else "—"
 
             phone = first.bs_parents_phone or partner.phone or partner.mobile or ""
             if not phone:
-                report["failed"].append(
-                    {"partner_id": partner_id, "reason": "no phone anywhere"}
-                )
+                report["failed"].append({"partner_id": partner_id, "reason": "no phone anywhere"})
                 continue
 
             existing = self.sudo().search(

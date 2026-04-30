@@ -5,6 +5,7 @@ Uses fayna.sms.provider if fayna_sms_base is installed; falls back to Odoo nativ
 
 TZ §23: SMS Multi-Provider Routing.
 """
+
 import hashlib
 import logging
 import re
@@ -142,7 +143,11 @@ class CampSmsDispatcher(models.AbstractModel):
             )
             provider = self.env["fayna.sms.provider"].search([("active", "=", True)], limit=1)
         if not provider:
-            return {"success": False, "error": "No active SMS provider configured.", "provider": None}
+            return {
+                "success": False,
+                "error": "No active SMS provider configured.",
+                "provider": None,
+            }
 
         result = provider.send_sms(phone, body)
         return {

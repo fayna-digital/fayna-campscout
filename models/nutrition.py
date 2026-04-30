@@ -346,9 +346,7 @@ class CampMealPlan(models.Model):
                 plan.participant_count = 0
                 continue
             plan.participant_count = len(
-                plan.event_id.registration_ids.filtered(
-                    lambda r: r.state in ("open", "done")
-                )
+                plan.event_id.registration_ids.filtered(lambda r: r.state in ("open", "done"))
             )
 
     # --- Actions ------------------------------------------------------------
