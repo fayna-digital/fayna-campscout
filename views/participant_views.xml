@@ -174,7 +174,7 @@
                                 <tree>
                                     <field name="event_id"/>
                                     <field name="state"/>
-                                    <field name="date_registration"/>
+                                    <field name="create_date" string="Registered"/>
                                 </tree>
                             </field>
                         </group>
