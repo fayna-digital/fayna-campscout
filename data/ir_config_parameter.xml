@@ -7,8 +7,8 @@
           Default False keeps the module inert so any prior behaviour owning
           the same domain keeps working until the intentional flip.
         -->
-        <record id="ir_config_parameter_fayna_campscout_active" model="ir.config_parameter">
-            <field name="key">fayna_campscout.active</field>
+        <record id="ir_config_parameter_fayna_camp_portal_active" model="ir.config_parameter">
+            <field name="key">fayna_camp_portal.active</field>
             <field name="value">False</field>
         </record>
 

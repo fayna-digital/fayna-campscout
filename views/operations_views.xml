@@ -91,8 +91,8 @@
                         <group string="Notes">
                             <field name="notes" nolabel="1"/>
                         </group>
-                        <group string="Medical Info" groups="fayna_campscout.group_medical_officer">
-                            <field name="medical_notes" groups="fayna_campscout.group_medical_officer"/>
+                        <group string="Medical Info" groups="fayna_camp_portal.group_medical_officer">
+                            <field name="medical_notes" groups="fayna_camp_portal.group_medical_officer"/>
                         </group>
                     </sheet>
                     <div class="oe_chatter">
@@ -221,7 +221,7 @@
             <field name="name">Staff Medical Data</field>
             <field name="res_model">camp.staff.medical</field>
             <field name="view_mode">tree,form</field>
-            <field name="groups_id" eval="[(4, ref('fayna_campscout.group_medical_officer'))]"/>
+            <field name="groups_id" eval="[(4, ref('fayna_camp_portal.group_medical_officer'))]"/>
         </record>
 
         <!-- ================================================================ -->
@@ -339,10 +339,10 @@
                                 invisible="state != 'draft'" class="btn-primary"/>
                         <button name="action_approve" string="Approve" type="object"
                                 invisible="state != 'submitted'"
-                                groups="fayna_campscout.group_fayna_camp_manager"/>
+                                groups="fayna_camp_portal.group_fayna_camp_manager"/>
                         <button name="action_back_to_draft" string="Back to Draft" type="object"
                                 invisible="state == 'draft'"
-                                groups="fayna_campscout.group_camp_admin"/>
+                                groups="fayna_camp_portal.group_camp_admin"/>
                         <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>
@@ -378,11 +378,11 @@
                             <field name="challenges"/>
                             <field name="next_day_plan"/>
                         </group>
-                        <group string="Medical Notes (restricted)" groups="fayna_campscout.group_medical_officer">
-                            <field name="medical_notes" groups="fayna_campscout.group_medical_officer"/>
+                        <group string="Medical Notes (restricted)" groups="fayna_camp_portal.group_medical_officer">
+                            <field name="medical_notes" groups="fayna_camp_portal.group_medical_officer"/>
                         </group>
-                        <group string="Kierownik Private Notes" groups="fayna_campscout.group_camp_kierownik">
-                            <field name="kierownik_notes" groups="fayna_campscout.group_camp_kierownik"/>
+                        <group string="Kierownik Private Notes" groups="fayna_camp_portal.group_camp_kierownik">
+                            <field name="kierownik_notes" groups="fayna_camp_portal.group_camp_kierownik"/>
                         </group>
                     </sheet>
                     <div class="oe_chatter">

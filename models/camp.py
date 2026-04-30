@@ -575,7 +575,7 @@ class CampProduct(models.Model):
 
     # --- Feature flag + render sync ------------------------------------------
 
-    _CAMP_RENDER_PARAM = "fayna_campscout.render_mode"
+    _CAMP_RENDER_PARAM = "fayna_camp_portal.render_mode"
 
     def _camp_render_mode(self):
         """Return current feature flag value ('legacy' | 'qweb')."""
@@ -588,7 +588,7 @@ class CampProduct(models.Model):
 
         Called:
           - manually via the admin button on the product form
-          - daily cron (when fayna_campscout.render_mode == 'qweb')
+          - daily cron (when fayna_camp_portal.render_mode == 'qweb')
 
         Args:
             force: bypass the feature-flag check (useful for testing or manual
@@ -607,7 +607,7 @@ class CampProduct(models.Model):
                 }
             )
         _logger.info(
-            "fayna_campscout.render_sync: mode=%s force=%s synced=%d",
+            "fayna_camp_portal.render_sync: mode=%s force=%s synced=%d",
             mode,
             force,
             len(camps),
@@ -689,7 +689,7 @@ class CampProduct(models.Model):
     def _cron_apply_qweb_render(self):
         """Daily cron — sync all camp-products when flag=qweb. No-op otherwise."""
         if self._camp_render_mode() != "qweb":
-            _logger.info("fayna_campscout.render_sync cron: mode=legacy, skipping")
+            _logger.info("fayna_camp_portal.render_sync cron: mode=legacy, skipping")
             return True
         camps = self.search([("is_camp_program", "=", True)])
         camps.apply_qweb_render()
@@ -746,10 +746,10 @@ class CampProduct(models.Model):
                 rec.camp_bot_html = False
                 continue
             rec.camp_top_html = self.env["ir.qweb"]._render(
-                "fayna_campscout.camp_top", {"product": rec}
+                "fayna_camp_portal.camp_top", {"product": rec}
             )
             rec.camp_bot_html = self.env["ir.qweb"]._render(
-                "fayna_campscout.camp_bot", {"product": rec}
+                "fayna_camp_portal.camp_bot", {"product": rec}
             )
 
     # --- Constraints ---------------------------------------------------------

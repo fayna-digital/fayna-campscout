@@ -349,7 +349,7 @@
                                 <field name="refund_due_date" readonly="1"/>
                             </group>
                             <field name="note"/>
-                            <field name="medical_cert" groups="fayna_campscout.group_medical_officer"/>
+                            <field name="medical_cert" groups="fayna_camp_portal.group_medical_officer"/>
                         </group>
                         <group string="Response">
                             <field name="response"/>

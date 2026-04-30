@@ -32,7 +32,7 @@
                         <button name="action_open_clear_auto_refusal_wizard"
                                 string="Clear Auto-Refusal"
                                 type="object"
-                                groups="fayna_campscout.group_camp_leader"
+                                groups="fayna_camp_portal.group_camp_leader"
                                 invisible="auto_refusal_state != 'pending'"/>
                         <field name="auto_refusal_state" widget="statusbar"/>
                     </header>
@@ -60,16 +60,16 @@
                             </group>
                         </group>
 
-                        <group string="Section II — Medical (restricted)" groups="fayna_campscout.group_medical_officer">
+                        <group string="Section II — Medical (restricted)" groups="fayna_camp_portal.group_medical_officer">
                             <group>
-                                <field name="allergies" groups="fayna_campscout.group_medical_officer"/>
-                                <field name="medications" groups="fayna_campscout.group_medical_officer"/>
-                                <field name="chronic_conditions" groups="fayna_campscout.group_medical_officer"/>
+                                <field name="allergies" groups="fayna_camp_portal.group_medical_officer"/>
+                                <field name="medications" groups="fayna_camp_portal.group_medical_officer"/>
+                                <field name="chronic_conditions" groups="fayna_camp_portal.group_medical_officer"/>
                             </group>
                             <group>
                                 <field name="vaccination_status"/>
                                 <field name="diet_restrictions"/>
-                                <field name="doctor_notes" groups="fayna_campscout.group_medical_officer"/>
+                                <field name="doctor_notes" groups="fayna_camp_portal.group_medical_officer"/>
                             </group>
                         </group>
 
@@ -109,8 +109,8 @@
 
                         <group string="Section III — Adaptation (kierownik)">
                             <field name="iii_adaptation_notes"/>
-                            <field name="iii_health_events" groups="fayna_campscout.group_medical_officer"/>
-                            <field name="iii_medication_given" groups="fayna_campscout.group_medical_officer"/>
+                            <field name="iii_health_events" groups="fayna_camp_portal.group_medical_officer"/>
+                            <field name="iii_medication_given" groups="fayna_camp_portal.group_medical_officer"/>
                             <group>
                                 <field name="iii_completed_by"/>
                                 <field name="iii_completed_date"/>
@@ -138,8 +138,8 @@
                             </group>
                         </group>
 
-                        <group string="Section V — Health Notes (kierownik)" groups="fayna_campscout.group_medical_officer">
-                            <field name="v_health_notes" groups="fayna_campscout.group_medical_officer"/>
+                        <group string="Section V — Health Notes (kierownik)" groups="fayna_camp_portal.group_medical_officer">
+                            <field name="v_health_notes" groups="fayna_camp_portal.group_medical_officer"/>
                             <field name="v_recommendations"/>
                             <group>
                                 <field name="v_signed_place"/>

@@ -1,7 +1,7 @@
-"""Post-install hooks for fayna_campscout.
+"""Post-install hooks for fayna_camp_portal.
 
 Strangler Fig migration: transfer ownership of ir.model.data records
-from old module names to fayna_campscout so that existing data
+from old module names to fayna_camp_portal so that existing data
 (campscout_management, fayna_camp_qualification, etc.) is preserved.
 
 This is a one-time migration — safe to run multiple times (idempotent).
@@ -11,7 +11,7 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-# Modules whose ir.model.data records should be migrated to fayna_campscout.
+# Modules whose ir.model.data records should be migrated to fayna_camp_portal.
 # Only includes modules that have been FULLY absorbed into this module
 # and no longer exist as separate installable modules.
 _ABSORBED_MODULES = [
@@ -40,7 +40,7 @@ _ABSORBED_MODULES = [
 
 
 def post_init_hook(env):
-    """Transfer ir.model.data ownership from absorbed modules to fayna_campscout.
+    """Transfer ir.model.data ownership from absorbed modules to fayna_camp_portal.
 
     Uses direct SQL for performance — avoids loading 10k+ records into ORM.
     Skips modules that are still installed (safety guard against accidental migration).
@@ -57,11 +57,11 @@ def post_init_hook(env):
     modules_to_migrate = [m for m in _ABSORBED_MODULES if m not in still_installed]
 
     if not modules_to_migrate:
-        _logger.info("fayna_campscout post_init_hook: no modules to migrate")
+        _logger.info("fayna_camp_portal post_init_hook: no modules to migrate")
         return
 
     _logger.info(
-        "fayna_campscout post_init_hook: migrating ir.model.data from %d modules: %s",
+        "fayna_camp_portal post_init_hook: migrating ir.model.data from %d modules: %s",
         len(modules_to_migrate),
         ", ".join(modules_to_migrate),
     )
@@ -70,16 +70,16 @@ def post_init_hook(env):
         cr.execute(
             """
             UPDATE ir_model_data
-            SET module = 'fayna_campscout'
+            SET module = 'fayna_camp_portal'
             WHERE module = %s
-              AND module != 'fayna_campscout'
+              AND module != 'fayna_camp_portal'
             """,
             (module_name,),
         )
         count = cr.rowcount
         if count:
             _logger.info(
-                "fayna_campscout post_init_hook: migrated %d records from %s",
+                "fayna_camp_portal post_init_hook: migrated %d records from %s",
                 count,
                 module_name,
             )

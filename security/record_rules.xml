@@ -43,7 +43,7 @@
         <record id="rule_incident_kierownik_own_event" model="ir.rule">
             <field name="name">Emergency responder: own event incidents only</field>
             <field name="model_id" ref="model_camp_incident_report"/>
-            <field name="groups" eval="[(4, ref('fayna_campscout.group_emergency_responder'))]"/>
+            <field name="groups" eval="[(4, ref('fayna_camp_portal.group_emergency_responder'))]"/>
             <field name="domain_force">[('event_id.staff_ids.user_id', '=', user.id)]</field>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>

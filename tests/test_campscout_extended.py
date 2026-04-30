@@ -1,5 +1,5 @@
 """
-Extended tests for fayna_campscout — portal session, menu, isolation,
+Extended tests for fayna_camp_portal — portal session, menu, isolation,
 session fields, and integration with event.registration.
 
 Target: bring total test count to 20+.
@@ -8,7 +8,7 @@ Target: bring total test count to 20+.
 from odoo.tests.common import TransactionCase, tagged
 
 
-@tagged("post_install", "-at_install", "fayna_campscout")
+@tagged("post_install", "-at_install", "fayna_camp_portal")
 class TestCampscoutPortalSession(TransactionCase):
     """Tests for campscout.portal.session model."""
 
@@ -85,7 +85,7 @@ class TestCampscoutPortalSession(TransactionCase):
         self.assertEqual(session.children_count, 4)
 
 
-@tagged("post_install", "-at_install", "fayna_campscout")
+@tagged("post_install", "-at_install", "fayna_camp_portal")
 class TestCampscoutPortalMenuExtended(TransactionCase):
     """Extended tests for campscout.portal.menu."""
 

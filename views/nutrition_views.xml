@@ -343,11 +343,11 @@
             <field name="arch" type="xml">
                 <form>
                     <sheet>
-                        <group groups="fayna_campscout.group_nutrition_officer">
+                        <group groups="fayna_camp_portal.group_nutrition_officer">
                             <field name="participant_id"/>
-                            <field name="allergen_ids" widget="many2many_tags" groups="fayna_campscout.group_nutrition_officer"/>
-                            <field name="dietary_restrictions" groups="fayna_campscout.group_nutrition_officer"/>
-                            <field name="notes" groups="fayna_campscout.group_nutrition_officer"/>
+                            <field name="allergen_ids" widget="many2many_tags" groups="fayna_camp_portal.group_nutrition_officer"/>
+                            <field name="dietary_restrictions" groups="fayna_camp_portal.group_nutrition_officer"/>
+                            <field name="notes" groups="fayna_camp_portal.group_nutrition_officer"/>
                         </group>
                     </sheet>
                 </form>
@@ -358,7 +358,7 @@
             <field name="name">Participant Diets</field>
             <field name="res_model">camp.participant.diet</field>
             <field name="view_mode">tree,form</field>
-            <field name="groups_id" eval="[(4, ref('fayna_campscout.group_nutrition_officer'))]"/>
+            <field name="groups_id" eval="[(4, ref('fayna_camp_portal.group_nutrition_officer'))]"/>
         </record>
 
     </data>

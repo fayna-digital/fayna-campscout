@@ -7,7 +7,7 @@ class TestCampscout(TransactionCase):
         self.assertTrue(menu.show_shop)
 
 
-@tagged("post_install", "-at_install", "fayna_campscout")
+@tagged("post_install", "-at_install", "fayna_camp_portal")
 class TestCampscoutPortalValues(TransactionCase):
     @classmethod
     def setUpClass(cls):
@@ -114,7 +114,7 @@ class TestCampscoutPortalValues(TransactionCase):
         self.assertEqual(session.children_count, 3)
 
 
-@tagged("post_install", "-at_install", "fayna_campscout")
+@tagged("post_install", "-at_install", "fayna_camp_portal")
 class TestCampscoutPortalHttp(HttpCase):
     """HttpCase smoke tests: portal pages return HTTP 200 for logged-in portal user."""
 

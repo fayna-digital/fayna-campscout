@@ -186,7 +186,7 @@ class CampParticipant(models.Model):
 
     allergies = fields.Text(
         string=_("Allergies"),
-        groups="fayna_campscout.group_medical_officer",
+        groups="fayna_camp_portal.group_medical_officer",
         tracking=True,
         help=_(
             "RODO art. 9 — list of known allergies (food, medication, environmental). "
@@ -195,7 +195,7 @@ class CampParticipant(models.Model):
     )
     medications = fields.Text(
         string=_("Regular medications"),
-        groups="fayna_campscout.group_medical_officer",
+        groups="fayna_camp_portal.group_medical_officer",
         tracking=True,
         help=_(
             "RODO art. 9 — list of medications the child takes regularly during the camp. "
@@ -220,7 +220,7 @@ class CampParticipant(models.Model):
     )
     chronic_conditions = fields.Text(
         string=_("Chronic conditions"),
-        groups="fayna_campscout.group_medical_officer",
+        groups="fayna_camp_portal.group_medical_officer",
         tracking=True,
         help=_(
             "RODO art. 9 — chronic health conditions the camp staff should know about "
@@ -242,7 +242,7 @@ class CampParticipant(models.Model):
     )
     doctor_notes = fields.Html(
         string=_("Doctor / medical notes"),
-        groups="fayna_campscout.group_medical_officer",
+        groups="fayna_camp_portal.group_medical_officer",
         help=_(
             "RODO art. 9 — free-form medical notes from the child's physician. "
             "Attach relevant certificates or diagnoses. Medical Officers only."
@@ -390,7 +390,7 @@ class CampParticipant(models.Model):
     )
     iii_health_events = fields.Text(
         string=_("Zdarzenia zdrowotne"),
-        groups="fayna_campscout.group_medical_officer",
+        groups="fayna_camp_portal.group_medical_officer",
         tracking=True,
         help=_(
             "RODO art. 9 — zdarzenia zdrowotne uczestnika podczas wypoczynku: "
@@ -400,7 +400,7 @@ class CampParticipant(models.Model):
     )
     iii_medication_given = fields.Text(
         string=_("Podane leki w czasie wypoczynku"),
-        groups="fayna_campscout.group_medical_officer",
+        groups="fayna_camp_portal.group_medical_officer",
         tracking=True,
         help=_(
             "RODO art. 9 — lista leków podanych uczestnikowi podczas wypoczynku "
@@ -487,7 +487,7 @@ class CampParticipant(models.Model):
 
     v_health_notes = fields.Text(
         string=_("V. Notatki zdrowotne (kierownik)"),
-        groups="fayna_campscout.group_medical_officer",
+        groups="fayna_camp_portal.group_medical_officer",
         tracking=True,
         help=_(
             "RODO art. 9 — notatki kierownika o stanie zdrowia uczestnika podczas "
@@ -1352,7 +1352,7 @@ class CampParticipant(models.Model):
             vals["qualification_signed_by_name"] = signer_name
         self.write(vals)
         _logger.info(
-            "fayna_campscout.signoff: participant=%s parent=%s ip=%s consent=%s",
+            "fayna_camp_portal.signoff: participant=%s parent=%s ip=%s consent=%s",
             self.id,
             self.parent_partner_id.id,
             ip_address,
@@ -1379,7 +1379,7 @@ class CampParticipant(models.Model):
         if not (
             self.env.su
             or self.env.user.has_group("base.group_system")
-            or self.env.user.has_group("fayna_campscout.group_camp_kierownik")
+            or self.env.user.has_group("fayna_camp_portal.group_camp_kierownik")
         ):
             raise UserError(_("Only the camp director (kierownik) can finalize Section III."))
         self.sudo().write(
@@ -1396,7 +1396,7 @@ class CampParticipant(models.Model):
             )
         )
         _logger.info(
-            "fayna_campscout.section_iii_complete: participant=%s user=%s",
+            "fayna_camp_portal.section_iii_complete: participant=%s user=%s",
             self.id,
             self.env.user.id,
         )
@@ -1440,7 +1440,7 @@ class CampParticipant(models.Model):
                     legal_basis="consent",
                     source="api",
                     notes=_(
-                        "Automatic refusal triggered by fayna_campscout cron — "
+                        "Automatic refusal triggered by fayna_camp_portal cron — "
                         "qualification card unsigned by deadline "
                         "(auto_refusal_date=%(deadline)s). Medical data processing "
                         "(RODO art. 9(2)(c)) terminated — no consent on file.",
@@ -1586,14 +1586,14 @@ class CampParticipant(models.Model):
 
         Templates live in data/mail_templates.xml — one technical template per
         tag with translatable body (terms translated via standard .po flow).
-        Note: XML IDs reference fayna_campscout module (consolidated).
+        Note: XML IDs reference fayna_camp_portal module (consolidated).
         """
         self.ensure_one()
         xml_id_map = {
-            "14d": "fayna_campscout.email_qualification_reminder_14d",
-            "7d": "fayna_campscout.email_qualification_reminder_7d",
-            "3d": "fayna_campscout.email_qualification_reminder_3d",
-            "refusal": "fayna_campscout.email_auto_refusal",
+            "14d": "fayna_camp_portal.email_qualification_reminder_14d",
+            "7d": "fayna_camp_portal.email_qualification_reminder_7d",
+            "3d": "fayna_camp_portal.email_qualification_reminder_3d",
+            "refusal": "fayna_camp_portal.email_auto_refusal",
         }
         xml_id = xml_id_map.get(tag)
         if not xml_id:
@@ -1642,7 +1642,7 @@ class CampParticipant(models.Model):
         Security: requires group_camp_leader (checked in view via groups=).
         """
         self.ensure_one()
-        if not self.env.user.has_group("fayna_campscout.group_camp_leader"):
+        if not self.env.user.has_group("fayna_camp_portal.group_camp_leader"):
             raise UserError(_("Only camp leaders can clear auto-refusal holds."))
         if self.auto_refusal_state == "refused":
             raise UserError(

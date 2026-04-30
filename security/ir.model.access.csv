@@ -17,35 +17,35 @@ access_camp_schedule_entry_user,camp.schedule.entry user,model_camp_schedule_ent
 access_camp_participant_admin,camp.participant admin,model_camp_participant,base.group_system,1,1,1,1
 access_camp_participant_user,camp.participant user,model_camp_participant,base.group_user,1,0,0,0
 access_camp_participant_portal,camp.participant portal,model_camp_participant,base.group_portal,1,0,0,0
-access_camp_participant_medical_officer,camp.participant medical officer,model_camp_participant,fayna_campscout.group_medical_officer,1,1,1,0
+access_camp_participant_medical_officer,camp.participant medical officer,model_camp_participant,fayna_camp_portal.group_medical_officer,1,1,1,0
 access_camp_presence_interval_admin,camp.presence.interval admin,model_camp_presence_interval,base.group_system,1,1,1,1
 access_camp_presence_interval_user,camp.presence.interval user,model_camp_presence_interval,base.group_user,1,1,1,1
 access_camp_allergen_admin,camp.allergen admin,model_camp_allergen,base.group_system,1,1,1,1
 access_camp_allergen_user,camp.allergen user,model_camp_allergen,base.group_user,1,0,0,0
-access_camp_allergen_nutrition,camp.allergen nutrition officer,model_camp_allergen,fayna_campscout.group_nutrition_officer,1,1,1,0
+access_camp_allergen_nutrition,camp.allergen nutrition officer,model_camp_allergen,fayna_camp_portal.group_nutrition_officer,1,1,1,0
 access_camp_diet_profile_admin,camp.diet.profile admin,model_camp_diet_profile,base.group_system,1,1,1,1
 access_camp_diet_profile_user,camp.diet.profile user,model_camp_diet_profile,base.group_user,1,0,0,0
 access_camp_meal_plan_admin,camp.meal.plan admin,model_camp_meal_plan,base.group_system,1,1,1,1
 access_camp_meal_plan_user,camp.meal.plan user,model_camp_meal_plan,base.group_user,1,0,0,0
-access_camp_meal_plan_nutrition,camp.meal.plan nutrition officer,model_camp_meal_plan,fayna_campscout.group_nutrition_officer,1,1,1,0
+access_camp_meal_plan_nutrition,camp.meal.plan nutrition officer,model_camp_meal_plan,fayna_camp_portal.group_nutrition_officer,1,1,1,0
 access_camp_meal_plan_line_admin,camp.meal.plan.line admin,model_camp_meal_plan_line,base.group_system,1,1,1,1
 access_camp_meal_plan_line_user,camp.meal.plan.line user,model_camp_meal_plan_line,base.group_user,1,0,0,0
-access_camp_meal_plan_line_nutrition,camp.meal.plan.line nutrition officer,model_camp_meal_plan_line,fayna_campscout.group_nutrition_officer,1,1,1,0
+access_camp_meal_plan_line_nutrition,camp.meal.plan.line nutrition officer,model_camp_meal_plan_line,fayna_camp_portal.group_nutrition_officer,1,1,1,0
 access_camp_menu_day_admin,camp.menu.day admin,model_camp_menu_day,base.group_system,1,1,1,1
 access_camp_menu_day_user,camp.menu.day user,model_camp_menu_day,base.group_user,1,0,0,0
 access_camp_nutrition_admin,camp.nutrition admin,model_camp_nutrition,base.group_system,1,1,1,1
 access_camp_nutrition_user,camp.nutrition user,model_camp_nutrition,base.group_user,1,0,0,0
 access_camp_participant_diet_admin,camp.participant.diet admin,model_camp_participant_diet,base.group_system,1,1,1,1
 access_camp_participant_diet_user,camp.participant.diet user,model_camp_participant_diet,base.group_user,1,0,0,0
-access_camp_participant_diet_nutrition,camp.participant.diet nutrition officer,model_camp_participant_diet,fayna_campscout.group_nutrition_officer,1,1,1,0
+access_camp_participant_diet_nutrition,camp.participant.diet nutrition officer,model_camp_participant_diet,fayna_camp_portal.group_nutrition_officer,1,1,1,0
 access_camp_incident_report_admin,camp.incident.report admin,model_camp_incident_report,base.group_system,1,1,1,1
 access_camp_incident_report_user,camp.incident.report user,model_camp_incident_report,base.group_user,1,0,0,0
-access_camp_incident_report_responder,camp.incident.report emergency responder,model_camp_incident_report,fayna_campscout.group_emergency_responder,1,1,1,0
-access_camp_incident_report_manager,camp.incident.report emergency manager,model_camp_incident_report,fayna_campscout.group_emergency_manager,1,1,1,1
+access_camp_incident_report_responder,camp.incident.report emergency responder,model_camp_incident_report,fayna_camp_portal.group_emergency_responder,1,1,1,0
+access_camp_incident_report_manager,camp.incident.report emergency manager,model_camp_incident_report,fayna_camp_portal.group_emergency_manager,1,1,1,1
 access_camp_incident_action_admin,camp.incident.action admin,model_camp_incident_action,base.group_system,1,1,1,1
 access_camp_incident_action_user,camp.incident.action user,model_camp_incident_action,base.group_user,1,0,0,0
-access_camp_incident_action_responder,camp.incident.action emergency responder,model_camp_incident_action,fayna_campscout.group_emergency_responder,1,1,1,1
-access_camp_incident_action_manager,camp.incident.action emergency manager,model_camp_incident_action,fayna_campscout.group_emergency_manager,1,1,1,1
+access_camp_incident_action_responder,camp.incident.action emergency responder,model_camp_incident_action,fayna_camp_portal.group_emergency_responder,1,1,1,1
+access_camp_incident_action_manager,camp.incident.action emergency manager,model_camp_incident_action,fayna_camp_portal.group_emergency_manager,1,1,1,1
 access_fayna_camp_season_admin,fayna.camp.season admin,model_fayna_camp_season,base.group_system,1,1,1,1
 access_fayna_camp_season_user,fayna.camp.season user,model_fayna_camp_season,base.group_user,1,0,0,0
 access_camp_loyalty_participant_admin,camp.loyalty.participant admin,model_camp_loyalty_participant,base.group_system,1,1,1,1
@@ -65,28 +65,28 @@ access_fayna_payment_installment_admin,fayna.payment.installment admin,model_fay
 access_fayna_payment_installment_user,fayna.payment.installment user,model_fayna_payment_installment,base.group_user,1,0,0,0
 access_camp_staff_training_record_admin,camp.staff.training.record admin,model_camp_staff_training_record,base.group_system,1,1,1,1
 access_camp_staff_training_record_user,camp.staff.training.record user,model_camp_staff_training_record,base.group_user,1,0,0,0
-access_camp_staff_training_record_hr,camp.staff.training.record hr,model_camp_staff_training_record,fayna_campscout.group_camp_hr,1,1,1,0
+access_camp_staff_training_record_hr,camp.staff.training.record hr,model_camp_staff_training_record,fayna_camp_portal.group_camp_hr,1,1,1,0
 access_fayna_sms_routing_rule_admin,fayna.sms.routing.rule admin,model_fayna_sms_routing_rule,base.group_system,1,1,1,1
 access_fayna_sms_routing_rule_user,fayna.sms.routing.rule user,model_fayna_sms_routing_rule,base.group_user,1,0,0,0
 access_camp_sms_template_admin,camp.sms.template admin,model_camp_sms_template,base.group_system,1,1,1,1
 access_camp_sms_template_user,camp.sms.template user,model_camp_sms_template,base.group_user,1,0,0,0
 access_camp_staff_admin,camp.staff admin,model_camp_staff,base.group_system,1,1,1,1
 access_camp_staff_user,camp.staff user,model_camp_staff,base.group_user,1,0,0,0
-access_camp_staff_hr,camp.staff hr,model_camp_staff,fayna_campscout.group_camp_hr,1,1,1,0
+access_camp_staff_hr,camp.staff hr,model_camp_staff,fayna_camp_portal.group_camp_hr,1,1,1,0
 access_camp_staff_cert_admin,camp.staff.cert admin,model_camp_staff_cert,base.group_system,1,1,1,1
 access_camp_staff_cert_user,camp.staff.cert user,model_camp_staff_cert,base.group_user,1,0,0,0
-access_camp_staff_cert_hr,camp.staff.cert hr,model_camp_staff_cert,fayna_campscout.group_camp_hr,1,1,1,1
+access_camp_staff_cert_hr,camp.staff.cert hr,model_camp_staff_cert,fayna_camp_portal.group_camp_hr,1,1,1,1
 access_camp_staff_medical_admin,camp.staff.medical admin,model_camp_staff_medical,base.group_system,1,1,1,1
-access_camp_staff_medical_medical,camp.staff.medical medical officer,model_camp_staff_medical,fayna_campscout.group_medical_officer,1,1,1,0
+access_camp_staff_medical_medical,camp.staff.medical medical officer,model_camp_staff_medical,fayna_camp_portal.group_medical_officer,1,1,1,0
 access_camp_journal_admin,camp.journal admin,model_camp_journal,base.group_system,1,1,1,1
 access_camp_journal_user,camp.journal user,model_camp_journal,base.group_user,1,0,0,0
 access_camp_daily_report_admin,camp.daily.report admin,model_camp_daily_report,base.group_system,1,1,1,1
 access_camp_daily_report_user,camp.daily.report user,model_camp_daily_report,base.group_user,1,0,0,0
-access_camp_daily_report_kierownik,camp.daily.report kierownik,model_camp_daily_report,fayna_campscout.group_camp_kierownik,1,1,1,0
-access_camp_daily_report_camp_admin,camp.daily.report camp admin,model_camp_daily_report,fayna_campscout.group_camp_admin,1,1,1,1
+access_camp_daily_report_kierownik,camp.daily.report kierownik,model_camp_daily_report,fayna_camp_portal.group_camp_kierownik,1,1,1,0
+access_camp_daily_report_camp_admin,camp.daily.report camp admin,model_camp_daily_report,fayna_camp_portal.group_camp_admin,1,1,1,1
 access_camp_program_wypoczynku_admin,camp.program.wypoczynku admin,model_camp_program_wypoczynku,base.group_system,1,1,1,1
 access_camp_program_wypoczynku_user,camp.program.wypoczynku user,model_camp_program_wypoczynku,base.group_user,1,0,0,0
-access_camp_program_wypoczynku_manager,camp.program.wypoczynku manager,model_camp_program_wypoczynku,fayna_campscout.group_fayna_camp_manager,1,1,1,1
+access_camp_program_wypoczynku_manager,camp.program.wypoczynku manager,model_camp_program_wypoczynku,fayna_camp_portal.group_fayna_camp_manager,1,1,1,1
 access_camp_program_admin,camp.program admin,model_camp_program,base.group_system,1,1,1,1
 access_camp_program_user,camp.program user,model_camp_program,base.group_user,1,0,0,0
 access_camp_program_day_admin,camp.program.day admin,model_camp_program_day,base.group_system,1,1,1,1
@@ -101,7 +101,7 @@ access_camp_program_structured_admin,camp.program.structured admin,model_camp_pr
 access_camp_program_structured_user,camp.program.structured user,model_camp_program_structured,base.group_user,1,0,0,0
 access_camp_kuratorium_notification_admin,camp.kuratorium.notification admin,model_camp_kuratorium_notification,base.group_system,1,1,1,1
 access_camp_kuratorium_notification_user,camp.kuratorium.notification user,model_camp_kuratorium_notification,base.group_user,1,0,0,0
-access_camp_kuratorium_notification_camp_admin,camp.kuratorium.notification camp admin,model_camp_kuratorium_notification,fayna_campscout.group_camp_admin,1,1,1,1
+access_camp_kuratorium_notification_camp_admin,camp.kuratorium.notification camp admin,model_camp_kuratorium_notification,fayna_camp_portal.group_camp_admin,1,1,1,1
 access_camp_kuratorium_staff_admin,camp.kuratorium.staff admin,model_camp_kuratorium_staff,base.group_system,1,1,1,1
 access_camp_kuratorium_staff_user,camp.kuratorium.staff user,model_camp_kuratorium_staff,base.group_user,1,0,0,0
 access_camp_kuratorium_checklist_admin,camp.kuratorium.checklist admin,model_camp_kuratorium_checklist,base.group_system,1,1,1,1
@@ -116,5 +116,5 @@ access_fayna_camp_dziennik_plan_line_admin,fayna.camp.dziennik.plan.line admin,m
 access_fayna_camp_dziennik_plan_line_user,fayna.camp.dziennik.plan.line user,model_fayna_camp_dziennik_plan_line,base.group_user,1,0,0,0
 access_camp_report_admin,camp.report admin,model_camp_report,base.group_system,1,1,1,1
 access_camp_report_user,camp.report user,model_camp_report,base.group_user,1,0,0,0
-access_camp_report_kierownik,camp.report kierownik,model_camp_report,fayna_campscout.group_camp_kierownik,1,1,1,0
-access_camp_report_camp_admin,camp.report camp admin,model_camp_report,fayna_campscout.group_camp_admin,1,1,1,1
+access_camp_report_kierownik,camp.report kierownik,model_camp_report,fayna_camp_portal.group_camp_kierownik,1,1,1,0
+access_camp_report_camp_admin,camp.report camp admin,model_camp_report,fayna_camp_portal.group_camp_admin,1,1,1,1

@@ -19,9 +19,9 @@ from odoo.exceptions import AccessError, UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
 
-_MANAGER_GROUP = "fayna_campscout.group_fayna_camp_manager"
-_MEDICAL_GROUP = "fayna_campscout.group_medical_officer"
-_ADMIN_GROUP = "fayna_campscout.group_camp_admin"
+_MANAGER_GROUP = "fayna_camp_portal.group_fayna_camp_manager"
+_MEDICAL_GROUP = "fayna_camp_portal.group_medical_officer"
+_ADMIN_GROUP = "fayna_camp_portal.group_camp_admin"
 
 # Default checklist items per Załącznik 1 MEN 2016
 _DEFAULT_CHECKLIST_ITEMS = [
@@ -112,8 +112,8 @@ class CampStaff(models.Model):
         string=_("Medical info"),
         help=_("Allergies, medical conditions, emergency contacts (staff internal)."),
         groups=(
-            "fayna_campscout.group_medical_officer,"
-            "fayna_campscout.group_camp_admin,"
+            "fayna_camp_portal.group_medical_officer,"
+            "fayna_camp_portal.group_camp_admin,"
             "base.group_system"
         ),
     )
@@ -273,7 +273,7 @@ class CampStaff(models.Model):
         if participant_model is None:
             _logger.warning(
                 "[camp_operations] camp.participant model not available — "
-                "fayna_campscout not fully installed?"
+                "fayna_camp_portal not fully installed?"
             )
             return False
 
@@ -817,7 +817,7 @@ class CampDailyReport(models.Model):
         return True
 
     def action_print_report(self):
-        return self.env.ref("fayna_campscout.report_camp_daily_report").report_action(self)
+        return self.env.ref("fayna_camp_portal.report_camp_daily_report").report_action(self)
 
     # ------------------------------------------------------------------
     # Immutability after approval
@@ -1536,7 +1536,7 @@ class CampProgramWypoczynku(models.Model):
 
     def action_print_program(self):
         self.ensure_one()
-        return self.env.ref("fayna_campscout.action_report_camp_program").report_action(self)
+        return self.env.ref("fayna_camp_portal.action_report_camp_program").report_action(self)
 
 
 # ---------------------------------------------------------------------------
@@ -1696,7 +1696,7 @@ class CampProgramStructured(models.Model):
 
     def action_print_program(self):
         self.ensure_one()
-        return self.env.ref("fayna_campscout.camp_program_report_action").report_action(self)
+        return self.env.ref("fayna_camp_portal.camp_program_report_action").report_action(self)
 
 
 # ---------------------------------------------------------------------------
@@ -2345,9 +2345,9 @@ class FaynaCampDziennik(models.Model):
                 }
             )
             try:
-                report = self.env.ref("fayna_campscout.action_report_dziennik")
+                report = self.env.ref("fayna_camp_portal.action_report_dziennik")
                 pdf_content, _fmt = report._render_qweb_pdf(
-                    "fayna_campscout.action_report_dziennik",
+                    "fayna_camp_portal.action_report_dziennik",
                     res_ids=rec.ids,
                 )
                 rec.write({"submitted_pdf": base64.b64encode(pdf_content)})

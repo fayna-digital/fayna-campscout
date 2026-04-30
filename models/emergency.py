@@ -513,7 +513,7 @@ class CampIncidentReport(models.Model):
 
         Falls back gracefully if the group does not exist (test isolation).
         """
-        group = self.env.ref("fayna_campscout.group_emergency_manager", raise_if_not_found=False)
+        group = self.env.ref("fayna_camp_portal.group_emergency_manager", raise_if_not_found=False)
         partner_ids = group.users.mapped("partner_id").ids if group else []
         for rec in self:
             rec.message_post(

@@ -110,7 +110,7 @@ class CampSmsDispatcher(models.AbstractModel):
         provider_key = rule.provider_key if rule else "turbosms"
 
         _logger.info(
-            "fayna_campscout.sms: dispatch to %s via provider=%s rule=%s",
+            "fayna_camp_portal.sms: dispatch to %s via provider=%s rule=%s",
             _hash_phone(phone),
             provider_key,
             rule.name if rule else "fallback",
@@ -139,7 +139,7 @@ class CampSmsDispatcher(models.AbstractModel):
         )
         if not provider:
             _logger.warning(
-                "fayna_campscout.sms: provider '%s' not found, trying first active", provider_key
+                "fayna_camp_portal.sms: provider '%s' not found, trying first active", provider_key
             )
             provider = self.env["fayna.sms.provider"].search([("active", "=", True)], limit=1)
         if not provider:
@@ -168,7 +168,7 @@ class CampSmsDispatcher(models.AbstractModel):
             )
             return {"success": True, "error": None, "provider": "odoo_native"}
         except Exception as exc:  # noqa: BLE001 — fallback, unknown state
-            _logger.error("fayna_campscout.sms: native sms.sms failed: %s", exc)
+            _logger.error("fayna_camp_portal.sms: native sms.sms failed: %s", exc)
             return {"success": False, "error": str(exc), "provider": "odoo_native"}
 
 
@@ -179,7 +179,7 @@ class ResConfigSettings(models.TransientModel):
 
     camp_sms_sender_name = fields.Char(
         string=_("SMS sender name"),
-        config_parameter="fayna_campscout.sms_sender_name",
+        config_parameter="fayna_camp_portal.sms_sender_name",
         help=_(
             "Sender ID shown on the recipient's phone (e.g. 'CampScout').\n"
             "Max 11 alphanumeric characters — carrier restriction."
@@ -187,7 +187,7 @@ class ResConfigSettings(models.TransientModel):
     )
     camp_sms_enabled = fields.Boolean(
         string=_("Enable camp SMS notifications"),
-        config_parameter="fayna_campscout.sms_enabled",
+        config_parameter="fayna_camp_portal.sms_enabled",
         help=_(
             "When enabled, camp events (auto-refusal, registration, reminders) "
             "trigger SMS notifications to parents."

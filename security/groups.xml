@@ -6,7 +6,7 @@
              Module category
         ═══════════════════════════════════════════════════════════════ -->
 
-        <record id="module_category_fayna_campscout" model="ir.module.category">
+        <record id="module_category_fayna_camp_portal" model="ir.module.category">
             <field name="name">Fayna CampScout</field>
             <field name="description">Roles for camp management: medical, kierownik, emergency, nutrition, admin.</field>
             <field name="sequence">25</field>
@@ -21,7 +21,7 @@
 
         <record id="group_medical_officer" model="res.groups">
             <field name="name">Camp Medical Officer</field>
-            <field name="category_id" ref="module_category_fayna_campscout"/>
+            <field name="category_id" ref="module_category_fayna_camp_portal"/>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
             <field name="comment">
                 Medical officer — read/write access to RODO Art.9 special-category
@@ -38,7 +38,7 @@
 
         <record id="group_camp_kierownik" model="res.groups">
             <field name="name">Camp Kierownik</field>
-            <field name="category_id" ref="module_category_fayna_campscout"/>
+            <field name="category_id" ref="module_category_fayna_camp_portal"/>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
             <field name="comment">
                 Kierownik (camp shift director) — can create/edit camp.journal,
@@ -52,7 +52,7 @@
 
         <record id="group_camp_leader" model="res.groups">
             <field name="name">Camp Leader</field>
-            <field name="category_id" ref="module_category_fayna_campscout"/>
+            <field name="category_id" ref="module_category_fayna_camp_portal"/>
             <field name="implied_ids" eval="[(4, ref('group_camp_kierownik'))]"/>
             <field name="comment">
                 Camp leader — extends Kierownik with sign-off rights:
@@ -69,7 +69,7 @@
 
         <record id="group_camp_hr" model="res.groups">
             <field name="name">Camp HR Manager</field>
-            <field name="category_id" ref="module_category_fayna_campscout"/>
+            <field name="category_id" ref="module_category_fayna_camp_portal"/>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
             <field name="comment">
                 Camp HR manager — can add and edit staff certifications
@@ -84,7 +84,7 @@
 
         <record id="group_camp_admin" model="res.groups">
             <field name="name">Camp Operations Admin</field>
-            <field name="category_id" ref="module_category_fayna_campscout"/>
+            <field name="category_id" ref="module_category_fayna_camp_portal"/>
             <field name="implied_ids" eval="[(4, ref('group_camp_kierownik'))]"/>
             <field name="comment">
                 Camp operations admin — full access to camp.report including
@@ -100,7 +100,7 @@
 
         <record id="group_fayna_camp_manager" model="res.groups">
             <field name="name">Camp Manager</field>
-            <field name="category_id" ref="module_category_fayna_campscout"/>
+            <field name="category_id" ref="module_category_fayna_camp_portal"/>
             <field name="implied_ids" eval="[(4, ref('group_camp_admin'))]"/>
             <field name="comment">
                 Camp manager — full access to camp.program (Program Wypoczynku,
@@ -117,7 +117,7 @@
 
         <record id="group_emergency_responder" model="res.groups">
             <field name="name">Camp Emergency Responder</field>
-            <field name="category_id" ref="module_category_fayna_campscout"/>
+            <field name="category_id" ref="module_category_fayna_camp_portal"/>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
             <field name="comment">
                 First-responder — can create/update camp.incident reports and
@@ -131,7 +131,7 @@
 
         <record id="group_emergency_manager" model="res.groups">
             <field name="name">Camp Emergency Manager</field>
-            <field name="category_id" ref="module_category_fayna_campscout"/>
+            <field name="category_id" ref="module_category_fayna_camp_portal"/>
             <field name="implied_ids" eval="[(4, ref('group_emergency_responder'))]"/>
             <field name="comment">
                 Emergency manager — full access to incident lifecycle including
@@ -147,7 +147,7 @@
 
         <record id="group_nutrition_officer" model="res.groups">
             <field name="name">Camp Nutrition Officer</field>
-            <field name="category_id" ref="module_category_fayna_campscout"/>
+            <field name="category_id" ref="module_category_fayna_camp_portal"/>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
             <field name="comment">
                 Nutrition officer — read/write access to dietary and allergen data

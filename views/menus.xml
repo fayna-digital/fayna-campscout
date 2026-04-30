@@ -139,7 +139,7 @@
             name="Надзвичайні ситуації"
             parent="menu_campscout_root"
             sequence="50"
-            groups="fayna_campscout.group_emergency_responder"/>
+            groups="fayna_camp_portal.group_emergency_responder"/>
 
         <menuitem id="menu_incidents"
             name="Протоколи НС"

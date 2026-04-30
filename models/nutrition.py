@@ -592,13 +592,13 @@ class CampParticipantDiet(models.Model):
         "diet_id",
         "allergen_id",
         string=_("Allergens"),
-        groups="fayna_campscout.group_nutrition_officer",
+        groups="fayna_camp_portal.group_nutrition_officer",
         help=_("EU-14 allergens the participant cannot consume."),
     )
     dietary_restrictions = fields.Text(
         string=_("Dietary restrictions"),
         translate=True,
-        groups="fayna_campscout.group_nutrition_officer",
+        groups="fayna_camp_portal.group_nutrition_officer",
         help=_(
             "Free-text description of dietary rules: halal, vegan, no pork, "
             "lactose-free, gluten-free, etc. Use allergen_ids for the structured "
@@ -608,7 +608,7 @@ class CampParticipantDiet(models.Model):
     notes = fields.Text(
         string=_("Kitchen notes"),
         translate=True,
-        groups="fayna_campscout.group_nutrition_officer",
+        groups="fayna_camp_portal.group_nutrition_officer",
         help=_(
             "Additional context for the kitchen team: severity of reactions, "
             "cross-contamination risk, alternative substitutions."

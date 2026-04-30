@@ -58,7 +58,7 @@ class CampscoutPortal(CustomerPortal):
             cs_upcoming_camps = env_sudo["event.event"].search(
                 [
                     ("date_begin", ">", now),
-                    ("is_published", "=", True),
+                    ("website_published", "=", True),
                 ],
                 order="date_begin asc",
                 limit=24,
@@ -146,7 +146,7 @@ class CampscoutPortal(CustomerPortal):
             _logger.exception("[CS] participants list load failed: %s", e)
             participants = env_sudo["camp.participant"]
         return http.request.render(
-            "fayna_campscout.portal_participants",
+            "fayna_camp_portal.portal_participants",
             {
                 "participants": participants,
                 "page_name": "participants",
@@ -167,7 +167,7 @@ class CampscoutPortal(CustomerPortal):
         except (AccessError, MissingError) as e:
             _logger.exception("[CS] loyalty load failed: %s", e)
         return http.request.render(
-            "fayna_campscout.portal_loyalty",
+            "fayna_camp_portal.portal_loyalty",
             {
                 "loyalty": loyalty,
                 "page_name": "loyalty",
@@ -229,7 +229,7 @@ class CampscoutPortal(CustomerPortal):
             stories = env_sudo["camp.story"]
 
         return http.request.render(
-            "fayna_campscout.portal_stories",
+            "fayna_camp_portal.portal_stories",
             {
                 "stories": stories,
                 "selected_child": selected_child,
@@ -252,7 +252,7 @@ class CampscoutPortal(CustomerPortal):
             documents = False
 
         return http.request.render(
-            "fayna_campscout.portal_documents",
+            "fayna_camp_portal.portal_documents",
             {
                 "documents": documents,
                 "page_name": "documents",

@@ -53,13 +53,13 @@ REPEAT_CUSTOMER_LOOKBACK_YEARS = 2
 PAID_STATES = ("sale", "done")
 
 # ir.config_parameter keys
-_PARAM_LOYALTY_ACTIVE = "fayna_campscout.loyalty_active"
-_PARAM_SALES_ACTIVE = "fayna_campscout.sales_active"
-_PARAM_SUPPORT_ADMIN_EMAIL = "fayna_campscout.support_admin_email"
+_PARAM_LOYALTY_ACTIVE = "fayna_camp_portal.loyalty_active"
+_PARAM_SALES_ACTIVE = "fayna_camp_portal.sales_active"
+_PARAM_SUPPORT_ADMIN_EMAIL = "fayna_camp_portal.support_admin_email"
 
 # loyalty.program XML IDs (loaded by data/commercial_data.xml)
-BANDA_PROGRAM_XMLID = "fayna_campscout.program_banda"
-BANDA_REFERRER_PROGRAM_XMLID = "fayna_campscout.program_banda_referrer"
+BANDA_PROGRAM_XMLID = "fayna_camp_portal.program_banda"
+BANDA_REFERRER_PROGRAM_XMLID = "fayna_camp_portal.program_banda_referrer"
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -757,13 +757,13 @@ class SaleOrderCommercial(models.Model):
                 # acceptable here because this is a backend audit hook and
                 # a logged failure is the correct degradation (not a 500).
                 _logger.exception(
-                    "fayna_campscout commercial: failed to record RODO consent " "for order=%s",
+                    "fayna_camp_portal commercial: failed to record RODO consent " "for order=%s",
                     order.id,
                 )
                 continue
             order.write({"rodo_consent_id": consent.id})
             _logger.info(
-                "fayna_campscout commercial: RODO consent=%s linked to " "order=%s partner=%s",
+                "fayna_camp_portal commercial: RODO consent=%s linked to " "order=%s partner=%s",
                 consent.id,
                 order.id,
                 partner.id,
@@ -988,7 +988,7 @@ class SaleOrderLineCommercial(models.Model):
                     if ticket:
                         line.event_ticket_id = ticket.id
                     _logger.info(
-                        "fayna_campscout: line=%s product=%s → event=%s ticket=%s",
+                        "fayna_camp_portal: line=%s product=%s → event=%s ticket=%s",
                         line.id,
                         line.product_id.id,
                         event.id,
@@ -999,7 +999,7 @@ class SaleOrderLineCommercial(models.Model):
                 if pct:
                     line.discount = pct
                     _logger.info(
-                        "fayna_campscout: line=%s applied %.2f%% camp promo",
+                        "fayna_camp_portal: line=%s applied %.2f%% camp promo",
                         line.id,
                         pct,
                     )
@@ -1111,7 +1111,7 @@ class SaleOrderLineCommercial(models.Model):
         if registrations_vals:
             regs = self.env["event.registration"].sudo().create(registrations_vals)
             _logger.info(
-                "fayna_campscout: created %d orphan registrations on order confirm",
+                "fayna_camp_portal: created %d orphan registrations on order confirm",
                 len(regs),
             )
         return True
@@ -1802,7 +1802,7 @@ class FaynaPaymentInstallment(models.Model):
         if not partner or not partner.email:
             return
         template = self.env.ref(
-            "fayna_campscout.email_template_overdue_installment",
+            "fayna_camp_portal.email_template_overdue_installment",
             raise_if_not_found=False,
         )
         if template:
@@ -1957,7 +1957,7 @@ class CampSupportRequest(models.Model):
     note = fields.Text(string="Коментар батьків")
     medical_cert = fields.Binary(
         string="Медична довідка",
-        groups="fayna_campscout.group_medical_officer",
+        groups="fayna_camp_portal.group_medical_officer",
     )
     medical_cert_name = fields.Char()
 
@@ -2189,7 +2189,7 @@ class CampSupportRequest(models.Model):
         if not self.partner_id.email:
             return
         template = self.env.ref(
-            "fayna_campscout.support_request_confirmation",
+            "fayna_camp_portal.support_request_confirmation",
             raise_if_not_found=False,
         )
         if template:
@@ -2219,7 +2219,7 @@ class CampSupportRequest(models.Model):
         if not self.partner_id.email:
             return
         template = self.env.ref(
-            "fayna_campscout.support_request_resolved",
+            "fayna_camp_portal.support_request_resolved",
             raise_if_not_found=False,
         )
         if template:

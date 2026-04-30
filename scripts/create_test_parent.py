@@ -11,7 +11,7 @@ Run via:
   from odoo import SUPERUSER_ID, registry as get_registry
   with get_registry('campscout').cursor() as cr:
     env = Environment(cr, SUPERUSER_ID, {})
-    exec(open('/opt/campscout/custom-addons/fayna_campscout/scripts/create_test_parent.py').read())
+    exec(open('/opt/campscout/custom-addons/fayna_camp_portal/scripts/create_test_parent.py').read())
   " 2>&1
 
 Or via shell in container:

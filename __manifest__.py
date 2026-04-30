@@ -1,11 +1,11 @@
 {
-    "name": "Fayna CampScout",
-    "version": "17.0.1.0.0",
+    "name": "Camp Portal",
+    "version": "17.0.2.0.0",
     "category": "Tools/Camp Management",
-    "summary": "Повна система управління дитячим табором: учасники, операції, харчування, НС, комерція, навчання",
+    "summary": "Complete portal for managing children's summer camps (PL market)",
     "description": """
-Fayna CampScout
-===============
+Camp Portal
+===========
 
 Єдиний модуль для управління дитячим табором CampScout.
 Побудований на базі нативних модулів Odoo 17.
@@ -66,8 +66,8 @@ Fayna CampScout
     ],
     "assets": {
         "web.assets_frontend": [
-            "fayna_campscout/static/src/scss/portal_hero.scss",
-            "fayna_campscout/static/src/css/portal.css",
+            "fayna_camp_portal/static/src/scss/portal_hero.scss",
+            "fayna_camp_portal/static/src/css/portal.css",
         ],
     },
     "post_init_hook": "post_init_hook",
