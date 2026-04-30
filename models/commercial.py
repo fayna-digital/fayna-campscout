@@ -1097,7 +1097,7 @@ class SaleOrderLineCommercial(models.Model):
             if not tmpl.event_ids:
                 continue
             missing = int(line.product_uom_qty) - len(line.registration_ids)
-            for _ in range(max(0, missing)):
+            for _i in range(max(0, missing)):
                 registrations_vals.append(
                     {
                         "sale_order_line_id": line.id,
