@@ -199,9 +199,14 @@
             </field>
         </record>
 
-        <!-- 🔴 Camp Portal Admin — TOP-LEVEL, view-as + dashboard -->
-        <record id="group_camp_portal_admin" model="res.groups">
-            <field name="name">Camp Portal Admin (top-level)</field>
+        <!-- 🔴 Organizator Wypoczynku — TOP-LEVEL legal entity per PL law.
+             Per Rozp. MEN 30.03.2016 § 2.1: organizator = juridical person
+             (fundacja, organizacja skautowa, sp. z o.o. etc.) registered with
+             Kuratorium Oświaty, holding the legal right to organize camps.
+             This role lands on /admin/dashboard and can /admin/as-{role}
+             impersonate any other role for support/inspection. -->
+        <record id="group_camp_organizator" model="res.groups">
+            <field name="name">Organizator Wypoczynku (top-level)</field>
             <field name="category_id" ref="module_category_fayna_camp_portal"/>
             <field name="implied_ids" eval="[
                 (4, ref('base.group_system')),
@@ -213,10 +218,12 @@
                 (4, ref('group_camp_sales'))
             ]"/>
             <field name="comment">
-                Top-level admin — bypasses all record rules (via base.group_system),
-                lands on /admin/dashboard, can /admin/as-{role} impersonate any
-                role for support/inspection. Each impersonation logged in
-                camp.admin.access.log (RODO art.30, 7-year retention).
+                Organizator Wypoczynku per PL law (Rozp. MEN 30.03.2016 §2.1).
+                Legal person/entity (foundation, scout org, company) registered
+                with Kuratorium Oświaty. Bypasses all record rules (via
+                base.group_system), lands on /admin/dashboard, can
+                /admin/as-{role} impersonate any role. Each impersonation
+                logged in camp.admin.access.log (RODO art.30, 7-year retention).
             </field>
         </record>
 
