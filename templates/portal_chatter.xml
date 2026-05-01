@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!--
+    Portal chatter integration — adds the standard Odoo 17
+    `portal.message_thread` block ("Historia komunikacji") to four
+    parent-portal pages. Staff posts internal-flagged notes; parents
+    only see public messages (`is_internal=False`).
+
+    This file is *additive* — it does not modify portal_templates.xml.
+    Detail templates that did not previously exist (`portal_participants_detail`,
+    `portal_stories_detail`, `portal_support_detail`) are introduced here as
+    standalone templates so the matching `/my/<…>/<id>` controller routes
+    (added separately) can render them.
+
+    For `/my/loyalty` (single record per partner), chatter is xpath-injected
+    into the existing `portal_loyalty` template.
+-->
+
+<!-- ============================================================================
+     /my/participants/<id> — qualification card detail + chatter
+     ============================================================================ -->
+
+<template id="portal_participants_detail" name="Participant Detail">
+    <t t-call="portal.portal_layout">
+        <t t-set="additional_title">Кваліфікаційна картка</t>
+
+        <div class="cs-page">
+            <div class="cs-page-back mb-3">
+                <a href="/my/participants" class="cs-back-link">&#8592; До списку учасників</a>
+            </div>
+
+            <t t-if="participant">
+                <div class="cs-page-header mb-4 cs-participant-detail">
+                    <h2 class="cs-page-title" t-esc="participant.display_name"/>
+                    <p class="cs-page-subtitle">
+                        <t t-if="participant.qualification_signed">
+                            <span class="badge bg-success">Картка підписана</span>
+                        </t>
+                        <t t-else="">
+                            <span class="badge bg-warning text-dark">Картка не заповнена</span>
+                        </t>
+                    </p>
+                </div>
+
+                <!-- Card body slot — host module appends qualification sections here -->
+                <div class="cs-participant-card mb-4"/>
+
+                <!-- Historia komunikacji -->
+                <div class="cs-participant-chatter mt-4">
+                    <h4 class="mb-3">Історія комунікації</h4>
+                    <t t-call="portal.message_thread">
+                        <t t-set="object" t-value="participant"/>
+                        <t t-set="token" t-value="token or (participant.sudo().access_token if participant.sudo() else False)"/>
+                        <t t-set="message_post_hash_token" t-value="participant.sudo()._portal_ensure_token()"/>
+                        <t t-set="pid" t-value="user_id and user_id.partner_id and user_id.partner_id.id or False"/>
+                    </t>
+                </div>
+            </t>
+        </div>
+    </t>
+</template>
+
+
+<!-- ============================================================================
+     /my/stories/<id> — single story detail + chatter
+     ============================================================================ -->
+
+<template id="portal_stories_detail" name="Story Detail">
+    <t t-call="portal.portal_layout">
+        <t t-set="additional_title">Історія з табору</t>
+
+        <div class="cs-page">
+            <div class="cs-page-back mb-3">
+                <a href="/my/stories" class="cs-back-link">&#8592; До списку історій</a>
+            </div>
+
+            <t t-if="story">
+                <div class="cs-story-card cs-story-detail mb-4">
+                    <div class="cs-story-head">
+                        <div class="cs-story-meta">
+                            <time class="cs-story-date" t-if="story.date">
+                                <t t-esc="story.date.strftime('%d.%m.%Y')"/>
+                            </time>
+                            <span class="cs-story-type" t-attf-data-type="#{story.story_type}"
+                                  t-esc="story.story_type"/>
+                        </div>
+                        <h3 class="cs-story-title" t-esc="story.title"/>
+                    </div>
+                    <div class="cs-story-body">
+                        <div t-out="story.content"/>
+                    </div>
+                </div>
+
+                <!--
+                    Chatter on `camp.story` requires that model to inherit
+                    `portal.mixin` (defined in the `fayna_camp_stories`
+                    module). If it does not yet, this `<t t-call>` is wrapped
+                    in `t-if="story._name and hasattr(story, '_portal_ensure_token')"`
+                    so the page degrades gracefully without a 500.
+                -->
+                <t t-if="hasattr(story, '_portal_ensure_token')">
+                    <div class="cs-story-chatter mt-4">
+                        <h4 class="mb-3">Історія комунікації</h4>
+                        <t t-call="portal.message_thread">
+                            <t t-set="object" t-value="story"/>
+                            <t t-set="token" t-value="token or False"/>
+                            <t t-set="message_post_hash_token" t-value="story.sudo()._portal_ensure_token()"/>
+                            <t t-set="pid" t-value="user_id and user_id.partner_id and user_id.partner_id.id or False"/>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </div>
+    </t>
+</template>
+
+
+<!-- ============================================================================
+     /my/support/<id> — support request detail + chatter
+     ============================================================================ -->
+
+<template id="portal_support_detail" name="Support Request Detail">
+    <t t-call="portal.portal_layout">
+        <t t-set="additional_title">Звернення</t>
+
+        <div class="cs-page">
+            <div class="cs-page-back mb-3">
+                <a href="/my/support" class="cs-back-link">&#8592; До списку звернень</a>
+            </div>
+
+            <t t-if="support">
+                <div class="cs-page-header mb-4">
+                    <h2 class="cs-page-title">
+                        <t t-esc="support.name or 'Звернення'"/>
+                    </h2>
+                    <p class="cs-page-subtitle">
+                        <span t-attf-class="badge bg-secondary">
+                            <t t-esc="dict(support._fields['request_type'].selection).get(support.request_type, support.request_type or '')"/>
+                        </span>
+                        <span class="ms-2 text-muted" t-if="support.submission_date">
+                            <t t-esc="support.submission_date.strftime('%d.%m.%Y %H:%M')"/>
+                        </span>
+                    </p>
+                </div>
+
+                <div class="cs-support-detail mb-4">
+                    <div t-if="support.description" t-out="support.description"/>
+                </div>
+
+                <!-- Historia komunikacji -->
+                <div class="cs-support-chatter mt-4">
+                    <h4 class="mb-3">Історія комунікації</h4>
+                    <t t-call="portal.message_thread">
+                        <t t-set="object" t-value="support"/>
+                        <t t-set="token" t-value="token or False"/>
+                        <t t-set="message_post_hash_token" t-value="support.sudo()._portal_ensure_token()"/>
+                        <t t-set="pid" t-value="user_id and user_id.partner_id and user_id.partner_id.id or False"/>
+                    </t>
+                </div>
+            </t>
+        </div>
+    </t>
+</template>
+
+
+<!-- ============================================================================
+     /my/loyalty — chatter on the parent's loyalty record
+     ============================================================================ -->
+
+<template id="portal_loyalty_chatter" inherit_id="fayna_camp_portal.portal_loyalty" priority="30">
+    <xpath expr="//div[hasclass('cs-page')]" position="inside">
+        <t t-if="loyalty">
+            <div class="cs-loyalty-chatter mt-4">
+                <h4 class="mb-3">Історія комунікації</h4>
+                <t t-call="portal.message_thread">
+                    <t t-set="object" t-value="loyalty"/>
+                    <t t-set="token" t-value="token or False"/>
+                    <t t-set="message_post_hash_token" t-value="loyalty.sudo()._portal_ensure_token()"/>
+                    <t t-set="pid" t-value="user_id and user_id.partner_id and user_id.partner_id.id or False"/>
+                </t>
+            </div>
+        </t>
+    </xpath>
+</template>
+
+
+</odoo>

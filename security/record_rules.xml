@@ -103,42 +103,8 @@
             <field name="perm_unlink" eval="False"/>
         </record>
 
-        <!-- ─── camp.story ────────────────────────────────────────────── -->
-        <!-- Portal: only stories from events where this parent's children are registered -->
-        <record id="rule_story_portal_own_events" model="ir.rule">
-            <field name="name">Portal: stories from own children events</field>
-            <field name="model_id" ref="model_camp_story"/>
-            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
-            <field name="domain_force">[('state', '=', 'published'), ('public', '=', True), ('event_id.registration_ids.partner_id', '=', user.partner_id.id)]</field>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="False"/>
-            <field name="perm_create" eval="False"/>
-            <field name="perm_unlink" eval="False"/>
-        </record>
-
-        <!-- Wychowawca creates/edits draft stories of own events -->
-        <record id="rule_story_wychowawca_own" model="ir.rule">
-            <field name="name">Wychowawca: own stories drafts</field>
-            <field name="model_id" ref="model_camp_story"/>
-            <field name="groups" eval="[(4, ref('group_camp_wychowawca'))]"/>
-            <field name="domain_force">[('event_id.staff_ids.user_id', '=', user.id)]</field>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="False"/>
-        </record>
-
-        <!-- Kierownik approves/publishes stories of their camp -->
-        <record id="rule_story_kierownik_own" model="ir.rule">
-            <field name="name">Kierownik: stories of own camp</field>
-            <field name="model_id" ref="model_camp_story"/>
-            <field name="groups" eval="[(4, ref('group_camp_kierownik'))]"/>
-            <field name="domain_force">['|', ('event_id.user_id', '=', user.id), ('event_id.staff_ids.user_id', '=', user.id)]</field>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="False"/>
-        </record>
+        <!-- camp.story rules: parked until camp.story model is migrated from
+             fayna_camp_stories into fayna_camp_portal (TZ §9 Step 4). -->
 
         <!-- ─── camp.journal (dziennik) ───────────────────────────────── -->
         <record id="rule_journal_wychowawca_own" model="ir.rule">

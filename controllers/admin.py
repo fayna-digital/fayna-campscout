@@ -50,30 +50,23 @@ class CampscoutAdmin(http.Controller):
     ):
         """Write a camp.admin.access.log row (sudo) before rendering view-as.
 
-        Sudo is used so that even if the running user lacks create rights on
-        the log model (they shouldn't), the immutable trail still gets written
-        — RODO art.30 demands the register exists.
+        Sudo is used so the immutable RODO art.30 register always gets the
+        entry, regardless of any record rule. If the create itself fails we
+        re-raise — RODO traceability is non-negotiable; the admin must see
+        the error rather than impersonate silently.
         """
-        try:
-            request.env["camp.admin.access.log"].sudo().create(
-                {
-                    "user_id": request.env.user.id,
-                    "impersonated_role": impersonated_role,
-                    "target_user_id": target_user.id if target_user else False,
-                    "target_partner_id": target_partner.id if target_partner else False,
-                    "target_event_id": target_event.id if target_event else False,
-                    "reason": reason or False,
-                    "ip_address": request.httprequest.remote_addr or False,
-                    "session_id": getattr(request.session, "sid", False) or False,
-                }
-            )
-        except Exception:  # noqa: BLE001 — must never block view-as on log failure path; we log
-            _logger.exception(
-                "[ADMIN] Failed to write camp.admin.access.log entry "
-                "(role=%s user=%s)",
-                impersonated_role,
-                request.env.user.id,
-            )
+        request.env["camp.admin.access.log"].sudo().create(
+            {
+                "user_id": request.env.user.id,
+                "impersonated_role": impersonated_role,
+                "target_user_id": target_user.id if target_user else False,
+                "target_partner_id": target_partner.id if target_partner else False,
+                "target_event_id": target_event.id if target_event else False,
+                "reason": reason or False,
+                "ip_address": request.httprequest.remote_addr or False,
+                "session_id": getattr(request.session, "sid", False) or False,
+            }
+        )
 
     # ------------------------------------------------------------------
     # Dashboard
@@ -165,7 +158,7 @@ class CampscoutAdmin(http.Controller):
     def _count_open_incidents(self, env_sudo):
         try:
             return env_sudo["camp.incident.report"].search_count(
-                [("state", "in", ("open", "investigating", "draft"))]
+                [("state", "not in", ("closed",))]
             )
         except (AccessError, MissingError, KeyError):
             return 0
@@ -173,7 +166,7 @@ class CampscoutAdmin(http.Controller):
     def _count_kuratorium_pending(self, env_sudo):
         try:
             return env_sudo["camp.kuratorium.notification"].search_count(
-                [("state", "in", ("draft", "pending", "submitted"))]
+                [("state", "in", ("draft", "ready", "submitted", "deficiency"))]
             )
         except (AccessError, MissingError, KeyError):
             return 0
@@ -190,7 +183,7 @@ class CampscoutAdmin(http.Controller):
                 kierownik = False
                 try:
                     staff = env_sudo["camp.staff"].search(
-                        [("event_id", "=", ev.id), ("role", "=", "director")],
+                        [("event_id", "=", ev.id), ("role", "in", ("director", "leader"))],
                         limit=1,
                     )
                     kierownik = staff.name or (staff.user_id and staff.user_id.name) or False
@@ -238,28 +231,34 @@ class CampscoutAdmin(http.Controller):
     def _count_open_support(self, env_sudo):
         try:
             return env_sudo["camp.support.request"].search_count(
-                [("state", "in", ("new", "open", "in_progress"))]
+                [
+                    (
+                        "state",
+                        "in",
+                        ("new", "draft", "submitted", "in_progress", "under_review"),
+                    )
+                ]
             )
         except (AccessError, MissingError, KeyError):
             return 0
 
     def _rodo_consent_rate(self, env_sudo):
-        """Return percentage of partners with active RODO consent (best-effort)."""
+        """Return percentage of partners with active RODO consent (best-effort).
+
+        Reads from fayna.rodo.consent.log if available — falls back to 0 when
+        the dependency is not installed.
+        """
         try:
             total = env_sudo["res.partner"].search_count(
                 [("is_company", "=", False), ("customer_rank", ">", 0)]
             )
             if not total:
                 return 0
-            consented = env_sudo["res.partner"].search_count(
-                [
-                    ("is_company", "=", False),
-                    ("customer_rank", ">", 0),
-                    ("rodo_consent_state", "=", "granted"),
-                ]
+            consented = env_sudo["fayna.rodo.consent.log"].search_count(
+                [("state", "=", "granted")]
             )
-            return round(consented * 100.0 / total, 1)
-        except (AccessError, MissingError, KeyError):
+            return round(min(consented, total) * 100.0 / total, 1)
+        except (AccessError, MissingError, KeyError, ValueError):
             return 0
 
     def _top_camps_by_sales(self, env_sudo, month_start):

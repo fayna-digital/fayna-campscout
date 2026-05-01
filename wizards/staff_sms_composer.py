@@ -105,11 +105,11 @@ class CampStaffSmsComposer(models.TransientModel):
     def _compute_recipients(self):
         for wiz in self:
             if not wiz.staff_id:
-                wiz.recipient_ids = [(5, 0, 0)]
+                wiz.recipient_ids = False
                 wiz.recipient_count = 0
                 continue
             participants = wiz._resolve_recipients(wiz.staff_id)
-            wiz.recipient_ids = [(6, 0, participants.ids)]
+            wiz.recipient_ids = participants
             wiz.recipient_count = len(participants)
 
     @api.depends("recipient_count")

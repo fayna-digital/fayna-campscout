@@ -68,6 +68,7 @@ Camp Portal
         "views/menus.xml",
         "views/staff_sms_views.xml",
         "templates/portal_templates.xml",
+        "templates/portal_chatter.xml",
         "templates/website_templates.xml",
         "templates/admin_dashboard.xml",
     ],

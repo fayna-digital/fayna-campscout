@@ -34,3 +34,7 @@ from . import (  # noqa: E402,I001
 # Auto-subscribe followers (mail.thread) + auto-create discuss.channel for
 # camp shift staff teams.
 from . import auto_subscribe_extensions, event_channel_create  # noqa: E402,I001
+
+# Portal chatter — adds portal.mixin to participant / support / loyalty so
+# /my/<…>/<id> pages can render `portal.message_thread`.
+from . import portal_mixin_extensions  # noqa: E402,I001
