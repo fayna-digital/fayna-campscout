@@ -341,6 +341,7 @@ class CampParticipant(models.Model):
         "res.users",
         string=_("Signed by (user)"),
         readonly=True,
+        index=True,
         ondelete="set null",
         help=_("Odoo user account used to submit the signing — usually the parent's portal user."),
     )
@@ -412,6 +413,7 @@ class CampParticipant(models.Model):
         "res.users",
         string=_("Uzupełnił kierownik"),
         readonly=True,
+        index=True,
         ondelete="set null",
         help=_("Kierownik który zatwierdził Sekcję III (wypełnił i zapisał datę)."),
     )
@@ -450,6 +452,7 @@ class CampParticipant(models.Model):
         "res.users",
         string=_("Podpisał (Sekcja IV)"),
         readonly=True,
+        index=True,
         ondelete="set null",
         help=_("Konto użytkownika kierownika który podpisał Sekcję IV."),
     )
@@ -526,6 +529,7 @@ class CampParticipant(models.Model):
         "res.users",
         string=_("Podpisał (Sekcja V)"),
         readonly=True,
+        index=True,
         ondelete="set null",
         help=_("Konto użytkownika kierownika który podpisał Sekcję V."),
     )
@@ -572,6 +576,7 @@ class CampParticipant(models.Model):
         "res.users",
         string=_("Podpisał (Sekcja VI)"),
         readonly=True,
+        index=True,
         ondelete="set null",
         help=_("Konto użytkownika wychowawcy który podpisał Sekcję VI."),
     )

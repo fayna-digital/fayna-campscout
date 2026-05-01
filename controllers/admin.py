@@ -140,25 +140,26 @@ class CampscoutAdmin(http.Controller):
     # --- KPI helpers -------------------------------------------------
 
     def _count_unsigned_cards(self, env_sudo, deadline):
-        """Cards on participants whose camp starts within 14 days and aren't signed."""
+        """Count unsigned qualification cards for events starting within deadline.
+
+        Pushes filtering to PostgreSQL via search_count + indexed event domain
+        instead of full-table search() + Python filter() (avoids N+1 + scan).
+        """
         try:
-            participants = env_sudo["camp.participant"].search([])
-            unsigned = participants.filtered(
-                lambda p: any(
-                    r.event_id.date_begin
-                    and r.event_id.date_begin <= deadline
-                    and not getattr(p, "qualification_signed", False)
-                    for r in p.registration_ids
-                )
+            return env_sudo["camp.participant"].search_count(
+                [
+                    ("qualification_signed", "=", False),
+                    ("registration_ids.event_id.date_begin", "<=", deadline),
+                    ("registration_ids.state", "!=", "cancel"),
+                ]
             )
-            return len(unsigned)
         except (AccessError, MissingError, KeyError):
             return 0
 
     def _count_open_incidents(self, env_sudo):
         try:
             return env_sudo["camp.incident.report"].search_count(
-                [("state", "not in", ("closed",))]
+                [("state", "in", ("draft", "investigating", "open", "escalated"))]
             )
         except (AccessError, MissingError, KeyError):
             return 0

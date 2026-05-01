@@ -2,33 +2,43 @@
     "name": "Портал CampScout",
     "version": "17.0.2.0.0",
     "category": "Tools/Camp Management",
-    "summary": "Complete portal for managing children's summer camps (PL market)",
+    "summary": "Complete children's summer camp management portal (Polish law compliance)",
     "description": """
-Camp Portal
-===========
+Fayna Camp Portal
+=================
 
-Єдиний модуль для управління дитячим табором CampScout.
-Побудований на базі нативних модулів Odoo 17.
+Hotel-pattern Odoo 17 module — single module containing all camp business logic.
+Built on top of native Odoo features (mail.thread, portal, event, sale,
+loyalty, account.payment.term, website_rating, sms).
 
-Функції:
-- Табори як event.event (заїзди) + product.template (магазин)
-- Кваліфікаційна картка дитини (5 секцій, PL закон)
-- RODO consent log (через fayna_rodo_compliance)
-- Операції: журнал, розклад, програма (Załącznik 9)
-- Харчування + EU-14 алергени
-- Протокол НС (Ustawa Kamilka + Rozp. MEN §6)
-- Кураторіум: сповіщення та перевірки
-- Продажі, підтримка батьків, розстрочки
-- Програма лояльності (через sale_loyalty)
-- Відгуки (через website_rating)
-- Навчання вихователів (через slide.channel + MEN 36h)
-- SMS через TurboSMS (через sms)
-- Meta CAPI events
-- Батьківський портал /my
-- REST API для мобільного додатку
+Features:
 
-Автор: Fayna Digital — Volodymyr Shevchenko
-Ліцензія: LGPL-3
+* 6-role RBAC: Organizator (PL Rozp. MEN 30.03.2016 §2.1) / Sales / Kierownik /
+  Wychowawca / Instructor / Parent — record rules + field-level groups
+* Native Odoo chat with auto-subscribers + discuss.channel auto-create per
+  camp shift staff team
+* SMS three-tier (CRITICAL/IMPORTANT/INFO) via fayna_sms_base multi-provider
+  dispatcher (TurboSMS adapter)
+* Wychowawca SMS broadcast wizard with cost guard + immutable audit log
+* Ustawa Kamilka 2024 — vital interest reporting with 5-min escalation cron
+  + immutable Kuratorium notification log
+* Karta kwalifikacyjna (5 sections per PL law) with parent signoff workflow
+* Dziennik zajęć (Załącznik 5 MEN) with kierownik commenting via mail.thread
+* Program Wypoczynku (Załącznik 9) with approval workflow
+* Kuratorium notification (Załącznik 1) — auto-prepared submission package
+* Parent portal /my/ — children cards, stories, loyalty, transport, support
+* Organizator dashboard /admin/dashboard with view-as impersonation
+  (with_user pattern, RODO art.30 audit log)
+* PL/UA native i18n via Odoo .po (374+ translated strings)
+* RODO compliance — append-only consent log, art.9 field-level access,
+  immutable audit trails (7-year retention)
+
+Architecture: Strangler Fig migration from campscout_management monolith.
+All camp-specific logic lives in this single module. Horizontal infrastructure
+(fayna_rodo_compliance, fayna_sms_base) stays as separate reusable modules.
+
+Author: Fayna Digital — Volodymyr Shevchenko
+License: LGPL-3
     """,
     "author": "Fayna Digital — Volodymyr Shevchenko",
     "website": "https://fayna.agency",

@@ -1,4 +1,4 @@
-from odoo import _, http
+from odoo import _, fields, http
 from odoo.http import request
 
 
@@ -28,10 +28,17 @@ class CampscoutAPI(http.Controller):
 
     @http.route("/api/v1/participants/<int:participant_id>/camp", type="json", auth="user")
     def api_participant_camp(self, participant_id, **kw):
-        """Get current camp info for a child"""
-        participant = request.env["camp.participant"].browse(participant_id)
+        """Get current camp info for a child.
 
-        # Find active registration for this child's parent
+        Access guard: only the child's parent can request camp info — protects
+        against IDOR (OWASP A01). Internal staff use the backend, not the API.
+        """
+        participant = request.env["camp.participant"].browse(participant_id)
+        if not participant.exists():
+            return {"error": _("Participant not found")}
+        if participant.parent_partner_id != request.env.user.partner_id:
+            return {"error": _("Forbidden")}
+
         registration = request.env["event.registration"].search(
             [("participant_id", "=", participant.id), ("state", "!=", "cancel")],
             limit=1,
@@ -40,15 +47,19 @@ class CampscoutAPI(http.Controller):
         if not registration:
             return {"error": _("No active camp found")}
 
+        days_remaining = None
+        if registration.event_id.date_end:
+            days_remaining = (
+                registration.event_id.date_end.date() - fields.Date.today()
+            ).days
+
         return {
             "camp": {
                 "id": registration.event_id.id,
                 "name": registration.event_id.name,
                 "date_start": registration.event_id.date_begin,
                 "date_end": registration.event_id.date_end,
-                "days_remaining": (
-                    registration.event_id.date_end - request.context.get("today")
-                ).days,
+                "days_remaining": days_remaining,
             }
         }
 
@@ -140,11 +151,28 @@ class CampscoutAPI(http.Controller):
 
     @http.route("/api/v1/messages", type="json", auth="user")
     def api_get_messages(self, **kw):
-        """Get unread messages from camp"""
+        """Get messages addressed to this partner.
+
+        Scope guard: only public messages on parent-visible thread models
+        (camp.story, camp.support.request, camp.participant). This prevents
+        portal parents from reading internal staff threads they may have been
+        CC'd into during incident escalation, etc.
+        """
         partner = request.env.user.partner_id
+        portal_models = (
+            "camp.story",
+            "camp.support.request",
+            "camp.participant",
+            "sale.order",
+        )
 
         messages = request.env["mail.message"].search(
-            [("partner_ids", "=", partner.id), ("message_type", "!=", "notification")],
+            [
+                ("partner_ids", "=", partner.id),
+                ("message_type", "!=", "notification"),
+                ("is_internal", "=", False),
+                ("model", "in", portal_models),
+            ],
             order="date desc",
             limit=20,
         )

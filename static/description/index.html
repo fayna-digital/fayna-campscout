@@ -1,127 +1,219 @@
-<!DOCTYPE html>
 <html lang="uk">
-<head>
-<meta charset="UTF-8">
-<style>
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 0; background: #fff; color: #222; }
-  .header { background: linear-gradient(135deg, #FF6B00 0%, #e85a00 100%); color: white; padding: 40px 32px; }
-  .header h1 { margin: 0 0 8px; font-size: 2rem; font-weight: 700; letter-spacing: -0.5px; }
-  .header p { margin: 0; font-size: 1.05rem; opacity: 0.92; }
-  .badge { display: inline-block; background: rgba(255,255,255,0.22); border-radius: 4px; padding: 3px 10px; font-size: 0.82rem; font-weight: 600; margin-right: 6px; }
-  .content { padding: 32px; max-width: 800px; }
-  h2 { color: #FF6B00; font-size: 1.2rem; font-weight: 700; margin: 28px 0 12px; border-left: 4px solid #FF6B00; padding-left: 12px; }
-  ul { margin: 0 0 16px; padding-left: 22px; line-height: 1.7; }
-  li { margin-bottom: 4px; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
-  .card { border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px; }
-  .card-icon { font-size: 1.6rem; margin-bottom: 8px; }
-  .card-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; }
-  .card-desc { font-size: 0.85rem; color: #555; line-height: 1.5; }
-  .footer { background: #f7f7f7; border-top: 1px solid #eee; padding: 20px 32px; font-size: 0.85rem; color: #666; }
-  .footer a { color: #FF6B00; text-decoration: none; }
-  .tag { display: inline-block; background: #fff3e8; color: #c14d00; border-radius: 4px; padding: 2px 8px; font-size: 0.78rem; font-weight: 600; margin: 2px; }
-</style>
-</head>
-<body>
+<head><meta charset="utf-8"/></head>
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#fff;color:#111;line-height:1.6;margin:0;padding:0;">
 
-<div class="header">
-  <h1>Fayna CampScout</h1>
-  <p>Повна система управління дитячим табором — один модуль, все необхідне.</p>
-  <br>
-  <span class="badge">Odoo 17.0 Community</span>
-  <span class="badge">LGPL-3</span>
-  <span class="badge">Fayna Digital</span>
-</div>
-
-<div class="content">
-
-  <h2>Що це</h2>
-  <p>Єдиний Odoo-модуль для управління дитячим табором CampScout.<br>
-  Один install — отримуєш все необхідне для роботи табору від реєстрації до звіту керівника.</p>
-
-  <div class="grid">
-    <div class="card">
-      <div class="card-icon">&#127979;</div>
-      <div class="card-title">Учасники</div>
-      <div class="card-desc">Кваліфікаційна картка дитини (5 секцій, PL закон), RODO consent, медичні дані з ACL</div>
-    </div>
-    <div class="card">
-      <div class="card-icon">&#128197;</div>
-      <div class="card-title">Операції табору</div>
-      <div class="card-desc">Журнал дня, Załącznik 9, склад персоналу, розклад, звіт керівника, Kuratorium</div>
-    </div>
-    <div class="card">
-      <div class="card-icon">&#127860;</div>
-      <div class="card-title">Харчування</div>
-      <div class="card-desc">Плани харчування, EU-14 алергени (Regulation 1169/2011), дієтичні профілі</div>
-    </div>
-    <div class="card">
-      <div class="card-icon">&#128680;</div>
-      <div class="card-title">Надзвичайні ситуації</div>
-      <div class="card-desc">Протокол НС — 7-станова машина, 18 типів дій, Ustawa Kamilka 2024, immutable ledger</div>
-    </div>
-    <div class="card">
-      <div class="card-icon">&#128179;</div>
-      <div class="card-title">Комерція</div>
-      <div class="card-desc">Розстрочки, програма лояльності (loyalty.program), відгуки батьків, підтримка</div>
-    </div>
-    <div class="card">
-      <div class="card-icon">&#127891;</div>
-      <div class="card-title">Навчання персоналу</div>
-      <div class="card-desc">Курс виховника 36h через native eLearning, MEN compliance, сертифікати</div>
-    </div>
-    <div class="card">
-      <div class="card-icon">&#128241;</div>
-      <div class="card-title">SMS</div>
-      <div class="card-desc">Multi-provider routing (UA/PL), TurboSMS adapter, шаблони повідомлень</div>
-    </div>
-    <div class="card">
-      <div class="card-icon">&#128101;</div>
-      <div class="card-title">Батьківський портал</div>
-      <div class="card-desc">/my — heroes, діти, stories, документи, лояльність. Mobile-first, WCAG AA</div>
-    </div>
+<!-- HERO -->
+<section style="padding:48px 48px 40px;border-bottom:1px solid #f0f0f0;">
+  <div style="display:inline-block;background:#20ac41;color:#fff;font-size:0.72em;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 12px;border-radius:4px;margin-bottom:18px;">Odoo 17 Module</div>
+  <h1 style="font-size:2.2em;font-weight:800;letter-spacing:-1px;color:#111;line-height:1.15;margin:0 0 14px;">Fayna <span style="color:#20ac41;">Camp Portal</span></h1>
+  <p style="font-size:1.05em;color:#555;max-width:620px;margin:0 0 24px;">Цілісне рішення для дитячих таборів у Польщі на Odoo 17. Один модуль містить усю логіку: бронювання, kartę kwalifikacyjną, dziennik zajęć, розклад дня, харчування з алергенами, протокол НС за Ustawą Kamilka, кабінет батька, навчання вихователів та інтеграції з SMS і Meta.</p>
+  <div style="display:flex;gap:24px;flex-wrap:wrap;">
+    <span style="font-size:0.82em;color:#888;"><strong style="color:#111;">Рішення:</strong> Fayna Digital для CampScout</span>
+    <span style="font-size:0.82em;color:#888;"><strong style="color:#111;">Автор:</strong> <a href="https://fayna.agency" style="color:#20ac41;font-weight:600;text-decoration:none;">Volodymyr Shevchenko</a></span>
+    <span style="font-size:0.82em;color:#888;"><strong style="color:#111;">Ліцензія:</strong> LGPL-3</span>
+    <span style="font-size:0.82em;color:#888;"><strong style="color:#111;">Версія:</strong> 17.0.2.0.0</span>
   </div>
+</section>
 
-  <h2>Залежності Odoo (native)</h2>
-  <span class="tag">event</span>
-  <span class="tag">event_sale</span>
-  <span class="tag">sale</span>
-  <span class="tag">account</span>
-  <span class="tag">loyalty</span>
-  <span class="tag">slide</span>
-  <span class="tag">sms</span>
-  <span class="tag">website_rating</span>
-  <span class="tag">portal</span>
-  <span class="tag">website</span>
-  <span class="tag">mail</span>
-  <br><br>
-  <span class="tag" style="background:#e8f4e8;color:#1a6b1a;">fayna_rodo_compliance</span>
+<!-- FEATURES -->
+<section style="padding:44px 48px;border-bottom:1px solid #f0f0f0;background:#fafafa;">
+  <div style="font-size:0.72em;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#20ac41;margin-bottom:8px;">Можливості</div>
+  <h2 style="font-size:1.4em;font-weight:800;color:#111;margin:0 0 28px;letter-spacing:-0.3px;">Що вміє модуль</h2>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;">
 
-  <h2>Відповідність законодавству</h2>
-  <ul>
-    <li><strong>RODO / GDPR</strong> — consent log, medical ACL (Art.9), 7-річний retention</li>
-    <li><strong>Rozp. MEN 2016</strong> — Karta Kwalifikacyjna (5 секцій), kurs wychowawcy 36h</li>
-    <li><strong>Ustawa Kamilka 2024</strong> — RPS перевірки, immutable incident ledger</li>
-    <li><strong>EU Regulation 1169/2011</strong> — 14 major allergens tracking</li>
-    <li><strong>Załącznik 9 MEN</strong> — Program wypoczynku (required legal document)</li>
-  </ul>
+    <div style="flex:1;min-width:240px;border:1px solid #e8e8e8;border-radius:8px;padding:22px;background:#fff;">
+      <div style="font-size:1.5em;margin-bottom:8px;" aria-label="namet">&#127957;</div>
+      <h4 style="font-size:0.92em;font-weight:700;color:#111;margin:0 0 6px;">Hotel-pattern архітектура</h4>
+      <p style="font-size:0.85em;color:#666;margin:0;line-height:1.55;">Один модуль, уся логіка табору всередині. Без розпорошення між 20+ репо &#8212; Strangler Fig завершено, інтеграції винесені окремо.</p>
+    </div>
 
-  <h2>Архітектура</h2>
-  <ul>
-    <li>«Hotel pattern» — один модуль, все в Python-файлах</li>
-    <li>Strangler Fig — поступова міграція з bs_campscout_addon без втрати даних</li>
-    <li>OCA-first — нативні Odoo модулі замість кастомних (loyalty, slide.channel, website_rating)</li>
-    <li>i18n — українська + польська через native Odoo .po файли</li>
-    <li>Безпека — OWASP Top 10, field-level ACL, record rules, audit trail</li>
-  </ul>
+    <div style="flex:1;min-width:240px;border:1px solid #e8e8e8;border-radius:8px;padding:22px;background:#fff;">
+      <div style="font-size:1.5em;margin-bottom:8px;" aria-label="lock">&#128274;</div>
+      <h4 style="font-size:0.92em;font-weight:700;color:#111;margin:0 0 6px;">6-роль RBAC + record rules</h4>
+      <p style="font-size:0.85em;color:#666;margin:0;line-height:1.55;">Organizator / Sales / Kierownik / Wychowawca / Instructor / Parent. Field-level groups на медичних даних, <code style="background:#f4f4f4;border-radius:3px;padding:1px 5px;font-size:0.88em;">ir.rule</code> на власних записах батька.</p>
+    </div>
 
-</div>
+    <div style="flex:1;min-width:240px;border:1px solid #e8e8e8;border-radius:8px;padding:22px;background:#fff;">
+      <div style="font-size:1.5em;margin-bottom:8px;" aria-label="chat">&#128172;</div>
+      <h4 style="font-size:0.92em;font-weight:700;color:#111;margin:0 0 6px;">Native Odoo chat + SMS</h4>
+      <p style="font-size:0.85em;color:#666;margin:0;line-height:1.55;"><code style="background:#f4f4f4;border-radius:3px;padding:1px 5px;font-size:0.88em;">mail.thread</code> на всіх ключових моделях. SMS через <code style="background:#f4f4f4;border-radius:3px;padding:1px 5px;font-size:0.88em;">fayna_sms_base</code> (TurboSMS / SMSAPI / Twilio &#8212; multi-provider).</p>
+    </div>
 
-<div class="footer">
-  <strong>Fayna Digital</strong> — <a href="https://fayna.agency">fayna.agency</a><br>
-  Автор: Volodymyr Shevchenko &lt;admin@fayna.agency&gt;<br>
-  Ліцензія: LGPL-3 | Версія: 17.0.1.0.0
-</div>
+    <div style="flex:1;min-width:240px;border:1px solid #e8e8e8;border-radius:8px;padding:22px;background:#fff;">
+      <div style="font-size:1.5em;margin-bottom:8px;" aria-label="alert">&#128680;</div>
+      <h4 style="font-size:0.92em;font-weight:700;color:#111;margin:0 0 6px;">Ustawa Kamilka 2024</h4>
+      <p style="font-size:0.85em;color:#666;margin:0;line-height:1.55;">5-хвилинна ескалація НС, vital interest reporting, повний phone tree (medic / police / parent / kuratorium), audit-trail з IP та timestamp.</p>
+    </div>
+
+    <div style="flex:1;min-width:240px;border:1px solid #e8e8e8;border-radius:8px;padding:22px;background:#fff;">
+      <div style="font-size:1.5em;margin-bottom:8px;" aria-label="clipboard">&#128203;</div>
+      <h4 style="font-size:0.92em;font-weight:700;color:#111;margin:0 0 6px;">Karta kwalifikacyjna + Dziennik</h4>
+      <p style="font-size:0.85em;color:#666;margin:0;line-height:1.55;">Картка з 5 секціями (Rozp. MEN 30.03.2016), dziennik zajęć (Załącznik 5), Program Wypoczynku (Załącznik 9). Immutability після підпису, auto-refusal без картки за 24 год до заїзду.</p>
+    </div>
+
+    <div style="flex:1;min-width:240px;border:1px solid #e8e8e8;border-radius:8px;padding:22px;background:#fff;">
+      <div style="font-size:1.5em;margin-bottom:8px;" aria-label="dashboard">&#128202;</div>
+      <h4 style="font-size:0.92em;font-weight:700;color:#111;margin:0 0 6px;">Admin dashboard + RODO art. 30</h4>
+      <p style="font-size:0.85em;color:#666;margin:0;line-height:1.55;">Camp-centric drill-down, view-as інших ролей для діагностики доступу, append-only timeline доступу до особових даних дитини.</p>
+    </div>
+
+    <div style="flex:1;min-width:240px;border:1px solid #e8e8e8;border-radius:8px;padding:22px;background:#fff;">
+      <div style="font-size:1.5em;margin-bottom:8px;" aria-label="family">&#128104;&#8205;&#128105;&#8205;&#128103;</div>
+      <h4 style="font-size:0.92em;font-weight:700;color:#111;margin:0 0 6px;">Кабінет батька <code style="background:#f4f4f4;border-radius:3px;padding:1px 5px;font-size:0.88em;">/my/</code></h4>
+      <p style="font-size:0.85em;color:#666;margin:0;line-height:1.55;">Картка дитини, новини з табору, фото, програма лояльності (через <code style="background:#f4f4f4;border-radius:3px;padding:1px 5px;font-size:0.88em;">loyalty</code>), розстрочки, трансфер, відгуки.</p>
+    </div>
+
+    <div style="flex:1;min-width:240px;border:1px solid #e8e8e8;border-radius:8px;padding:22px;background:#fff;">
+      <div style="font-size:1.5em;margin-bottom:8px;" aria-label="globe">&#127757;</div>
+      <h4 style="font-size:0.92em;font-weight:700;color:#111;margin:0 0 6px;">UA / PL native i18n</h4>
+      <p style="font-size:0.85em;color:#666;margin:0;line-height:1.55;">Source EN, <code style="background:#f4f4f4;border-radius:3px;padding:1px 5px;font-size:0.88em;">i18n/uk_UA.po</code> + <code style="background:#f4f4f4;border-radius:3px;padding:1px 5px;font-size:0.88em;">i18n/pl_PL.po</code>. Без власної translation logic &#8212; усе через Odoo <code style="background:#f4f4f4;border-radius:3px;padding:1px 5px;font-size:0.88em;">_()</code>.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- FLOW -->
+<section style="padding:44px 48px;border-bottom:1px solid #f0f0f0;">
+  <div style="font-size:0.72em;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#20ac41;margin-bottom:8px;">Сценарій</div>
+  <h2 style="font-size:1.4em;font-weight:800;color:#111;margin:0 0 28px;letter-spacing:-0.3px;">Як працює</h2>
+  <div style="max-width:680px;">
+
+    <div style="display:flex;gap:18px;padding:18px 0;border-bottom:1px solid #ebebeb;">
+      <div style="width:30px;height:30px;min-width:30px;border-radius:50%;background:#20ac41;color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.82em;font-weight:800;margin-top:2px;">1</div>
+      <div><h5 style="font-size:0.92em;font-weight:700;color:#111;margin:0 0 4px;">Бронювання заїзду</h5><p style="font-size:0.85em;color:#666;margin:0;">Батько обирає табір (<code style="background:#f4f4f4;border-radius:3px;padding:1px 5px;font-size:0.88em;">product.template</code>) і дату заїзду (<code style="background:#f4f4f4;border-radius:3px;padding:1px 5px;font-size:0.88em;">event.event</code>), оформлює замовлення через <code style="background:#f4f4f4;border-radius:3px;padding:1px 5px;font-size:0.88em;">sale.order</code> + <code style="background:#f4f4f4;border-radius:3px;padding:1px 5px;font-size:0.88em;">event.registration</code>. RODO-згода фіксується автоматично.</p></div>
+    </div>
+
+    <div style="display:flex;gap:18px;padding:18px 0;border-bottom:1px solid #ebebeb;">
+      <div style="width:30px;height:30px;min-width:30px;border-radius:50%;background:#20ac41;color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.82em;font-weight:800;margin-top:2px;">2</div>
+      <div><h5 style="font-size:0.92em;font-weight:700;color:#111;margin:0 0 4px;">Підпис картки кваліфікації</h5><p style="font-size:0.85em;color:#666;margin:0;">У кабінеті <code style="background:#f4f4f4;border-radius:3px;padding:1px 5px;font-size:0.88em;">/my/</code> батько заповнює медичну частину (Section II-V). Section I &#8212; readonly metadata події. Підпис &#8594; immutability lock. Без картки за 24 год до заїзду &#8212; auto-cancel + повернення коштів.</p></div>
+    </div>
+
+    <div style="display:flex;gap:18px;padding:18px 0;border-bottom:1px solid #ebebeb;">
+      <div style="width:30px;height:30px;min-width:30px;border-radius:50%;background:#20ac41;color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.82em;font-weight:800;margin-top:2px;">3</div>
+      <div><h5 style="font-size:0.92em;font-weight:700;color:#111;margin:0 0 4px;">Заїзд і табір</h5><p style="font-size:0.85em;color:#666;margin:0;">Kierownik бачить qualified-список, призначає вихователів і кімнати. Розклад дня (Plan A / Plan B сонце-дощ) рендериться у timeline. SMS-сповіщення батькам про прибуття.</p></div>
+    </div>
+
+    <div style="display:flex;gap:18px;padding:18px 0;border-bottom:1px solid #ebebeb;">
+      <div style="width:30px;height:30px;min-width:30px;border-radius:50%;background:#20ac41;color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.82em;font-weight:800;margin-top:2px;">4</div>
+      <div><h5 style="font-size:0.92em;font-weight:700;color:#111;margin:0 0 4px;">Щоденний журнал</h5><p style="font-size:0.85em;color:#666;margin:0;">Wychowawca веде dziennik zajęć (Załącznik 5), фіксує відвідуваність, харчування з EU-14 алергенами, інциденти. Усе видно батьку у real-time через <code style="background:#f4f4f4;border-radius:3px;padding:1px 5px;font-size:0.88em;">/my/</code>.</p></div>
+    </div>
+
+    <div style="display:flex;gap:18px;padding:18px 0;">
+      <div style="width:30px;height:30px;min-width:30px;border-radius:50%;background:#20ac41;color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.82em;font-weight:800;margin-top:2px;">5</div>
+      <div><h5 style="font-size:0.92em;font-weight:700;color:#111;margin:0 0 4px;">Виїзд + відгуки + лояльність</h5><p style="font-size:0.85em;color:#666;margin:0;">Після заїзду батько залишає відгук (через <code style="background:#f4f4f4;border-radius:3px;padding:1px 5px;font-size:0.88em;">website_rating</code>), отримує бали лояльності, запрошення на наступний сезон. PDF-snapshot картки і журналу зберігається 7 років (PL retention).</p></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- LAW COMPLIANCE -->
+<section style="padding:44px 48px;border-bottom:1px solid #f0f0f0;background:#f9f9f9;">
+  <div style="font-size:0.72em;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#20ac41;margin-bottom:8px;">Право</div>
+  <h2 style="font-size:1.4em;font-weight:800;color:#111;margin:0 0 24px;letter-spacing:-0.3px;">Відповідність польському законодавству</h2>
+  <div style="max-width:720px;">
+
+    <div style="display:flex;gap:18px;padding:14px 0;border-bottom:1px solid #ebebeb;">
+      <div style="font-size:1.3em;min-width:30px;" aria-label="document">&#128221;</div>
+      <div><h5 style="font-size:0.92em;font-weight:700;color:#111;margin:0 0 4px;">Rozporządzenie MEN z 30.03.2016</h5><p style="font-size:0.85em;color:#666;margin:0;">Karta kwalifikacyjna uczestnika &#8212; усі 5 секцій реалізовано як окремі моделі з правильним власником: Section I на event/camp, Section II-V на <code style="background:#f4f4f4;border-radius:3px;padding:1px 5px;font-size:0.88em;">camp.participant</code>.</p></div>
+    </div>
+
+    <div style="display:flex;gap:18px;padding:14px 0;border-bottom:1px solid #ebebeb;">
+      <div style="font-size:1.3em;min-width:30px;" aria-label="building">&#127970;</div>
+      <div><h5 style="font-size:0.92em;font-weight:700;color:#111;margin:0 0 4px;">Załącznik 1 &#8212; Zgłoszenie do Kuratorium</h5><p style="font-size:0.85em;color:#666;margin:0;">Автоматичне формування і подання сповіщення до Kuratorium Oświaty за 21 день до заїзду, з документацією харчування, програми, кадру.</p></div>
+    </div>
+
+    <div style="display:flex;gap:18px;padding:14px 0;border-bottom:1px solid #ebebeb;">
+      <div style="font-size:1.3em;min-width:30px;" aria-label="book">&#128214;</div>
+      <div><h5 style="font-size:0.92em;font-weight:700;color:#111;margin:0 0 4px;">Załącznik 5 &#8212; Dziennik zajęć</h5><p style="font-size:0.85em;color:#666;margin:0;">Електронний журнал з append-only записами, розкладом дня, відвідуваністю, обов'язковим підписом kierownika перед закриттям зміни.</p></div>
+    </div>
+
+    <div style="display:flex;gap:18px;padding:14px 0;border-bottom:1px solid #ebebeb;">
+      <div style="font-size:1.3em;min-width:30px;" aria-label="program">&#128218;</div>
+      <div><h5 style="font-size:0.92em;font-weight:700;color:#111;margin:0 0 4px;">Załącznik 9 &#8212; Program Wypoczynku</h5><p style="font-size:0.85em;color:#666;margin:0;">Структурований опис програми, активностей, виховних цілей. PDF-генерація для kuratorium та контрольних органів.</p></div>
+    </div>
+
+    <div style="display:flex;gap:18px;padding:14px 0;border-bottom:1px solid #ebebeb;">
+      <div style="font-size:1.3em;min-width:30px;" aria-label="warning">&#9888;&#65039;</div>
+      <div><h5 style="font-size:0.92em;font-weight:700;color:#111;margin:0 0 4px;">Ustawa Kamilka 2024 &#8212; vital interest</h5><p style="font-size:0.85em;color:#666;margin:0;">Протокол НС з SLA 10s / 2min / 15min / 30min / 24h / 21d, action types, phone tree (medic / police / parent / kuratorium). Bypass RODO consent на основі art. 6(1)(d) RODO &#8212; ratowanie życia.</p></div>
+    </div>
+
+    <div style="display:flex;gap:18px;padding:14px 0;">
+      <div style="font-size:1.3em;min-width:30px;" aria-label="shield">&#128737;&#65039;</div>
+      <div><h5 style="font-size:0.92em;font-weight:700;color:#111;margin:0 0 4px;">RODO art. 9 &#8212; medycyna i alergii</h5><p style="font-size:0.85em;color:#666;margin:0;">Field-level groups на special-category health data. Доступ &#8212; тільки medic + kierownik. Audit timeline у admin dashboard. 7-річний retention за PL law.</p></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="padding:48px 48px;background:#111;color:#fff;">
+  <div style="display:inline-block;background:#20ac41;color:#fff;font-size:0.72em;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 12px;border-radius:4px;margin-bottom:18px;">Замовити послуги</div>
+  <h2 style="font-size:1.6em;font-weight:800;color:#fff;margin:0 0 14px;letter-spacing:-0.3px;">Потрібна адаптація під ваш стек?</h2>
+  <p style="font-size:1em;color:#bbb;max-width:580px;margin:0 0 28px;">Fayna Digital робить кастомні Odoo-рішення для дитячих таборів, виховних організацій і освітніх компаній у Польщі та Україні. PL law compliance &#8212; наша спеціалізація.</p>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:32px;">
+    <a href="mailto:hello@fayna.agency?subject=Camp%20Portal%20%E2%80%94%20%D0%9A%D0%BE%D0%BD%D1%81%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%86%D1%96%D1%8F" style="display:inline-block;background:#20ac41;color:#fff;font-size:0.88em;font-weight:700;padding:11px 22px;border-radius:6px;text-decoration:none;">Консультація</a>
+    <a href="mailto:hello@fayna.agency?subject=Camp%20Portal%20%E2%80%94%20%D0%86%D0%BD%D1%82%D0%B5%D0%B3%D1%80%D0%B0%D1%86%D1%96%D1%8F" style="display:inline-block;background:transparent;color:#fff;font-size:0.88em;font-weight:700;padding:10px 21px;border:1px solid #444;border-radius:6px;text-decoration:none;">Інтеграція під клієнта</a>
+    <a href="mailto:hello@fayna.agency?subject=Camp%20Portal%20%E2%80%94%20%D0%9D%D0%BE%D0%B2%D0%B8%D0%B9%20%D0%BF%D1%80%D0%BE%D0%B4%D1%83%D0%BA%D1%82" style="display:inline-block;background:transparent;color:#fff;font-size:0.88em;font-weight:700;padding:10px 21px;border:1px solid #444;border-radius:6px;text-decoration:none;">Новий продукт</a>
+  </div>
+  <div style="display:flex;gap:24px;flex-wrap:wrap;font-size:0.88em;color:#bbb;">
+    <span><span aria-label="email">&#128231;</span>&#160;<a href="mailto:hello@fayna.agency" style="color:#20ac41;text-decoration:none;font-weight:600;">hello@fayna.agency</a></span>
+    <span><span aria-label="telegram">&#128172;</span>&#160;<a href="https://t.me/fayna_digital" style="color:#20ac41;text-decoration:none;font-weight:600;">@fayna_digital</a></span>
+    <span><span aria-label="website">&#127760;</span>&#160;<a href="https://fayna.agency" style="color:#20ac41;text-decoration:none;font-weight:600;">fayna.agency</a></span>
+  </div>
+</section>
+
+<!-- CROSS-SELL -->
+<section style="padding:44px 48px;border-bottom:1px solid #f0f0f0;background:#fafafa;">
+  <div style="font-size:0.72em;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#20ac41;margin-bottom:8px;">Екосистема Fayna</div>
+  <h2 style="font-size:1.4em;font-weight:800;color:#111;margin:0 0 28px;letter-spacing:-0.3px;">Інші наші модулі</h2>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;">
+
+    <div style="flex:1;min-width:280px;border:1px solid #e8e8e8;border-radius:8px;padding:22px;background:#fff;">
+      <div style="font-size:1.5em;margin-bottom:8px;" aria-label="lock">&#128272;</div>
+      <h4 style="font-size:0.92em;font-weight:700;color:#111;margin:0 0 6px;">Fayna RODO Compliance</h4>
+      <p style="font-size:0.85em;color:#666;margin:0;line-height:1.55;">Append-only журнал згод RODO/GDPR/PKE. Shared layer для всіх Fayna-проектів &#8212; одне джерело правди на обробку персональних даних.</p>
+    </div>
+
+    <div style="flex:1;min-width:280px;border:1px solid #e8e8e8;border-radius:8px;padding:22px;background:#fff;">
+      <div style="font-size:1.5em;margin-bottom:8px;" aria-label="inbox">&#128229;</div>
+      <h4 style="font-size:0.92em;font-weight:700;color:#111;margin:0 0 6px;">Fayna Omnichannel Bridge</h4>
+      <p style="font-size:0.85em;color:#666;margin:0;line-height:1.55;">Abstract bridge для FB Messenger / Instagram / WhatsApp / Viber / Telegram. Vendor-neutral &#8212; підключай SendPulse, Chatwoot або direct API.</p>
+    </div>
+
+    <div style="flex:1;min-width:280px;border:1px solid #e8e8e8;border-radius:8px;padding:22px;background:#fff;">
+      <div style="font-size:1.5em;margin-bottom:8px;" aria-label="chat">&#128172;</div>
+      <h4 style="font-size:0.92em;font-weight:700;color:#111;margin:0 0 6px;">Fayna SendPulse Odoo</h4>
+      <p style="font-size:0.85em;color:#666;margin:0;line-height:1.55;">Двостороння інтеграція SendPulse chat &#8596; Odoo: leads, conversations, multi-page (FB+IG), retry / audit / LLM / Telegram / funnel.</p>
+    </div>
+
+    <div style="flex:1;min-width:280px;border:1px solid #e8e8e8;border-radius:8px;padding:22px;background:#fff;">
+      <div style="font-size:1.5em;margin-bottom:8px;" aria-label="outbox">&#128228;</div>
+      <h4 style="font-size:0.92em;font-weight:700;color:#111;margin:0 0 6px;">Fayna KSeF</h4>
+      <p style="font-size:0.85em;color:#666;margin:0;line-height:1.55;">Інтеграція з KSeF 2.0 (FA 3): wysyłka faktur, monitoring statusów, UPO, VAT Marża для biur turystycznych.</p>
+    </div>
+
+    <div style="flex:1;min-width:280px;border:1px solid #e8e8e8;border-radius:8px;padding:22px;background:#fff;">
+      <div style="font-size:1.5em;margin-bottom:8px;" aria-label="phone">&#128222;</div>
+      <h4 style="font-size:0.92em;font-weight:700;color:#111;margin:0 0 6px;">Fayna Zadarma Telephony</h4>
+      <p style="font-size:0.85em;color:#666;margin:0;line-height:1.55;">VoIP-телефонія через Zadarma: click-to-call, запис розмов, прив'язка до lead/partner, аналітика менеджерів.</p>
+    </div>
+
+    <div style="flex:1;min-width:280px;border:1px solid #e8e8e8;border-radius:8px;padding:22px;background:#fff;">
+      <div style="font-size:1.5em;margin-bottom:8px;" aria-label="envelope">&#128233;</div>
+      <h4 style="font-size:0.92em;font-weight:700;color:#111;margin:0 0 6px;">Fayna SMS Base</h4>
+      <p style="font-size:0.85em;color:#666;margin:0;line-height:1.55;">Multi-provider SMS-абстракція: TurboSMS / SMSAPI / Twilio. Templates, retry, rate limiting, native Odoo <code style="background:#f4f4f4;border-radius:3px;padding:1px 5px;font-size:0.88em;">sms.api</code>.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="padding:24px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+  <div style="font-size:0.85em;color:#555;">
+    Автор: <strong style="color:#111;">Volodymyr Shevchenko</strong> &#183; <a href="https://fayna.agency" style="color:#20ac41;text-decoration:none;font-weight:600;">Fayna Digital</a> &#183; для <a href="https://campscout.eu" style="color:#20ac41;text-decoration:none;">CampScout</a>
+  </div>
+  <div style="background:#111;color:#fff;font-size:0.75em;font-weight:700;padding:3px 10px;border-radius:4px;letter-spacing:0.5px;">v17.0.2.0.0</div>
+</footer>
 
 </body>
 </html>
