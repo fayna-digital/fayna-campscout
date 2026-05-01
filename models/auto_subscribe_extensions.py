@@ -77,7 +77,9 @@ class CampDailyReportAutoSubscribe(models.Model):
             "fayna_camp_portal.group_camp_organizator", raise_if_not_found=False
         )
         organizator_partners = (
-            organizator_group.users.mapped("partner_id") if organizator_group else self.env["res.partner"]
+            organizator_group.users.mapped("partner_id")
+            if organizator_group
+            else self.env["res.partner"]
         )
         for rec in self:
             # Kierownik (event responsible).
@@ -104,7 +106,9 @@ class CampIncidentReportAutoSubscribe(models.Model):
             "fayna_camp_portal.group_medical_officer", raise_if_not_found=False
         )
         organizator_partners = (
-            organizator_group.users.mapped("partner_id") if organizator_group else self.env["res.partner"]
+            organizator_group.users.mapped("partner_id")
+            if organizator_group
+            else self.env["res.partner"]
         )
         medical_partners = (
             medical_group.users.mapped("partner_id") if medical_group else self.env["res.partner"]
@@ -127,7 +131,10 @@ class CampIncidentReportAutoSubscribe(models.Model):
             # 'abuse_suspected' / non-medical types ⇒ medical involvement.
             severity = rec.severity or ""
             injury_type = getattr(rec, "injury_type", "") or ""
-            medical_relevant = severity in ("moderate", "severe", "fatal", "mass", "food_poisoning") or injury_type not in ("", "abuse_suspected")
+            medical_relevant = (
+                severity in ("moderate", "severe", "fatal", "mass", "food_poisoning")
+                or injury_type not in ("", "abuse_suspected")
+            )
             if medical_relevant:
                 for partner in medical_partners:
                     res.append((partner.id, default_subtype_ids, False))

@@ -47,12 +47,12 @@ class CampIncidentNotificationLog(models.Model):
     )
     recipient_role = fields.Selection(
         [
-            ("kierownik", "Kierownik"),
-            ("organizator", "Organizator"),
-            ("medical", "Medical Officer"),
-            ("parent", "Parent"),
-            ("backup", "Backup Contact"),
-            ("kuratorium", "Kuratorium Oświaty"),
+            ("kierownik", _("Kierownik")),
+            ("organizator", _("Organizator")),
+            ("medical", _("Medical Officer")),
+            ("parent", _("Parent")),
+            ("backup", _("Backup Contact")),
+            ("kuratorium", _("Kuratorium Oświaty")),
         ],
         string=_("Role"),
         required=True,
@@ -60,10 +60,10 @@ class CampIncidentNotificationLog(models.Model):
     )
     channel = fields.Selection(
         [
-            ("sms", "SMS"),
-            ("email", "Email"),
-            ("phone", "Phone"),
-            ("inbox", "Odoo Inbox"),
+            ("sms", _("SMS")),
+            ("email", _("Email")),
+            ("phone", _("Phone")),
+            ("inbox", _("Odoo Inbox")),
         ],
         string=_("Channel"),
         required=True,

@@ -1351,7 +1351,8 @@ class CampParticipant(models.Model):
             "rodo_consent_id": consent.id,
         }
         if signature:
-            # signature is base64 PNG (without data:image/png;base64, prefix — Odoo Binary stores raw).
+            # signature is base64 PNG (without data:image/png;base64, prefix —
+            # Odoo Binary stores raw).
             vals["qualification_signature"] = signature
         if signer_name:
             vals["qualification_signed_by_name"] = signer_name

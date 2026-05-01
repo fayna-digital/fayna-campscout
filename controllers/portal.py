@@ -25,36 +25,56 @@ class CampscoutPortal(CustomerPortal):
         return http.request.render("portal.portal_my_home", values)
 
     def _prepare_campscout_hero_values(self):
-        """Gather hero block data for the /my home page initial render."""
+        """Gather hero block data for the /my home page initial render.
+
+        Each sub-query is wrapped in its own try/except so that a single
+        failed read doesn't blank the entire hero (e.g. if event.event
+        isn't accessible the parent still sees their children).
+        Per `feedback_broad_except_silent_ui.md`.
+        """
         partner = http.request.env.user.partner_id
         env_sudo = http.request.env(su=True)
+        now = datetime.now()
+        user = http.request.env.user
+
+        # 1) Children
         try:
             participants = env_sudo["camp.participant"].search(
                 [("parent_partner_id", "=", partner.id)]
             )
+        except (AccessError, MissingError) as e:
+            _logger.warning("[CS-HERO] participants load failed: %s", e)
+            participants = env_sudo["camp.participant"]
+
+        # 2) Registrations
+        try:
             regs = env_sudo["event.registration"].search(
                 [("partner_id", "=", partner.id), ("state", "!=", "cancel")]
             )
+        except (AccessError, MissingError) as e:
+            _logger.warning("[CS-HERO] registrations load failed: %s", e)
+            regs = env_sudo["event.registration"]
 
-            now = datetime.now()
-            active_regs = regs.filtered(
-                lambda r: (
-                    r.event_id.date_begin
-                    and r.event_id.date_end
-                    and r.event_id.date_begin <= now <= r.event_id.date_end
-                )
+        # 3) Filter active/upcoming (pure Python — won't raise ORM errors)
+        active_regs = regs.filtered(
+            lambda r: (
+                r.event_id.date_begin
+                and r.event_id.date_end
+                and r.event_id.date_begin <= now <= r.event_id.date_end
             )
-            upcoming_regs = regs.filtered(
-                lambda r: r.event_id.date_begin and r.event_id.date_begin > now
-            ).sorted(key=lambda r: r.event_id.date_begin)
+        )
+        upcoming_regs = regs.filtered(
+            lambda r: r.event_id.date_begin and r.event_id.date_begin > now
+        ).sorted(key=lambda r: r.event_id.date_begin)
 
-            user = http.request.env.user
-            is_parent_only = (
-                user.has_group("base.group_portal")
-                and not user.has_group("base.group_user")
-                and bool(participants or regs)
-            )
+        is_parent_only = (
+            user.has_group("base.group_portal")
+            and not user.has_group("base.group_user")
+            and bool(participants or regs)
+        )
 
+        # 4) Public catalog of upcoming camps (independent of partner)
+        try:
             cs_upcoming_camps = env_sudo["event.event"].search(
                 [
                     ("date_begin", ">", now),
@@ -63,27 +83,19 @@ class CampscoutPortal(CustomerPortal):
                 order="date_begin asc",
                 limit=24,
             )
-
-            return {
-                "cs_participants": participants,
-                "cs_active_regs": active_regs,
-                "cs_upcoming_regs": upcoming_regs[:3],
-                "cs_has_hero": bool(participants or regs),
-                "cs_today": now.date(),
-                "cs_parent_only": is_parent_only,
-                "cs_upcoming_camps": cs_upcoming_camps,
-            }
         except (AccessError, MissingError) as e:
-            _logger.exception("[CS-HERO] home values prep failed: %s", e)
-            return {
-                "cs_participants": env_sudo["camp.participant"],
-                "cs_active_regs": env_sudo["event.registration"],
-                "cs_upcoming_regs": env_sudo["event.registration"],
-                "cs_has_hero": False,
-                "cs_today": datetime.now().date(),
-                "cs_parent_only": False,
-                "cs_upcoming_camps": env_sudo["event.event"],
-            }
+            _logger.warning("[CS-HERO] upcoming camps load failed: %s", e)
+            cs_upcoming_camps = env_sudo["event.event"]
+
+        return {
+            "cs_participants": participants,
+            "cs_active_regs": active_regs,
+            "cs_upcoming_regs": upcoming_regs[:3],
+            "cs_has_hero": bool(participants or regs),
+            "cs_today": now.date(),
+            "cs_parent_only": is_parent_only,
+            "cs_upcoming_camps": cs_upcoming_camps,
+        }
 
     def _prepare_home_portal_values(self, counters):
         """Odoo 17 /my/counters AJAX endpoint — badge counts for portal cards."""

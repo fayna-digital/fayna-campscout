@@ -445,7 +445,11 @@ class CampscoutAdmin(http.Controller):
         )
 
         try:
-            scoped_env = request.env(user=target_user.id) if partner.user_ids else request.env(su=True)
+            scoped_env = (
+                request.env(user=target_user.id)
+                if partner.user_ids
+                else request.env(su=True)
+            )
             participants = scoped_env["camp.participant"].search(
                 [("parent_partner_id", "=", partner.id)]
             )

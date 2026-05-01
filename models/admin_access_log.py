@@ -37,10 +37,10 @@ class CampAdminAccessLog(models.Model):
     )
     impersonated_role = fields.Selection(
         [
-            ("kierownik", "Kierownik"),
-            ("wychowawca", "Wychowawca"),
-            ("instructor", "Instructor"),
-            ("parent", "Parent"),
+            ("kierownik", _("Kierownik")),
+            ("wychowawca", _("Wychowawca")),
+            ("instructor", _("Instructor")),
+            ("parent", _("Parent")),
         ],
         required=True,
         readonly=True,
