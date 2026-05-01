@@ -7,7 +7,7 @@
         ═══════════════════════════════════════════════════════════════ -->
 
         <menuitem id="menu_campscout_root"
-            name="CampScout"
+            name="Портал CampScout"
             sequence="50"
             groups="base.group_user"/>
 

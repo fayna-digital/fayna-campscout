@@ -1,5 +1,5 @@
 {
-    "name": "Camp Portal",
+    "name": "Портал CampScout",
     "version": "17.0.2.0.0",
     "category": "Tools/Camp Management",
     "summary": "Complete portal for managing children's summer camps (PL market)",

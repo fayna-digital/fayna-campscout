@@ -17,7 +17,7 @@ import logging
 from datetime import datetime
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -245,32 +245,38 @@ class CampStaffSmsComposer(models.TransientModel):
 
         self._check_monthly_limit(self.staff_id, len(recipients))
 
-        dispatcher = self.env["fayna.sms.dispatcher"]
+        # Send via Odoo native sms.api → routes through configured sms.provider
+        # (kw_sms_turbosms / TurboSMS on staging+prod). This avoids requiring
+        # a separately configured fayna.sms.provider record.
+        sms_api = self.env["sms.api"]
         sent_ok = 0
         sent_err = 0
+        batch = []
         for participant in recipients:
             phone = self._resolve_recipient_phone(participant)
             if not phone:
                 sent_err += 1
                 continue
+            batch.append(
+                {
+                    "res_id": participant.partner_id.id,
+                    "number": phone,
+                    "content": self.body,
+                }
+            )
+        if batch:
             try:
-                result = dispatcher.send(
-                    phone=phone,
-                    body=self.body,
-                    partner_id=participant.partner_id.id,
-                )
-            except Exception as exc:  # noqa: BLE001 — dispatcher must never abort batch
+                results = sms_api._send_sms_batch(batch)
+                for res in results:
+                    if res.get("state") == "success":
+                        sent_ok += 1
+                    else:
+                        sent_err += 1
+            except (UserError, ValidationError) as exc:
                 _logger.exception(
-                    "camp.staff.sms.composer: dispatch failed for participant=%s: %s",
-                    participant.id,
-                    exc,
+                    "camp.staff.sms.composer: batch dispatch failed: %s", exc
                 )
-                sent_err += 1
-                continue
-            if result.get("success"):
-                sent_ok += 1
-            else:
-                sent_err += 1
+                sent_err += len(batch)
 
         cost_per_segment = self._get_cost_per_segment()
         log = self.env["camp.staff.sms.log"].sudo().create(
