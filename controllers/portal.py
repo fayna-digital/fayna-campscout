@@ -115,7 +115,7 @@ class CampscoutPortal(CustomerPortal):
                 if event_ids:
                     domain.append(("event_id", "in", event_ids))
                 values["stories_count"] = env_sudo["camp.story"].search_count(domain)
-            except (AccessError, MissingError):
+            except (AccessError, MissingError, KeyError):
                 values["stories_count"] = 0
 
         if "documents_count" in counters:
@@ -123,7 +123,7 @@ class CampscoutPortal(CustomerPortal):
                 values["documents_count"] = env_sudo["legal.document.version"].search_count(
                     [("is_active", "=", True)]
                 )
-            except (AccessError, MissingError):
+            except (AccessError, MissingError, KeyError):
                 values["documents_count"] = 0
 
         if "support_count" in counters:
@@ -131,7 +131,7 @@ class CampscoutPortal(CustomerPortal):
                 values["support_count"] = env_sudo["camp.support.request"].search_count(
                     [("partner_id", "=", partner.id)]
                 )
-            except (AccessError, MissingError):
+            except (AccessError, MissingError, KeyError):
                 values["support_count"] = 0
 
         if "loyalty_count" in counters:
@@ -139,7 +139,7 @@ class CampscoutPortal(CustomerPortal):
                 values["loyalty_count"] = env_sudo["camp.loyalty.participant"].search_count(
                     [("partner_id", "=", partner.id)]
                 )
-            except (AccessError, MissingError):
+            except (AccessError, MissingError, KeyError):
                 values["loyalty_count"] = 0
 
         return values
