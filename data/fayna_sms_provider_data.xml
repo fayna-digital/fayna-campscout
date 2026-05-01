@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Auto-create TurboSMS provider record so fayna.sms.dispatcher can
+             route messages through our own fayna_sms_turbosms adapter
+             (replacing third-party kw_sms_turbosms / kw_sms_api).
+
+             API token must be set after install via:
+             Settings → Technical → Parameters → System Parameters →
+                fayna_sms_turbosms.api_token
+
+             Or migrate from existing kw_sms_provider via:
+             docker exec ... psql -c "
+                INSERT INTO ir_config_parameter (key, value)
+                SELECT 'fayna_sms_turbosms.api_token', token
+                FROM kw_sms_provider WHERE provider = 'turbosms';"
+        -->
+
+        <record id="fayna_sms_provider_turbosms" model="fayna.sms.provider">
+            <field name="name">TurboSMS</field>
+            <field name="provider_type">turbosms</field>
+            <field name="active" eval="True"/>
+            <field name="sequence">10</field>
+        </record>
+
+    </data>
+</odoo>

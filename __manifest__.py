@@ -56,6 +56,7 @@ Camp Portal
         "data/cron_kamilka_escalation.xml",
         "data/sms_templates.xml",
         "data/sms_child_templates.xml",
+        "data/fayna_sms_provider_data.xml",
         "views/camp_views.xml",
         "views/participant_views.xml",
         "views/operations_views.xml",
