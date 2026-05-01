@@ -38,3 +38,17 @@ from . import auto_subscribe_extensions, event_channel_create  # noqa: E402,I001
 # Portal chatter — adds portal.mixin to participant / support / loyalty so
 # /my/<…>/<id> pages can render `portal.message_thread`.
 from . import portal_mixin_extensions  # noqa: E402,I001
+
+# camp.story — migrated from fayna_camp_stories (TZ §9 step 4, 2026-04-30).
+from . import stories  # noqa: E402,I001
+
+# camp.transport — migrated from fayna_camp_transport (TZ §16 Phase 6, 2026-04-30).
+from . import transport  # noqa: E402,I001
+
+# Reports & analytics — migrated from fayna_camp_reports (TZ §16 Phase 7, 2026-04-30).
+# camp.analytics.snapshot + camp.stats.snapshot + camp.marketing.report wizard.
+from . import reports  # noqa: E402,I001
+
+# Vozhatyi training — migrated from fayna_camp_vozhatyi_school (TZ §16 Phase 7).
+# Standalone PL-MEN 36h/10h tracker (parallel to slide.channel-based training.py).
+from . import training_vozhatyi  # noqa: E402,I001

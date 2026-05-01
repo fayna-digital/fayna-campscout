@@ -103,8 +103,73 @@
             <field name="perm_unlink" eval="False"/>
         </record>
 
-        <!-- camp.story rules: parked until camp.story model is migrated from
-             fayna_camp_stories into fayna_camp_portal (TZ §9 Step 4). -->
+        <!-- ─── camp.story (migrated 2026-05-01) ──────────────────────── -->
+        <record id="rule_story_portal_own_events" model="ir.rule">
+            <field name="name">Portal: stories from own children events</field>
+            <field name="model_id" ref="model_camp_story"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">[('state', '=', 'published'), ('public', '=', True), ('event_id.registration_ids.partner_id', '=', user.partner_id.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_story_wychowawca_own" model="ir.rule">
+            <field name="name">Wychowawca: own event stories (drafts)</field>
+            <field name="model_id" ref="model_camp_story"/>
+            <field name="groups" eval="[(4, ref('group_camp_wychowawca'))]"/>
+            <field name="domain_force">['|', ('author_id', '=', user.id), ('event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_story_kierownik_own" model="ir.rule">
+            <field name="name">Kierownik: stories of own camp</field>
+            <field name="model_id" ref="model_camp_story"/>
+            <field name="groups" eval="[(4, ref('group_camp_kierownik'))]"/>
+            <field name="domain_force">['|', ('event_id.user_id', '=', user.id), ('event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- ─── camp.transport (migrated 2026-05-01) ──────────────────── -->
+        <record id="rule_transport_portal_own_children" model="ir.rule">
+            <field name="name">Portal: transports of own children only</field>
+            <field name="model_id" ref="model_camp_transport"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">[('participant_ids.parent_partner_id', '=', user.partner_id.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_transport_kierownik_own" model="ir.rule">
+            <field name="name">Kierownik: transports of own camps</field>
+            <field name="model_id" ref="model_camp_transport"/>
+            <field name="groups" eval="[(4, ref('group_camp_kierownik'))]"/>
+            <field name="domain_force">['|', ('event_id.user_id', '=', user.id), ('event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_transport_wychowawca_own" model="ir.rule">
+            <field name="name">Wychowawca: transports of own group</field>
+            <field name="model_id" ref="model_camp_transport"/>
+            <field name="groups" eval="[(4, ref('group_camp_wychowawca'))]"/>
+            <field name="domain_force">[('event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
 
         <!-- ─── camp.journal (dziennik) ───────────────────────────────── -->
         <record id="rule_journal_wychowawca_own" model="ir.rule">
@@ -184,6 +249,83 @@
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
             <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             Vozhatyi training (migrated from fayna_camp_vozhatyi_school)
+             - Internal users: see only own (where they are participant via
+               res.partner.user_ids)
+             - Portal users: see only own (where partner_id = user.partner_id)
+             - Admin (group_system): full access
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <!-- fayna.vozhatyi.training -->
+        <record id="rule_fayna_vozhatyi_training_user_own" model="ir.rule">
+            <field name="name">Vozhatyi Training: internal user sees own</field>
+            <field name="model_id" ref="model_fayna_vozhatyi_training"/>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="domain_force">[('participant_id.user_ids', 'in', [user.id])]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_fayna_vozhatyi_training_portal_own" model="ir.rule">
+            <field name="name">Vozhatyi Training: portal user sees own</field>
+            <field name="model_id" ref="model_fayna_vozhatyi_training"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">[('participant_id', '=', user.partner_id.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- fayna.vozhatyi.certificate -->
+        <record id="rule_fayna_vozhatyi_certificate_user_own" model="ir.rule">
+            <field name="name">Vozhatyi Certificate: internal user sees own</field>
+            <field name="model_id" ref="model_fayna_vozhatyi_certificate"/>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="domain_force">[('partner_id.user_ids', 'in', [user.id])]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_fayna_vozhatyi_certificate_portal_own" model="ir.rule">
+            <field name="name">Vozhatyi Certificate: portal user sees own</field>
+            <field name="model_id" ref="model_fayna_vozhatyi_certificate"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- vozhatyi.training.record -->
+        <record id="rule_vozhatyi_training_record_user_own" model="ir.rule">
+            <field name="name">Vozhatyi Training Record: internal user sees own</field>
+            <field name="model_id" ref="model_vozhatyi_training_record"/>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="domain_force">[('partner_id.user_ids', 'in', [user.id])]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_vozhatyi_training_record_portal_own" model="ir.rule">
+            <field name="name">Vozhatyi Training Record: portal user sees own</field>
+            <field name="model_id" ref="model_vozhatyi_training_record"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
             <field name="perm_unlink" eval="False"/>
         </record>
 

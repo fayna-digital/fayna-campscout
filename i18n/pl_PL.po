@@ -1,647 +1,1922 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# * fayna_campscout
+# 	* fayna_camp_portal
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-01 00:00+0000\n"
-"PO-Revision-Date: 2026-01-01 00:00+0000\n"
+"POT-Creation-Date: 2026-04-30 21:00+0000\n"
+"PO-Revision-Date: 2026-04-30 21:00+0000\n"
 "Last-Translator: \n"
-"Language-Team: \n"
+"Language-Team: Polish\n"
+"Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "1 табір"
-msgstr ""
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_campscout_root
+msgid "CampScout"
+msgstr "CampScout"
 
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "2–3 табори"
-msgstr ""
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_management
+msgid "Табори"
+msgstr "Wypoczynki"
 
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "4–5 таборів"
-msgstr ""
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_events
+msgid "Заїзди (Events)"
+msgstr "Turnusy"
 
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "6+ таборів"
-msgstr ""
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_products
+msgid "Програми (Products)"
+msgstr "Programy"
 
-#. module: fayna_campscout
-#: model:ir.model.fields,field_description:fayna_campscout.field_campscout_portal_session__active_camps
-msgid "Active camps"
-msgstr ""
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_categories
+msgid "Категорії"
+msgstr "Kategorie"
 
-#. module: fayna_campscout
-#: model:ir.model.fields,field_description:fayna_campscout.field_campscout_portal_session__children_count
-msgid "Children registered"
-msgstr ""
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_activities
+msgid "Активності"
+msgstr "Zajęcia"
 
-#. module: fayna_campscout
-#: model:ir.model.fields,field_description:fayna_campscout.field_campscout_portal_menu__custom_links
-msgid "Custom links (JSON)"
-msgstr ""
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_schedule
+msgid "Розклад"
+msgstr "Harmonogram"
 
-#. module: fayna_campscout
-#: code:addons/fayna_campscout/controllers/api.py:0
-#, python-format
-msgid "Invalid credentials"
-msgstr ""
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_participants
+msgid "Учасники"
+msgstr "Uczestnicy"
 
-#. module: fayna_campscout
-#: model:ir.model.fields,field_description:fayna_campscout.field_campscout_portal_session__last_activity
-msgid "Last activity"
-msgstr ""
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_participant_list
+msgid "Кваліфікаційні картки"
+msgstr "Karty kwalifikacyjne"
 
-#. module: fayna_campscout
-#: model:ir.model.fields,field_description:fayna_campscout.field_campscout_portal_session__last_login
-msgid "Last login"
-msgstr ""
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_operations
+msgid "Операції"
+msgstr "Operacje"
 
-#. module: fayna_campscout
-#: code:addons/fayna_campscout/controllers/api.py:0
-#, python-format
-msgid "No active camp found"
-msgstr ""
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_staff
+msgid "Персонал"
+msgstr "Personel"
 
-#. module: fayna_campscout
-#: model:ir.model.fields,field_description:fayna_campscout.field_campscout_portal_session__partner_id
-msgid "Parent"
-msgstr ""
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_journal
+msgid "Журнал дня"
+msgstr "Dziennik dnia"
 
-#. module: fayna_campscout
-#: model:ir.model,name:fayna_campscout.model_campscout_portal_session
-msgid "Parent portal session tracking"
-msgstr ""
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_dziennik
+msgid "Dziennik zajęć"
+msgstr "Dziennik zajęć"
 
-#. module: fayna_campscout
-#: model:ir.model.fields,field_description:fayna_campscout.field_campscout_portal_session__pending_actions
-msgid "Pending actions (docs to sign)"
-msgstr ""
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_program_wypoczynku
+msgid "Program Wypoczynku (Załącznik 9)"
+msgstr "Program Wypoczynku (Załącznik 9)"
 
-#. module: fayna_campscout
-#: model:ir.model,name:fayna_campscout.model_campscout_portal_menu
-msgid "Portal menu customization per region"
-msgstr ""
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_kuratorium
+msgid "Kuratorium"
+msgstr "Kuratorium Oświaty"
 
-#. module: fayna_campscout
-#: model:ir.model.fields,field_description:fayna_campscout.field_campscout_portal_menu__region
-msgid "Region (e.g. 'PL', 'UA')"
-msgstr ""
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_nutrition
+msgid "Харчування"
+msgstr "Żywienie"
 
-#. module: fayna_campscout
-#: model:ir.model.fields,field_description:fayna_campscout.field_campscout_portal_menu__show_blog
-msgid "Show blog?"
-msgstr ""
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_meal_plans
+msgid "Плани харчування"
+msgstr "Plany żywieniowe"
 
-#. module: fayna_campscout
-#: model:ir.model.fields,field_description:fayna_campscout.field_campscout_portal_menu__show_shop
-msgid "Show camp shop?"
-msgstr ""
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_allergens
+msgid "Алергени"
+msgstr "Alergeny"
 
-#. module: fayna_campscout
-#: model:ir.model.fields,field_description:fayna_campscout.field_campscout_portal_menu__show_stories
-msgid "Show daily stories?"
-msgstr ""
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_diet_profiles
+msgid "Дієтичні профілі"
+msgstr "Profile dietetyczne"
 
-#. module: fayna_campscout
-#: model:ir.model.fields,field_description:fayna_campscout.field_campscout_portal_menu__show_loyalty
-msgid "Show loyalty program?"
-msgstr ""
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_emergency
+msgid "Надзвичайні ситуації"
+msgstr "Sytuacje nadzwyczajne"
 
-#. module: fayna_campscout
-#: model:ir.model.fields,field_description:fayna_campscout.field_campscout_portal_menu__show_reviews
-msgid "Show reviews?"
-msgstr ""
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_incidents
+msgid "Протоколи НС"
+msgstr "Protokoły zdarzeń"
 
-#. module: fayna_campscout
-#: model:ir.model.fields,field_description:fayna_campscout.field_campscout_portal_session__unread_messages
-msgid "Unread messages"
-msgstr ""
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_commercial
+msgid "Комерція"
+msgstr "Sprzedaż"
 
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
-msgid ""
-"Історії з'являться тут одразу як вожаті опублікують перший щоденний звіт."
-msgstr ""
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_loyalty
+msgid "Програма лояльності"
+msgstr "Program lojalnościowy"
 
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
-msgid "Активні бронювання та архів"
-msgstr ""
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_support_requests
+msgid "Запити батьків"
+msgstr "Zgłoszenia rodziców"
 
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
-msgid "Актуальні версії документів"
-msgstr ""
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_installment_plans
+msgid "Розстрочки"
+msgstr "Raty"
 
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "Балів зібрано"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
-msgid "Батьківська згода"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
-msgid "Безпека дітей"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "Бронзовий"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
-msgid "Ваш учасник"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
-msgid "Версія"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_participant_reviews_cta
-msgid "Відгук на модерації"
-msgstr "Opinia w moderacji"
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_participant_reviews_cta
-msgid "Відгук опубліковано"
-msgstr "Opinia opublikowana"
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_participant_reviews_cta
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_reviews
 msgid "Відгуки"
 msgstr "Opinie"
 
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "Відзнаки:"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "До"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
-msgid "Додати учасника"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_sidebar_campscout
-msgid "Документи"
-msgstr "Dokumenty"
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_sidebar_campscout
-msgid "Діти та картки"
-msgstr "Dzieci i karty"
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "З нами з"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
-msgid "Забронювати табір"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
-msgid "Загальні умови"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
-msgid "Закрити"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_participant_reviews_cta
-msgid "Залишити відгук"
-msgstr "Zostaw opinię"
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_sidebar_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_breadcrumbs_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_support
-msgid "Звернення"
-msgstr "Zgłoszenia"
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
-msgid "Звіти вожатих з табору"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
-msgid "Звіти вожатих про життя дітей у таборі"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
-msgid "Згода RODO"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "Знижка ще не активна"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "Золотий"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "Золотого"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_layout_title_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_breadcrumbs_campscout
-msgid "Кабінет клієнта"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
-msgid "Команда"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "Ласкаво просимо!"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
-msgid "Лояльність"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
-msgid "Мої замовлення"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
-msgid "Мої учасники"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
-msgid "Навичка"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
-msgid "Наступні табори"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
-msgid "Оберіть табір для бронювання"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
-msgid "Обрати табір →"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
-msgid "Обробка персональних даних"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
-msgid "Окрема картка + документи"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
-msgid "Основні умови надання послуг табору CampScout"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
-msgid ""
-"Перевірте пізніше — графік наступного сезону зʼявиться тут одразу як "
-"відкриємо продажі."
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
-msgid "Переглянути всі табори в магазині →"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
-msgid "Переглянути доступні заїзди та зареєструвати учасника"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
-msgid "Переглянути →"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "Платиновий"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "Платинового"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
-msgid "Повернення:"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
-msgid "Поки немає відкритих заїздів"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
-msgid "Поки що тихо"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
-msgid "Політика cookies"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
-msgid "Політика захисту малолітніх і стандарти обслуговування в таборі"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
-msgid "Політика конфіденційності"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
-msgid "Портрет"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
-msgid "Правила користування батьківським особистим кабінетом"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
-msgid "Пригода"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_breadcrumbs_campscout
-msgid "Програма лояльності"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "Програма лояльності CampScout"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid ""
-"Після першого табору учасника тут з'явиться персональна картка лояльності з "
-"реальними знижками на наступні заїзди."
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
-msgid "Рахунки, оплати, повернення"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "Рівень"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
-msgid "Рівні та знижки"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
-msgid "Спомин"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "Срібний"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "Срібного"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "Таборів відвідано"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
-msgid "Тільки історії з таборів"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
-msgid "Умови користування кабінетом"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
-msgid "Умови обробки даних, включаючи дані про дітей (RODO/GDPR)"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
-msgid "Умови та положення"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
-msgid "Умови, політики та згоди, які регулюють ваші відносини з CampScout"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
-msgid "Умови, політики, згоди"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
-msgid "Урок"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
-msgid "Усі діти"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
-msgid "Фінансові документи"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid ""
-"Чим більше таборів відвідав учасник — тим вища знижка на наступні заїзди"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
-msgid "Читати →"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
-msgid "Щоденник"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_sidebar_campscout
-msgid "Щоденні новини"
-msgstr "Codzienne wiadomości"
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_breadcrumbs_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
-msgid "Щоденні історії"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
-msgid "Щоденні історії з табору"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_breadcrumbs_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
-msgid "Юридичні документи"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "Як працює програма"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
-msgid "Які cookies ми використовуємо та навіщо"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
-msgid "від"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
-msgid "вільно:"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
-msgid "зараз у таборі"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "знайомство"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "знижка на наступний табір"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
-msgid "показати усіх дітей"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_my_home_campscout_hero
-msgid "років"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "рівня залишилось"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "табори"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "табір"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_stories
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "← До кабінету"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "−10% знижка"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "−15% знижка"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "−5% знижка"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_loyalty
-msgid "🏆 Максимальний рівень досягнуто"
-msgstr ""
-
-#. module: fayna_campscout
-#: model_terms:ir.ui.view,arch_db:fayna_campscout.portal_documents
-msgid "📚 Усі документи для батьків + архівні версії →"
-msgstr ""
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_training
+msgid "Навчання"
+msgstr "Szkolenia"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_training_courses
+msgid "Курси (eLearning)"
+msgstr "Kursy (eLearning)"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_training_records
+msgid "Записи навчання"
+msgstr "Rejestr szkoleń"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_config
+msgid "Налаштування"
+msgstr "Ustawienia"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_sms_routing
+msgid "SMS маршрути"
+msgstr "Trasy SMS"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_sms_templates
+msgid "SMS шаблони"
+msgstr "Szablony SMS"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_faq
+msgid "FAQ"
+msgstr "FAQ"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_activity
+msgid "Camp Activities"
+msgstr "Zajęcia wypoczynkowe"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_category
+msgid "Camp Categories"
+msgstr "Kategorie wypoczynku"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_faq
+msgid "Camp FAQ"
+msgstr "FAQ wypoczynku"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_journal
+msgid "Camp Journal"
+msgstr "Dziennik wypoczynku"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_review
+msgid "Camp Reviews"
+msgstr "Opinie o wypoczynku"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_staff
+msgid "Camp Staff"
+msgstr "Kadra wypoczynku"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_meal_plan
+msgid "Meal Plans"
+msgstr "Plany żywieniowe"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_allergen
+msgid "Allergens"
+msgstr "Alergeny"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_participant
+msgid "Participants"
+msgstr "Uczestnicy"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_diet_profile
+msgid "Diet Profiles"
+msgstr "Profile dietetyczne"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_incident_report
+msgid "Incident Reports"
+msgstr "Raporty zdarzeń"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_kuratorium_notification
+msgid "Kuratorium Notifications"
+msgstr "Powiadomienia do Kuratorium"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_loyalty_participant
+msgid "Loyalty Participants"
+msgstr "Uczestnicy programu lojalnościowego"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_support_request
+msgid "Support Requests"
+msgstr "Zgłoszenia wsparcia"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_program_wypoczynku
+msgid "Program Wypoczynku (Załącznik 9)"
+msgstr "Program Wypoczynku (Załącznik 9)"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_staff_training_record
+msgid "Training Records"
+msgstr "Rejestr szkoleń"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_sms_template
+msgid "SMS Templates"
+msgstr "Szablony SMS"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_fayna_sms_routing_rule
+msgid "SMS Routing Rules"
+msgstr "Reguły kierowania SMS"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_fayna_payment_installment_plan
+msgid "Installment Plans"
+msgstr "Plany ratalne"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_dziennik
+msgid "Dziennik Zajęć"
+msgstr "Dziennik Zajęć"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__name
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_activity__name
+msgid "Name"
+msgstr "Nazwa"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__age
+msgid "Age"
+msgstr "Wiek"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__pesel
+msgid "PESEL"
+msgstr "PESEL"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__gender
+msgid "Gender"
+msgstr "Płeć"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__parent_id
+msgid "Parent"
+msgstr "Rodzic"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__child_id
+msgid "Child"
+msgstr "Dziecko"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__active
+msgid "Active"
+msgstr "Aktywny"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__notes
+msgid "Notes"
+msgstr "Uwagi"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__description
+msgid "Description"
+msgstr "Opis"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Date"
+msgstr "Data"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_report__state
+msgid "State"
+msgstr "Stan"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__category_id
+msgid "Category"
+msgstr "Kategoria"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__priority
+msgid "Priority"
+msgstr "Priorytet"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__type
+msgid "Type"
+msgstr "Typ"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__year
+msgid "Year"
+msgstr "Rok"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__season
+msgid "Season"
+msgstr "Sezon"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__event_id
+msgid "Event"
+msgstr "Turnus"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__events
+msgid "Events"
+msgstr "Turnusy"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__camp_id
+msgid "Camp"
+msgstr "Wypoczynek"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__staff_id
+msgid "Staff"
+msgstr "Kadra"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__staff_member_id
+msgid "Staff Member"
+msgstr "Członek kadry"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__role
+msgid "Role"
+msgstr "Rola"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__language
+msgid "Language"
+msgstr "Język"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__country
+msgid "Country"
+msgstr "Kraj"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__currency
+msgid "Currency"
+msgstr "Waluta"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__amount
+msgid "Amount"
+msgstr "Kwota"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__reference
+msgid "Reference"
+msgstr "Numer referencyjny"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__sequence
+msgid "Sequence"
+msgstr "Kolejność"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__title
+msgid "Title"
+msgstr "Tytuł"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__subject
+msgid "Subject"
+msgstr "Temat"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__content
+msgid "Content"
+msgstr "Treść"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__response
+msgid "Response"
+msgstr "Odpowiedź"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__history
+msgid "History"
+msgstr "Historia"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__attachments
+msgid "Attachments"
+msgstr "Załączniki"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__author_id
+msgid "Author"
+msgstr "Autor"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__author_parent_id
+msgid "Author (parent)"
+msgstr "Autor (rodzic)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__partner_id
+msgid "Partner"
+msgstr "Kontrahent"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__participant_id
+msgid "Participant"
+msgstr "Uczestnik"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_review__rating
+msgid "Rating (1–5)"
+msgstr "Ocena (1–5)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_review__average_rating
+msgid "Average rating"
+msgstr "Średnia ocena"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_review__review
+msgid "Review"
+msgstr "Opinia"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_review__published_count
+msgid "Published review count"
+msgstr "Liczba opublikowanych opinii"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_review__moderator_notes
+msgid "Moderator notes"
+msgstr "Uwagi moderatora"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_review__what_stood_out
+msgid "What stood out"
+msgstr "Co się wyróżniło"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_review__improvement_private
+msgid "What to improve (private)"
+msgstr "Co poprawić (prywatne)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_review__would_recommend
+msgid "Would recommend to friends?"
+msgstr "Czy poleciłbyś znajomym?"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_review__would_return
+msgid "Would return next year?"
+msgstr "Czy wróciłbyś w przyszłym roku?"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_review__helpful_votes
+msgid "Helpful votes"
+msgstr "Głosy „przydatne”"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_review__highlights
+msgid "Highlights"
+msgstr "Najważniejsze momenty"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__age_min
+msgid "Age min"
+msgstr "Wiek min."
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__age_max
+msgid "Age max"
+msgstr "Wiek maks."
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__accommodation
+msgid "Accommodation"
+msgstr "Zakwaterowanie"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__meals_per_day
+msgid "Meals per day"
+msgstr "Posiłków dziennie"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__meals_description
+msgid "Meals description"
+msgstr "Opis wyżywienia"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__insurance
+msgid "Insurance"
+msgstr "Ubezpieczenie"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__safety
+msgid "Safety"
+msgstr "Bezpieczeństwo"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__medical_on_site
+msgid "Medical on-site"
+msgstr "Opieka medyczna na miejscu"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__hiking_route
+msgid "Hiking route"
+msgstr "Trasa wycieczki"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__price_includes
+msgid "Price includes"
+msgstr "Cena zawiera"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__price_excludes
+msgid "Price excludes"
+msgstr "Cena nie zawiera"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__early_bird_deadline
+msgid "Early-bird deadline"
+msgstr "Termin promocji Early-bird"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__early_bird_discount
+msgid "Early-bird discount"
+msgstr "Rabat Early-bird"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__early_bird_days_left
+msgid "Early-bird days left"
+msgstr "Dni do końca Early-bird"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__sibling_discount
+msgid "Sibling discount %"
+msgstr "Rabat na rodzeństwo %"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__loyalty_discount
+msgid "Loyalty (2+ seasons) discount %"
+msgstr "Rabat lojalnościowy (2+ sezony) %"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__seats_left
+msgid "Seats left across upcoming shifts"
+msgstr "Wolne miejsca w nadchodzących turnusach"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__shifts_count
+msgid "Shifts count"
+msgstr "Liczba turnusów"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__almost_full
+msgid "Almost full (FOMO badge)"
+msgstr "Prawie pełny (FOMO)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__early_bird_ending
+msgid "Early-bird ending soon (FOMO badge)"
+msgstr "Early-bird wkrótce się kończy (FOMO)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__installment_available
+msgid "Installment available"
+msgstr "Możliwość rat"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_payment_installment_plan__installments_count
+msgid "# Installments"
+msgstr "Liczba rat"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_payment_installment__sequence
+msgid "# Installment"
+msgstr "Numer raty"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_payment_installment_plan__deposit_percent
+msgid "Deposit %"
+msgstr "Zaliczka %"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_payment_installment_plan__refund_percent
+msgid "Refund %"
+msgstr "Zwrot %"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_payment_installment_plan__retention_percent
+msgid "Retention %"
+msgstr "Zatrzymanie %"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_payment_installment_plan__interval_days
+msgid "Interval (days)"
+msgstr "Odstęp (dni)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_payment_installment_plan__has_installments
+msgid "Has Installments"
+msgstr "Ma raty"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_payment_installment__has_overdue
+msgid "Has Overdue Installment"
+msgstr "Ma zaległe raty"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_payment_installment__due_date
+msgid "Due Date"
+msgstr "Termin płatności"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_payment_installment__payment_date
+msgid "Payment Date"
+msgstr "Data płatności"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_payment_installment__payment_reference
+msgid "Payment Reference"
+msgstr "Numer płatności"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_payment_installment__sale_order_id
+msgid "Sale Order"
+msgstr "Zamówienie sprzedaży"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_payment_installment__invoice_id
+msgid "Invoice"
+msgstr "Faktura"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_payment_installment__related_order_id
+msgid "Related Order"
+msgstr "Powiązane zamówienie"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_loyalty_participant__banda_code
+msgid "BANDA Code"
+msgstr "Kod BANDA"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_loyalty_participant__banda_referred
+msgid "BANDA Referred"
+msgstr "Polecony przez BANDA"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_loyalty_participant__camps_attended
+msgid "Camps Attended"
+msgstr "Liczba odbytych wypoczynków"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_loyalty_participant__points
+msgid "Points"
+msgstr "Punkty"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_loyalty_participant__points_change
+msgid "Points Change"
+msgstr "Zmiana punktów"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_loyalty_participant__tier
+msgid "Tier"
+msgstr "Poziom"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_res_partner__kdr_number
+msgid "KDR Number"
+msgstr "Numer KDR"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_res_partner__large_family_manual
+msgid "Large Family (manual)"
+msgstr "Rodzina wielodzietna (ręcznie)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__rodo_consent
+msgid "RODO consent (checkout)"
+msgstr "Zgoda RODO (zamówienie)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__public_on_product_page
+msgid "Public on product page"
+msgstr "Publiczne na stronie produktu"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__program_pdf
+msgid "Program PDF"
+msgstr "Program PDF"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__tagline
+msgid "Tagline"
+msgstr "Hasło"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__tags
+msgid "Tags (comma-sep)"
+msgstr "Tagi (rozdzielone przecinkami)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__gallery
+msgid "Gallery"
+msgstr "Galeria"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__concept
+msgid "Concept"
+msgstr "Koncepcja"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__goals
+msgid "Goals"
+msgstr "Cele"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__faq
+msgid "FAQ"
+msgstr "FAQ"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_room_type__name
+msgid "Room type"
+msgstr "Typ pokoju"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__shift_color
+msgid "Shift Color"
+msgstr "Kolor turnusu"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__schedule_accent_color
+msgid "Schedule accent color"
+msgstr "Kolor wyróżnienia harmonogramu"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_schedule_entry__day_offset
+msgid "Day Offset"
+msgstr "Numer dnia"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_schedule_entry__plan_a_label
+msgid "Plan A label"
+msgstr "Etykieta planu A"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_schedule_entry__plan_b_label
+msgid "Plan B label"
+msgstr "Etykieta planu B"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_schedule_entry__plan_a_activity
+msgid "Plan A — activity"
+msgstr "Plan A — zajęcie"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_schedule_entry__plan_a_details
+msgid "Plan A — details"
+msgstr "Plan A — szczegóły"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_schedule_entry__plan_b_activity
+msgid "Plan B — activity"
+msgstr "Plan B — zajęcie"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_schedule_entry__plan_b_details
+msgid "Plan B — details"
+msgstr "Plan B — szczegóły"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_event_form
+msgid "Plan A (Sunny day)"
+msgstr "Plan A (Słoneczny dzień)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_event_form
+msgid "Plan B (Rainy day)"
+msgstr "Plan B (Deszczowy dzień)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_report_form
+msgid "Abuse Suspected (Kamilka)"
+msgstr "Podejrzenie krzywdzenia (Ustawa Kamilka)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_report_form
+msgid "Action Ledger"
+msgstr "Rejestr działań"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_report_form
+msgid "Affected Participants"
+msgstr "Uczestnicy, których dotyczy"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_report_form
+msgid "Incident Details"
+msgstr "Szczegóły zdarzenia"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_report_form
+msgid "Incidents"
+msgstr "Zdarzenia"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_report_form
+msgid "Severity"
+msgstr "Stopień powagi"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_report_form
+msgid "Urgent"
+msgstr "Pilne"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_report_form
+msgid "Protocol Content"
+msgstr "Treść protokołu"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_report_form
+msgid "Protocol Ready"
+msgstr "Protokół gotowy"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_report_form
+msgid "Deliver Protocol"
+msgstr "Dostarcz protokół"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_report_form
+msgid "Start Investigation"
+msgstr "Rozpocznij dochodzenie"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_report_form
+msgid "Start Response"
+msgstr "Rozpocznij reagowanie"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_report_form
+msgid "Start Refund"
+msgstr "Rozpocznij zwrot"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_report_form
+msgid "Ustawa Kamilka 2024"
+msgstr "Ustawa Kamilka 2024"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Section I — Identity"
+msgstr "Sekcja I — Dane osobowe"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Section II — Medical (restricted)"
+msgstr "Sekcja II — Dane medyczne (zastrzeżone)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Section III — Adaptation (kierownik)"
+msgstr "Sekcja III — Adaptacja (kierownik)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Section IV — Educational Assessment"
+msgstr "Sekcja IV — Ocena wychowawcza"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Section IV — Presence Intervals"
+msgstr "Sekcja IV — Okresy obecności"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Section V — Health Notes (kierownik)"
+msgstr "Sekcja V — Uwagi zdrowotne (kierownik)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Section VI — Wychowawca Observations"
+msgstr "Sekcja VI — Obserwacje wychowawcy"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Sections"
+msgstr "Sekcje"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Medical Data (RODO art.9)"
+msgstr "Dane medyczne (RODO art. 9)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Medical Notes (restricted)"
+msgstr "Uwagi medyczne (zastrzeżone)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Medical Info"
+msgstr "Informacje medyczne"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Medical"
+msgstr "Medyczne"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Allergens"
+msgstr "Alergeny"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Emergency Contact"
+msgstr "Kontakt w razie nagłego wypadku"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Emergency Contacts"
+msgstr "Kontakty w razie nagłego wypadku"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Qualification Card — Sign-off"
+msgstr "Karta kwalifikacyjna — podpis"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Qualification Signed"
+msgstr "Karta podpisana"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Auto-Refusal Pending"
+msgstr "Oczekuje na automatyczne odrzucenie"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Auto-Refusal State"
+msgstr "Stan automatycznego odrzucenia"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Auto-Refused"
+msgstr "Odrzucone automatycznie"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Clear Auto-Refusal"
+msgstr "Wyczyść automatyczne odrzucenie"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Unsigned"
+msgstr "Niepodpisana"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Consents (Dodatki 4a/4b)"
+msgstr "Zgody (Dodatki 4a/4b)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "PL-law Documents"
+msgstr "Dokumenty wg prawa PL"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Special Needs"
+msgstr "Potrzeby specjalne"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Special Diet Counts"
+msgstr "Liczby diet specjalnych"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_event_form
+msgid "Camp Settings"
+msgstr "Ustawienia wypoczynku"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_event_form
+msgid "Camp Shifts"
+msgstr "Turnusy wypoczynku"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_event_form
+msgid "Camp Event"
+msgstr "Wydarzenie wypoczynkowe"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_event_form
+msgid "Daily Activities"
+msgstr "Zajęcia dzienne"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_event_form
+msgid "Registrations"
+msgstr "Rejestracje"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_event_form
+msgid "Cancellations"
+msgstr "Anulowania"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_event_form
+msgid "Cancellation Details"
+msgstr "Szczegóły anulowania"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_event_form
+msgid "Eligibility"
+msgstr "Kwalifikowalność"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_event_form
+msgid "Eligible"
+msgstr "Kwalifikujący się"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_event_form
+msgid "Registered"
+msgstr "Zarejestrowani"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_event_form
+msgid "Confirmed"
+msgstr "Potwierdzone"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_event_form
+msgid "Confirm"
+msgstr "Potwierdź"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_event_form
+msgid "Cancel"
+msgstr "Anuluj"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_event_form
+msgid "Close"
+msgstr "Zamknij"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_review_form
+msgid "Approve"
+msgstr "Zatwierdź"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_review_form
+msgid "Approved"
+msgstr "Zatwierdzone"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_review_form
+msgid "Reject"
+msgstr "Odrzuć"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_review_form
+msgid "Publish"
+msgstr "Opublikuj"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_review_form
+msgid "Published"
+msgstr "Opublikowane"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_review_form
+msgid "Pending Review"
+msgstr "Oczekuje na recenzję"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_review_form
+msgid "Review Content"
+msgstr "Treść opinii"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_review_form
+msgid "Submit for Review"
+msgstr "Wyślij do recenzji"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_review_form
+msgid "Submit"
+msgstr "Wyślij"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_review_form
+msgid "Submitted"
+msgstr "Wysłano"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_review_form
+msgid "Submission"
+msgstr "Zgłoszenie"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_review_form
+msgid "Mark Disputed"
+msgstr "Oznacz jako sporne"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_review_form
+msgid "Mark Complete"
+msgstr "Oznacz jako ukończone"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_review_form
+msgid "Mark Paid"
+msgstr "Oznacz jako opłacone"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_review_form
+msgid "Paid"
+msgstr "Opłacone"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_review_form
+msgid "Active Status"
+msgstr "Status aktywności"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_review_form
+msgid "Archived"
+msgstr "Zarchiwizowane"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_support_request_form
+msgid "Open"
+msgstr "Otwarte"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_support_request_form
+msgid "In Progress"
+msgstr "W trakcie"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_support_request_form
+msgid "Pending"
+msgstr "Oczekuje"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_support_request_form
+msgid "Overdue"
+msgstr "Po terminie"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_support_request_form
+msgid "Complete"
+msgstr "Ukończone"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_support_request_form
+msgid "Draft"
+msgstr "Wersja robocza"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_support_request_form
+msgid "Back to Draft"
+msgstr "Powrót do wersji roboczej"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_support_request_form
+msgid "Reset to Draft"
+msgstr "Zresetuj do wersji roboczej"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_support_request_form
+msgid "Expire"
+msgstr "Wygaśnij"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_support_request_form
+msgid "Expired"
+msgstr "Wygasłe"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_support_request_form
+msgid "Request"
+msgstr "Zgłoszenie"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_support_request_form
+msgid "Message Body"
+msgstr "Treść wiadomości"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_support_request_form
+msgid "Summary"
+msgstr "Podsumowanie"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_loyalty_form
+msgid "BANDA Tier"
+msgstr "Poziom BANDA"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_loyalty_form
+msgid "Reset Points"
+msgstr "Wyzeruj punkty"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_loyalty_form
+msgid "Platinum"
+msgstr "Platynowy"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_dziennik_form
+msgid "Wychowawcy"
+msgstr "Wychowawcy"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_dziennik_form
+msgid "Kierownik Private Notes"
+msgstr "Notatki prywatne kierownika"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_cert_form
+msgid "Certificate"
+msgstr "Certyfikat"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_cert_form
+msgid "Certifications"
+msgstr "Certyfikaty"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_cert_form
+msgid "Certified"
+msgstr "Certyfikowany"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_cert_form
+msgid "Issue Certificate"
+msgstr "Wystaw certyfikat"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_training_record_form
+msgid "Course Type"
+msgstr "Rodzaj kursu"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_training_record_form
+msgid "Start Training"
+msgstr "Rozpocznij szkolenie"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_training_record_form
+msgid "Training Records"
+msgstr "Rejestr szkoleń"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_training_record_form
+msgid "MEN Compliance"
+msgstr "Zgodność z MEN"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_training_record_form
+msgid "MEN Courses"
+msgstr "Kursy MEN"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_training_record_form
+msgid "Start Review"
+msgstr "Rozpocznij weryfikację"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_training_record_form
+msgid "Responsibilities (A7)"
+msgstr "Obowiązki (A7)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_admin_access_log_form
+msgid "Assigned Groups"
+msgstr "Przypisane grupy"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_admin_access_log_form
+msgid "Assigned To"
+msgstr "Przypisano do"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_admin_access_log_form
+msgid "Impersonated role"
+msgstr "Rola zastępcza"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_admin_access_log_form
+msgid "Last 24h"
+msgstr "Ostatnie 24h"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_admin_access_log_form
+msgid "Last 7 days"
+msgstr "Ostatnie 7 dni"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_admin_access_log_form
+msgid "Organizator"
+msgstr "Organizator"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_admin_access_log_form
+msgid "Needs Migration Review"
+msgstr "Wymaga weryfikacji migracji"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_admin_access_log_form
+msgid "Moderation"
+msgstr "Moderacja"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_admin_access_log_form
+msgid "SLA Breaches"
+msgstr "Naruszenia SLA"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_admin_access_log_form
+msgid "SLA Compliance (BP-006)"
+msgstr "Zgodność z SLA (BP-006)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_kuratorium_form
+msgid "Day"
+msgstr "Dzień"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_kuratorium_form
+msgid "Year"
+msgstr "Rok"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_kuratorium_form
+msgid "Group By"
+msgstr "Grupuj według"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_kuratorium_form
+msgid "Entry"
+msgstr "Wpis"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_kuratorium_form
+msgid "Answer"
+msgstr "Odpowiedź"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_meal_plan_form
+msgid "Meals"
+msgstr "Posiłki"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_meal_plan_form
+msgid "Menu Items"
+msgstr "Pozycje menu"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_meal_plan_form
+msgid "Nutritionist Notes"
+msgstr "Uwagi dietetyka"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_meal_plan_form
+msgid "Checklist"
+msgstr "Lista kontrolna"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_program_form
+msgid "Date Resolved"
+msgstr "Data rozwiązania"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_program_form
+msgid "Date Submitted"
+msgstr "Data zgłoszenia"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_program_form
+msgid "Custom Lines"
+msgstr "Linie niestandardowe"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_program_form
+msgid "Extras"
+msgstr "Dodatki"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_event_form
+msgid "Aktivності"
+msgstr "Zajęcia"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_event_form
+msgid "Тижневий план"
+msgstr "Plan tygodniowy"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_event_form
+msgid "Нотатки"
+msgstr "Notatki"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_review__author_role
+msgid "Author role"
+msgstr "Rola autora"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_review__rendering_top
+msgid "TOP rendered"
+msgstr "TOP wyrenderowany"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_review__rendering_bot
+msgid "BOT rendered"
+msgstr "BOT wyrenderowany"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__displayed_as
+msgid "Displayed as"
+msgstr "Wyświetlane jako"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__is_camp_program
+msgid "Is Camp Program"
+msgstr "Czy program wypoczynku"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__is_active
+msgid "Is Active"
+msgstr "Czy aktywny"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__season_id
+msgid "Camp Season"
+msgstr "Sezon wypoczynkowy"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__camp_status
+msgid "Camp Status"
+msgstr "Status wypoczynku"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__camp_category
+msgid "Camp Category"
+msgstr "Kategoria wypoczynku"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__camp_location
+msgid "Camp Location"
+msgstr "Lokalizacja wypoczynku"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__camp_program
+msgid "Camp Program"
+msgstr "Program wypoczynku"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__camp_shifts
+msgid "Camp Shifts"
+msgstr "Turnusy wypoczynku"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__camp_activities
+msgid "Camp Activities"
+msgstr "Zajęcia wypoczynkowe"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__season_type
+msgid "Season Type"
+msgstr "Typ sezonu"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__event_type
+msgid "Event Type"
+msgstr "Typ turnusu"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__shifts_events
+msgid "Shifts / Events"
+msgstr "Turnusy / Wydarzenia"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__event_shift_id
+msgid "Event (shift)"
+msgstr "Turnus (zmiana)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__camp_product_id
+msgid "Camp (product)"
+msgstr "Wypoczynek (produkt)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__plan_type
+msgid "Plan Type"
+msgstr "Typ planu"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__plan_name
+msgid "Plan Name"
+msgstr "Nazwa planu"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__plan
+msgid "Plan"
+msgstr "Plan"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__daily_routine_legacy
+msgid "Daily routine (legacy HTML)"
+msgstr "Plan dnia (legacy HTML)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__daily_schedule
+msgid "Daily schedule"
+msgstr "Harmonogram dnia"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__fayna_rule_type
+msgid "Fayna Rule Type"
+msgstr "Typ reguły Fayna"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__percent
+msgid "Percent (%)"
+msgstr "Procent (%)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__loyalty_discount_pct
+msgid "Loyalty Discount (%)"
+msgstr "Rabat lojalnościowy (%)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__last_activity
+msgid "Last activity"
+msgstr "Ostatnia aktywność"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__last_login
+msgid "Last login"
+msgstr "Ostatnie logowanie"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__active_camps
+msgid "Active camps"
+msgstr "Aktywne wypoczynki"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__children_count
+msgid "Children registered"
+msgstr "Zarejestrowane dzieci"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__pending_actions
+msgid "Pending actions (docs to sign)"
+msgstr "Oczekujące działania (dok. do podpisu)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_event__unread_messages
+msgid "Unread messages"
+msgstr "Nieprzeczytane wiadomości"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_campscout_portal_menu__custom_links
+msgid "Custom links (JSON)"
+msgstr "Linki niestandardowe (JSON)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_campscout_portal_menu__region
+msgid "Region (e.g. 'PL', 'UA')"
+msgstr "Region (np. „PL”, „UA”)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_campscout_portal_menu__show_blog
+msgid "Show blog?"
+msgstr "Pokazać blog?"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_campscout_portal_menu__show_camp_shop
+msgid "Show camp shop?"
+msgstr "Pokazać sklep wypoczynku?"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_campscout_portal_menu__show_daily_stories
+msgid "Show daily stories?"
+msgstr "Pokazać codzienne aktualności?"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_campscout_portal_menu__show_loyalty
+msgid "Show loyalty program?"
+msgstr "Pokazać program lojalnościowy?"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_campscout_portal_menu__show_reviews
+msgid "Show reviews?"
+msgstr "Pokazać opinie?"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/controllers/api.py:0
+#, python-format
+msgid "Invalid credentials"
+msgstr "Nieprawidłowe dane logowania"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/controllers/api.py:0
+#, python-format
+msgid "No active camp found"
+msgstr "Nie znaleziono aktywnego wypoczynku"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/participant.py:0
+#, python-format
+msgid "A child cannot be their own parent/guardian."
+msgstr "Dziecko nie może być własnym rodzicem/opiekunem."
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/participant.py:0
+#, python-format
+msgid "Access restricted to Organizator (admin)."
+msgstr "Dostęp ograniczony do Organizatora (admin)."
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/admin_access_log.py:0
+#, python-format
+msgid "Admin access logs are immutable (RODO art.30)."
+msgstr "Logi dostępu administratora są niezmienne (RODO art. 30)."
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/admin_access_log.py:0
+#, python-format
+msgid "Admin access logs cannot be deleted (PL law: 7 years retention)."
+msgstr "Logów dostępu administratora nie można usunąć (prawo PL: 7 lat retencji)."
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "A daily report already exists for event '%(event)s' on %(date)s."
+msgstr "Raport dzienny dla turnusu „%(event)s” w dniu %(date)s już istnieje."
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "A submitted program cannot be approved again."
+msgstr "Zgłoszony program nie może być zatwierdzony ponownie."
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/commercial.py:0
+#, python-format
+msgid "A paid installment must have a payment date (installment #%s)."
+msgstr "Opłacona rata musi mieć datę płatności (rata #%s)."
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/nutrition.py:0
+#, python-format
+msgid "A diet profile must be linked to a participant or a contact."
+msgstr "Profil dietetyczny musi być powiązany z uczestnikiem lub kontaktem."
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/participant.py:0
+#, python-format
+msgid "Anonymously"
+msgstr "Anonimowo"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/participant.py:0
+#, python-format
+msgid "Allergies"
+msgstr "Alergie"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/participant.py:0
+#, python-format
+msgid "Avatar choice"
+msgstr "Wybór awatara"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Activity"
+msgstr "Zajęcie"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Activities"
+msgstr "Zajęcia"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Activity name"
+msgstr "Nazwa zajęcia"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Activity title"
+msgstr "Tytuł zajęcia"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Activity category used for schedule filtering and reporting."
+msgstr "Kategoria zajęcia używana do filtrowania harmonogramu i raportowania."
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Activity template"
+msgstr "Szablon zajęcia"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Activity type — used for program statistics and reporting.."
+msgstr "Typ zajęcia — używany do statystyk programu i raportowania."
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Action ledger"
+msgstr "Rejestr działań"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Action type"
+msgstr "Typ działania"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Achievements"
+msgstr "Osiągnięcia"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Actor (system user)"
+msgstr "Wykonawca (użytkownik systemu)"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Allergens"
+msgstr "Alergeny"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Allergen codes"
+msgstr "Kody alergenów"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Allergen name"
+msgstr "Nazwa alergenu"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Allergen summary"
+msgstr "Podsumowanie alergenów"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Approved by"
+msgstr "Zatwierdzone przez"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Approved date"
+msgstr "Data zatwierdzenia"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Author"
+msgstr "Autor"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Auto-refusal deadline"
+msgstr "Termin automatycznego odrzucenia"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Auto-refusal status"
+msgstr "Status automatycznego odrzucenia"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Auto-refused at"
+msgstr "Automatycznie odrzucone o"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/sms.py:0
+#, python-format
+msgid "Assigned groups"
+msgstr "Przypisane grupy"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "BANDA code reset"
+msgstr "Reset kodu BANDA"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Badge colour"
+msgstr "Kolor odznaki"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/sms.py:0
+#, python-format
+msgid "Subject"
+msgstr "Temat"
+
+#. module: fayna_camp_portal
+#: code:addons/fayna_camp_portal/models/sms.py:0
+#, python-format
+msgid "Status"
+msgstr "Status"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Відповідь організатора"
+msgstr "Odpowiedź organizatora"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Коментар батьків"
+msgstr "Komentarz rodziców"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
+msgid "Медична довідка"
+msgstr "Zaświadczenie lekarskie"

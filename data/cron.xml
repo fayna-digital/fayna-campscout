@@ -43,5 +43,59 @@
             <field name="user_id" ref="base.user_root"/>
         </record>
 
+        <!-- Vozhatyi: expire fayna.vozhatyi.certificate when valid_until passes (5y) -->
+        <record id="cron_expire_vozhatyi_certificates" model="ir.cron">
+            <field name="name">CampScout: Mark Expired Vozhatyi Certificates</field>
+            <field name="model_id" ref="model_fayna_vozhatyi_certificate"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_expire_certificates()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active">True</field>
+            <field name="priority">10</field>
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+
+        <!-- Vozhatyi: flat record state flip (completed → expired) when valid_until passes -->
+        <record id="cron_expire_vozhatyi_training_records" model="ir.cron">
+            <field name="name">CampScout: Mark Expired Vozhatyi Training Records</field>
+            <field name="model_id" ref="model_vozhatyi_training_record"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_mark_expired()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active">True</field>
+            <field name="priority">10</field>
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+
+        <!-- Camp Reports — daily stats snapshot (occupancy/revenue trend) -->
+        <record id="ir_cron_camp_stats_snapshot" model="ir.cron">
+            <field name="name">Camp Reports: Daily Stats Snapshot</field>
+            <field name="model_id" ref="model_camp_stats_snapshot"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_take_snapshot()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+
+        <!-- Camp Reports — daily KPI snapshot for dashboard -->
+        <record id="cron_daily_analytics_snapshot" model="ir.cron">
+            <field name="name">Camp Reports: Daily Analytics Snapshot</field>
+            <field name="model_id" ref="model_camp_analytics_snapshot"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_take_daily_snapshot()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+
     </data>
 </odoo>

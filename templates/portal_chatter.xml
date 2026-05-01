@@ -185,4 +185,105 @@
 </template>
 
 
+<!-- ============================================================================
+     /my/transport — list of transport trips for parent's children
+     ============================================================================ -->
+
+<template id="portal_transport" name="My Transport">
+    <t t-call="portal.portal_layout">
+        <t t-set="additional_title">Трансфер</t>
+        <div class="cs-page">
+            <div class="cs-page-header mb-4">
+                <h2 class="cs-page-title">Трансфер</h2>
+                <p class="cs-page-subtitle text-muted">
+                    Заплановані та виконані трансфери для ваших дітей.
+                </p>
+            </div>
+            <t t-if="not transports">
+                <div class="alert alert-info">
+                    Трансфер ще не призначено. Зверніться до координатора табору.
+                </div>
+            </t>
+            <t t-foreach="transports" t-as="transport">
+                <a t-att-href="'/my/transport/%d' % transport.id" class="text-decoration-none text-reset">
+                    <div class="card mb-3 shadow-sm">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <strong t-esc="transport.name"/>
+                            <span t-attf-class="badge #{
+                                'bg-success' if transport.state == 'completed' else
+                                'bg-primary' if transport.state == 'confirmed' else
+                                'bg-danger' if transport.state == 'cancelled' else
+                                'bg-warning text-dark'}">
+                                <t t-esc="dict(transport._fields['state'].selection).get(transport.state, transport.state)"/>
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <p class="mb-1"><strong>Звідки:</strong> <t t-esc="transport.departure_location"/></p>
+                                    <p class="mb-1"><strong>Куди:</strong> <t t-esc="transport.arrival_location"/></p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <t t-if="transport.departure_datetime">
+                                        <p class="mb-1"><strong>Відправлення:</strong> <t t-esc="transport.departure_datetime"/></p>
+                                    </t>
+                                    <t t-if="transport.arrival_datetime">
+                                        <p class="mb-1"><strong>Прибуття:</strong> <t t-esc="transport.arrival_datetime"/></p>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </t>
+        </div>
+    </t>
+</template>
+
+<template id="portal_transport_detail" name="Transport Trip Detail">
+    <t t-call="portal.portal_layout">
+        <t t-set="additional_title">Трансфер</t>
+        <div class="cs-page">
+            <div class="cs-page-back mb-3">
+                <a href="/my/transport" class="cs-back-link">&#8592; До списку</a>
+            </div>
+            <t t-if="transport">
+                <div class="cs-page-header mb-4">
+                    <h2 class="cs-page-title" t-esc="transport.name"/>
+                </div>
+                <div class="card mb-3 shadow-sm">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <p class="mb-1"><strong>Звідки:</strong> <t t-esc="transport.departure_location"/></p>
+                                <p class="mb-1"><strong>Куди:</strong> <t t-esc="transport.arrival_location"/></p>
+                                <p class="mb-1"><strong>Відправлення:</strong> <t t-esc="transport.departure_datetime"/></p>
+                                <p class="mb-1" t-if="transport.arrival_datetime">
+                                    <strong>Прибуття:</strong> <t t-esc="transport.arrival_datetime"/>
+                                </p>
+                            </div>
+                            <div class="col-sm-6">
+                                <p class="mb-1" t-if="transport.vehicle_type">
+                                    <strong>Транспорт:</strong>
+                                    <t t-esc="dict(transport._fields['vehicle_type'].selection).get(transport.vehicle_type, transport.vehicle_type)"/>
+                                </p>
+                                <p class="mb-1" t-if="transport.transport_company">
+                                    <strong>Перевізник:</strong> <t t-esc="transport.transport_company"/>
+                                </p>
+                                <p class="mb-1" t-if="transport.driver_name">
+                                    <strong>Водій:</strong> <t t-esc="transport.driver_name"/>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <t t-call="portal.message_thread">
+                    <t t-set="object" t-value="transport"/>
+                </t>
+            </t>
+        </div>
+    </t>
+</template>
+
+
 </odoo>

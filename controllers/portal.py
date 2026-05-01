@@ -258,3 +258,66 @@ class CampscoutPortal(CustomerPortal):
                 "page_name": "documents",
             },
         )
+
+    @http.route(["/my/stories/<int:story_id>"], type="http", auth="user", website=True)
+    def portal_my_story_detail(self, story_id, access_token=None, **kw):
+        """Single story detail page with chatter (TZ §5A.4)."""
+        try:
+            story_sudo = self._document_check_access(
+                "camp.story", story_id, access_token=access_token
+            )
+        except (AccessError, MissingError):
+            return http.request.redirect("/my/stories")
+        if story_sudo.state != "published" or not story_sudo.public:
+            return http.request.redirect("/my/stories")
+        values = self._prepare_portal_layout_values()
+        values.update({
+            "story": story_sudo,
+            "page_name": "story",
+            "user_id": http.request.env.user,
+            "token": access_token,
+        })
+        return http.request.render("fayna_camp_portal.portal_stories_detail", values)
+
+    @http.route("/my/transport", type="http", auth="user", website=True)
+    def portal_my_transport(self, **kw):
+        """List transport trips for any participant linked to this parent."""
+        partner = http.request.env.user.partner_id
+        env_sudo = http.request.env(su=True)
+        try:
+            participants = env_sudo["camp.participant"].search(
+                [("parent_partner_id", "=", partner.id)]
+            )
+            transports = env_sudo["camp.transport"].search(
+                [("participant_ids", "in", participants.ids)],
+                order="departure_datetime desc",
+            )
+        except (AccessError, MissingError) as e:
+            _logger.exception("[CS] transport list load failed: %s", e)
+            transports = env_sudo["camp.transport"]
+            participants = env_sudo["camp.participant"]
+        return http.request.render(
+            "fayna_camp_portal.portal_transport",
+            {
+                "transports": transports,
+                "participants": participants,
+                "page_name": "transport",
+            },
+        )
+
+    @http.route(["/my/transport/<int:transport_id>"], type="http", auth="user", website=True)
+    def portal_my_transport_detail(self, transport_id, access_token=None, **kw):
+        """Detail page for a single transport trip — token-aware via portal.mixin."""
+        try:
+            transport_sudo = self._document_check_access(
+                "camp.transport", transport_id, access_token
+            )
+        except (AccessError, MissingError):
+            return http.request.redirect("/my/transport")
+        return http.request.render(
+            "fayna_camp_portal.portal_transport_detail",
+            {
+                "transport": transport_sudo,
+                "page_name": "transport",
+            },
+        )
