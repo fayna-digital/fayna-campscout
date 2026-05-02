@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Portal mixin extensions — `portal.message_thread` chatter integration.
 
 Adds the standard Odoo 17 `portal.mixin` to a small set of camp models so

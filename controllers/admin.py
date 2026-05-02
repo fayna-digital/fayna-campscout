@@ -130,9 +130,8 @@ class CampscoutAdmin(http.Controller):
         values["top_camps"] = self._top_camps_by_sales(env_sudo, month_start)
 
         # 7) Audit — recent access log
-        values["recent_access_log"] = (
-            env_sudo["camp.admin.access.log"]
-            .search([], order="accessed_at desc", limit=10)
+        values["recent_access_log"] = env_sudo["camp.admin.access.log"].search(
+            [], order="accessed_at desc", limit=10
         )
 
         return request.render("fayna_camp_portal.admin_dashboard", values)
@@ -255,9 +254,7 @@ class CampscoutAdmin(http.Controller):
             )
             if not total:
                 return 0
-            consented = env_sudo["fayna.rodo.consent.log"].search_count(
-                [("state", "=", "granted")]
-            )
+            consented = env_sudo["fayna.rodo.consent.log"].search_count([("state", "=", "granted")])
             return round(min(consented, total) * 100.0 / total, 1)
         except (AccessError, MissingError, KeyError, ValueError):
             return 0
@@ -446,9 +443,7 @@ class CampscoutAdmin(http.Controller):
 
         try:
             scoped_env = (
-                request.env(user=target_user.id)
-                if partner.user_ids
-                else request.env(su=True)
+                request.env(user=target_user.id) if partner.user_ids else request.env(su=True)
             )
             participants = scoped_env["camp.participant"].search(
                 [("parent_partner_id", "=", partner.id)]

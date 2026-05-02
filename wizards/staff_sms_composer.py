@@ -58,9 +58,7 @@ class CampStaffSmsComposer(models.TransientModel):
     body = fields.Text(
         required=True,
         string=_("Message body"),
-        help=_(
-            "Final SMS text. Keep under 70 cyrillic characters to stay in 1 segment."
-        ),
+        help=_("Final SMS text. Keep under 70 cyrillic characters to stay in 1 segment."),
     )
     recipient_ids = fields.Many2many(
         "camp.participant",
@@ -170,8 +168,10 @@ class CampStaffSmsComposer(models.TransientModel):
     # ------------------------------------------------------------------
 
     def _get_cost_per_segment(self):
-        param = self.env["ir.config_parameter"].sudo().get_param(
-            "fayna_camp_portal.sms_cost_per_segment_pln", "0.05"
+        param = (
+            self.env["ir.config_parameter"]
+            .sudo()
+            .get_param("fayna_camp_portal.sms_cost_per_segment_pln", "0.05")
         )
         try:
             return float(param)
@@ -191,13 +191,9 @@ class CampStaffSmsComposer(models.TransientModel):
             return default
 
     def _count_sent_this_month(self, staff):
-        start_of_month = datetime.utcnow().replace(
-            day=1, hour=0, minute=0, second=0, microsecond=0
-        )
+        start_of_month = datetime.utcnow().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         Log = self.env["camp.staff.sms.log"].sudo()
-        logs = Log.search(
-            [("staff_id", "=", staff.id), ("sent_at", ">=", start_of_month)]
-        )
+        logs = Log.search([("staff_id", "=", staff.id), ("sent_at", ">=", start_of_month)])
         return sum(log.recipient_count for log in logs)
 
     def _check_monthly_limit(self, staff, planned_count):
@@ -277,18 +273,22 @@ class CampStaffSmsComposer(models.TransientModel):
                 sent_err += 1
 
         cost_per_segment = self._get_cost_per_segment()
-        log = self.env["camp.staff.sms.log"].sudo().create(
-            {
-                "staff_id": self.staff_id.id,
-                "event_id": self.event_id.id,
-                "template_id": self.template_id.id or False,
-                "body": self.body,
-                "recipient_ids": [(6, 0, recipients.ids)],
-                "sent_at": fields.Datetime.now(),
-                "cost_pln": len(recipients) * cost_per_segment,
-                "delivery_sent": sent_ok,
-                "delivery_error": sent_err,
-            }
+        log = (
+            self.env["camp.staff.sms.log"]
+            .sudo()
+            .create(
+                {
+                    "staff_id": self.staff_id.id,
+                    "event_id": self.event_id.id,
+                    "template_id": self.template_id.id or False,
+                    "body": self.body,
+                    "recipient_ids": [(6, 0, recipients.ids)],
+                    "sent_at": fields.Datetime.now(),
+                    "cost_pln": len(recipients) * cost_per_segment,
+                    "delivery_sent": sent_ok,
+                    "delivery_error": sent_err,
+                }
+            )
         )
         _logger.info(
             "camp.staff.sms.composer: log=%s staff=%s event=%s ok=%s err=%s",
@@ -304,9 +304,7 @@ class CampStaffSmsComposer(models.TransientModel):
             "tag": "display_notification",
             "params": {
                 "title": _("SMS broadcast complete"),
-                "message": _(
-                    "Sent: %(ok)s — Errors: %(err)s — Cost: %(cost).2f PLN"
-                )
+                "message": _("Sent: %(ok)s — Errors: %(err)s — Cost: %(cost).2f PLN")
                 % {
                     "ok": sent_ok,
                     "err": sent_err,

@@ -99,8 +99,7 @@ class CampIncidentReportKamilka(models.Model):
                 missing.append(_("incident_datetime"))
             if missing:
                 raise ValidationError(
-                    _("Ustawa Kamilka incident requires: %s")
-                    % ", ".join(missing)
+                    _("Ustawa Kamilka incident requires: %s") % ", ".join(missing)
                 )
 
     # ------------------------------------------------------------------
@@ -116,9 +115,7 @@ class CampIncidentReportKamilka(models.Model):
         SMS to the deputy kierownik (preferred) or any organizator
         (fallback) and stamp ``backup_notified_at``.
         """
-        cutoff = fields.Datetime.now() - timedelta(
-            minutes=KAMILKA_KIEROWNIK_READ_SLA_MIN
-        )
+        cutoff = fields.Datetime.now() - timedelta(minutes=KAMILKA_KIEROWNIK_READ_SLA_MIN)
         incidents = self.search(
             [
                 ("severity", "=", "kamilka"),

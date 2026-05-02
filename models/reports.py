@@ -204,9 +204,7 @@ class CampAnalyticsSnapshot(models.Model):
         cancelled_count = len(all_regs.filtered(lambda r: r.state == "cancel"))
 
         capacity = event.seats_max or 0
-        occupancy_rate = (
-            (registered_count / capacity * 100.0) if capacity > 0 else 0.0
-        )
+        occupancy_rate = (registered_count / capacity * 100.0) if capacity > 0 else 0.0
 
         # ---- Qualification cards (graceful degradation) ----
         qualification_signed_count = 0
@@ -219,9 +217,7 @@ class CampAnalyticsSnapshot(models.Model):
             )
 
         # ---- Revenue (sudo crosses SO security boundary) ----
-        partner_ids = (
-            all_regs.filtered(lambda r: r.state != "cancel").mapped("partner_id").ids
-        )
+        partner_ids = all_regs.filtered(lambda r: r.state != "cancel").mapped("partner_id").ids
         revenue_total = 0.0
         revenue_paid = 0.0
         revenue_pending = 0.0
@@ -370,9 +366,7 @@ class CampStatsSnapshot(models.Model):
         )
         total_registered = len(registrations)
         total_capacity = event.seats_max or 0
-        occupancy_pct = (
-            (total_registered / total_capacity * 100.0) if total_capacity > 0 else 0.0
-        )
+        occupancy_pct = (total_registered / total_capacity * 100.0) if total_capacity > 0 else 0.0
 
         partner_ids = registrations.mapped("partner_id").ids
         total_revenue = 0.0
@@ -571,7 +565,6 @@ class CampMarketingReport(models.TransientModel):
         # Fallback — keep wizard usable even without a PDF template.
         raise UserError(
             _(
-                "PDF report template is not installed. "
-                "Live metrics are visible above.",
+                "PDF report template is not installed. " "Live metrics are visible above.",
             ),
         )

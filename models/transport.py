@@ -39,9 +39,9 @@ class CampTransport(models.Model):
             trip_label = trip_labels.get(rec.trip_type or "arrival", "")
             event_name = rec.event_id.name if rec.event_id else ""
             if rec.departure_datetime:
-                date_str = fields.Datetime.context_timestamp(
-                    rec, rec.departure_datetime
-                ).strftime("%Y-%m-%d")
+                date_str = fields.Datetime.context_timestamp(rec, rec.departure_datetime).strftime(
+                    "%Y-%m-%d"
+                )
             else:
                 date_str = ""
             parts = [p for p in [trip_label, event_name, date_str] if p]
@@ -164,9 +164,7 @@ class CampTransport(models.Model):
         now = fields.Datetime.now()
         for rec in self:
             rec.is_overdue = bool(
-                rec.arrival_datetime
-                and rec.arrival_datetime < now
-                and rec.state == "planned"
+                rec.arrival_datetime and rec.arrival_datetime < now and rec.state == "planned"
             )
 
     # ── Portal mixin: signed access URL for /my/transport/<id> ─────────────
@@ -200,8 +198,7 @@ class CampTransport(models.Model):
             if rec.state not in ("planned",):
                 raise UserError(
                     _(
-                        "Only planned trips can be confirmed. "
-                        "Current state: %(state)s",
+                        "Only planned trips can be confirmed. " "Current state: %(state)s",
                         state=rec.state,
                     )
                 )

@@ -131,19 +131,20 @@ class CampIncidentReportAutoSubscribe(models.Model):
             # 'abuse_suspected' / non-medical types ⇒ medical involvement.
             severity = rec.severity or ""
             injury_type = getattr(rec, "injury_type", "") or ""
-            medical_relevant = (
-                severity in ("moderate", "severe", "fatal", "mass", "food_poisoning")
-                or injury_type not in ("", "abuse_suspected")
-            )
+            medical_relevant = severity in (
+                "moderate",
+                "severe",
+                "fatal",
+                "mass",
+                "food_poisoning",
+            ) or injury_type not in ("", "abuse_suspected")
             if medical_relevant:
                 for partner in medical_partners:
                     res.append((partner.id, default_subtype_ids, False))
             # If a participant is affected, include their parents.
             for participant in rec.participant_ids:
                 if participant.parent_partner_id:
-                    res.append(
-                        (participant.parent_partner_id.id, default_subtype_ids, False)
-                    )
+                    res.append((participant.parent_partner_id.id, default_subtype_ids, False))
         return res
 
 
@@ -155,9 +156,7 @@ class CampSupportRequestAutoSubscribe(models.Model):
 
     def _message_auto_subscribe_followers(self, updated_values, default_subtype_ids):
         res = super()._message_auto_subscribe_followers(updated_values, default_subtype_ids)
-        sales_group = self.env.ref(
-            "fayna_camp_portal.group_camp_sales", raise_if_not_found=False
-        )
+        sales_group = self.env.ref("fayna_camp_portal.group_camp_sales", raise_if_not_found=False)
         sales_partners = (
             sales_group.users.mapped("partner_id") if sales_group else self.env["res.partner"]
         )

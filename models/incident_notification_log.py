@@ -24,9 +24,7 @@ class CampIncidentNotificationLog(models.Model):
     """
 
     _name = "camp.incident.notification.log"
-    _description = (
-        "Incident notification trail (immutable, Kuratorium audit)"
-    )
+    _description = "Incident notification trail (immutable, Kuratorium audit)"
     _order = "notified_at desc"
 
     incident_id = fields.Many2one(

@@ -103,6 +103,4 @@ class CampAdminAccessLog(models.Model):
         raise UserError(_("Admin access logs are immutable (RODO art.30)."))
 
     def unlink(self):
-        raise UserError(
-            _("Admin access logs cannot be deleted (PL law: 7 years retention).")
-        )
+        raise UserError(_("Admin access logs cannot be deleted (PL law: 7 years retention)."))

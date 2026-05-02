@@ -156,9 +156,7 @@ class CampStory(models.Model):
                     )
                     % record.state
                 )
-            record.write(
-                {"state": "published", "publish_date": fields.Datetime.now()}
-            )
+            record.write({"state": "published", "publish_date": fields.Datetime.now()})
 
     def action_archive(self):
         """Archive story.

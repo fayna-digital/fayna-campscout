@@ -95,9 +95,7 @@ class EventEventChannel(models.Model):
                     "name": event.name,
                     "channel_type": "group",
                     "camp_event_id": event.id,
-                    "description": _(
-                        "Operational chat for camp shift %s. Auto-created."
-                    )
+                    "description": _("Operational chat for camp shift %s. Auto-created.")
                     % event.name,
                 }
             )

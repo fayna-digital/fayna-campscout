@@ -283,12 +283,14 @@ class CampscoutPortal(CustomerPortal):
         if story_sudo.state != "published" or not story_sudo.public:
             return http.request.redirect("/my/stories")
         values = self._prepare_portal_layout_values()
-        values.update({
-            "story": story_sudo,
-            "page_name": "story",
-            "user_id": http.request.env.user,
-            "token": access_token,
-        })
+        values.update(
+            {
+                "story": story_sudo,
+                "page_name": "story",
+                "user_id": http.request.env.user,
+                "token": access_token,
+            }
+        )
         return http.request.render("fayna_camp_portal.portal_stories_detail", values)
 
     @http.route("/my/transport", type="http", auth="user", website=True)

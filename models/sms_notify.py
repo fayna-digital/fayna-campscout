@@ -39,9 +39,7 @@ PRIORITY_CRITICAL = "CRITICAL"
 PRIORITY_CRITICAL_OVERRIDE = "CRITICAL_OVERRIDE"
 
 #: Priorities that trigger SMS dispatch (in addition to bell/email/push).
-SMS_DISPATCH_PRIORITIES = frozenset(
-    {PRIORITY_CRITICAL, PRIORITY_CRITICAL_OVERRIDE}
-)
+SMS_DISPATCH_PRIORITIES = frozenset({PRIORITY_CRITICAL, PRIORITY_CRITICAL_OVERRIDE})
 
 #: Priorities that bypass per-partner ``sms_opt_in`` (legal-basis overrides).
 SMS_BYPASS_OPT_IN_PRIORITIES = frozenset({PRIORITY_CRITICAL_OVERRIDE})
@@ -141,9 +139,7 @@ class MailThreadSmsNotify(models.AbstractModel):
         if priority not in SMS_BYPASS_OPT_IN_PRIORITIES and recipients_data:
             partner_ids = [r["id"] for r in recipients_data if r.get("id")]
             partners = self.env["res.partner"].browse(partner_ids)
-            allowed = set(
-                self._campscout_filter_sms_recipients(partners, priority).ids
-            )
+            allowed = set(self._campscout_filter_sms_recipients(partners, priority).ids)
             dropped = len(recipients_data) - len(allowed)
             recipients_data = [r for r in recipients_data if r.get("id") in allowed]
             if dropped:

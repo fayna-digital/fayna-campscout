@@ -49,9 +49,7 @@ class CampscoutAPI(http.Controller):
 
         days_remaining = None
         if registration.event_id.date_end:
-            days_remaining = (
-                registration.event_id.date_end.date() - fields.Date.today()
-            ).days
+            days_remaining = (registration.event_id.date_end.date() - fields.Date.today()).days
 
         return {
             "camp": {
