@@ -129,11 +129,11 @@ class CampStaffSmsComposer(models.TransientModel):
         - sms_consent = True;
         - has reachable mobile (child_mobile OR parent_partner_id.mobile).
         """
-        Dziennik = self.env.get("fayna.camp.dziennik")
-        if Dziennik is None:
+        dziennik_model = self.env.get("fayna.camp.dziennik")
+        if dziennik_model is None:
             return self.env["camp.participant"].browse()
 
-        dzienniki = Dziennik.search(
+        dzienniki = dziennik_model.search(
             [
                 ("event_id", "=", staff.event_id.id),
                 "|",
@@ -192,8 +192,8 @@ class CampStaffSmsComposer(models.TransientModel):
 
     def _count_sent_this_month(self, staff):
         start_of_month = datetime.utcnow().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-        Log = self.env["camp.staff.sms.log"].sudo()
-        logs = Log.search([("staff_id", "=", staff.id), ("sent_at", ">=", start_of_month)])
+        log_model = self.env["camp.staff.sms.log"].sudo()
+        logs = log_model.search([("staff_id", "=", staff.id), ("sent_at", ">=", start_of_month)])
         return sum(log.recipient_count for log in logs)
 
     def _check_monthly_limit(self, staff, planned_count):

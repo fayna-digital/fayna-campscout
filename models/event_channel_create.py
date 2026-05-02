@@ -79,18 +79,18 @@ class EventEventChannel(models.Model):
         - Idempotent: if a channel already references this event via
           ``camp_event_id``, do nothing.
         """
-        Channel = self.env["discuss.channel"]
+        channel_model = self.env["discuss.channel"]
         for event in self:
             if not event.user_id:
                 continue
-            existing = Channel.search([("camp_event_id", "=", event.id)], limit=1)
+            existing = channel_model.search([("camp_event_id", "=", event.id)], limit=1)
             if existing:
                 continue
             partner_ids = event._camp_channel_partner_ids()
             if not partner_ids:
                 # No real recipients yet — nothing to subscribe.
                 continue
-            channel = Channel.with_context(mail_create_nosubscribe=True).create(
+            channel = channel_model.with_context(mail_create_nosubscribe=True).create(
                 {
                     "name": event.name,
                     "channel_type": "group",
@@ -109,9 +109,9 @@ class EventEventChannel(models.Model):
         trail of past conversations (departed staff lose access via groups,
         not via channel pruning).
         """
-        Channel = self.env["discuss.channel"]
+        channel_model = self.env["discuss.channel"]
         for event in self:
-            channel = Channel.search([("camp_event_id", "=", event.id)], limit=1)
+            channel = channel_model.search([("camp_event_id", "=", event.id)], limit=1)
             if not channel:
                 # Channel may not exist yet (kierownik just being assigned).
                 # Create on the fly.
