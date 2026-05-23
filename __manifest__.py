@@ -92,6 +92,9 @@ License: LGPL-3
             "fayna_camp_portal/static/src/scss/portal_hero.scss",
             "fayna_camp_portal/static/src/css/portal.css",
         ],
+        "web.assets_backend": [
+            "fayna_camp_portal/static/src/js/chat_window_close_fix.js",
+        ],
     },
     "post_init_hook": "post_init_hook",
     "installable": True,
