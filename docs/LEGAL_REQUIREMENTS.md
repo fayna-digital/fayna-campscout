@@ -160,5 +160,94 @@ Organizator musi zapewnić dostęp do opieki medycznej poprzez:
 
 ---
 
+## 9. Dziennik Zajęć (Załącznik 5 Rozp. MEN 30.03.2016)
+
+**Podstawa:** Rozporządzenie MEN z dnia 30 marca 2016 r. w sprawie wypoczynku dzieci i młodzieży (Dz.U. 2016 poz. 452)  
+**Forma:** Jeden dziennik na grupę + wychowawcę, prowadzony codziennie.
+
+**Struktura dokumentu (4 sekcje):**
+
+| Sekcja | Zawartość | Odpowiedzialny |
+|--------|-----------|----------------|
+| **1. Uczestnicy grupy** | L.p., Nazwisko i imię, Rok urodzenia (max 20 poz.) | Kierownik przy otwarciu |
+| **2. Tygodniowe plany pracy** | Tydzień I/II/…, Zadania, Termin, Odpowiedzialny, Uwagi o wykonaniu | Wychowawca co tydzień |
+| **3. Dziennik Zajęć** | Data, Godzina, Treść zajęcia, Uwagi (osiągnięcia/trudności/wnioski) + podpis | Wychowawca codziennie |
+| **4. Uwagi i zalecenia** | Data, Treść, Podpis (wpisy kierownika/kontroli) | Kierownik / KO |
+
+**Dane nagłówkowe dziennika:**
+- Miejsce wypoczynku (adres)
+- Organizator wypoczynku
+- Oznaczenie grupy
+- Imię i nazwisko kierownika
+- Imię i nazwisko wychowawcy/ów
+- Zajęcia rozpoczęto / zakończono (dd-mm-rrrr)
+
+**Moduł:** `models/training.py` → model `camp.dziennik.zajec` (do migracji z `fayna_camp_dziennik_zajec`).  
+Pola: `date`, `hour_from`, `hour_to`, `activity_description`, `notes`, `supervisor_signature` (Many2one res.users), `week_plan_ids` (One2many), `participant_ids` (Many2many camp.participant).
+
+---
+
+## 10. Karta Kwalifikacyjna Uczestnika Wypoczynku (Załącznik 6)
+
+> ⚠️ **UWAGA:** Od 01.06.2026 obowiązuje NOWY wzór karty kwalifikacyjnej.  
+> Poniższa struktura = wersja 2021 (Dz.U. 2021/1548). Zaktualizować po otrzymaniu nowego rozporządzenia.
+
+**Podstawa (poprzednia):** Rozporządzenie MEiN z dnia 22 lipca 2021 r. (Dz.U. 2021 poz. 1548) — zmiana Załącznika 6 do Rozp. MEN 30.03.2016
+
+**6 sekcji formularza:**
+
+| Sekcja | Zawartość |
+|--------|-----------|
+| **I. Informacje o wypoczynku** | Forma (kolonia/obóz/zimowisko/biwak/półkolonia), termin, adres, trasa, kraj |
+| **II. Informacje o uczestniku** | Imię/nazwisko, rodzice, rok urodzenia, PESEL, adres, tel. rodziców, specjalne potrzeby, stan zdrowia (alergie, leki, okulary, dieta), szczepienia (tężec, błonica) |
+| **III. Decyzja organizatora** | Zakwalifikować / odmówić (podpis organizatora) |
+| **IV. Potwierdzenie kierownika** | Pobyt od–do (podpis kierownika) |
+| **V. Stan zdrowia w trakcie** | Choroby przebyte podczas wypoczynku (podpis kierownika) |
+| **VI. Spostrzeżenia wychowawcy** | Obserwacje wychowawcy o uczestniku |
+
+**Moduł:** `models/participant.py` → model `camp.participant` + `camp.qualification.card`.  
+Sekcje I–III wypełnia organizator/system, IV–VI wychowawca/kierownik w trakcie turnusu.
+
+---
+
+## 11. Karta Wypadku
+
+**Pola obowiązkowe:**
+
+| # | Pole |
+|---|------|
+| 1 | Nazwa placówki (pieczęć) |
+| 2 | Imię/nazwisko poszkodowanego, data urodzenia, adres, klasa |
+| 3 | Czynność wykonywana podczas wypadku |
+| 4 | Rodzaj przeszkolenia BHP (kiedy, przez kogo, czas trwania) |
+| 5 | Badanie lekarskie — data, przeciwwskazania |
+| 6 | Data i czas wypadku, miejsce |
+| 7 | Rodzaj i umiejscowienie uszkodzenia ciała |
+
+**Moduł:** `models/incident_kamilka.py` → rozszerzyć o model `camp.incident.card` jako oddzielny rekord od `camp.incident.kamilka` (wypadek ≠ Kamilka, ale powiązane).
+
+---
+
+## Powiązane modele (fayna_camp_portal) — aktualizacja
+
+| Model | Przepis |
+|-------|---------|
+| `camp.camp` | medical_contact (§4), water_supervisor (§7) |
+| `camp.participant` | karta kwalifikacyjna §10 (sekcje I–VI), disability (§2) |
+| `camp.qualification.card` | §10 — sekcje I–VI jako osobny rekord |
+| `camp.dziennik.zajec` | §9 — dzienny zapis zajęć (migracja z fayna_camp_dziennik_zajec) |
+| `camp.week.plan` | §9 sekcja 2 — tygodniowy plan pracy |
+| `camp.incident.card` | §11 karta wypadku |
+| `models/nutrition.py` | §1 podział posiłków |
+| `models/operations.py` | §2 liczebność, §7 woda |
+| `models/transport.py` | §5 transport |
+| `models/emergency.py` | izolatka §3 |
+| `models/incident_kamilka.py` | §6 wypadek (procedura), §8 nieletni |
+| `models/incident_notification_log.py` | §6 immutable log kuratora |
+
+---
+
 *Źródło pierwotne: ITW Polska — Niezbędnik Kierownika Wypoczynku 2024 (prawa zastrzeżone ITW)*  
+*Karta Kwalifikacyjna: Rozp. MEiN 22.07.2021 (Dz.U. 2021/1548) — oficjalny wzór MEN*  
+*Dziennik Zajęć: Rozp. MEN 30.03.2016 (Dz.U. 2016/452) — Załącznik 5*  
 *Opracowanie dla modułu: Fayna Digital 2026-06-07*
