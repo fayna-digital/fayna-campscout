@@ -39,3 +39,4 @@ First concrete behaviour. Details land when Phase 7 starts active development.
 
 - Master TZ `CAMPSCOUT_MASTER_TZ.md` §16 Phase 7
 - Sister modules per deps
+- **[LEGAL_REQUIREMENTS.md](LEGAL_REQUIREMENTS.md)** — PL legal norms extracted from ITW Niezbędnik Kierownika Wypoczynku 2024 (nutrition %, group sizes, transport, accident procedure, water safety)
