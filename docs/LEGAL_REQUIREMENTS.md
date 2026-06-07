@@ -189,23 +189,29 @@ Pola: `date`, `hour_from`, `hour_to`, `activity_description`, `notes`, `supervis
 
 ## 10. Karta Kwalifikacyjna Uczestnika Wypoczynku (Załącznik 6)
 
-> ⚠️ **UWAGA:** Od 01.06.2026 obowiązuje NOWY wzór karty kwalifikacyjnej.  
-> Poniższa struktura = wersja 2021 (Dz.U. 2021/1548). Zaktualizować po otrzymaniu nowego rozporządzenia.
+> ✅ **AKTUALNY WZÓR:** Rozporządzenie MEN z dnia **27 maja 2026 r.** (**Dz.U. 2026 poz. 704**) — nowe brzmienie Załącznika 6.  
+> Wchodzi w życie **06.06.2026** (7 dni od ogłoszenia 29.05.2026).  
+> **Przepis przejściowy (§2):** karty na ferie letnie 2026 przekazane rodzicom PRZED 06.06.2026 zachowują ważność (stary wzór 2021 dopuszczalny tylko dla nich).
 
-**Podstawa (poprzednia):** Rozporządzenie MEiN z dnia 22 lipca 2021 r. (Dz.U. 2021 poz. 1548) — zmiana Załącznika 6 do Rozp. MEN 30.03.2016
+**Podstawa:** Rozp. MEN 27.05.2026 (Dz.U. 2026/704), zmieniające Rozp. MEN 30.03.2016 (Dz.U. 2016/452, zm. 2021/1548).
 
-**6 sekcji formularza:**
+**6 sekcji formularza (struktura I–VI bez zmian względem 2021):**
 
 | Sekcja | Zawartość |
 |--------|-----------|
-| **I. Informacje o wypoczynku** | Forma (kolonia/obóz/zimowisko/biwak/półkolonia), termin, adres, trasa, kraj |
-| **II. Informacje o uczestniku** | Imię/nazwisko, rodzice, rok urodzenia, PESEL, adres, tel. rodziców, specjalne potrzeby, stan zdrowia (alergie, leki, okulary, dieta), szczepienia (tężec, błonica) |
-| **III. Decyzja organizatora** | Zakwalifikować / odmówić (podpis organizatora) |
-| **IV. Potwierdzenie kierownika** | Pobyt od–do (podpis kierownika) |
+| **I. Informacje o wypoczynku** | Forma (kolonia/zimowisko/obóz/biwak/półkolonia/inna), termin, adres+lokalizacja, trasa wędrowna, kraj (zagranica) — podpis organizatora |
+| **II. Informacje o uczestniku** | Imię/nazwisko, rodzice, rok urodzenia, PESEL, adres, adres rodziców, tel. (pkt 7), specjalne potrzeby edukacyjne (pkt 8), **stan zdrowia — pkt 9 ROZSZERZONY**, szczepienia (tężec, błonica, inne) — podpis rodziców |
+| **III. Decyzja organizatora** | Zakwalifikować / odmówić + uzasadnienie (podpis organizatora) |
+| **IV. Potwierdzenie kierownika** | Adres + pobyt od–do (podpis kierownika) |
 | **V. Stan zdrowia w trakcie** | Choroby przebyte podczas wypoczynku (podpis kierownika) |
-| **VI. Spostrzeżenia wychowawcy** | Obserwacje wychowawcy o uczestniku |
+| **VI. Spostrzeżenia wychowawcy** | Obserwacje wychowawcy o pobycie uczestnika |
 
-**Moduł:** `models/participant.py` → model `camp.participant` + `camp.qualification.card`.  
+**⚠️ NOWE w pkt 9 (stan zdrowia) — wzór 2026 vs 2021:**
+Stary 2021: uczulenie, choroba lokomocyjna, stałe leki+dawki, aparat ortodontyczny/okulary.
+Nowy 2026 dodaje: **uczulenie na jad owadów, pyłki, pokarmy**; **choroby przewlekłe** (wprost); **soczewki kontaktowe**; **dieta niskokaloryczna, wegetarianizm**; oraz pola psycho-behawioralne dla bezpieczeństwa: **problemy z wyrażaniem emocji, problemy z funkcjonowaniem w grupie, lęk wysokości, hydrofobia**.
+
+**Moduł:** `models/participant.py` → `camp.participant` + `camp.qualification.card`.  
+Pole `health_notes` rozbić na strukturę pkt 9: `allergy_meds/pollen/food/insect`, `chronic_diseases`, `permanent_meds` (lista+dawki), `vision_aid` (okulary/soczewki/aparat), `diet` (selection), `emotional_notes`, `group_func_notes`, `fear_heights` (bool), `hydrophobia` (bool) — ostatnie dwa KRYTYCZNE: blokada/ostrzeżenie przy zapisie na zajęcia wodne (§7) i wysokościowe.  
 Sekcje I–III wypełnia organizator/system, IV–VI wychowawca/kierownik w trakcie turnusu.
 
 ---
@@ -228,6 +234,45 @@ Sekcje I–III wypełnia organizator/system, IV–VI wychowawca/kierownik w trak
 
 ---
 
+## 12. Rejestr Wypadków
+
+> Dokument odrębny od Karty Wypadku (§11). Karta = pojedynczy wypadek; Rejestr = chronologiczny wykaz wszystkich wypadków na wypoczynku. Wymagany podczas kontroli KO (punkt listy kontrolnej: „zeszyt/rejestr wypadku, w którym odnotowuje się każdą udzieloną pomoc medyczną").
+
+**Struktura (10 kolumn):**
+
+| # | Kolumna |
+|---|---------|
+| 1 | Lp. |
+| 2 | Imię i nazwisko (+ wskazanie grupy lub jednostki podziału organizacyjnego) |
+| 3 | Data i rodzaj wypadku |
+| 4 | Miejsce wypadku i rodzaj zajęć |
+| 5 | Rodzaj urazu i jego opis |
+| 6 | Okoliczności wypadku |
+| 7 | Udzielona pomoc |
+| 8 | Środki zapobiegawcze, wydane zarządzenia |
+| 9 | Uwagi — wskazanie osoby (Wychowawcy mającego pod opieką dziecko) |
+| 10 | Podpis Kierownika Wypoczynku lub placówki |
+
+**Moduł:** `models/incident_kamilka.py` → model `camp.incident.register` — One2many wszystkich `camp.incident.card` w ramach turnusu (`camp.camp`), widok listowy chronologiczny + eksport PDF dla kontroli KO.
+
+---
+
+## 13. Standardy Ochrony Małoletnich (Ustawa Kamilka)
+
+**Podstawa:** Ustawa z 28.07.2023 r. o zmianie ustawy — Kodeks rodzinny i opiekuńczy (tzw. Ustawa Kamilka); obowiązek wdrożenia od **15.02.2024 r.** Każdy organizator działalności z małoletnimi musi posiadać pisemne Standardy Ochrony Małoletnich.
+
+**Wymagane elementy:**
+- Zasady bezpiecznych relacji kadra–uczestnik
+- Procedura zgłaszania i reagowania na podejrzenie krzywdzenia
+- Procedura interwencji (kto, kiedy, do kogo: rodzice, organizator, sąd rodzinny, policja)
+- Weryfikacja kadry w Rejestrze Sprawców Przestępstw na Tle Seksualnym (RSPTS, rps.ms.gov.pl) — **PRZED dopuszczeniem do pracy** (art. 21 ustawy z 16.05.2016 r.; brak weryfikacji = kara aresztu / grzywny min. 1000 zł)
+- Zasady dostępu małoletnich do internetu i ochrony przed treściami szkodliwymi
+- Wersja skrócona, zrozumiała dla małoletnich
+
+**Moduł:** powiązanie z `models/incident_kamilka.py` (procedura interwencji) + `models/staff.py` — pole `rspts_verified` (bool + data weryfikacji) na kadrze; blokada przypisania do turnusu bez weryfikacji RSPTS.
+
+---
+
 ## Powiązane modele (fayna_camp_portal) — aktualizacja
 
 | Model | Przepis |
@@ -238,16 +283,20 @@ Sekcje I–III wypełnia organizator/system, IV–VI wychowawca/kierownik w trak
 | `camp.dziennik.zajec` | §9 — dzienny zapis zajęć (migracja z fayna_camp_dziennik_zajec) |
 | `camp.week.plan` | §9 sekcja 2 — tygodniowy plan pracy |
 | `camp.incident.card` | §11 karta wypadku |
+| `camp.incident.register` | §12 rejestr wypadków (chronologiczny) |
+| `models/staff.py` | §13 rspts_verified (weryfikacja RSPTS) |
 | `models/nutrition.py` | §1 podział posiłków |
 | `models/operations.py` | §2 liczebność, §7 woda |
 | `models/transport.py` | §5 transport |
 | `models/emergency.py` | izolatka §3 |
-| `models/incident_kamilka.py` | §6 wypadek (procedura), §8 nieletni |
+| `models/incident_kamilka.py` | §6 wypadek (procedura), §8 nieletni, §13 interwencja |
 | `models/incident_notification_log.py` | §6 immutable log kuratora |
 
 ---
 
 *Źródło pierwotne: ITW Polska — Niezbędnik Kierownika Wypoczynku 2024 (prawa zastrzeżone ITW)*  
-*Karta Kwalifikacyjna: Rozp. MEiN 22.07.2021 (Dz.U. 2021/1548) — oficjalny wzór MEN*  
+*Karta Kwalifikacyjna: Rozp. MEiN 22.07.2021 (Dz.U. 2021/1548) — oficjalny wzór MEN (wersja w materiałach; nowszy wzór 2026 NIE został dostarczony)*  
 *Dziennik Zajęć: Rozp. MEN 30.03.2016 (Dz.U. 2016/452) — Załącznik 5*  
+*Rejestr Wypadków: wzór z materiałów ITW 2024*  
+*Standardy Ochrony Małoletnich: Ustawa Kamilka (zmiana KRO z 28.07.2023, obowiązek od 15.02.2024)*  
 *Opracowanie dla modułu: Fayna Digital 2026-06-07*
