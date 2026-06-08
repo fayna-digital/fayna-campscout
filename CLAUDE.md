@@ -1,5 +1,12 @@
 # fayna_camp_portal — CLAUDE.md
 
+> ## ⚠️ #4ZONES — НІКОЛИ напряму на сервері
+> Шлях зміни **завжди**: `Mac → GitHub → staging → prod`. Жодних прямих правок коду/конфігів на проді.
+> - Без питання можна: read-only діагностика (`docker logs`, `psql SELECT`, `git log`).
+> - Потребує «ок»: `git pull` на проді, `docker restart`, deploy, `-u` оновлення модуля, `UPDATE/DELETE` SQL, розсилка.
+> - CSS/SCSS/QWeb/JS/asset-bundle — лише через staging.
+> - Секрети (#SECRETS): ніколи не виводити токени/ключі в чат; операції з секретами — heredoc на сервері.
+
 ## Що це
 **Єдиний** модуль управління таборами CampScout (архітектурний pivot 2026-06-07).
 Hotel-pattern: весь camp-specific код в одному модулі замість 21 окремих `fayna_camp_*`.

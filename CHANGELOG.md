@@ -5,6 +5,18 @@ All notable changes to `fayna_camp_portal` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html) — Odoo `17.0.MAJOR.MINOR.PATCH`.
 
+> **Нотатка (2026-06-08):** частина файлових посилань у записах нижче вказує на дорефакторні імена
+> (`camp_participant.py`, `sms_dispatcher.py`, `camp_incident.py`, `admin_dashboard.py`, `sms_broadcast_wizard.py`).
+> Файли відтоді перейменовано — актуальні: `participant.py`, `sms.py`, `incident_kamilka.py`, `admin.py`,
+> `wizards/staff_sms_composer.py`. Історичні записи лишено як знімок; виправлення посилань — у [PLAN.md](docs/PLAN.md) P5.3.
+
+---
+
+## [Unreleased]
+
+### Changed
+- Приведення до REPO_STANDARD: `docs/TZ.md` переписано зі scaffold-шаблону на spec-driven (6 областей) з реальним змістом 27 моделей; додано `docs/PLAN.md` (dependency graph + фази P1–P5 + checkpoints); CLAUDE.md — банер #4ZONES; `.gitignore` — ігнор секретів. Doc-only, код не змінювався.
+
 ---
 
 ## [17.0.2.0.0] - 2026-04-30
