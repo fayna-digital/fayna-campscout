@@ -106,11 +106,10 @@
             </field>
         </record>
 
-        <menuitem id="menu_admin_access_log"
-                  name="Admin Access Log (RODO)"
-                  parent="menu_config"
-                  action="action_camp_admin_access_log"
-                  sequence="40"/>
+        <!-- menu_admin_access_log перенесено у views/menus.xml: parent
+             menu_config визначається там, а menus.xml вантажиться ПІСЛЯ
+             admin_views.xml → на чистій -i інсталяції ParseError
+             (знайдено репетицією міграції 2026-06-10). -->
 
         <!-- ============================================================== -->
         <!-- ir.actions.act_url that lands Organizators on /admin/dashboard -->

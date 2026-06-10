@@ -229,5 +229,13 @@
             action="action_camp_faq"
             sequence="30"/>
 
+        <!-- з admin_views.xml: parent menu_config живе тут (фікс чистої -i,
+             репетиція міграції 2026-06-10) -->
+        <menuitem id="menu_admin_access_log"
+            name="Admin Access Log (RODO)"
+            parent="menu_config"
+            action="action_camp_admin_access_log"
+            sequence="40"/>
+
     </data>
 </odoo>
