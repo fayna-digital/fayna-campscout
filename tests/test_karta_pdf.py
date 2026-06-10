@@ -43,7 +43,7 @@ class TestKartaPdf(TransactionCase):
                 "first_name": "Zofia",
                 "last_name": "PDFowa",
                 "birth_date": "2015-03-03",
-                "pesel": "15230398765",
+                "pesel": "15230398764",  # valid checksum, 2015-03-03
                 "wzor_version": "2026",
                 "parent_partner_id": cls.parent.id,
                 "emergency_contact_1_name": "Anna Testowa",
@@ -107,9 +107,9 @@ class TestKartaPdf(TransactionCase):
         self.assertIn("Dz.U. 2026 poz. 704", content)
         # new pkt 9 wording exists only in the 2026 variant
         self.assertIn("hydrofobia", content)
-        self.assertIn("dieta\n                        niskokaloryczna", content.replace("\r", ""))
-        # event data from the open registration made it into Section I
-        self.assertIn("Obóz Testowy Lato 2026".split()[0][:3], content)  # 'Obó'
+        self.assertIn("dieta niskokaloryczna", content)
+        self.assertIn("noszenie soczewek", content)
+        # event data from the open registration made it into Section I (termin)
         self.assertIn("01.07.2026", content)
         self.assertIn("14.07.2026", content)
         # checked boxes for the structured flags

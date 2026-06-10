@@ -95,6 +95,8 @@ License: LGPL-3
         "reports/budget_reports.xml",
         "reports/incident_report_templates.xml",
         "reports/incident_reports.xml",
+        "reports/karta_report_templates.xml",
+        "reports/karta_reports.xml",
         "reports/dziennik_report_templates.xml",
         "reports/dziennik_reports.xml",
         "templates/portal_templates.xml",

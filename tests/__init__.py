@@ -6,6 +6,7 @@ from . import (
     test_dziennik_pdf,  # noqa: E402,F401
     test_incident_card,  # noqa: E402,F401
     test_karta_2026,
+    test_karta_pdf,  # noqa: E402,F401
     test_portal_camp_day,  # noqa: E402,F401
     test_regulamin_teczka,  # noqa: E402,F401
     test_scaffold,
