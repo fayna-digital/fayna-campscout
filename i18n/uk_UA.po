@@ -968,12 +968,12 @@ msgstr "Дитина не може бути власним батьком/опі
 #. module: fayna_camp_portal
 #: model:ir.model.constraint,message:fayna_camp_portal.constraint_camp_nutrition_event_date_uniq
 msgid "A daily menu already exists for this shift and date."
-msgstr "daily menu already exists для this shift and date."
+msgstr "Денне меню для цього заїзду й дати вже існує."
 
 #. module: fayna_camp_portal
 #: model:ir.model.constraint,message:fayna_camp_portal.constraint_camp_menu_day_menu_day_event_date_unique
 msgid "A daily menu for this event and date already exists."
-msgstr "daily menu для this event and date already exists."
+msgstr "Денне меню для цієї події й дати вже існує."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -985,18 +985,18 @@ msgstr "Денний звіт для заїзду '%(event)s' за %(date)s вж
 #. module: fayna_camp_portal
 #: model:ir.model.constraint,message:fayna_camp_portal.constraint_camp_daily_report_unique_event_date
 msgid "A daily report already exists for this event on this date."
-msgstr "daily report already exists для this event on this date."
+msgstr "Денний звіт для цієї події на цю дату вже існує."
 
 #. module: fayna_camp_portal
 #: model:ir.model.constraint,message:fayna_camp_portal.constraint_camp_diet_profile_diet_profile_partner_unique
 msgid "A diet profile for this contact already exists."
-msgstr "diet profile для this contact already exists."
+msgstr "Дієтичний профіль для цього контакту вже існує."
 
 #. module: fayna_camp_portal
 #: model:ir.model.constraint,message:fayna_camp_portal.constraint_camp_diet_profile_diet_profile_participant_unique
 #: model:ir.model.constraint,message:fayna_camp_portal.constraint_camp_participant_diet_participant_diet_unique
 msgid "A diet profile for this participant already exists."
-msgstr "diet profile для this participant already exists."
+msgstr "Дієтичний профіль для цього учасника вже існує."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -1029,12 +1029,12 @@ msgstr "Сезон унікально визначається парою (рі�
 #. module: fayna_camp_portal
 #: model:ir.model.constraint,message:fayna_camp_portal.constraint_camp_stats_snapshot_stats_event_date_unique
 msgid "A snapshot for this event and date already exists."
-msgstr "snapshot для this event and date already exists."
+msgstr "Знімок для цієї події й дати вже існує."
 
 #. module: fayna_camp_portal
 #: model:ir.model.constraint,message:fayna_camp_portal.constraint_camp_staff_training_record_unique_partner_channel
 msgid "A staff member can have only one training record per course."
-msgstr "staff member може have тільки one training record per course."
+msgstr "Член кадри може мати лише один запис навчання на курс."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -1092,7 +1092,7 @@ msgstr "Розміщення"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_room_type__name
 #, python-format
 msgid "Accommodation type name (e.g. 'Dormitory', 'Tent', 'Cabin')."
-msgstr "Accommodation type name (e.g. 'Dormiдоry', 'Tent', 'Cabin')."
+msgstr "Назва типу розміщення (напр. «Спальний корпус», «Намет», «Будиночок»)."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__property_account_payable_id
@@ -1248,7 +1248,7 @@ msgstr "Активні картки лояльності"
 #: code:addons/fayna_camp_portal/models/emergency.py:0
 #, python-format
 msgid "Active response must complete before investigation begins."
-msgstr "Active response має complete beдляe investigation begins."
+msgstr "Активне реагування має завершитися до початку розслідування."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -1285,7 +1285,7 @@ msgstr "Активності та програми"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_daily_report__afternoon_activities
 #, python-format
 msgid "Activities and schedule for the afternoon period."
-msgstr "Activities and schedule для afternoon period."
+msgstr "Заняття та розклад на післяобідній час."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -1293,7 +1293,7 @@ msgstr "Activities and schedule для afternoon period."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_daily_report__evening_activities
 #, python-format
 msgid "Activities and schedule for the evening period."
-msgstr "Activities and schedule для evening period."
+msgstr "Заняття та розклад на вечірній час."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -1301,7 +1301,7 @@ msgstr "Activities and schedule для evening period."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_daily_report__morning_activities
 #, python-format
 msgid "Activities and schedule for the morning period."
-msgstr "Activities and schedule для morning period."
+msgstr "Заняття та розклад на ранковий час."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -1534,7 +1534,7 @@ msgstr "Додаткові нотатки щодо цього сертифіка
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_kuratorium_checklist__notes
 #, python-format
 msgid "Additional notes or evidence for this checklist item."
-msgstr "Additional notes or evidence для this checklist item."
+msgstr "Додаткові нотатки або докази до цього пункту контрольного списку."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__type
@@ -2469,7 +2469,7 @@ msgstr "Дата народження у форматі рядка — вико�
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__fn_birth_date
 #, python-format
 msgid "Birth date string (fn compat)"
-msgstr "Дата народження (fn compat)"
+msgstr "Дата народження рядком (сумісність зі старою формою)"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_kuratorium_notification__vacation_form__biwak
@@ -2832,7 +2832,7 @@ msgstr "Сезон табору"
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_fayna_camp_season
 msgid "Camp Season (Літо 2026, Зима 2026, …)"
-msgstr "Camp Season (Літо 2026, Зима 2026, …)"
+msgstr "Сезон таборів (Літо 2026, Зима 2026, …)"
 
 #. module: fayna_camp_portal
 #: model:ir.actions.act_window,name:fayna_camp_portal.action_fayna_camp_season
@@ -3628,7 +3628,7 @@ msgstr "Мета відпочинку"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_program_wypoczynku__section_cel
 #, python-format
 msgid "Cel wypoczynku — aims and objectives of the camp (Załącznik 9 §1)."
-msgstr "Cel wypoczynku — мета і завдання табору (Załącznik 9 §1)."
+msgstr "Мета відпочинку — цілі та завдання табору (Załącznik 9 §1)."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_vozhatyi_training__certificate_id
@@ -3807,7 +3807,7 @@ msgstr "Захист дитини (Art. 160 KK / Ustawa Kamilka)"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__fn_child_address
 #, python-format
 msgid "Child address (fn compat)"
-msgstr "Адреса дитини (fn compat)"
+msgstr "Адреса дитини (сумісність зі старою формою)"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -3841,7 +3841,7 @@ msgstr "Кількість дітей"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__fn_child_health_info
 #, python-format
 msgid "Child health info (fn compat)"
-msgstr "Інформація про здоров'я дитини (fn compat)"
+msgstr "Інформація про здоров'я дитини (сумісність зі старою формою)"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -3857,7 +3857,7 @@ msgstr "Ім'я дитини"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__fn_child_name
 #, python-format
 msgid "Child name (fn compat)"
-msgstr "Ім'я дитини (fn compat)"
+msgstr "Ім'я дитини (сумісність зі старою формою)"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -3873,7 +3873,7 @@ msgstr "Текст згоди на реєстрацію дитини (перед
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__fn_child_needs
 #, python-format
 msgid "Child special needs (fn compat)"
-msgstr "Особливі потреби дитини (fn compat)"
+msgstr "Особливі потреби дитини (сумісність зі старою формою)"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -3881,7 +3881,7 @@ msgstr "Особливі потреби дитини (fn compat)"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__fn_child_vaccination_info
 #, python-format
 msgid "Child vaccination (fn compat)"
-msgstr "Вакцинація дитини (fn compat)"
+msgstr "Щеплення дитини (сумісність зі старою формою)"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -4094,7 +4094,7 @@ msgstr "Скасовано — підписано або скасовано ко
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__fn_client_consent
 #, python-format
 msgid "Client consent (fn compat)"
-msgstr "Згода клієнта (fn compat)"
+msgstr "Згода клієнта (сумісність зі старою формою)"
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_report_form
@@ -4540,7 +4540,7 @@ msgstr "Країна"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__fn_country_name
 #, python-format
 msgid "Country (fn compat)"
-msgstr "Країна (fn compat)"
+msgstr "Країна (сумісність зі старою формою)"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__country_code
@@ -4750,7 +4750,7 @@ msgstr "Кредитний ліміт для цього партнера."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_staff__krk_attachment
 #, python-format
 msgid "Criminal record extract (Krajowy Rejestr Karny) — required by PL law."
-msgstr "Витяг з Krajowy Rejestr Karny (KRK) — обов'язково за PL-законом."
+msgstr "Витяг про несудимість (KRK) — вимога польського законодавства."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -5866,7 +5866,7 @@ msgstr "Назва категорії табору (спорт, мова, при
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_program_wypoczynku__name
 #, python-format
 msgid "Display name of this Program Wypoczynku document."
-msgstr "Назва цього документа Program Wypoczynku."
+msgstr "Відображувана назва цього документа програми відпочинку."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -6588,7 +6588,7 @@ msgstr "Заїзд"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__fn_event_product_id
 #, python-format
 msgid "Event (fn compat)"
-msgstr "Заїзд (fn compat)"
+msgstr "Подія (сумісність зі старою формою)"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_review__event_id
@@ -6624,7 +6624,7 @@ msgstr "Тип заїзду"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__fn_event_address
 #, python-format
 msgid "Event address (fn compat)"
-msgstr "Адреса заїзду (fn compat)"
+msgstr "Адреса події (сумісність зі старою формою)"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -6632,7 +6632,7 @@ msgstr "Адреса заїзду (fn compat)"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__fn_event_date_to
 #, python-format
 msgid "Event end (fn compat)"
-msgstr "Завершення заїзду (fn compat)"
+msgstr "Завершення події (сумісність зі старою формою)"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -6647,7 +6647,7 @@ msgstr "Заїзд не знайдено."
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__fn_event_date_from
 #, python-format
 msgid "Event start (fn compat)"
-msgstr "Початок заїзду (fn compat)"
+msgstr "Початок події (сумісність зі старою формою)"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_loyalty_participant__history_count
@@ -6799,12 +6799,12 @@ msgstr ""
 #. module: fayna_camp_portal
 #: model:ir.actions.server,name:fayna_camp_portal.ir_cron_auto_refusal_reminders_ir_actions_server
 msgid "Fayna Camp Qualification: auto-refusal reminders"
-msgstr "FaynCamp Qualification: auдо-refusal reminders"
+msgstr "Кваліфікація табору Fayna: нагадування про авто-відмову"
 
 #. module: fayna_camp_portal
 #: model:ir.actions.server,name:fayna_camp_portal.ir_cron_auto_refusal_scan_ir_actions_server
 msgid "Fayna Camp Qualification: auto-refusal scanner"
-msgstr "FaynCamp Qualification: auдо-refusal sможеner"
+msgstr "Кваліфікація табору Fayna: сканер авто-відмов"
 
 #. module: fayna_camp_portal
 #: model:ir.module.category,name:fayna_camp_portal.module_category_fayna_camp_portal
@@ -6889,7 +6889,7 @@ msgstr "Завершено"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_kuratorium_notification__attach_fire_opinion_ids
 #, python-format
 msgid "Fire brigade opinion (required for permanent facilities)."
-msgstr "Fire brigade opinion (required для permanent facilities)."
+msgstr "Висновок пожежної охорони (обов'язковий для стаціонарних об'єктів)."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__fayna_vozhatyi_training_module__module_type__first_aid
@@ -7014,7 +7014,7 @@ msgstr "Підписники (партнери)"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_transport__activity_type_icon
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_vozhatyi_training__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
-msgstr "Іконка Font Awesome, напр. fa-tasks"
+msgstr "Іконка Font-Awesome, напр. fa-tasks"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -7046,7 +7046,7 @@ msgstr "Заборонено"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_kuratorium_notification__vacation_form
 #, python-format
 msgid "Forma wypoczynku"
-msgstr "Форма відпочинку (forma wypoczynku)"
+msgstr "Форма відпочинку"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -7054,7 +7054,7 @@ msgstr "Форма відпочинку (forma wypoczynku)"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_kuratorium_notification__vacation_form
 #, python-format
 msgid "Formal form of leisure as classified by MEN regulation."
-msgstr "Formal дляm of leisure as classified by MEN regulation."
+msgstr "Офіційна форма відпочинку згідно з класифікацією розпорядження MEN."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__ubl_cii_format
@@ -7085,7 +7085,7 @@ msgstr "Formy i meдоdy realizacji"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_program_wypoczynku__section_formy
 #, python-format
 msgid "Formy i metody realizacji — forms and methods (Załącznik 9 §4)."
-msgstr "Formy i meдоdy realizacji — дляms and methods (Załącznik 9 §4)."
+msgstr "Форми і методи реалізації програми (Załącznik 9 §4)."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__product_template__camp_location_country__fr
@@ -7204,7 +7204,7 @@ msgstr "Повний опис активності: цілі, потрібні �
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_faq__answer
 #, python-format
 msgid "Full answer. HTML formatting is supported."
-msgstr "Full answer. HTML дляmatting is supported."
+msgstr "Повна відповідь. Підтримується HTML-форматування."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -7220,7 +7220,7 @@ msgstr "Повне ім'я дитини — використовується в 
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_staff__name
 #, python-format
 msgid "Full legal name of the staff member."
-msgstr "Full юридична назва of staff member."
+msgstr "Повне офіційне ім'я члена кадри."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -7250,7 +7250,7 @@ msgstr ""
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_incident_report__witness_name
 #, python-format
 msgid "Full name of the primary eyewitness to the incident."
-msgstr "Full name of primary eyewitness до incident."
+msgstr "Повне ім'я основного свідка інциденту."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -7335,7 +7335,7 @@ msgstr "Загальні нотатки"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_program_day__notes
 #, python-format
 msgid "General notes for the day (weather, special circumstances, etc.)."
-msgstr "General notes для day (weather, special circumstances, etc.)."
+msgstr "Загальні нотатки за день (погода, особливі обставини тощо)."
 
 #. module: fayna_camp_portal
 #: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_marketing_report
@@ -7431,7 +7431,7 @@ msgstr "Goдоwe pozycje"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__current_amount_total
 #, python-format
 msgid "Grand total of the current sale order. Computed."
-msgstr "Grand доtal of current sale order. Computed."
+msgstr "Загальна сума поточного замовлення. Обчислюване поле."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__event_event__camp_shift_color__green
@@ -7474,12 +7474,12 @@ msgstr "Групова динаміка (фази Такмена)"
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_camp_dziennik__group_name
 #, python-format
 msgid "Group designation (e.g. 'A', 'Poszumymi-1', 'Old timers')."
-msgstr "Позначення групи (напр. 'A', 'Poszumymi-1', 'Old timers')."
+msgstr "Позначення групи (напр. «A», «Poszumymi-1», «Старожили»)."
 
 #. module: fayna_camp_portal
 #: model:ir.model.constraint,message:fayna_camp_portal.constraint_fayna_camp_dziennik_group_unique_per_event
 msgid "Group name must be unique within the same event."
-msgstr "Group name має be unique зin same event."
+msgstr "Назва групи має бути унікальною в межах однієї події."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -7487,7 +7487,7 @@ msgstr "Group name має be unique зin same event."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_activity__category_id
 #, python-format
 msgid "Group this activity belongs to."
-msgstr "Group this activity belongs до."
+msgstr "Група, до якої належить це заняття."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -7595,7 +7595,7 @@ msgstr "Є чинний сертифікат курсу"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_daily_report__health_incidents
 #, python-format
 msgid "Health incidents today"
-msgstr "Health incidents доday"
+msgstr "Інциденти зі здоров'ям сьогодні"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -7621,7 +7621,7 @@ msgstr "Корисних голосів"
 #: model:ir.model.fields,help:fayna_camp_portal.field_product_template__schedule_primary_color
 #, python-format
 msgid "Hex color for timeline dots and header accents (e.g. #2A8AAA)."
-msgstr "Hex color для timeline dots and header accents (e.g. #2A8AAA)."
+msgstr "Hex-колір для крапок таймлайну та акцентів заголовка (напр. #2A8AAA)."
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_story_search
@@ -7670,7 +7670,7 @@ msgstr "Туристичний маршрут"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__fn_hiking_route
 #, python-format
 msgid "Hiking route (fn compat)"
-msgstr "Маршрут походу (fn compat)"
+msgstr "Туристичний маршрут (сумісність зі старою формою)"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -7678,7 +7678,7 @@ msgstr "Маршрут походу (fn compat)"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__fn_hiking_route
 #, python-format
 msgid "Hiking route from camp program — used by PDF template."
-msgstr "Hiking route з camp program — used by PDF template."
+msgstr "Туристичний маршрут із програми табору — використовується в PDF-шаблоні."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_loyalty_participant__history_ids
@@ -7717,7 +7717,7 @@ msgstr "Годин пройдено"
 #: code:addons/fayna_camp_portal/models/training.py:0
 #, python-format
 msgid "Hours completed cannot be negative."
-msgstr "Hours completed можеnot be negative."
+msgstr "Кількість пройдених годин не може бути від'ємною."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -7725,7 +7725,7 @@ msgstr "Hours completed можеnot be negative."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_journal__participant_count
 #, python-format
 msgid "How many children were involved."
-msgstr "How mбудь-який children were involved."
+msgstr "Скільки дітей було залучено."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -7733,7 +7733,7 @@ msgstr "How mбудь-який children were involved."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_program__participant_count
 #, python-format
 msgid "How many kids participated."
-msgstr "How mбудь-який kids participated."
+msgstr "Скільки дітей взяло участь."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -7788,7 +7788,7 @@ msgstr "Інформація збагачення IAP"
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__iap_enrich_info
 msgid "IAP response stored as a JSON string"
-msgstr "IAP response sдоred as JSON string"
+msgstr "Відповідь IAP, збережена як JSON-рядок"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_activity__id
@@ -7927,7 +7927,7 @@ msgstr "Іконка"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_category__icon
 #, python-format
 msgid "Icon style for this category used in website listing."
-msgstr "Icon style для this category used in website listing."
+msgstr "Стиль іконки цієї категорії у списку на сайті."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_daily_report__activity_exception_icon
@@ -7947,7 +7947,7 @@ msgstr "Icon style для this category used in website listing."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_transport__activity_exception_icon
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_vozhatyi_training__activity_exception_icon
 msgid "Icon to indicate an exception activity."
-msgstr "Icon до indicate exception activity."
+msgstr "Іконка для позначення позапланового заняття."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_daily_report__message_needaction
@@ -8110,7 +8110,7 @@ msgstr "Текст згоди на зображення (Dodatek 4a)"
 #: code:addons/fayna_camp_portal/models/participant.py:0
 #, python-format
 msgid "Image consent decision must be 'yes' or 'no'."
-msgstr "Image consent decision має be 'yes' or 'no'."
+msgstr "Рішення щодо згоди на фото має бути «yes» або «no»."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -8134,7 +8134,7 @@ msgstr "Час підписання згоди на зображення"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__image_consent_signed_ip
 #, python-format
 msgid "Image consent signed from IP"
-msgstr "Image consent signed з IP"
+msgstr "Згоду на фото підписано з IP"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -8180,7 +8180,7 @@ msgstr "В обробці"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_journal__active
 #, python-format
 msgid "Inactive entries are hidden from lists but kept for archival."
-msgstr "Inactive entries are hidden з lists but kept для archival."
+msgstr "Неактивні записи приховано зі списків, але збережено для архіву."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -8189,7 +8189,7 @@ msgstr "Inactive entries are hidden з lists but kept для archival."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_report__active
 #, python-format
 msgid "Inactive reports are hidden from lists but kept for archival."
-msgstr "Inactive reports are hidden з lists but kept для archival."
+msgstr "Неактивні звіти приховано зі списків, але збережено для архіву."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -8197,7 +8197,7 @@ msgstr "Inactive reports are hidden з lists but kept для archival."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_staff__active
 #, python-format
 msgid "Inactive staff are hidden from lists but kept for archival."
-msgstr "Inactive staff are hidden з lists but kept для archival."
+msgstr "Неактивну кадру приховано зі списків, але збережено для архіву."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -8205,7 +8205,7 @@ msgstr "Inactive staff are hidden з lists but kept для archival."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_activity_template__active
 #, python-format
 msgid "Inactive templates are hidden from the planning UI."
-msgstr "Inactive templates are hidden з planning UI."
+msgstr "Неактивні шаблони приховано в інтерфейсі планування."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -8235,7 +8235,7 @@ msgstr "Протоколи інцидентів"
 #: code:addons/fayna_camp_portal/models/emergency.py:0
 #, python-format
 msgid "Incident action is append-only. Cannot modify: %(fields)s"
-msgstr "Incident action is append-тільки. Cannot modify: %(fields)s"
+msgstr "Дії щодо інциденту лише додаються. Не можна змінювати: %(fields)s"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -8259,7 +8259,7 @@ msgstr ""
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_camp_incident_notification_log
 msgid "Incident notification trail (immutable, Kuratorium audit)"
-msgstr "Incident notification trail (незмінний, Kuraдоrium audit)"
+msgstr "Журнал сповіщень про інцидент (незмінний, аудит Kuratorium)"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -8335,7 +8335,7 @@ msgstr "Інциденти або відхилення"
 #: model:ir.model.fields,help:fayna_camp_portal.field_event_event__incident_sla_breach_count
 #, python-format
 msgid "Incidents with at least one SLA breach (non-empty sla_breaches field)."
-msgstr "Incidents з at least one SLbreach (non-empty sla_breaches field)."
+msgstr "Інциденти з принаймні одним порушенням SLA (непорожнє поле sla_breaches)."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__fayna_camp_dziennik_note__note_type__incident
@@ -8400,7 +8400,7 @@ msgstr "Повна адреса одним рядком"
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_kuratorium_notification__organizer_type__other
 msgid "Inna jednostka"
-msgstr "Інша установа (inna jednostka)"
+msgstr "Інший заклад"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_incident_action__action_type__other
@@ -8445,7 +8445,7 @@ msgstr "План платежів"
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_fayna_payment_installment_plan_line
 msgid "Installment Plan Line (for custom plans)"
-msgstr "Installment PlLine (для cusдоm plans)"
+msgstr "Рядок плану розстрочки (для індивідуальних планів)"
 
 #. module: fayna_camp_portal
 #: model:ir.actions.act_window,name:fayna_camp_portal.action_fayna_payment_installment_plan
@@ -8506,7 +8506,7 @@ msgstr "Страхування"
 #: model:ir.model.fields,help:fayna_camp_portal.field_product_template__camp_insurance_description
 #, python-format
 msgid "Insurance coverage details for participants."
-msgstr "Insurance coverage details для participants."
+msgstr "Деталі страхового покриття учасників."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -8514,7 +8514,7 @@ msgstr "Insurance coverage details для participants."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_sms_template__name
 #, python-format
 msgid "Internal name, e.g. 'Auto-refusal (PL)'."
-msgstr "Internal name, e.g. 'Auдо-refusal (PL)'."
+msgstr "Внутрішня назва, напр. «Авто-відмова (PL)»."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -8550,7 +8550,7 @@ msgstr "Інтервал (днів)"
 #. module: fayna_camp_portal
 #: model:ir.model.constraint,message:fayna_camp_portal.constraint_fayna_payment_installment_plan_interval_days_positive
 msgid "Interval days must be positive"
-msgstr "Interval days має be positive"
+msgstr "Інтервал у днях має бути додатним"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -8591,7 +8591,7 @@ msgstr "Недійсний staff_id."
 #: code:addons/fayna_camp_portal/models/emergency.py:0
 #, python-format
 msgid "Investigation must be in progress."
-msgstr "Investigation має be in progress."
+msgstr "Розслідування має бути в процесі."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__invoice_warn
@@ -8763,7 +8763,7 @@ msgstr "Номер KDR"
 #: code:addons/fayna_camp_portal/models/commercial.py:0
 #, python-format
 msgid "KDR number must be 10–25 digits, got: %s"
-msgstr "KDR number має be 10–25 digits, got: %s"
+msgstr "Номер KDR має містити 10–25 цифр, отримано: %s"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -8832,7 +8832,7 @@ msgstr "Персонал (kadra)"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_kuratorium_notification__staff_ids
 #, python-format
 msgid "Kadra wypoczynku"
-msgstr "Персонал табору (kadra wypoczynku)"
+msgstr "Кадра табору"
 
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_camp_kuratorium_staff
@@ -8933,7 +8933,7 @@ msgstr "Власна робота керівника"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_report__section_kierownik_work
 #, python-format
 msgid "Kierownik own work — free-form text."
-msgstr "Kierownik own work — free-дляm text."
+msgstr "Власна робота керівника табору — довільний текст."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -8956,7 +8956,7 @@ msgstr "Підпис керівника"
 #: code:addons/fayna_camp_portal/models/operations.py:0
 #, python-format
 msgid "Kierownik signature required before submit."
-msgstr "Kierownik signature required beдляe submit."
+msgstr "Перед поданням потрібен підпис керівника табору."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -9119,7 +9119,7 @@ msgstr "Kuratorium Oświaty"
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_camp_kuratorium_checklist
 msgid "Kuratorium compliance checklist item"
-msgstr "Kuraдоrium compliance checklist item"
+msgstr "Пункт контрольного списку відповідності для Kuratorium"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -9127,7 +9127,7 @@ msgstr "Kuraдоrium compliance checklist item"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_report__kuratorium_notified_at
 #, python-format
 msgid "Kuratorium notified at"
-msgstr "Kuraдоrium notified at"
+msgstr "Час повідомлення до Kuratorium"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_kuratorium_staff__qualification_basis__course_k
@@ -9139,7 +9139,7 @@ msgstr "Курс керівника (10 год)"
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__slide_channel__camp_course_type__specialty
 msgid "Kurs specjalistyczny"
-msgstr "Спеціалізований курс (kurs specjalistyczny)"
+msgstr "Спеціалізований курс"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_kuratorium_staff__qualification_basis__course_w
@@ -9229,7 +9229,7 @@ msgstr "Багатодітність не підтверджена — потр�
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__loyalty_program__fayna_rule_type__large_family
 msgid "Large family ≥3 children (Велика родина)"
-msgstr "Large family ≥3 children (Велика родина)"
+msgstr "Багатодітна родина ≥3 дітей (Велика родина)"
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_admin_access_log_search
@@ -9407,7 +9407,7 @@ msgstr "Прізвище"
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__calendar_last_notif_ack
 msgid "Last notification marked as read from base Calendar"
-msgstr "Last notification marked as read з base Calendar"
+msgstr "Останнє сповіщення, позначене прочитаним у базовому Календарі"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__omni_last_purchase_notify_amount
@@ -9458,7 +9458,7 @@ msgstr "Рівень останнього нагадування"
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__latest_followup_level_id_without_lit
 msgid "Latest Follow-up Level without litigation"
-msgstr "Latest Follow-up Level без litigation"
+msgstr "Останній рівень нагадування без судового провадження"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__last_time_entries_checked
@@ -9486,7 +9486,7 @@ msgstr "Остання дата зміни рівня нагадування п�
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_staff_cert__expiry_date
 #, python-format
 msgid "Leave blank for certificates that do not expire."
-msgstr "Leave blank для certificates that do not expire."
+msgstr "Залиште порожнім для безстрокових сертифікатів."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -9519,7 +9519,7 @@ msgstr "Правові основи (польське таборове прав�
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_kuratorium_staff__qualification_basis
 #, python-format
 msgid "Legal basis for the person's qualification to act in this role."
-msgstr "Legal basis для person's qualification до act in this role."
+msgstr "Правова підстава кваліфікації особи для виконання цієї ролі."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -9589,7 +9589,7 @@ msgstr "Стан життєвого циклу цього денного зві�
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_program_wypoczynku__state
 #, python-format
 msgid "Lifecycle state — submitted = legally filed with Kuratorium Oświaty."
-msgstr "Lifecycle state — submitted = legally filed з Kuraдоrium Oświaty."
+msgstr "Стан життєвого циклу — «подано» = офіційно зареєстровано в Kuratorium Oświaty."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -9646,7 +9646,7 @@ msgstr "Пов'язаний запис res.partner — надає адресу, 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__l10n_pl_links_with_customer
 msgid "Links With Company"
-msgstr "Links With Compбудь-який"
+msgstr "Зв'язки з компанією"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -9655,7 +9655,7 @@ msgstr "Links With Compбудь-який"
 #: model:ir.model.fields,help:fayna_camp_portal.field_product_template__camp_price_excludes
 #, python-format
 msgid "List of what parents need to pay separately."
-msgstr "List of what parents need до pay separately."
+msgstr "Перелік того, що батьки оплачують окремо."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -9672,7 +9672,7 @@ msgstr "Перелік того, що покриває вартість табо
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_kuratorium_notification__checklist_ids
 #, python-format
 msgid "Lista kontrolna"
-msgstr "Контрольний список (lista kontrolna)"
+msgstr "Контрольний список"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -9829,7 +9829,7 @@ msgstr "Програми MEN (36/10 год)"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_staff_training_record__expiry_date
 #, python-format
 msgid "MEN certificates are valid for 5 years from issue date."
-msgstr "MEN certificates are valid для 5 years з issue date."
+msgstr "Сертифікати MEN дійсні 5 років від дати видачі."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -9963,7 +9963,7 @@ msgstr "Час підписання маркетингової згоди"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__marketing_consent_signed_ip
 #, python-format
 msgid "Marketing consent signed from IP"
-msgstr "Marketing consent signed з IP"
+msgstr "Маркетингову згоду підписано з IP"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -10022,7 +10022,7 @@ msgstr "Максимальний вік учасників (включно)."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_activity_template__max_age
 #, python-format
 msgid "Maximum recommended participant age (leave 0 for no restriction)."
-msgstr "Maximum recommended participant age (leave 0 для no restriction)."
+msgstr "Максимальний рекомендований вік учасника (0 — без обмежень)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -10062,7 +10062,7 @@ msgstr "План харчування підтверджено."
 #: code:addons/fayna_camp_portal/models/nutrition.py:0
 #, python-format
 msgid "Meal plan reset to draft."
-msgstr "Meal plreset до draft."
+msgstr "План харчування повернуто в чернетку."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -10112,7 +10112,7 @@ msgstr "Подані прийоми їжі"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_daily_report__meals_summary
 #, python-format
 msgid "Meals served and any nutrition or catering notes."
-msgstr "Meals served and будь-який nutrition or catering notes."
+msgstr "Подані страви та нотатки щодо харчування чи кейтерингу."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -10255,7 +10255,7 @@ msgstr "Дата меню %(date)s пізніша за кінець заїзду
 #: code:addons/fayna_camp_portal/models/nutrition.py:0
 #, python-format
 msgid "Menu date %(date)s is before the event start %(start)s."
-msgstr "Menu date %(date)s is beдляe event start %(start)s."
+msgstr "Дата меню %(date)s раніша за початок події %(start)s."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -10271,7 +10271,7 @@ msgstr "Позиції меню"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_nutrition__breakfast
 #, python-format
 msgid "Menu items for breakfast"
-msgstr "Menu items для breakfast"
+msgstr "Страви на сніданок"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -10279,7 +10279,7 @@ msgstr "Menu items для breakfast"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_nutrition__dinner
 #, python-format
 msgid "Menu items for dinner"
-msgstr "Menu items для dinner"
+msgstr "Страви на вечерю"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -10287,7 +10287,7 @@ msgstr "Menu items для dinner"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_nutrition__lunch
 #, python-format
 msgid "Menu items for lunch / main meal"
-msgstr "Menu items для lunch / main meal"
+msgstr "Страви на обід / основний прийом їжі"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -10353,7 +10353,7 @@ msgstr "Текст повідомлення (≤ 70 кириличних сим�
 #: code:addons/fayna_camp_portal/wizards/staff_sms_composer.py:0
 #, python-format
 msgid "Message body cannot be empty."
-msgstr "Message body можеnot be empty."
+msgstr "Текст повідомлення не може бути порожнім."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__invoice_warn_msg
@@ -10363,12 +10363,12 @@ msgstr "Message для Invoice"
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__purchase_warn_msg
 msgid "Message for Purchase Order"
-msgstr "Message для Purchase Order"
+msgstr "Повідомлення для замовлення на закупівлю"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__sale_warn_msg
 msgid "Message for Sales Order"
-msgstr "Message для Sales Order"
+msgstr "Повідомлення для замовлення на продаж"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__picking_warn_msg
@@ -10419,7 +10419,7 @@ msgstr "Метрики"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_camp_dziennik__location
 #, python-format
 msgid "Miejsce wypoczynku"
-msgstr "Місце відпочинку (miejsce wypoczynku)"
+msgstr "Місце відпочинку"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -10525,7 +10525,7 @@ msgstr ""
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_activity_template__min_age
 #, python-format
 msgid "Minimum recommended participant age (leave 0 for no restriction)."
-msgstr "Minimum recommended participant age (leave 0 для no restriction)."
+msgstr "Мінімальний рекомендований вік учасника (0 — без обмежень)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -10535,7 +10535,7 @@ msgstr "Minimum recommended participant age (leave 0 для no restriction)."
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_camp_dziennik_plan_line__state
 #, python-format
 msgid "Mirrored from parent dziennik — controls immutability."
-msgstr "Mirrored з parent dziennik — controls immutability."
+msgstr "Віддзеркалено з батьківського dziennik — керує незмінністю."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -10543,7 +10543,7 @@ msgstr "Mirrored з parent dziennik — controls immutability."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_staff_training_record__course_type
 #, python-format
 msgid "Mirrors the course type from the eLearning channel."
-msgstr "Mirrors course type з eLearning channel."
+msgstr "Віддзеркалює тип курсу з каналу eLearning."
 
 #. module: fayna_camp_portal
 #: model:camp.allergen,name:fayna_camp_portal.allergen_molluscs
@@ -10563,7 +10563,7 @@ msgstr "Молоко"
 #. module: fayna_camp_portal
 #: model:camp.allergen,description:fayna_camp_portal.allergen_milk
 msgid "Mleko i produkty pochodne (w tym laktoza)"
-msgstr "Mleko i produkty pochodne (w tym lakдоza)"
+msgstr "Молоко та молочні продукти (зокрема лактоза)"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__mobile
@@ -10603,7 +10603,7 @@ msgstr "Назва модуля"
 #: code:addons/fayna_camp_portal/models/training_vozhatyi.py:0
 #, python-format
 msgid "Module hours must be positive."
-msgstr "Module hours має be positive."
+msgstr "Години модуля мають бути додатними."
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.fayna_vozhatyi_training_form
@@ -10696,7 +10696,7 @@ msgstr "Назва активності (напр. 'Плавання', 'Стрі
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_transport__transport_company
 msgid "Name of the carrier / bus company"
-msgstr "Name of carrier / bus compбудь-який"
+msgstr "Назва перевізника / автобусної компанії"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -10704,7 +10704,7 @@ msgstr "Name of carrier / bus compбудь-який"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_staff__emergency_contact
 #, python-format
 msgid "Name of the emergency contact person for this staff member."
-msgstr "Name of emergency contact person для this staff member."
+msgstr "Ім'я контактної особи для екстреного зв'язку цього члена кадри."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -10762,7 +10762,7 @@ msgstr ""
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_story__featured_participants
 msgid "Names or IDs of children mentioned in story"
-msgstr "Names or IDs of children mentioned in sдоry"
+msgstr "Імена або ID дітей, згаданих в історії"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -11013,7 +11013,7 @@ msgstr "Нотатки та рекомендації (Załącznik 5 Розділ
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_report__next_day_notes
 #, python-format
 msgid "Notes for next day"
-msgstr "Notes для next day"
+msgstr "Нотатки на наступний день"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -11117,7 +11117,7 @@ msgstr "Кількість платежів"
 #: model:ir.model.fields,help:fayna_camp_portal.field_event_event__kuratorium_notification_count
 #, python-format
 msgid "Number of Kuratorium notifications for this shift."
-msgstr "Number of Kuraдоrium notifications для this shift."
+msgstr "Кількість повідомлень до Kuratorium для цього заїзду."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -11156,7 +11156,7 @@ msgstr "Кількість виконаних пунктів чек-листа."
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_loyalty_participant__camps_count
 msgid "Number of confirmed camp registrations for this partner."
-msgstr "Number of confirmed camp registrations для this partner."
+msgstr "Кількість підтверджених реєстрацій у табори для цього партнера."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -11189,7 +11189,7 @@ msgstr "Кількість днів у цій програмі."
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__reminder_date_before_receipt
 msgid "Number of days to send reminder email before the promised receipt date"
-msgstr "Number of days до send reminder email beдляe promised receipt date"
+msgstr "За скільки днів до обіцяної дати отримання надсилати email-нагадування"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_daily_report__message_has_error_counter
@@ -11235,12 +11235,12 @@ msgstr ""
 #: code:addons/fayna_camp_portal/models/commercial.py:0
 #, python-format
 msgid "Number of installments must be at least 1."
-msgstr "Number of installments має be at least 1."
+msgstr "Кількість платежів має бути щонайменше 1."
 
 #. module: fayna_camp_portal
 #: model:ir.model.constraint,message:fayna_camp_portal.constraint_fayna_payment_installment_plan_installment_count_positive
 msgid "Number of installments must be positive"
-msgstr "Number of installments має be positive"
+msgstr "Кількість платежів має бути додатною"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -11305,7 +11305,7 @@ msgstr "Кількість повідомлень, що потребують д�
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_vozhatyi_training__message_has_error_counter
 #: model:ir.model.fields,help:fayna_camp_portal.field_vozhatyi_training_record__message_has_error_counter
 msgid "Number of messages with delivery error"
-msgstr "Number of messages з delivery error"
+msgstr "Кількість повідомлень з помилкою доставлення"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -11361,7 +11361,7 @@ msgstr "Кількість учасників, що потребують без�
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_nutrition__lactose_free_count
 #, python-format
 msgid "Number of participants requiring lactose-free meals"
-msgstr "Number of participants requiring lacдоse-free meals"
+msgstr "Кількість учасників, яким потрібне безлактозне харчування"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -11469,7 +11469,7 @@ msgstr "Нотатки дієтолога"
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_kuratorium_notification__accommodation_type__occasional
 msgid "Obiekt okazjonalny"
-msgstr "Тимчасовий об'єкт (obiekt okazjonalny)"
+msgstr "Тимчасовий (оказіональний) об'єкт"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_kuratorium_notification__camp_type__obozowy
@@ -11598,7 +11598,7 @@ msgstr "Офіційний номер сертифіката, як надрук�
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_kuratorium_notification__notification_number
 #, python-format
 msgid "Official registration number assigned by MEN / Kuratorium database."
-msgstr "Official registration number assigned by MEN / Kuraдоrium database."
+msgstr "Офіційний реєстраційний номер, присвоєний базою MEN / Kuratorium."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_activity_template__category__evening
@@ -11656,166 +11656,166 @@ msgstr "Триває"
 #: code:addons/fayna_camp_portal/models/operations.py:0
 #, python-format
 msgid "Only Camp Managers can approve a Program Wypoczynku."
-msgstr "Тільки Camp Managers може затверджувати Program Wypoczynku."
+msgstr "Затверджувати програму відпочинку можуть лише менеджери табору."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/operations.py:0
 #, python-format
 msgid "Only a submitted notification can be approved. Current state: %s"
-msgstr "Тільки submitted notification може be approved. Current state: %s"
+msgstr "Затвердити можна лише подане повідомлення. Поточний стан: %s"
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/operations.py:0
 #, python-format
 msgid "Only active dzienniki can be submitted."
-msgstr "Тільки active dzienniki може be submitted."
+msgstr "Подати можна лише активні щоденники."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/operations.py:0
 #, python-format
 msgid "Only admin can revert a submitted report."
-msgstr "Тільки admin може revert submitted report."
+msgstr "Лише адміністратор може повернути поданий звіт."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/operations.py:0
 #, python-format
 msgid "Only admins can revert a daily report to draft."
-msgstr "Тільки admins може revert daily report до draft."
+msgstr "Лише адміністратори можуть повернути денний звіт у чернетку."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/operations.py:0
 #, python-format
 msgid "Only approved programs can be reset to draft."
-msgstr "Тільки approved programs може be reset до draft."
+msgstr "Лише затверджені програми можна повернути в чернетку."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/operations.py:0
 #, python-format
 msgid "Only approved programs can be submitted to kuratoria."
-msgstr "Тільки approved programs може be submitted до kuraдоria."
+msgstr "Лише затверджені програми можна подати до кураторіїв."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/participant.py:0
 #, python-format
 msgid "Only camp leaders can clear auto-refusal holds."
-msgstr "Тільки camp leaders може clear auдо-refusal holds."
+msgstr "Лише керівники таборів можуть знімати блокування авто-відмови."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/operations.py:0
 #, python-format
 msgid "Only camp managers or admins can approve daily reports."
-msgstr "Тільки camp managers or admins може затверджувати daily reports."
+msgstr "Затверджувати денні звіти можуть лише менеджери табору або адміністратори."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/training.py:0
 #, python-format
 msgid "Only certified records can be expired."
-msgstr "Тільки certified records може be expired."
+msgstr "Позначити простроченими можна лише сертифіковані записи."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/training.py:0
 #, python-format
 msgid "Only completed records can be certified."
-msgstr "Тільки completed records може be certified."
+msgstr "Сертифікувати можна лише завершені записи."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/camp.py:0
 #, python-format
 msgid "Only draft camps can be published."
-msgstr "Тільки draft camps може be published."
+msgstr "Опублікувати можна лише табори в чернетці."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/operations.py:0
 #, python-format
 msgid "Only draft dzienniki can be activated."
-msgstr "Тільки draft dzienniki може be activated."
+msgstr "Активувати можна лише щоденники в чернетці."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/operations.py:0
 #, python-format
 msgid "Only draft reports can be submitted."
-msgstr "Тільки draft reports може be submitted."
+msgstr "Подати можна лише звіти в чернетці."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/emergency.py:0
 #, python-format
 msgid "Only draft reports can move to active response."
-msgstr "Тільки draft reports може move до active response."
+msgstr "Лише звіти в чернетці можуть перейти до активного реагування."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/training.py:0
 #, python-format
 msgid "Only enrolled or in-progress records can be marked complete."
-msgstr "Тільки enrolled or in-progress records може be marked complete."
+msgstr "Позначити завершеними можна лише записи зі статусом «зараховано» або «в процесі»."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/training_vozhatyi.py:0
 #, python-format
 msgid "Only enrolled records can be marked as completed."
-msgstr "Тільки enrolled records може be marked as completed."
+msgstr "Позначити завершеними можна лише зараховані записи."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/training.py:0
 #, python-format
 msgid "Only enrolled records can be started."
-msgstr "Тільки enrolled records може be started."
+msgstr "Розпочати можна лише зараховані записи."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/transport.py:0
 #, python-format
 msgid "Only planned trips can be confirmed. Current state: %(state)s"
-msgstr "Тільки planned trips може be confirmed. Current state: %(state)s"
+msgstr "Підтвердити можна лише заплановані поїздки. Поточний стан: %(state)s"
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/camp.py:0
 #, python-format
 msgid "Only published camps can be marked as sold out."
-msgstr "Тільки published camps може be marked as sold out."
+msgstr "Позначити «місць немає» можна лише опубліковані табори."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/camp.py:0
 #, python-format
 msgid "Only published or sold out camps can be archived."
-msgstr "Тільки published or sold out camps може be archived."
+msgstr "Архівувати можна лише опубліковані або розпродані табори."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/operations.py:0
 #, python-format
 msgid "Only submitted reports can be approved."
-msgstr "Тільки submitted reports може be approved."
+msgstr "Затвердити можна лише подані звіти."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/participant.py:0
 #, python-format
 msgid "Only the camp director (kierownik) can finalize Section III."
-msgstr "Тільки camp direcдоr (kierownik) може finalize Section III."
+msgstr "Лише керівник табору (kierownik) може фіналізувати розділ III."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_review__improvement
 msgid "Only visible to camp organizers — honest criticism channel."
-msgstr "Тільки visible до camp organizers — honest criticism channel."
+msgstr "Видно лише організаторам табору — канал чесної критики."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_incident_report__injury_type__burn
@@ -11835,7 +11835,7 @@ msgstr "Відкрито"
 #: code:addons/fayna_camp_portal/models/event_channel_create.py:0
 #, python-format
 msgid "Operational chat for camp shift %s. Auto-created."
-msgstr "Operational chat для camp shift %s. Auдо-created."
+msgstr "Оперативний чат заїзду табору %s. Створено автоматично."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -11856,7 +11856,7 @@ msgstr "Операції"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_kuratorium_notification__attach_fire_opinion_ids
 #, python-format
 msgid "Opinia PSP"
-msgstr "Висновок PSP (opinia PSP)"
+msgstr "Висновок PSP (пожежної служби)"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -11902,7 +11902,7 @@ msgstr "Опціонально details / notes для Plactivity."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_schedule_entry__description_b
 #, python-format
 msgid "Optional details / notes for Plan B activity."
-msgstr "Опціонально details / notes для PlB activity."
+msgstr "Необов'язкові деталі / нотатки для заняття за планом Б."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -11910,12 +11910,12 @@ msgstr "Опціонально details / notes для PlB activity."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_admin_access_log__reason
 #, python-format
 msgid "Optional free-text justification (e.g. 'support ticket #123')."
-msgstr "Опціонально free-text justification (e.g. 'support ticket #123')."
+msgstr "Необов'язкове текстове обґрунтування (напр. «тікет підтримки #123»)."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_story__parent_message
 msgid "Optional message from camp to parents about this story"
-msgstr "Опціонально message з camp до parents about this sдоry"
+msgstr "Необов'язкове повідомлення від табору батькам щодо цієї історії"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -11935,7 +11935,7 @@ msgstr ""
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__image_consent_signature
 #, python-format
 msgid "Optional signature for the image consent (Dodatek 4a)."
-msgstr "Опціонально signature для image consent (Dodatek 4a)."
+msgstr "Необов'язковий підпис для згоди на фото (Dodatek 4a)."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__payment_responsible_id
@@ -11957,7 +11957,7 @@ msgstr "Помаранчевий"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_meal_plan_line__sequence
 #, python-format
 msgid "Order within the meal plan for display and printing."
-msgstr "Order зin meal plдля display and printing."
+msgstr "Порядок у плані харчування для показу та друку."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -11965,7 +11965,7 @@ msgstr "Order зin meal plдля display and printing."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_program__sequence
 #, python-format
 msgid "Order within the shift program list."
-msgstr "Order зin shift program list."
+msgstr "Порядок у списку програми заїзду."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -11988,7 +11988,7 @@ msgstr "Організатор Wypoczynku (верхнього рівня)"
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_camp_admin_access_log
 msgid "Organizator impersonation log (RODO art.30, 7y retention)"
-msgstr "Organizaдоr impersonation log (RODO ст.30, 7y збереження)"
+msgstr "Журнал входів від імені інших (Organizator) — RODO art.30, зберігання 7 років"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12017,7 +12017,7 @@ msgstr "Організатор заявляє, що всі документи п
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_camp_dziennik__organizer
 #, python-format
 msgid "Organizer name — auto-derived from event company."
-msgstr "Organizer name — auдо-derived з event compбудь-який."
+msgstr "Назва організатора — автоматично з компанії події."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12025,7 +12025,7 @@ msgstr "Organizer name — auдо-derived з event compбудь-який."
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_res_company__fn_organizer_signature
 #, python-format
 msgid "Organizer signature (fn compat)"
-msgstr "Підпис організатора (fn compat)"
+msgstr "Підпис організатора (сумісність зі старою формою)"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12041,7 +12041,7 @@ msgstr "Тип організатора"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_report__recommendations
 #, python-format
 msgid "Organizer-facing recommendations for improvement."
-msgstr "Organizer-facing recommendations для improvement."
+msgstr "Рекомендації для організатора щодо покращення."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12112,7 +12112,7 @@ msgstr "Інше (див. нотатки)"
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_participant__gender__x
 #, python-format
 msgid "Other / Prefer not to say"
-msgstr "Other / Prefer not до say"
+msgstr "Інше / Не хочу вказувати"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12168,7 +12168,7 @@ msgstr "Загальні нотатки програми, цілі, особли
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_review__rating
 msgid "Overall rating: 1 (bad) to 5 (excellent)."
-msgstr "Overall rating: 1 (bad) до 5 (excellent)."
+msgstr "Загальна оцінка: від 1 (погано) до 5 (відмінно)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12224,7 +12224,7 @@ msgstr "Заява свідка"
 #: model:ir.model.fields,help:fayna_camp_portal.field_product_template__camp_program_pdf_id
 #, python-format
 msgid "PDF brochure shown as a download button on the camp page."
-msgstr "PDF brochure shown as download butдоn on camp page."
+msgstr "PDF-брошура, показана кнопкою завантаження на сторінці табору."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12255,7 +12255,7 @@ msgstr "PESEL"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__fn_passport_number
 #, python-format
 msgid "PESEL / passport (fn compat)"
-msgstr "PESEL / паспорт (fn compat)"
+msgstr "PESEL / паспорт (сумісність зі старою формою)"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12269,7 +12269,7 @@ msgstr "Контрольна сума PESEL недійсна — перевір�
 #: code:addons/fayna_camp_portal/models/participant.py:0
 #, python-format
 msgid "PESEL must be exactly 11 digits."
-msgstr "PESEL має be exactly 11 digits."
+msgstr "PESEL має містити рівно 11 цифр."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12320,7 +12320,7 @@ msgstr "Повідомлення для батьків"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__fn_parents_address
 #, python-format
 msgid "Parent address (fn compat)"
-msgstr "Адреса батьків (fn compat)"
+msgstr "Адреса батьків (сумісність зі старою формою)"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12328,7 +12328,7 @@ msgstr "Адреса батьків (fn compat)"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_incident_action__report_id
 #, python-format
 msgid "Parent incident report this action belongs to."
-msgstr "Parent incident report this action belongs до."
+msgstr "Звіт про інцидент, до якого належить ця дія."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12336,7 +12336,7 @@ msgstr "Parent incident report this action belongs до."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_incident_notification_log__incident_id
 #, python-format
 msgid "Parent incident report this notification belongs to."
-msgstr "Parent incident report this notification belongs до."
+msgstr "Звіт про інцидент, до якого належить це сповіщення."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_story__parent_message
@@ -12354,7 +12354,7 @@ msgstr "Ім'я батька/матері"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__fn_parents_names
 #, python-format
 msgid "Parent name (fn compat)"
-msgstr "Ім'я батьків (fn compat)"
+msgstr "Ім'я батьків (сумісність зі старою формою)"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12369,7 +12369,7 @@ msgstr "Батько/мати %(child)s, %(year)s"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__fn_parents_phone
 #, python-format
 msgid "Parent phone (fn compat)"
-msgstr "Телефон батьків (fn compat)"
+msgstr "Телефон батьків (сумісність зі старою формою)"
 
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_campscout_portal_session
@@ -12395,12 +12395,12 @@ msgstr "Підпис батьків (PNG)"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__fn_parents_signature
 #, python-format
 msgid "Parent signature (fn compat)"
-msgstr "Підпис батьків (fn compat)"
+msgstr "Підпис батьків (сумісність зі старою формою)"
 
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_camp_support_request
 msgid "Parent support request (question / cancel / transfer)"
-msgstr "Parent support request (question / можеcel / transfer)"
+msgstr "Запит підтримки від батьків (питання / скасування / перенесення)"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12408,7 +12408,7 @@ msgstr "Parent support request (question / можеcel / transfer)"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_admin_access_log__target_partner_id
 #, python-format
 msgid "Parent whose /my portal was rendered (only for as-parent)."
-msgstr "Parent whose /my portal was rendered (тільки для as-parent)."
+msgstr "Батько/мати, чий портал /my було відкрито (лише для режиму as-parent)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12561,7 +12561,7 @@ msgstr "Відсутні учасники"
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_camp_dziennik__participant_ids
 #, python-format
 msgid "Participants assigned to this group."
-msgstr "Participants assigned до this group."
+msgstr "Учасники, призначені до цієї групи."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12639,7 +12639,7 @@ msgstr "Партнера не знайдено."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_incident_notification_log__recipient_partner_id
 #, python-format
 msgid "Partner to whom the notification was dispatched."
-msgstr "Partner до whom notification was dispatched."
+msgstr "Партнер, якому надіслано сповіщення."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__same_company_registry_partner_id
@@ -12649,7 +12649,7 @@ msgstr "Partner з same Compбудь-який Registry"
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__same_vat_partner_id
 msgid "Partner with same Tax ID"
-msgstr "Partner з same Tax ID"
+msgstr "Партнер з таким самим Tax ID"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_transport__participant_count
@@ -12772,7 +12772,7 @@ msgstr "Згідно з §6.2: 30+ днів=10%, 16–30=30%, 8–15=50%, 3–7=
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_support_request__refund_due_date
 msgid "Per §6.4: refund within 14 days of submission."
-msgstr "Per §6.4: refund зin 14 days of submission."
+msgstr "Згідно з §6.4: повернення коштів протягом 14 днів від подання."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_payment_installment_plan_line__percent
@@ -12782,7 +12782,7 @@ msgstr "Відсоток (%)"
 #. module: fayna_camp_portal
 #: model:ir.model.constraint,message:fayna_camp_portal.constraint_fayna_payment_installment_plan_line_percent_positive
 msgid "Percent must be positive"
-msgstr "Percent має be positive"
+msgstr "Відсоток має бути додатним"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_vozhatyi_training__completion_pct
@@ -12800,7 +12800,7 @@ msgstr "Відсоток виконаних обов'язкових годин."
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_payment_installment_plan_line__percent
 msgid "Percentage of the total order amount for this installment."
-msgstr "Percentage of доtal order amount для this installment."
+msgstr "Відсоток від загальної суми замовлення для цього платежу."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_payment_installment_plan__deposit_pct
@@ -12814,7 +12814,7 @@ msgstr ""
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__perform_vies_validation
 msgid "Perform Vies Validation"
-msgstr "Perдляm Vies Validation"
+msgstr "Виконати перевірку VIES"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12838,7 +12838,7 @@ msgstr "Особа"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_program_activity__responsible_id
 #, python-format
 msgid "Person responsible for leading this activity."
-msgstr "Person responsible для leading this activity."
+msgstr "Особа, відповідальна за проведення цього заняття."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12905,7 +12905,7 @@ msgstr "Телефон у чорному списку"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_staff__emergency_phone
 #, python-format
 msgid "Phone number of the emergency contact."
-msgstr "Номер телефону of emergency contact."
+msgstr "Номер телефону для екстреного зв'язку."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12925,7 +12925,7 @@ msgstr ""
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__emergency_contact_2_phone
 #, python-format
 msgid "Phone number of the secondary emergency contact."
-msgstr "Номер телефону of secondary emergency contact."
+msgstr "Номер телефону додаткового екстреного контакту."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12961,7 +12961,7 @@ msgstr "Phoдоs з sдоry/event"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_program__photo_attachment_ids
 #, python-format
 msgid "Photos from this activity."
-msgstr "Phoдоs з this activity."
+msgstr "Фотографії з цього заняття."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12969,7 +12969,7 @@ msgstr "Phoдоs з this activity."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_journal__attachment_ids
 #, python-format
 msgid "Photos or supporting documents."
-msgstr "Phoдоs or supporting documents."
+msgstr "Фотографії або підтвердні документи."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12993,7 +12993,7 @@ msgstr "Phoдоs/files"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_staff_sms_composer__template_id
 #, python-format
 msgid "Pick a pre-defined message; you can still edit the body before sending."
-msgstr "Pick pre-defined message; you може still edit body beдляe sending."
+msgstr "Оберіть готове повідомлення; текст можна відредагувати перед надсиланням."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -13001,7 +13001,7 @@ msgstr "Pick pre-defined message; you може still edit body beдляe sending
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_program_activity_line__activity_template_id
 #, python-format
 msgid "Pick a reusable template — title will be pre-filled automatically."
-msgstr "Pick reusable template — title will be pre-filled auдоmatically."
+msgstr "Оберіть багаторазовий шаблон — заголовок заповниться автоматично."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_incident_action__action_type__first_aid
@@ -13111,7 +13111,7 @@ msgstr "Тип плану"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_daily_report__next_day_plan
 #, python-format
 msgid "Plan and preparations for the following day."
-msgstr "Pland preparations для following day."
+msgstr "План і підготовка на наступний день."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -13137,7 +13137,7 @@ msgstr "Платиновий"
 #: code:addons/fayna_camp_portal/models/commercial.py:0
 #, python-format
 msgid "Please select an installment plan before generating the schedule."
-msgstr "Please select installment plbeдляe generating schedule."
+msgstr "Оберіть план розстрочки перед генерацією графіка."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -13307,14 +13307,14 @@ msgstr "Скидання балів"
 #: code:addons/fayna_camp_portal/models/commercial.py:0
 #, python-format
 msgid "Points reset by administrator (was: %(pts)d pts, tier: %(tier)s)"
-msgstr "Points reset by administraдоr (was: %(pts)d pts, tier: %(tier)s)"
+msgstr "Бали скинуто адміністратором (було: %(pts)d балів, рівень: %(tier)s)"
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/commercial.py:0
 #, python-format
 msgid "Points set to 0, tier reset to Bronze."
-msgstr "Points set до 0, tier reset до Bronze."
+msgstr "Бали встановлено на 0, рівень скинуто до Bronze."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__product_template__camp_location_country__pl
@@ -13355,7 +13355,7 @@ msgstr "URL доступу до порталу"
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_campscout_portal_menu
 msgid "Portal menu customization per region"
-msgstr "Portal menu cusдоmization per region"
+msgstr "Налаштування меню порталу за регіоном"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_loyalty_history__points_delta
@@ -13376,7 +13376,7 @@ msgstr "Позитивні нотатки, досягнення, пам'ятні
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_daily_report__achievements
 #, python-format
 msgid "Positive outcomes, milestones or highlights of the day."
-msgstr "Positive outcomes, milesдоnes or highlights of day."
+msgstr "Позитивні результати, досягнення або яскраві моменти дня."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_activity_template__category__meal
@@ -13494,7 +13494,7 @@ msgstr "Інтервал присутності (Секція IV — коли д
 #: code:addons/fayna_camp_portal/models/participant.py:0
 #, python-format
 msgid "Presence interval: 'to_date' cannot be earlier than 'from_date'."
-msgstr "Presence interval: 'до_date' можеnot be earlier th'з_date'."
+msgstr "Інтервал присутності: «to_date» не може бути раніше за «from_date»."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -13550,7 +13550,7 @@ msgstr "Прайс-лист"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_diet_profile__diet_type
 #, python-format
 msgid "Primary diet classification. Use 'Other' for complex combinations."
-msgstr "Primary diet classification. Use 'Other' для complex combinations."
+msgstr "Основна класифікація дієти. Для складних комбінацій використовуйте «Інше»."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -13570,7 +13570,7 @@ msgstr ""
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_kuratorium_notification__transport_method
 #, python-format
 msgid "Primary transport method to reach the camp."
-msgstr "Primary transport method до reach camp."
+msgstr "Основний спосіб дістатися до табору."
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.fayna_vozhatyi_certificate_form
@@ -13653,7 +13653,7 @@ msgstr "Program Wypoczynku"
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_camp_program_wypoczynku
 msgid "Program Wypoczynku (Załącznik 9 — oficjalny dokument MEN)"
-msgstr "Program Wypoczynku (Załącznik 9 — офіційний документ MEN)"
+msgstr "Програма відпочинку (Załącznik 9 — офіційний документ MEN)"
 
 #. module: fayna_camp_portal
 #: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_program_wypoczynku
@@ -13731,21 +13731,21 @@ msgstr "Протокол готовий"
 #: code:addons/fayna_camp_portal/models/emergency.py:0
 #, python-format
 msgid "Protocol has been delivered to authorised parties."
-msgstr "Proдоcol has been delivered до authorised parties."
+msgstr "Протокол передано уповноваженим сторонам."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/emergency.py:0
 #, python-format
 msgid "Protocol is ready — please review and deliver to parties."
-msgstr "Proдоcol is ready — please review and deliver до parties."
+msgstr "Протокол готовий — перегляньте та передайте сторонам."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/emergency.py:0
 #, python-format
 msgid "Protocol must be ready before delivery."
-msgstr "Proдоcol має be ready beдляe delivery."
+msgstr "Перед передаванням протокол має бути готовий."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -13796,7 +13796,7 @@ msgstr "Public (parents може read)"
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_review__author_display_name
 msgid "Public display form — never the parent's real name."
-msgstr "Public display дляm — never parent's real name."
+msgstr "Публічна форма відображення — ніколи не справжнє ім'я батьків."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_review__is_public
@@ -13840,7 +13840,7 @@ msgstr "Час публікації"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_program_structured__state
 #, python-format
 msgid "Published programs are visible to counselors for execution."
-msgstr "Published programs are visible до counselors для execution."
+msgstr "Опубліковані програми видно вожатим для виконання."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_product_product__review_count
@@ -13879,7 +13879,7 @@ msgstr "Фіолетовий"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__fn_qc_date
 #, python-format
 msgid "QC date (fn compat)"
-msgstr "Дата кваліфікаційної картки (fn compat)"
+msgstr "Дата QC (сумісність зі старою формою)"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -13887,7 +13887,7 @@ msgstr "Дата кваліфікаційної картки (fn compat)"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__fn_qc_place
 #, python-format
 msgid "QC place (fn compat)"
-msgstr "Місце кваліфікаційної картки (fn compat)"
+msgstr "Місце QC (сумісність зі старою формою)"
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
@@ -14100,7 +14100,7 @@ msgstr "Запис згоди RODO"
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_fayna_rodo_consent_log
 msgid "RODO/GDPR/PKE Consent Log (append-only)"
-msgstr "RODO/GDPR/PKE Consent Log (append-тільки)"
+msgstr "Журнал згод RODO/GDPR/PKE (лише додавання)"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -14160,7 +14160,7 @@ msgstr "Оцінка (1–5)"
 #: code:addons/fayna_camp_portal/models/commercial.py:0
 #, python-format
 msgid "Rating must be between 1 and 5."
-msgstr "Rating має be between 1 and 5."
+msgstr "Оцінка має бути від 1 до 5."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_daily_report__rating_ids
@@ -14277,7 +14277,7 @@ msgstr "Отримувач"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_sms_template__lang
 #, python-format
 msgid "Recipient language. Select PL for Polish parents, UA for Ukrainian."
-msgstr "Recipient language. Select PL для Polish parents, Uдля Ukrainian."
+msgstr "Мова одержувача. Оберіть PL для польських батьків, UA — для українських."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -14303,7 +14303,7 @@ msgstr "Отримувачі (попередній перегляд)"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_report__recommendations
 #, python-format
 msgid "Recommendations for next season"
-msgstr "Recommendations для next season"
+msgstr "Рекомендації на наступний сезон"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -14480,7 +14480,7 @@ msgstr "Relationship до child (e.g. mother, father, grandparent)."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__emergency_contact_2_relation
 #, python-format
 msgid "Relationship to child for the secondary emergency contact."
-msgstr "Relationship до child для secondary emergency contact."
+msgstr "Ким доводиться дитині додатковий екстрений контакт."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_sms_template__template_type__reminder_3d
@@ -14512,12 +14512,12 @@ msgstr "Нагадування надіслано"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_admin_access_log__ip_address
 #, python-format
 msgid "Remote IP captured from request.httprequest.remote_addr."
-msgstr "Remote IP captured з request.httprequest.remote_addr."
+msgstr "Віддалена IP-адреса, отримана з request.httprequest.remote_addr."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__loyalty_program__fayna_rule_type__repeat_customer
 msgid "Repeat camp customer (VIP-клуб)"
-msgstr "Repeat camp customer (VIP-клуб)"
+msgstr "Постійний клієнт таборів (VIP-клуб)"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_marketing_report__report_type
@@ -14631,7 +14631,7 @@ msgstr ""
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_support_request__registration_id
 msgid "Required for cancel/transfer requests."
-msgstr "Required для можеcel/transfer requests."
+msgstr "Обов'язково для запитів скасування/перенесення."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -14648,7 +14648,7 @@ msgstr "Обов'язкові години"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_kuratorium_notification__deadline_date
 #, python-format
 msgid "Required submission deadline: 21 days before camp (14 for abroad)."
-msgstr "Required submission deadline: 21 days beдляe camp (14 для abroad)."
+msgstr "Обов'язковий строк подання: 21 день до табору (14 — для закордону)."
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_loyalty_participant_form
@@ -14722,7 +14722,7 @@ msgstr "Відпочинок"
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__website_id
 msgid "Restrict publishing to this website."
-msgstr "Restrict publishing до this website."
+msgstr "Обмежити публікацію цим сайтом."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -14742,7 +14742,7 @@ msgstr "Утримання %"
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_camp_activity_template
 msgid "Reusable activity template for camp programs"
-msgstr "Reusable activity template для camp programs"
+msgstr "Багаторазовий шаблон заняття для програм таборів"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_marketing_report__report_type__revenue
@@ -14821,7 +14821,7 @@ msgstr "Role of author зin group — computed з dziennik assignments."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_kuratorium_staff__role
 #, python-format
 msgid "Role of this person in the camp, as declared to Kuratorium."
-msgstr "Role of this person in camp, as declared до Kuraдоrium."
+msgstr "Роль цієї особи в таборі, як заявлено до Kuratorium."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -14994,14 +14994,14 @@ msgstr "Відправлення SMS пропущено: %s"
 #: code:addons/fayna_camp_portal/models/staff_sms_log.py:0
 #, python-format
 msgid "SMS log cannot be deleted (PL law)."
-msgstr "SMS log можеnot be deleted (PL закон)."
+msgstr "Журнал SMS не можна видаляти (польське законодавство)."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/staff_sms_log.py:0
 #, python-format
 msgid "SMS log is immutable (audit retention 7y)."
-msgstr "SMS log is незмінний (audit збереження 7y)."
+msgstr "Журнал SMS незмінний (аудиторське зберігання 7 років)."
 
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_fayna_sms_routing_rule
@@ -15021,7 +15021,7 @@ msgstr "Ім'я відправника SMS"
 #: code:addons/fayna_camp_portal/models/sms.py:0
 #, python-format
 msgid "SMS template body is too long (%(len)s chars). Maximum is 1600."
-msgstr "SMS template body is доo long (%(len)s chars). Maximum is 1600."
+msgstr "Текст SMS-шаблону задовгий (%(len)s символів). Максимум — 1600."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -15073,7 +15073,7 @@ msgstr "Кількість замовлень"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__current_sale_order_id
 #, python-format
 msgid "Sale order linked to the current booking. Computed, not stored."
-msgstr "Sale order linked до current booking. Computed, not sдоred."
+msgstr "Замовлення, пов'язане з поточним бронюванням. Обчислюється, не зберігається."
 
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_sale_order
@@ -15118,7 +15118,7 @@ msgstr "Очищений номер"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_staff_cert__attachment_id
 #, python-format
 msgid "Scanned copy of the certificate (stored as ir.attachment)."
-msgstr "Sможеned copy of certificate (sдоred as ir.attachment)."
+msgstr "Скан-копія сертифіката (зберігається як ir.attachment)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -15131,7 +15131,7 @@ msgstr "Sможеned document"
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_transport__waybill_attachment_id
 msgid "Scanned or uploaded list of passengers"
-msgstr "Sможеned or uploaded list of passengers"
+msgstr "Відсканований або завантажений список пасажирів"
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.fayna_vozhatyi_training_form
@@ -15221,7 +15221,7 @@ msgstr "Залишилось місць у заїздах"
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__loyalty_program__fayna_rule_type__double_portion
 msgid "Second booking same season (Подвійна порція)"
-msgstr "Second booking same season (Подвійна порція)"
+msgstr "Друге бронювання в той самий сезон (Подвійна порція)"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -15253,14 +15253,14 @@ msgstr "Секцію III завершив %(user)s %(date)s."
 #: code:addons/fayna_camp_portal/models/participant.py:0
 #, python-format
 msgid "Section III is already finalized for %(name)s."
-msgstr "Section III is already finalized для %(name)s."
+msgstr "Розділ III уже фіналізовано для %(name)s."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/participant.py:0
 #, python-format
 msgid "Section III is finalized for %(name)s — cannot modify %(fields)s."
-msgstr "Section III is finalized для %(name)s — можеnot modify %(fields)s."
+msgstr "Розділ III фіналізовано для %(name)s — не можна змінювати %(fields)s."
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
@@ -15320,7 +15320,7 @@ msgstr "Секція V — Нотатки про здоров'я (керівни
 #: code:addons/fayna_camp_portal/models/participant.py:0
 #, python-format
 msgid "Section VI is signed for %(name)s — cannot modify %(fields)s."
-msgstr "Section VI is signed для %(name)s — можеnot modify %(fields)s."
+msgstr "Розділ VI підписано для %(name)s — не можна змінювати %(fields)s."
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
@@ -15337,7 +15337,7 @@ msgstr "Секції"
 #: code:addons/fayna_camp_portal/models/participant.py:0
 #, python-format
 msgid "Sections IV-V are signed for %(name)s — cannot modify %(fields)s."
-msgstr "Sections IV-V are signed для %(name)s — можеnot modify %(fields)s."
+msgstr "Розділи IV–V підписано для %(name)s — не можна змінювати %(fields)s."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_loyalty_participant__access_token
@@ -15389,7 +15389,7 @@ msgstr "Сам контакт"
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_sms_composer_form
 #, python-format
 msgid "Send SMS to my group"
-msgstr "Send SMS до my group"
+msgstr "Надіслати SMS моїй групі"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__sendpulse_contact_id
@@ -15470,14 +15470,14 @@ msgstr "ID сесії"
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__use_partner_credit_limit
 msgid "Set a value greater than 0.0 to activate a credit limit check"
-msgstr "Set value greater th0.0 до activate credit limit check"
+msgstr "Встановіть значення більше за 0.0, щоб увімкнути перевірку кредитного ліміту"
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/operations.py:0
 #, python-format
 msgid "Set kierownik and at least one wychowawca before activating."
-msgstr "Set kierownik and at least one wychowawcbeдляe activating."
+msgstr "Перед активацією вкажіть керівника табору та принаймні одного вожатого."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -15582,7 +15582,7 @@ msgstr "Короткий маркетинговий слоган у hero-сек�
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__auto_refusal_cleared_reason
 #, python-format
 msgid "Short note from the coordinator explaining the manual override."
-msgstr "Short note з coordinaдоr explaining manual override."
+msgstr "Коротка нотатка координатора з поясненням ручного втручання."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -15590,7 +15590,7 @@ msgstr "Short note з coordinaдоr explaining manual override."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_faq__question
 #, python-format
 msgid "Short question as shown to parents on the camp page."
-msgstr "Short question as shown до parents on camp page."
+msgstr "Коротке питання, як його бачать батьки на сторінці табору."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -15603,7 +15603,7 @@ msgstr "Короткий підсумок запису журналу."
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_review__is_anonymous
 msgid "Show 'Анонімно' instead of author_display_name on public pages."
-msgstr "Show 'Анонімно' instead of author_display_name on public pages."
+msgstr "Показувати «Анонімно» замість author_display_name на публічних сторінках."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__show_credit_limit
@@ -15638,7 +15638,7 @@ msgstr "Показувати відгуки?"
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_story__public
 msgid "Show to parents in portal?"
-msgstr "Show до parents in portal?"
+msgstr "Показувати батькам у порталі?"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_product_product__camp_sibling_discount_pct
@@ -15681,7 +15681,7 @@ msgstr ""
 #: code:addons/fayna_camp_portal/models/operations.py:0
 #, python-format
 msgid "Signed activity is immutable. Cannot modify: %(fields)s"
-msgstr "Signed activity is незмінний. Cannot modify: %(fields)s"
+msgstr "Підписане заняття незмінне. Не можна змінювати: %(fields)s"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -15767,7 +15767,7 @@ msgstr "Срібний"
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_fayna_payment_installment
 msgid "Single Payment Installment for a Sale Order"
-msgstr "Single Payment Installment для Sale Order"
+msgstr "Окремий платіж розстрочки для замовлення на продаж"
 
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_camp_incident_action
@@ -16041,7 +16041,7 @@ msgstr "Працівник, вказаний у зголошенні."
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_camp_dziennik_plan_line__responsible_id
 #, python-format
 msgid "Staff member responsible for this task."
-msgstr "Staff member responsible для this task."
+msgstr "Член кадри, відповідальний за це завдання."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -16049,7 +16049,7 @@ msgstr "Staff member responsible для this task."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_staff_cert__staff_id
 #, python-format
 msgid "Staff member this certificate belongs to."
-msgstr "Staff member this certificate belongs до."
+msgstr "Член кадри, якому належить цей сертифікат."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -16057,7 +16057,7 @@ msgstr "Staff member this certificate belongs до."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_staff_medical__staff_id
 #, python-format
 msgid "Staff member this medical record belongs to."
-msgstr "Staff member this medical record belongs до."
+msgstr "Член кадри, якому належить цей медичний запис."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -16078,7 +16078,7 @@ msgstr "Працівник, який створив цей звіт."
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_story__author_id
 msgid "Staff member who wrote the story"
-msgstr "Staff member who wrote sдоry"
+msgstr "Член кадри, який написав історію"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -16095,7 +16095,7 @@ msgstr "Персонал, вказаний у цьому Program Wypoczynku (Za�
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_daily_report__staff_count_present
 #, python-format
 msgid "Staff present today"
-msgstr "Staff present доday"
+msgstr "Кадра, присутня сьогодні"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -16123,7 +16123,7 @@ msgstr "Робота персоналу"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_report__section_staff
 #, python-format
 msgid "Staff work — manual notes + automatic hours statistics."
-msgstr "Staff work — manual notes + auдоmatic hours statistics."
+msgstr "Робота кадри — ручні нотатки + автоматична статистика годин."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -16238,7 +16238,7 @@ msgstr "Час початку"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__start_time
 #, python-format
 msgid "Start time (hours, e.g. 9.5 for 09:30)"
-msgstr "Start time (hours, e.g. 9.5 для 09:30)"
+msgstr "Час початку (години, напр. 9.5 для 09:30)"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -16246,7 +16246,7 @@ msgstr "Start time (hours, e.g. 9.5 для 09:30)"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_schedule_entry__time
 #, python-format
 msgid "Start time in HH:MM format (24-hour clock), e.g. '07:00'."
-msgstr "Start time in HH:MM дляmat (24-hour clock), e.g. '07:00'."
+msgstr "Час початку у форматі HH:MM (24-годинний), напр. «07:00»."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -16270,7 +16270,7 @@ msgstr "Час початку в десяткових годинах."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_program_activity_line__time_from
 #, python-format
 msgid "Start time in hour.minute format (e.g. 9.0 = 09:00, 14.5 = 14:30)."
-msgstr "Start time in hour.minute дляmat (e.g. 9.0 = 09:00, 14.5 = 14:30)."
+msgstr "Час початку у форматі година.хвилини (напр. 9.0 = 09:00, 14.5 = 14:30)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -16279,7 +16279,7 @@ msgstr "Start time in hour.minute дляmat (e.g. 9.0 = 09:00, 14.5 = 14:30)."
 #: model:ir.model.fields,help:fayna_camp_portal.field_product_template__camp_room_type_id
 #, python-format
 msgid "Start typing to filter existing types or create a new one."
-msgstr "Start typing до filter existing types or create new one."
+msgstr "Почніть вводити, щоб відфільтрувати наявні типи або створити новий."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -16424,7 +16424,7 @@ msgstr "Sдоry headline"
 #: code:addons/fayna_camp_portal/models/stories.py:0
 #, python-format
 msgid "Story is already archived."
-msgstr "Sдоry is already archived."
+msgstr "Історію вже заархівовано."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_story__story_type
@@ -16461,7 +16461,7 @@ msgstr "Структуровані програми"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_daily_report__weather_condition
 #, python-format
 msgid "Structured weather condition for the day."
-msgstr "Structured weather condition для day."
+msgstr "Структуровані погодні умови за день."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_support_request__subject
@@ -16559,7 +16559,7 @@ msgstr "Дата подання"
 #: code:addons/fayna_camp_portal/models/operations.py:0
 #, python-format
 msgid "Submitted dziennik is frozen — cannot modify %(fields)s"
-msgstr "Submitted dziennik is frozen — можеnot modify %(fields)s"
+msgstr "Поданий dziennik заморожено — не можна змінювати %(fields)s"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -16567,7 +16567,7 @@ msgstr "Submitted dziennik is frozen — можеnot modify %(fields)s"
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_camp_dziennik__state
 #, python-format
 msgid "Submitted dzienniki are frozen and cannot be modified (legal record)."
-msgstr "Submitted dzienniki are frozen and можеnot be modified (legal record)."
+msgstr "Подані щоденники заморожено, їх не можна змінювати (юридичний запис)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -16609,7 +16609,7 @@ msgstr ""
 #: code:addons/fayna_camp_portal/models/operations.py:0
 #, python-format
 msgid "Submitted reports must have a kierownik signature."
-msgstr "Submitted reports має have kierownik signature."
+msgstr "Подані звіти повинні мати підпис керівника табору."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_program_wypoczynku__state__submitted
@@ -16813,7 +16813,7 @@ msgstr "Системний користувач, який створив цей 
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_incident_action__actor_id
 #, python-format
 msgid "System user who performed this action. Set on creation, immutable."
-msgstr "System user who perдляmed this action. Set on creation, незмінний."
+msgstr "Системний користувач, що виконав цю дію. Встановлюється при створенні, незмінний."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -16829,7 +16829,7 @@ msgstr "Системний користувач, який запустив ді�
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_admin_access_log__target_user_id
 #, python-format
 msgid "System user whose ACL was applied via with_user()."
-msgstr "System user whose ACL was applied viз_user()."
+msgstr "Системний користувач, чиї права (ACL) застосовано через with_user()."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_incident_report__injury_type__psychological
@@ -16848,7 +16848,7 @@ msgstr "Чернетка"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_kuratorium_notification__attach_sketch_ids
 #, python-format
 msgid "Szkic obiektu"
-msgstr "Схема об'єкта (szkic obiektu)"
+msgstr "Ескіз об'єкта"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_kuratorium_notification__accommodation_type__school
@@ -16920,7 +16920,7 @@ msgstr "Цільовий користувач"
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_camp_dziennik_plan_line__task
 #, python-format
 msgid "Task or work to be completed this week."
-msgstr "Task or work до be completed this week."
+msgstr "Завдання чи робота на цей тиждень."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__task_ids
@@ -16987,7 +16987,7 @@ msgstr "Тематика"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_program_wypoczynku__section_tematyka
 #, python-format
 msgid "Tematyka wypoczynku — camp theme/topic (Załącznik 9 §2)."
-msgstr "Tematykwypoczynku — camp theme/доpic (Załącznik 9 §2)."
+msgstr "Тематика відпочинку — тема табору (Załącznik 9 §2)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17039,7 +17039,7 @@ msgstr "Використаний шаблон"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_staff_sms_log__template_id
 #, python-format
 msgid "Template used as a starting body, if any."
-msgstr "Template used as starting body, if будь-який."
+msgstr "Шаблон, використаний як початковий текст, якщо є."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17074,7 +17074,7 @@ msgstr ""
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_faq__product_tmpl_id
 #, python-format
 msgid "The camp program this FAQ entry belongs to."
-msgstr "camp program this FAQ entry belongs до."
+msgstr "Програма табору, до якої належить цей FAQ-запис."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17082,7 +17082,7 @@ msgstr "camp program this FAQ entry belongs до."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_daily_report__event_id
 #, python-format
 msgid "The camp shift this daily report belongs to."
-msgstr "camp shift this daily report belongs до."
+msgstr "Заїзд табору, до якого належить цей денний звіт."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17090,7 +17090,7 @@ msgstr "camp shift this daily report belongs до."
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_camp_dziennik__event_id
 #, python-format
 msgid "The camp shift this dziennik belongs to."
-msgstr "camp shift this dziennik belongs до."
+msgstr "Заїзд табору, до якого належить цей dziennik."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17098,7 +17098,7 @@ msgstr "camp shift this dziennik belongs до."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_kuratorium_notification__event_id
 #, python-format
 msgid "The camp shift this notification is filed for."
-msgstr "camp shift this notification is filed для."
+msgstr "Заїзд табору, для якого подано це повідомлення."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17106,7 +17106,7 @@ msgstr "camp shift this notification is filed для."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_program_wypoczynku__event_id
 #, python-format
 msgid "The camp shift this program document is for."
-msgstr "camp shift this program document is для."
+msgstr "Заїзд табору, для якого призначено цей документ програми."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17114,7 +17114,7 @@ msgstr "camp shift this program document is для."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_program_structured__event_id
 #, python-format
 msgid "The camp shift this structured program belongs to."
-msgstr "camp shift this structured program belongs до."
+msgstr "Заїзд табору, до якого належить ця структурована програма."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17135,7 +17135,7 @@ msgstr ""
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_presence_interval__participant_id
 #, python-format
 msgid "The child this presence interval belongs to."
-msgstr "child this presence interval belongs до."
+msgstr "Дитина, до якої належить цей інтервал присутності."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17143,7 +17143,7 @@ msgstr "child this presence interval belongs до."
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_camp_dziennik_activity__dziennik_id
 #, python-format
 msgid "The dziennik this activity entry belongs to."
-msgstr "dziennik this activity entry belongs до."
+msgstr "Dziennik, до якого належить цей запис заняття."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17151,7 +17151,7 @@ msgstr "dziennik this activity entry belongs до."
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_camp_dziennik_note__dziennik_id
 #, python-format
 msgid "The dziennik this note belongs to."
-msgstr "dziennik this note belongs до."
+msgstr "Dziennik, до якого належить ця нотатка."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17159,7 +17159,7 @@ msgstr "dziennik this note belongs до."
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_camp_dziennik_plan_line__dziennik_id
 #, python-format
 msgid "The dziennik this plan line belongs to."
-msgstr "dziennik this plline belongs до."
+msgstr "Dziennik, до якого належить цей рядок плану."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17167,7 +17167,7 @@ msgstr "dziennik this plline belongs до."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_staff_training_record__channel_id
 #, python-format
 msgid "The eLearning channel this record is linked to."
-msgstr "eLearning channel this record is linked до."
+msgstr "Канал eLearning, з яким пов'язано цей запис."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__property_account_position_id
@@ -17178,7 +17178,7 @@ msgstr "fiscal position determines taxes/accounts used для this contact."
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__website_url
 msgid "The full URL to access the document through the website."
-msgstr "full URL до access document through website."
+msgstr "Повна URL-адреса для доступу до документа через сайт."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__user_id
@@ -17205,7 +17205,7 @@ msgstr ""
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_kuratorium_checklist__notification_id
 #, python-format
 msgid "The notification this checklist item belongs to."
-msgstr "notification this checklist item belongs до."
+msgstr "Повідомлення, до якого належить цей пункт контрольного списку."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17213,14 +17213,14 @@ msgstr "notification this checklist item belongs до."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_kuratorium_staff__notification_id
 #, python-format
 msgid "The notification this staff record belongs to."
-msgstr "notification this staff record belongs до."
+msgstr "Повідомлення, до якого належить цей запис кадри."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/commercial.py:0
 #, python-format
 msgid "The order total must be greater than zero."
-msgstr "order доtal має be greater thzero."
+msgstr "Сума замовлення має бути більшою за нуль."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17228,7 +17228,7 @@ msgstr "order доtal має be greater thzero."
 #: model:ir.model.fields,help:fayna_camp_portal.field_event_event__camp_program_id
 #, python-format
 msgid "The parent camp program (product.template) this shift belongs to."
-msgstr "parent camp program (product.template) this shift belongs до."
+msgstr "Батьківська програма табору (product.template), до якої належить цей заїзд."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17265,7 +17265,7 @@ msgstr "Особа, яка проходить навчання. Має бути 
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_program_activity_line__day_id
 #, python-format
 msgid "The program day this time slot belongs to."
-msgstr "program day this time slot belongs до."
+msgstr "День програми, до якого належить цей часовий слот."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17273,12 +17273,12 @@ msgstr "program day this time slot belongs до."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_program_activity__program_id
 #, python-format
 msgid "The program entry this activity slot belongs to."
-msgstr "program entry this activity slot belongs до."
+msgstr "Запис програми, до якого належить цей слот заняття."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_review__registration_id
 msgid "The registration that entitled the author to leave this review."
-msgstr "registration that entitled author до leave this review."
+msgstr "Реєстрація, що дала автору право залишити цей відгук."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__company_registry
@@ -17305,7 +17305,7 @@ msgstr "Конкретний заїзд, у якому брала участь �
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_journal__event_id
 #, python-format
 msgid "The specific shift/заїзд this journal entry is for."
-msgstr "The specific shift/заїзд this journal entry is for."
+msgstr "Конкретний заїзд, до якого належить цей запис журналу."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17313,7 +17313,7 @@ msgstr "The specific shift/заїзд this journal entry is for."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_program__event_id
 #, python-format
 msgid "The specific shift/заїзд this program entry is for."
-msgstr "The specific shift/заїзд this program entry is for."
+msgstr "Конкретний заїзд, до якого належить цей запис програми."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17321,7 +17321,7 @@ msgstr "The specific shift/заїзд this program entry is for."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_report__event_id
 #, python-format
 msgid "The specific shift/заїзд this report covers."
-msgstr "The specific shift/заїзд this report covers."
+msgstr "Конкретний заїзд, який охоплює цей звіт."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17329,12 +17329,12 @@ msgstr "The specific shift/заїзд this report covers."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_staff__event_id
 #, python-format
 msgid "The specific shift/заїзд this staff member is assigned to."
-msgstr "The specific shift/заїзд this staff member is assigned to."
+msgstr "Конкретний заїзд, на який призначено цього члена кадри."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_story__event_id
 msgid "The specific shift/заїзд this story is from"
-msgstr "The specific shift/заїзд this story is from"
+msgstr "Конкретний заїзд, з якого походить ця історія"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17366,7 +17366,7 @@ msgstr "sдоck location used as source when receiving goods з this contact."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_program_day__program_id
 #, python-format
 msgid "The structured program this day belongs to."
-msgstr "structured program this day belongs до."
+msgstr "Структурована програма, до якої належить цей день."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17414,7 +17414,7 @@ msgstr ""
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_activity_template__indoor_only
 #, python-format
 msgid "This activity can only be conducted indoors."
-msgstr "This activity може тільки be conducted indoors."
+msgstr "Це заняття можна проводити лише в приміщенні."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17422,7 +17422,7 @@ msgstr "This activity може тільки be conducted indoors."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_activity_template__outdoor_only
 #, python-format
 msgid "This activity must be conducted outdoors (weather-dependent)."
-msgstr "This activity має be conducted outdoors (weather-dependent)."
+msgstr "Це заняття проводиться лише надворі (залежить від погоди)."
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.fayna_vozhatyi_certificate_report_template
@@ -17542,7 +17542,7 @@ msgstr "Час (години)"
 #: code:addons/fayna_camp_portal/models/camp.py:0
 #, python-format
 msgid "Time must be HH:MM (e.g. 07:00, 14:30). Got: %s"
-msgstr "Time має be HH:MM (e.g. 07:00, 14:30). Got: %s"
+msgstr "Час має бути у форматі HH:MM (напр. 07:00, 14:30). Отримано: %s"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17550,7 +17550,7 @@ msgstr "Time має be HH:MM (e.g. 07:00, 14:30). Got: %s"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_journal__time
 #, python-format
 msgid "Time of the entry (optional; e.g. 14.5 for 14:30)."
-msgstr "Time of entry (optional; e.g. 14.5 для 14:30)."
+msgstr "Час запису (необов'язково; напр. 14.5 для 14:30)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17558,7 +17558,7 @@ msgstr "Time of entry (optional; e.g. 14.5 для 14:30)."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_program_day__activity_line_ids
 #, python-format
 msgid "Time-boxed activity slots for this day."
-msgstr "Time-boxed activity slots для this day."
+msgstr "Часові слоти занять на цей день."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17600,7 +17600,7 @@ msgstr ""
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__auto_refusal_refused_at
 #, python-format
 msgid "Timestamp when the daily cron flipped this participant to refused."
-msgstr "Timestamp when daily cron flipped this participant до refused."
+msgstr "Час, коли щоденний cron перевів цього учасника у статус «відмова»."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17649,7 +17649,7 @@ msgstr "Timestamp when proдоcol was дляmally delivered до authorised part
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_report__submitted_date
 #, python-format
 msgid "Timestamp when the report was formally submitted."
-msgstr "Timestamp when report was дляmally submitted."
+msgstr "Час офіційного подання звіту."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17766,12 +17766,12 @@ msgstr "Загальний дохід"
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__credit
 msgid "Total amount this customer owes you."
-msgstr "Total amount this cusдоmer owes you."
+msgstr "Загальна сума боргу цього клієнта перед вами."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__debit
 msgid "Total amount you have to pay to this vendor."
-msgstr "Total amount you have до pay до this vendor."
+msgstr "Загальна сума, яку ви маєте сплатити цьому постачальнику."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17779,7 +17779,7 @@ msgstr "Total amount you have до pay до this vendor."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_staff_training_record__required_hours
 #, python-format
 msgid "Total hours required to complete this course (from channel settings)."
-msgstr "Total hours required до complete this course (з channel settings)."
+msgstr "Загальна кількість годин для завершення курсу (з налаштувань каналу)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17803,12 +17803,12 @@ msgstr "Загальна кількість пунктів чек-листа."
 #: model:ir.model.fields,help:fayna_camp_portal.field_event_event__dziennik_count
 #, python-format
 msgid "Total number of dziennik records for this shift."
-msgstr "Total number of dziennik records для this shift."
+msgstr "Загальна кількість записів dziennik для цього заїзду."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_payment_installment_plan__installment_count
 msgid "Total number of installments (2, 3 or 4). Unused for 'custom' type."
-msgstr "Total number of installments (2, 3 or 4). Unused для 'cusдоm' type."
+msgstr "Загальна кількість платежів (2, 3 або 4). Не використовується для типу «custom»."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17909,7 +17909,7 @@ msgstr "Місце навчання:"
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_fayna_vozhatyi_training_module
 msgid "Training Module (individual unit within a training program)"
-msgstr "Training Module (individual unit зin training program)"
+msgstr "Навчальний модуль (окрема одиниця в межах навчальної програми)"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_vozhatyi_training__module_ids
@@ -17948,21 +17948,21 @@ msgstr "Тип навчання"
 #: code:addons/fayna_camp_portal/models/training_vozhatyi.py:0
 #, python-format
 msgid "Training must be Draft or In Progress to complete."
-msgstr "Training має be Draft or In Progress до complete."
+msgstr "Щоб завершити, навчання має бути в стані «Чернетка» або «В процесі»."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/training_vozhatyi.py:0
 #, python-format
 msgid "Training must be in Draft state to start."
-msgstr "Training має be in Draft state до start."
+msgstr "Щоб розпочати, навчання має бути в стані «Чернетка»."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/training_vozhatyi.py:0
 #, python-format
 msgid "Training record automatically marked as Expired (valid_until passed)."
-msgstr "Training record auдоmatically marked as Expired (valid_until passed)."
+msgstr "Запис навчання автоматично позначено простроченим (минула дата valid_until)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -18043,13 +18043,13 @@ msgstr "Тип поїздки"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_kuratorium_notification__is_profit
 #, python-format
 msgid "True if the organizer runs the camp for profit."
-msgstr "True if organizer runs camp для profit."
+msgstr "Істина, якщо організатор проводить табір з метою прибутку."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_product_product__camp_is_almost_full
 #: model:ir.model.fields,help:fayna_camp_portal.field_product_template__camp_is_almost_full
 msgid "True when 1 ≤ total upcoming seats_available ≤ 10."
-msgstr "True when 1 ≤ доtal upcoming seats_available ≤ 10."
+msgstr "Істина, коли 1 ≤ сума seats_available майбутніх заїздів ≤ 10."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__is_large_family
@@ -18124,7 +18124,7 @@ msgstr "True, коли існує принаймні один чинний се�
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_sale_order__has_installments
 msgid "True when at least one installment exists for this order."
-msgstr "True when at least one installment exists для this order."
+msgstr "Істина, коли для замовлення існує принаймні один платіж розстрочки."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__banda_referred
@@ -18267,7 +18267,7 @@ msgstr ""
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_camp_dziennik_note__note_type
 #, python-format
 msgid "Type of note — kurator visits require formal logging."
-msgstr "Type of note — kuraдоr visits require дляmal logging."
+msgstr "Тип нотатки — візити куратора потребують офіційного запису."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -18283,7 +18283,7 @@ msgstr "Тип звіту — визначає, які розділи обов'�
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_staff_cert__cert_type
 #, python-format
 msgid "Type of the certificate as required by PL law."
-msgstr "Type of certificate as обов'язково за PL законом."
+msgstr "Тип сертифіката згідно з вимогами польського законодавства."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_daily_report__activity_exception_decoration
@@ -18316,7 +18316,7 @@ msgstr "Типова тривалість активності у хвилина
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_vozhatyi_training_record__valid_until
 msgid "Typically 5 years from completion date (Rozp. MEN 2016)."
-msgstr "Typically 5 years з completion date (Rozp. MEN 2016)."
+msgstr "Зазвичай 5 років від дати завершення (Rozp. MEN 2016)."
 
 #. module: fayna_camp_portal
 #: model:mail.template,subject:fayna_camp_portal.email_qualification_reminder_3d
@@ -18381,7 +18381,7 @@ msgstr "Договір (umowa)"
 #: code:addons/fayna_camp_portal/models/commercial.py:0
 #, python-format
 msgid "Unable to generate a unique BANDA code after %s tries."
-msgstr "Unable до generate unique BANDcode after %s tries."
+msgstr "Не вдалося згенерувати унікальний код BANDA після %s спроб."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -18418,7 +18418,7 @@ msgstr "Одиниця"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_meal_plan_line__unit
 #, python-format
 msgid "Unit of measure (kg, l, pcs, portions …). Free text for flexibility."
-msgstr "Unit of measure (kg, l, pcs, portions …). Free text для flexibility."
+msgstr "Одиниця виміру (кг, л, шт, порції …). Вільний текст для гнучкості."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -18457,7 +18457,7 @@ msgstr "Терміново"
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__barcode
 msgid "Use a barcode to identify this contact."
-msgstr "Use barcode до identify this contact."
+msgstr "Використовуйте штрих-код для ідентифікації цього контакту."
 
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_res_users
@@ -18733,7 +18733,7 @@ msgstr "Умови оплати постачальника"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_incident_report__witness_statement
 #, python-format
 msgid "Verbatim statement from the witness. Embedded in Protokół PDF."
-msgstr "Verbatim statement з witness. Embedded in Proдоkół PDF."
+msgstr "Дослівне свідчення свідка. Вбудовується в Protokół PDF."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -18749,7 +18749,7 @@ msgstr "Версія"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_program_wypoczynku__version
 #, python-format
 msgid "Version number — incremented each time the program is reset to draft."
-msgstr "Version number — incremented each time program is reset до draft."
+msgstr "Номер версії — збільшується щоразу, коли програму повертають у чернетку."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__vies_vat_to_check
@@ -18840,7 +18840,7 @@ msgstr "Погодні умови"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_daily_report__weather
 #, python-format
 msgid "Weather conditions for the day (e.g. 'Sunny, 22°C')."
-msgstr "Weather conditions для day (e.g. 'Sunny, 22°C')."
+msgstr "Погодні умови за день (напр. «Сонячно, 22°C»)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -18937,7 +18937,7 @@ msgstr "URL сайту"
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_vozhatyi_training__website_message_ids
 #: model:ir.model.fields,help:fayna_camp_portal.field_vozhatyi_training_record__website_message_ids
 msgid "Website communication history"
-msgstr "Website communication hisдоry"
+msgstr "Історія комунікації через сайт"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__website_meta_description
@@ -18965,7 +18965,7 @@ msgstr "OpenGraph-зображення сайту"
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_camp_dziennik_plan_line__week_number
 #, python-format
 msgid "Week number within the camp shift (1, 2, 3, ...)."
-msgstr "Week number зin camp shift (1, 2, 3, ...)."
+msgstr "Номер тижня в межах заїзду (1, 2, 3, ...)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -19025,7 +19025,7 @@ msgstr "Якщо True — це запасний варіант програми 
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_program__is_published
 #, python-format
 msgid "When True, this program is visible to portal users (parents)."
-msgstr "When True, this program is visible до portal users (parents)."
+msgstr "Якщо ввімкнено (True), програму видно користувачам порталу (батькам)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -19081,7 +19081,7 @@ msgstr ""
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_story__publish_date
 msgid "When story was published to parents"
-msgstr "When sдоry was published до parents"
+msgstr "Коли історію опубліковано для батьків"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -19159,7 +19159,7 @@ msgstr "Який план виконано"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_admin_access_log__impersonated_role
 #, python-format
 msgid "Which role the Organizator viewed the system as."
-msgstr "Which role Organizaдоr viewed system as."
+msgstr "У якій ролі Organizator переглядав систему."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -19184,7 +19184,7 @@ msgstr "Which variant of schedule was executed due до weather/circumstances."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_program__weather_plan
 #, python-format
 msgid "Which weather-variant plan is in effect for this day."
-msgstr "Which weather-variant plis in effect для this day."
+msgstr "Який погодний варіант плану діє цього дня."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__product_template__camp_season__winter
@@ -19215,7 +19215,7 @@ msgstr "Висновки розслідування нещасного випа�
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_kuratorium_notification__state
 #, python-format
 msgid "Workflow state of the notification in the Kuratorium process."
-msgstr "Workflow state of notification in Kuraдоrium process."
+msgstr "Стан повідомлення в процесі Kuratorium."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__payment_earliest_due_date
@@ -19326,14 +19326,14 @@ msgstr "Жовтий"
 #: code:addons/fayna_camp_portal/models/commercial.py:0
 #, python-format
 msgid "You cannot change the status of this request."
-msgstr "You можеnot change status of this request."
+msgstr "Ви не можете змінити статус цього запиту."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/commercial.py:0
 #, python-format
 msgid "You cannot redeem your own BANDA code."
-msgstr "You можеnot redeem your own BANDcode."
+msgstr "Не можна використати власний код BANDA."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_incident_action__action_type__evidence_secured
@@ -19541,12 +19541,12 @@ msgstr "ZgłoszeniKuraдоrium"
 #: model:ir.model.fields,help:fayna_camp_portal.field_event_event__kuratorium_notification_ids
 #, python-format
 msgid "Zgłoszenia wypoczynku submitted to Kuratorium Oświaty for this shift."
-msgstr "Zgłoszeniwypoczynku submitted до Kuraдоrium Oświaty для this shift."
+msgstr "Zgłoszenia wypoczynku, подані до Kuratorium Oświaty для цього заїзду."
 
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_camp_kuratorium_notification
 msgid "Zgłoszenie Wypoczynku do Kuratorium Oświaty"
-msgstr "Zgłoszenie Wypoczynku do Kuraдоrium Oświaty"
+msgstr "Zgłoszenie wypoczynku до Kuratorium Oświaty"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_kuratorium_notification__vacation_form__zimowisko
@@ -19670,7 +19670,7 @@ msgstr "напр. 'Сонячно, 22°C' або 'Дощ, 18°C'."
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_transport__departure_location
 msgid "e.g. 'Warszawa Centralna'"
-msgstr "напр. 'Warszawa Centralna'"
+msgstr "напр. «Варшава Центральна»"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__slide_channel_ids
@@ -20916,7 +20916,7 @@ msgstr "📨 Надіслати"
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_form_inherit_sms
 msgid "📨 Send SMS to my group"
-msgstr "📨 Send SMS до my group"
+msgstr "📨 Надіслати SMS моїй групі"
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.admin_dashboard
@@ -20926,7 +20926,7 @@ msgstr "🔐 Audit (RODO ст.30)"
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_sms_log_form
 msgid "🔒 Immutable record — RODO + PL law (7-year retention)."
-msgstr "🔒 Immutable record — RODO + PL закон (7-year збереження)."
+msgstr "🔒 Незмінний запис — RODO + польське законодавство (зберігання 7 років)."
 
 #. module: fayna_camp_portal
 #: model:sms.template,body:fayna_camp_portal.sms_template_default_critical
@@ -21542,7 +21542,7 @@ msgstr "Найнято через вакансію «%(vacancy)s»."
 #: code:addons/fayna_camp_portal/models/staffing.py:0
 #, python-format
 msgid "Zatrudniono: %(name)s (camp.staff draft — czeka na weryfikację KRK/RSPTS)."
-msgstr "Найнято: %(name)s (camp.staff draft — чекає на верифікацію KRK/RSPTS)."
+msgstr "Найнято: %(name)s (чернетка camp.staff — очікує перевірки KRK/RSPTS)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -21634,7 +21634,7 @@ msgstr "Є кандидат"
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_form
 msgid "Zatrudnij (draft staff)"
-msgstr "Найняти (draft staff)"
+msgstr "Найняти (чернетка кадри)"
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_form
@@ -21998,21 +21998,21 @@ msgstr "10. Особа, що здійснювала нагляд"
 #: code:addons/fayna_camp_portal/models/incident_card.py:0
 #, python-format
 msgid "Cannot confirm Karta Wypadku — missing: %(fields)s"
-msgstr "Неможливо затвердити Karta Wypadku — бракує: %(fields)s"
+msgstr "Не можна підтвердити картку нещасного випадку — відсутні: %(fields)s"
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/incident_card.py:0
 #, python-format
 msgid "Confirmed Karta Wypadku is frozen (legal evidence) — cannot modify: %(fields)s"
-msgstr "Затверджена Karta Wypadku заморожена (юридичний доказ) — не можна змінити: %(fields)s"
+msgstr "Підтверджену картку нещасного випадку заморожено (юридичний доказ) — не можна змінювати: %(fields)s"
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/incident_card.py:0
 #, python-format
 msgid "Confirmed Karta Wypadku cannot be deleted (legal evidence retention). Only draft cards may be removed."
-msgstr "Затверджену Karta Wypadku не можна видалити (зберігання юридичних доказів). Видаляти можна лише чернетки."
+msgstr "Підтверджену картку нещасного випадку не можна видалити (зберігання юридичних доказів). Видаляти можна лише чернетки."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_register__line_ids
@@ -22155,7 +22155,7 @@ msgstr "Немає карток нещасних випадків"
 #. module: fayna_camp_portal
 #: model_terms:ir.actions.act_window,help:fayna_camp_portal.action_camp_incident_card
 msgid "Karta Wypadku — oficjalny wzór 16 punktów (kurs kierownika\n                    wypoczynku). Po zatwierdzeniu karta trafia automatycznie do\n                    Rejestru Wypadków turnusu."
-msgstr "Karta Wypadku — офіційний зразок із 16 пунктів (курс керівника табору). Після затвердження картка автоматично потрапляє до Реєстру нещасних випадків заїзду."
+msgstr "Картка нещасного випадку — офіційний wzór із 16 пунктів (курс керівника табору). Після затвердження картка автоматично потрапляє до Реєстру нещасних випадків заїзду."
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
@@ -22741,7 +22741,7 @@ msgstr "Змінні витрати (план)"
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__contribution_margin
 msgid "Contribution margin / dziecko"
-msgstr "Contribution margin / дитина"
+msgstr "Маржинальний прибуток / дитина"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__bep_children
