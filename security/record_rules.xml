@@ -401,5 +401,30 @@
             <field name="perm_unlink" eval="False"/>
         </record>
 
+
+        <!-- ─── camp.budget (фінанси, R8) — sprint 2026-06-10 ─────────── -->
+
+        <record id="rule_camp_budget_kierownik_own" model="ir.rule">
+            <field name="name">Kierownik: budget of own camp (read-only)</field>
+            <field name="model_id" ref="model_camp_budget"/>
+            <field name="groups" eval="[(4, ref('group_camp_kierownik'))]"/>
+            <field name="domain_force">['|', ('event_id.user_id', '=', user.id), ('event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_camp_budget_line_kierownik_own_no_salary" model="ir.rule">
+            <field name="name">Kierownik: budget lines of own camp, salary lines hidden</field>
+            <field name="model_id" ref="model_camp_budget_line"/>
+            <field name="groups" eval="[(4, ref('group_camp_kierownik'))]"/>
+            <field name="domain_force">['&amp;', ('category_id.is_salary', '=', False), '|', ('budget_id.event_id.user_id', '=', user.id), ('budget_id.event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
     </data>
 </odoo>

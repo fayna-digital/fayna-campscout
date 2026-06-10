@@ -227,5 +227,20 @@
             </field>
         </record>
 
+
+        <!-- Księgowa / Finanse — кабінет №7 (sprint 2026-06-10, TZ §5).
+             Read-only фінансові дашборди/звіти + експорт; бюджети редагує
+             organizator/admin. Зарплатні рядки бачить лише ця група+admin
+             (record rule is_salary у rules_budget). -->
+        <record id="group_camp_finance" model="res.groups">
+            <field name="name">Camp Finance (Księgowa)</field>
+            <field name="category_id" ref="module_category_fayna_camp_portal"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">
+                Finance cabinet — budgets (BEP, marża VAT art.119 vs business
+                margin incl. advertising), zestawienia for the accountant.
+            </field>
+        </record>
+
     </data>
 </odoo>
