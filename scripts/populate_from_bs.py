@@ -24,6 +24,12 @@ def parse_bs_date(raw):
     if not raw:
         return False
     raw = raw.strip()
+    m = re.fullmatch(r"(\d{4})-(\d{2})-(\d{2})", raw)  # ISO (4-й формат, INC 11.06)
+    if m:
+        try:
+            return date(int(m[1]), int(m[2]), int(m[3]))
+        except ValueError:
+            return False
     m = re.fullmatch(r"(\d{1,2})\.(\d{1,2})\.(\d{4})", raw)
     if m:
         d, mo, y = int(m[1]), int(m[2]), int(m[3])
