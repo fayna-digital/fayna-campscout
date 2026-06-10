@@ -64,3 +64,6 @@ from . import budget  # noqa: E402,I001
 
 # Regulaminy + Teczka KO — sprint 2026-06-10 §4.
 from . import regulamin, teczka_ko  # noqa: E402,I001
+
+# Автоштат §2 + вакансії (R13) — sprint 2026-06-10 §6.
+from . import staffing  # noqa: E402,I001

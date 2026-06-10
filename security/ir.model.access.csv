@@ -208,3 +208,7 @@ access_camp_regulamin_ack_instructor,camp.regulamin.ack instructor,model_camp_re
 access_camp_teczka_ko_admin,camp.teczka.ko admin,model_camp_teczka_ko,base.group_system,1,1,1,1
 access_camp_teczka_ko_organizator,camp.teczka.ko organizator,model_camp_teczka_ko,fayna_camp_portal.group_camp_organizator,1,1,1,1
 access_camp_teczka_ko_kierownik,camp.teczka.ko kierownik,model_camp_teczka_ko,fayna_camp_portal.group_camp_kierownik,1,0,0,0
+access_camp_staff_vacancy_kierownik,camp.staff.vacancy kierownik,model_camp_staff_vacancy,fayna_camp_portal.group_camp_kierownik,1,0,0,0
+access_camp_staff_vacancy_organizator,camp.staff.vacancy organizator,model_camp_staff_vacancy,fayna_camp_portal.group_camp_organizator,1,1,1,1
+access_camp_staff_vacancy_admin,camp.staff.vacancy admin,model_camp_staff_vacancy,fayna_camp_portal.group_camp_admin,1,1,1,1
+access_camp_staff_vacancy_hr,camp.staff.vacancy hr,model_camp_staff_vacancy,fayna_camp_portal.group_camp_hr,1,1,1,0

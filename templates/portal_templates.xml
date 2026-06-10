@@ -710,5 +710,22 @@
      of TZ §9 (merge fayna_camp_qualification templates) when the local
      portal_participant_detail template exists in fayna_camp_portal. -->
 
+<!-- ============================================================================
+     «Dzień w obozie» button next to each ACTIVE registration in the home
+     hero (cs-active-camp banner). Additive inherit only — the base hero
+     template above is not modified. Page itself: templates/portal_camp_day.xml,
+     route /my/camp-day/<event_id> (controllers/portal.py).
+     ============================================================================ -->
+
+<template id="portal_my_home_active_reg_camp_day" inherit_id="fayna_camp_portal.portal_my_home_campscout_hero" priority="30">
+    <xpath expr="//div[hasclass('cs-active-camp')]//div[hasclass('flex-grow-1')]" position="inside">
+        <div class="mt-2">
+            <a t-attf-href="/my/camp-day/#{reg.event_id.id}" class="btn btn-sm btn-outline-success">
+                &#127774; Dzień w obozie &#8594;
+            </a>
+        </div>
+    </xpath>
+</template>
+
 
 </odoo>

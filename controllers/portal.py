@@ -1,11 +1,27 @@
 import logging
 from datetime import datetime
 
+from odoo import fields as odoo_fields
 from odoo import http
 from odoo.addons.portal.controllers.portal import CustomerPortal
 from odoo.exceptions import AccessError, MissingError
 
 _logger = logging.getLogger(__name__)
+
+# Strict whitelist of camp.daily.report fields exposed to parents on
+# /my/camp-day. Service fields (health_incidents, discipline_notes,
+# staff_count_present, kierownik_notes, medical_notes, incidents, …)
+# MUST NEVER be added here — the route reads via sudo(), so this list
+# is the only barrier between staff-only data and the parent portal.
+CAMP_DAY_PUBLIC_REPORT_FIELDS = (
+    "report_date",
+    "weather",
+    "weather_condition",
+    "morning_activities",
+    "afternoon_activities",
+    "evening_activities",
+    "meals_summary",
+)
 
 
 class CampscoutPortal(CustomerPortal):
@@ -67,6 +83,13 @@ class CampscoutPortal(CustomerPortal):
             lambda r: r.event_id.date_begin and r.event_id.date_begin > now
         ).sorted(key=lambda r: r.event_id.date_begin)
 
+        # Target event for the «Dzień w obozie» home card: the camp a child
+        # is at right now; otherwise the most recently started past camp.
+        past_regs = regs.filtered(
+            lambda r: r.event_id.date_begin and r.event_id.date_begin <= now
+        ).sorted(key=lambda r: r.event_id.date_begin, reverse=True)
+        camp_day_event = (active_regs[:1] or past_regs[:1]).event_id
+
         is_parent_only = (
             user.has_group("base.group_portal")
             and not user.has_group("base.group_user")
@@ -95,6 +118,7 @@ class CampscoutPortal(CustomerPortal):
             "cs_today": now.date(),
             "cs_parent_only": is_parent_only,
             "cs_upcoming_camps": cs_upcoming_camps,
+            "cs_camp_day_event": camp_day_event,
         }
 
     def _prepare_home_portal_values(self, counters):
@@ -117,6 +141,26 @@ class CampscoutPortal(CustomerPortal):
                 values["stories_count"] = env_sudo["camp.story"].search_count(domain)
             except (AccessError, MissingError, KeyError):
                 values["stories_count"] = 0
+
+        if "camp_day_count" in counters:
+            try:
+                event_ids = (
+                    env_sudo["event.registration"]
+                    .search([("partner_id", "=", partner.id), ("state", "!=", "cancel")])
+                    .mapped("event_id")
+                    .ids
+                )
+                if event_ids:
+                    values["camp_day_count"] = env_sudo["camp.daily.report"].search_count(
+                        [
+                            ("event_id", "in", event_ids),
+                            ("state", "in", ["submitted", "approved"]),
+                        ]
+                    )
+                else:
+                    values["camp_day_count"] = 0
+            except (AccessError, MissingError, KeyError):
+                values["camp_day_count"] = 0
 
         if "documents_count" in counters:
             try:
@@ -333,5 +377,128 @@ class CampscoutPortal(CustomerPortal):
             {
                 "transport": transport_sudo,
                 "page_name": "transport",
+            },
+        )
+
+    # ──────────────────────────────────────────────────────────────────────
+    # /my/camp-day — «Dzień w obozie» (TZ_SPRINT_2026-06-10 §7)
+    # ──────────────────────────────────────────────────────────────────────
+
+    def _get_parent_camp_events(self):
+        """Events of all non-cancelled registrations of the current partner.
+
+        Same access pattern as the /my hero and /my/stories: sudo() with an
+        explicit `partner_id` scope (portal users have no read access on
+        event.event / event.registration core models).
+        """
+        partner = http.request.env.user.partner_id
+        env_sudo = http.request.env(su=True)
+        regs = env_sudo["event.registration"].search(
+            [("partner_id", "=", partner.id), ("state", "!=", "cancel")]
+        )
+        return regs.mapped("event_id")
+
+    @http.route(["/my/camp-day/<int:event_id>"], type="http", auth="user", website=True)
+    def portal_my_camp_day(self, event_id, date=None, **kw):
+        """«Dzień w obozie» — per-day weather, activities, meals and photos.
+
+        Access gate: the event must belong to a registration of THIS parent
+        (children of the current user) — otherwise redirect to /my. Data is
+        read via sudo(), therefore:
+
+        * camp.story — filtered MANUALLY to state=published AND public=True
+          AND this event (do not rely on rule_story_portal_own_events: the
+          record rule does not apply under sudo).
+        * camp.daily.report — only the CAMP_DAY_PUBLIC_REPORT_FIELDS
+          whitelist is copied into plain dicts; the recordset itself is
+          never passed to the template, so service fields (health_incidents,
+          staff_count_present, kierownik_notes, medical_notes, …) physically
+          cannot leak into the rendered page.
+        """
+        env_sudo = http.request.env(su=True)
+
+        # 1) Access gate — event must be one of this parent's registrations
+        try:
+            allowed_events = self._get_parent_camp_events()
+        except (AccessError, MissingError) as e:
+            _logger.warning("[CS-CAMPDAY] parent events load failed: %s", e)
+            return http.request.redirect("/my")
+        if event_id not in allowed_events.ids:
+            return http.request.redirect("/my")
+        event = env_sudo["event.event"].browse(event_id)
+
+        # 2) Published public stories of this event (manual filter — sudo!)
+        stories = env_sudo["camp.story"].search(
+            [
+                ("event_id", "=", event_id),
+                ("state", "=", "published"),
+                ("public", "=", True),
+            ],
+            order="date desc, id desc",
+        )
+
+        # 3) Daily reports of this event — drafts excluded, whitelist only
+        reports = env_sudo["camp.daily.report"].search(
+            [
+                ("event_id", "=", event_id),
+                ("state", "in", ["submitted", "approved"]),
+            ],
+            order="report_date desc",
+        )
+        report_by_date = {}
+        for rep in reports:
+            report_by_date[rep.report_date] = {
+                field: rep[field] for field in CAMP_DAY_PUBLIC_REPORT_FIELDS
+            }
+
+        # 4) Photos of the day — attachments served via /web/image with an
+        #    access token (portal users have no direct ACL on staff-uploaded
+        #    ir.attachment records).
+        stories_by_date = {}
+        for story in stories:
+            photos = []
+            attachments = story.photo_ids
+            if attachments:
+                tokens = attachments.generate_access_token()
+                for att, token in zip(attachments, tokens, strict=False):
+                    photos.append(
+                        {
+                            "name": att.name or "",
+                            "url": "/web/image/%s?access_token=%s" % (att.id, token),
+                        }
+                    )
+            stories_by_date.setdefault(story.date, []).append(
+                {"id": story.id, "title": story.title, "photos": photos}
+            )
+
+        # 5) Group by date, newest day first; ?date=YYYY-MM-DD selects one day
+        all_dates = sorted(set(report_by_date) | set(stories_by_date), reverse=True)
+        selected_date = None
+        if date:
+            try:
+                candidate = odoo_fields.Date.from_string(date)
+                if candidate in all_dates:
+                    selected_date = candidate
+            except ValueError:
+                selected_date = None
+
+        days = [
+            {
+                "date": day,
+                "report": report_by_date.get(day),
+                "stories": stories_by_date.get(day, []),
+            }
+            for day in all_dates
+            if not selected_date or day == selected_date
+        ]
+
+        return http.request.render(
+            "fayna_camp_portal.portal_camp_day",
+            {
+                "event": event,
+                "days": days,
+                "all_dates": all_dates,
+                "selected_date": selected_date,
+                "page_name": "camp_day",
             },
         )

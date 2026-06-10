@@ -506,5 +506,19 @@
             <field name="perm_unlink" eval="False"/>
         </record>
 
+
+        <!-- ─── staffing/vacancy §6 — sprint 2026-06-10 ───────────────── -->
+
+        <record id="rule_staff_vacancy_kierownik_own_event" model="ir.rule">
+            <field name="name">Staff vacancy: kierownik — own event only</field>
+            <field name="model_id" ref="model_camp_staff_vacancy"/>
+            <field name="groups" eval="[(4, ref('group_camp_kierownik'))]"/>
+            <field name="domain_force">['|', ('event_id.user_id', '=', user.id), ('event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
     </data>
 </odoo>
