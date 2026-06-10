@@ -1426,10 +1426,11 @@ class CampParticipant(models.Model):
         # LOOP-E: birth_date більше не required на create (чернетки з голих
         # реєстрацій), але юридично картка БЕЗ дати народження не підписується.
         for rec in self:
-            if rec.qualification_signed and not rec.birth_date:
+            # migration_needs_review: підпис історичний (PDF з checkout існує),
+            # дата не розпарсилась — гейт пропускає, дату дозаповнить людина
+            if rec.qualification_signed and not rec.birth_date and not rec.migration_needs_review:
                 raise ValidationError(
-                    _("Date of birth is required before the qualification card is signed. "
-                      "Потрібна дата народження для підпису.")
+                    _("Date of birth is required before the qualification card is signed.")
                 )
 
     # --- res.partner core-plumbing overrides -----------------------------

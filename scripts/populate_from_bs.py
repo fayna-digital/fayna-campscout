@@ -116,12 +116,16 @@ for so in orders:
             # savepoint: SQL-помилка однієї ітерації не ламає всю транзакцію
             # (InFailedSqlTransaction — INC staging 11.06)
             with env.cr.savepoint():  # noqa: F821
-                if not birth and so.bs_birth_date:
-                    # дата не розпарсилась — зберегти сирий текст, не губити
-                    vals["special_needs"] = (
-                        (vals.get("special_needs") or "")
-                        + f"\n[migracja] data urodzenia (raw): {so.bs_birth_date}"
-                    ).strip()
+                if not birth:
+                    # дата відсутня/не розпарсилась — НЕ вигадувати: прапорець
+                    # на ручну перевірку (гейт підпису його пропускає)
+                    vals["migration_needs_review"] = True
+                    if so.bs_birth_date:
+                        # сирий текст зберегти, не губити
+                        vals["special_needs"] = (
+                            (vals.get("special_needs") or "")
+                            + f"\n[migracja] data urodzenia (raw): {so.bs_birth_date}"
+                        ).strip()
                 child = Participant.create(vals)
                 # bs_qualification_form_pdf = Many2one ir.attachment (integer!)
                 # → копія attachment на учасника (оригінал лишається на SO)
