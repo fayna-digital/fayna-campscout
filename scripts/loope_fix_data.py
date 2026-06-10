@@ -57,7 +57,7 @@ def pesel_parse(p):
         born = date(year, mm, dd)
     except ValueError:
         return None, None
-    gender = "male" if int(p[9]) % 2 else "female"
+    gender = "m" if int(p[9]) % 2 else "f"  # selection: m/f/x (grep!)
     return born, gender
 
 
