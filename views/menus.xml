@@ -4,10 +4,12 @@
 
         <!-- ═══════════════════════════════════════════════════════════════
              Root application menu
+             NOTE i18n (sprint 2026-06-10): menuitem name = kanoniczny polski;
+             tłumaczenia PL/UA żyją w i18n/*.po (model ir.ui.menu).
         ═══════════════════════════════════════════════════════════════ -->
 
         <menuitem id="menu_campscout_root"
-            name="Портал CampScout"
+            name="Portal CampScout"
             sequence="50"
             groups="base.group_user"/>
 
@@ -16,36 +18,36 @@
         ═══════════════════════════════════════════════════════════════ -->
 
         <menuitem id="menu_camp_management"
-            name="Табори"
+            name="Obozy"
             parent="menu_campscout_root"
             sequence="10"/>
 
         <menuitem id="menu_camp_events"
-            name="Заїзди (Events)"
+            name="Turnusy (Events)"
             parent="menu_camp_management"
             action="event.action_event_view"
             sequence="10"/>
 
         <menuitem id="menu_camp_products"
-            name="Програми (Products)"
+            name="Programy (Products)"
             parent="menu_camp_management"
             action="product.product_template_action_all"
             sequence="20"/>
 
         <menuitem id="menu_camp_categories"
-            name="Категорії"
+            name="Kategorie"
             parent="menu_camp_management"
             action="action_camp_category"
             sequence="30"/>
 
         <menuitem id="menu_camp_activities"
-            name="Активності"
+            name="Aktywności"
             parent="menu_camp_management"
             action="action_camp_activity"
             sequence="40"/>
 
         <menuitem id="menu_camp_schedule"
-            name="Розклад"
+            name="Harmonogram"
             parent="menu_camp_management"
             action="action_camp_schedule_entry"
             sequence="50"/>
@@ -55,12 +57,12 @@
         ═══════════════════════════════════════════════════════════════ -->
 
         <menuitem id="menu_participants"
-            name="Учасники"
+            name="Uczestnicy"
             parent="menu_campscout_root"
             sequence="20"/>
 
         <menuitem id="menu_participant_list"
-            name="Кваліфікаційні картки"
+            name="Karty kwalifikacyjne"
             parent="menu_participants"
             action="action_camp_participant"
             sequence="10"/>
@@ -70,18 +72,18 @@
         ═══════════════════════════════════════════════════════════════ -->
 
         <menuitem id="menu_operations"
-            name="Операції"
+            name="Operacje"
             parent="menu_campscout_root"
             sequence="30"/>
 
         <menuitem id="menu_camp_staff"
-            name="Персонал"
+            name="Kadra"
             parent="menu_operations"
             action="action_camp_staff"
             sequence="10"/>
 
         <menuitem id="menu_camp_journal"
-            name="Журнал дня"
+            name="Dziennik dnia"
             parent="menu_operations"
             action="action_camp_journal"
             sequence="20"/>
@@ -168,24 +170,24 @@
         ═══════════════════════════════════════════════════════════════ -->
 
         <menuitem id="menu_nutrition"
-            name="Харчування"
+            name="Żywienie"
             parent="menu_campscout_root"
             sequence="40"/>
 
         <menuitem id="menu_meal_plans"
-            name="Плани харчування"
+            name="Plany żywieniowe"
             parent="menu_nutrition"
             action="action_camp_meal_plan"
             sequence="10"/>
 
         <menuitem id="menu_allergens"
-            name="Алергени"
+            name="Alergeny"
             parent="menu_nutrition"
             action="action_camp_allergen"
             sequence="20"/>
 
         <menuitem id="menu_diet_profiles"
-            name="Дієтичні профілі"
+            name="Profile dietetyczne"
             parent="menu_nutrition"
             action="action_camp_diet_profile"
             sequence="30"/>
@@ -195,13 +197,13 @@
         ═══════════════════════════════════════════════════════════════ -->
 
         <menuitem id="menu_emergency"
-            name="Надзвичайні ситуації"
+            name="Sytuacje nadzwyczajne"
             parent="menu_campscout_root"
             sequence="50"
             groups="fayna_camp_portal.group_emergency_responder"/>
 
         <menuitem id="menu_incidents"
-            name="Протоколи НС"
+            name="Protokoły zdarzeń"
             parent="menu_emergency"
             action="action_camp_incident_report"
             sequence="10"/>
@@ -211,30 +213,30 @@
         ═══════════════════════════════════════════════════════════════ -->
 
         <menuitem id="menu_commercial"
-            name="Комерція"
+            name="Sprzedaż"
             parent="menu_campscout_root"
             sequence="60"/>
 
         <menuitem id="menu_loyalty"
-            name="Програма лояльності"
+            name="Program lojalnościowy"
             parent="menu_commercial"
             action="action_camp_loyalty_participant"
             sequence="10"/>
 
         <menuitem id="menu_support_requests"
-            name="Запити батьків"
+            name="Zgłoszenia rodziców"
             parent="menu_commercial"
             action="action_camp_support_request"
             sequence="20"/>
 
         <menuitem id="menu_installment_plans"
-            name="Розстрочки"
+            name="Plany ratalne"
             parent="menu_commercial"
             action="action_fayna_payment_installment_plan"
             sequence="30"/>
 
         <menuitem id="menu_reviews"
-            name="Відгуки"
+            name="Opinie"
             parent="menu_commercial"
             action="action_camp_review"
             sequence="40"/>
@@ -244,18 +246,18 @@
         ═══════════════════════════════════════════════════════════════ -->
 
         <menuitem id="menu_training"
-            name="Навчання"
+            name="Szkolenia"
             parent="menu_campscout_root"
             sequence="70"/>
 
         <menuitem id="menu_training_courses"
-            name="Курси (eLearning)"
+            name="Kursy (eLearning)"
             parent="menu_training"
             action="website_slides.slide_channel_action_overview"
             sequence="10"/>
 
         <menuitem id="menu_training_records"
-            name="Записи навчання"
+            name="Rejestr szkoleń"
             parent="menu_training"
             action="action_camp_staff_training_record"
             sequence="20"/>
@@ -265,19 +267,19 @@
         ═══════════════════════════════════════════════════════════════ -->
 
         <menuitem id="menu_config"
-            name="Налаштування"
+            name="Konfiguracja"
             parent="menu_campscout_root"
             sequence="90"
             groups="base.group_system"/>
 
         <menuitem id="menu_sms_routing"
-            name="SMS маршрути"
+            name="Reguły routingu SMS"
             parent="menu_config"
             action="action_fayna_sms_routing_rule"
             sequence="10"/>
 
         <menuitem id="menu_sms_templates"
-            name="SMS шаблони"
+            name="Szablony SMS"
             parent="menu_config"
             action="action_camp_sms_template"
             sequence="20"/>
@@ -291,7 +293,7 @@
         <!-- з admin_views.xml: parent menu_config живе тут (фікс чистої -i,
              репетиція міграції 2026-06-10) -->
         <menuitem id="menu_admin_access_log"
-            name="Admin Access Log (RODO)"
+            name="Dziennik dostępu admina (RODO)"
             parent="menu_config"
             action="action_camp_admin_access_log"
             sequence="40"/>

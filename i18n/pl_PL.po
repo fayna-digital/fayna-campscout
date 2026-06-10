@@ -2840,9 +2840,10 @@ msgid "Camp Settings"
 msgstr "Ustawienia wypoczynku"
 
 #. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__event_id
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_discuss_channel__camp_event_id
 msgid "Camp Shift"
-msgstr "Turnus Shift"
+msgstr "Turnus"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_camp_season__event_ids
@@ -3099,6 +3100,11 @@ msgstr "Turnus wypoczynku"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_report__event_id
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff__event_id
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_story__event_id
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_group__event_id
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin__event_id
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin_ack__event_id
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff_vacancy__event_id
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__event_id
 #, python-format
 msgid "Camp shift (event)"
 msgstr "Turnus (event)"
@@ -4098,6 +4104,7 @@ msgid "Close from delivered or disputed only."
 msgstr "Zamknij from delivered or disputed only."
 
 #. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_staff_vacancy__state__closed
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_support_request__state__closed
 msgid "Closed"
 msgstr "Zamknięte"
@@ -6077,6 +6084,7 @@ msgstr "Dziennik zajęć — single activity entry"
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/camp.py:0
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__dziennik_count
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_event_event__dziennik_ids
 #, python-format
 msgid "Dzienniki zajęć"
@@ -8471,6 +8479,7 @@ msgstr "Installments"
 #: code:addons/fayna_camp_portal/models/admin_access_log.py:0
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_vozhatyi_training__instructor_id
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_admin_access_log__impersonated_role__instructor
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_staff_vacancy__role__instructor
 #, python-format
 msgid "Instructor"
 msgstr "Instruktor"
@@ -8968,6 +8977,7 @@ msgstr "Kierownik signature required before submit."
 #: code:addons/fayna_camp_portal/models/operations.py:0
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_kuratorium_notification__kierownik_id
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_kuratorium_staff__role__kierownik
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_staff_vacancy__role__kierownik
 #, python-format
 msgid "Kierownik wypoczynku"
 msgstr "Kierownik wypoczynku"
@@ -10700,6 +10710,8 @@ msgstr "My stories"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_transport__name
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_camp_season__name
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_payment_installment__name
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff_vacancy__name
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__name
 #, python-format
 msgid "Name"
 msgstr "Nazwa"
@@ -11855,6 +11867,8 @@ msgstr "Oparzenie"
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_report_search
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_staff_vacancy__state__open
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_search
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_support_request_search
 msgid "Open"
 msgstr "Otwarte"
@@ -12573,6 +12587,8 @@ msgstr "Uczestnik spotlight"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_meal_plan__participant_count
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__participant_count
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_transport__participant_ids
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_group__participant_ids
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_group_form
 #, python-format
 msgid "Participants"
 msgstr "Uczestnicy"
@@ -15241,6 +15257,8 @@ msgstr "Szukaj Historie"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_product_product__camp_season
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__camp_season_id
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff_cert__season_id
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_product_template__camp_season
 msgid "Season"
 msgstr "Sezon"
@@ -16417,6 +16435,8 @@ msgstr "Stats Migawka"
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.fayna_vozhatyi_certificate_search
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.fayna_vozhatyi_training_search
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.vozhatyi_training_record_search
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin__state
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff_vacancy__state
 #, python-format
 msgid "Status"
 msgstr "Status"
@@ -16897,6 +16917,7 @@ msgid "Sytuacja psychologiczna"
 msgstr "Sytuacja psychologiczna"
 
 #. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_incident_card__state__draft
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_nutrition__state__draft
 msgid "Szkic"
 msgstr "Szkic"
@@ -17755,6 +17776,7 @@ msgstr "Timezone offset"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_review__title
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_story__title
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_story_search
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin__name
 #, python-format
 msgid "Title"
 msgstr "Tytuł"
@@ -18312,6 +18334,7 @@ msgstr "Typ obozu"
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.fayna_vozhatyi_training_search
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_sms_template_search
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_support_request_search
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin__regulamin_type
 #, python-format
 msgid "Type"
 msgstr "Typ"
@@ -19326,6 +19349,7 @@ msgstr "Wszystkie pozycje"
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_kuratorium_staff__role__wychowawca
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__fayna_camp_dziennik_activity__author_role__wychowawca
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__fayna_vozhatyi_certificate__cert_type__wychowawca
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_staff_vacancy__role__wychowawca
 #, python-format
 msgid "Wychowawca"
 msgstr "Wychowawca"
@@ -19357,6 +19381,9 @@ msgid "Wychowawca SMS broadcast log (RODO + cost audit)"
 msgstr "Wychowawca Rozgłaszanie SMS log (RODO + cost audit)"
 
 #. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_group__wychowawca_ids
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_search
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_event_form_staffing
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_fayna_camp_dziennik_form
 msgid "Wychowawcy"
 msgstr "Wychowawcy"
@@ -21056,3 +21083,2270 @@ msgstr "🥶 <strong>Silver</strong> — 2+ заїзди (2% знижка)"
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_loyalty
 msgid "🦫 <strong>Platinum</strong> — 10+ заїздів (7% знижка)"
 msgstr "🦫 <strong>Platinum</strong> — 10+ заїздів (7% знижка)"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_campscout_root
+msgid "Portal CampScout"
+msgstr "Portal CampScout"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_management
+msgid "Obozy"
+msgstr "Obozy"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_events
+msgid "Turnusy (Events)"
+msgstr "Turnusy (Events)"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_products
+msgid "Programy (Products)"
+msgstr "Programy (Products)"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_categories
+msgid "Kategorie"
+msgstr "Kategorie"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_activities
+msgid "Aktywności"
+msgstr "Aktywności"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_schedule
+msgid "Harmonogram"
+msgstr "Harmonogram"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_participants
+msgid "Uczestnicy"
+msgstr "Uczestnicy"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_participant_list
+msgid "Karty kwalifikacyjne"
+msgstr "Karty kwalifikacyjne"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_operations
+msgid "Operacje"
+msgstr "Operacje"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_journal
+msgid "Dziennik dnia"
+msgstr "Dziennik dnia"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_groups
+msgid "Grupy wychowawcze (§2)"
+msgstr "Grupy wychowawcze (§2)"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_incident_card
+msgid "Karty Wypadku (§11)"
+msgstr "Karty Wypadku (§11)"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_incident_register
+msgid "Rejestr Wypadków (§12)"
+msgstr "Rejestr Wypadków (§12)"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.camp_regulamin_action
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_regulaminy
+msgid "Regulaminy"
+msgstr "Regulaminy"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.camp_regulamin_ack_action
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_regulamin_acks
+msgid "Podpisy regulaminów"
+msgstr "Podpisy regulaminów"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_teczka_ko
+msgid "Teczka kontroli KO"
+msgstr "Teczka kontroli KO"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_finance
+msgid "Finanse"
+msgstr "Finanse"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_budget
+msgid "Budżety obozów (BEP / marże)"
+msgstr "Budżety obozów (BEP / marże)"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_budget_category
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_budget_category
+msgid "Kategorie kosztów"
+msgstr "Kategorie kosztów"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_nutrition
+msgid "Żywienie"
+msgstr "Żywienie"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_meal_plans
+msgid "Plany żywieniowe"
+msgstr "Plany żywieniowe"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_allergens
+msgid "Alergeny"
+msgstr "Alergeny"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_diet_profiles
+msgid "Profile dietetyczne"
+msgstr "Profile dietetyczne"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_emergency
+msgid "Sytuacje nadzwyczajne"
+msgstr "Sytuacje nadzwyczajne"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_incidents
+msgid "Protokoły zdarzeń"
+msgstr "Protokoły zdarzeń"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_commercial
+msgid "Sprzedaż"
+msgstr "Sprzedaż"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_loyalty
+msgid "Program lojalnościowy"
+msgstr "Program lojalnościowy"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_support_requests
+msgid "Zgłoszenia rodziców"
+msgstr "Zgłoszenia rodziców"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_installment_plans
+msgid "Plany ratalne"
+msgstr "Plany ratalne"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_reviews
+msgid "Opinie"
+msgstr "Opinie"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_training
+msgid "Szkolenia"
+msgstr "Szkolenia"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_training_courses
+msgid "Kursy (eLearning)"
+msgstr "Kursy (eLearning)"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_training_records
+msgid "Rejestr szkoleń"
+msgstr "Rejestr szkoleń"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_config
+msgid "Konfiguracja"
+msgstr "Konfiguracja"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_sms_routing
+msgid "Reguły routingu SMS"
+msgstr "Reguły routingu SMS"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_sms_templates
+msgid "Szablony SMS"
+msgstr "Szablony SMS"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_admin_access_log
+msgid "Dziennik dostępu admina (RODO)"
+msgstr "Dziennik dostępu admina (RODO)"
+
+#. module: fayna_camp_portal
+#: model:ir.model,name:fayna_camp_portal.model_camp_group
+msgid "Grupa wychowawcza (art. 92c)"
+msgstr "Grupa wychowawcza (art. 92c)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_group__name
+msgid "Group name"
+msgstr "Nazwa grupy"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_group__participant_count
+msgid "# participants"
+msgstr "Liczba uczestników"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_group__has_under_10
+msgid "Has children under 10"
+msgstr "Są dzieci poniżej 10 lat"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_group__capacity_limit
+msgid "Legal capacity limit"
+msgstr "Ustawowy limit liczebności"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_group__disabled_count
+msgid "# special needs"
+msgstr "Liczba uczestników z niepełnosprawnością"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__group_id
+msgid "Grupa wychowawcza"
+msgstr "Grupa wychowawcza"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__has_disability
+msgid "Niepełnosprawność / przewlekła choroba (§2)"
+msgstr "Niepełnosprawność / przewlekła choroba (§2)"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/camp_group.py:0
+#, python-format
+msgid "Group '%(group)s' would have %(count)s participants — above the legal limit of %(limit)s. Art. 92c ust. 2 pkt 1 ustawy o systemie oświaty: max 20 participants per wychowawca group, max 15 when the group includes a child under 10 years old."
+msgstr "Grupa '%(group)s' liczyłaby %(count)s uczestników — powyżej ustawowego limitu %(limit)s. Art. 92c ust. 2 pkt 1 ustawy o systemie oświaty: maks. 20 uczestników w grupie wychowawczej, maks. 15, gdy w grupie jest dziecko poniżej 10 lat."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/camp_group.py:0
+#, python-format
+msgid "Group '%(group)s' would have %(count)s participants with special/disability needs — at most %(limit)s are allowed per wychowawca group (§2, art. 92c)."
+msgstr "Grupa '%(group)s' liczyłaby %(count)s uczestników ze specjalnymi potrzebami / niepełnosprawnością — w grupie wychowawczej dopuszczalnych jest najwyżej %(limit)s (§2, art. 92c)."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/camp_group.py:0
+#, python-format
+msgid "Participants %(children)s are not registered to camp shift '%(event)s' — a child can only be assigned to a wychowawca group of their own shift."
+msgstr "Uczestnicy %(children)s nie są zapisani na turnus '%(event)s' — dziecko można przypisać wyłącznie do grupy wychowawczej własnego turnusu."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/camp_group.py:0
+#, python-format
+msgid " (under 10)"
+msgstr " (poniżej 10 lat)"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/camp_group.py:0
+#, python-format
+msgid "Group %(no)s%(suffix)s"
+msgstr "Grupa %(no)s%(suffix)s"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/camp_group.py:0
+#, python-format
+msgid "Groups — %(event)s"
+msgstr "Grupy — %(event)s"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_group_tree
+msgid "Limit (art. 92c)"
+msgstr "Limit (art. 92c)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_group_form
+msgid "Auto-split unassigned children"
+msgstr "Auto-podział nieprzypisanych dzieci"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_group_form
+msgid "Distribute the remaining unassigned children of this camp shift into age-based groups (under-10 separately, limits 15/20 per art. 92c)."
+msgstr "Rozdziela pozostałe nieprzypisane dzieci tego turnusu na grupy wiekowe (poniżej 10 lat osobno, limity 15/20 wg art. 92c)."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_group_form
+msgid "e.g. Grupa A"
+msgstr "np. Grupa A"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_group_kanban
+msgid "Includes children under 10 — limit 15 (art. 92c)"
+msgstr "W grupie są dzieci poniżej 10 lat — limit 15 (art. 92c)"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_group
+msgid "Grupy wychowawcze"
+msgstr "Grupy wychowawcze"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.actions.act_window,help:fayna_camp_portal.action_camp_group
+msgid "Create a wychowawca group"
+msgstr "Utwórz grupę wychowawczą"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.actions.act_window,help:fayna_camp_portal.action_camp_group
+msgid "Art. 92c: max 20 children per group, max 15 when the group\n                    includes a child under 10. Use the auto-split button to\n                    distribute unassigned children of a shift by age."
+msgstr "Art. 92c: maks. 20 dzieci w grupie, maks. 15, gdy w grupie jest dziecko poniżej 10 lat. Użyj przycisku auto-podziału, aby rozdzielić nieprzypisane dzieci turnusu według wieku."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_camp_day
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_my_home_camp_day
+msgid "Dzień w obozie"
+msgstr "Dzień w obozie"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_camp_day
+msgid "Wszystkie dni"
+msgstr "Wszystkie dni"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_camp_day
+msgid "Jeszcze cicho"
+msgstr "Jeszcze cicho"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_camp_day
+msgid "Relacje z dnia pojawią się tutaj, gdy tylko kadra opublikuje\n                    pierwszy raport dnia lub zdjęcia."
+msgstr "Relacje z dnia pojawią się tutaj, gdy tylko kadra opublikuje pierwszy raport dnia lub zdjęcia."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_camp_day
+msgid "☀️ Słonecznie"
+msgstr "☀️ Słonecznie"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_camp_day
+msgid "☁️ Pochmurno"
+msgstr "☁️ Pochmurno"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_camp_day
+msgid "🌧️ Deszczowo"
+msgstr "🌧️ Deszczowo"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_camp_day
+msgid "⛈️ Burza"
+msgstr "⛈️ Burza"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_camp_day
+msgid "🌅 Poranek"
+msgstr "🌅 Poranek"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_camp_day
+msgid "☀️ Popołudnie"
+msgstr "☀️ Popołudnie"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_camp_day
+msgid "🌙 Wieczór"
+msgstr "🌙 Wieczór"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_camp_day
+msgid "🍽️ Posiłki"
+msgstr "🍽️ Posiłki"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.report,name:fayna_camp_portal.action_report_teczka_ko_checklist
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__overall_ready
+msgid "Gotowość do kontroli KO"
+msgstr "Gotowość do kontroli KO"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.report,name:fayna_camp_portal.action_report_camp_budget
+msgid "Zestawienie obozu (budżet)"
+msgstr "Zestawienie obozu (budżet)"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.report,name:fayna_camp_portal.action_report_season_budgets
+msgid "Zestawienie obozów (sezon)"
+msgstr "Zestawienie obozów (sezon)"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.report,name:fayna_camp_portal.action_report_incident_card
+msgid "Karta Wypadku (PDF)"
+msgstr "Karta Wypadku (PDF)"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.report,name:fayna_camp_portal.action_report_incident_register
+msgid "Rejestr Wypadków (PDF)"
+msgstr "Rejestr Wypadków (PDF)"
+
+#. module: fayna_camp_portal
+#: model:ir.model,name:fayna_camp_portal.model_camp_create_wizard
+msgid "Майстер «Новий табір» (event + квиток + бюджет + teczka + групи)"
+msgstr "Kreator «Nowy obóz» (event + bilet + budżet + teczka + grupy)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_create_wizard__name
+msgid "Camp shift name"
+msgstr "Nazwa turnusu"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_create_wizard__date_end
+msgid "End"
+msgstr "Koniec"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_create_wizard__location
+msgid "Address / location"
+msgstr "Adres / lokalizacja"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_create_wizard__seats
+msgid "Seats (місткість)"
+msgstr "Miejsca (pojemność)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_create_wizard__price_per_child
+msgid "Cena za dziecko"
+msgstr "Cena za dziecko"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_create_wizard__cost_lodging_per_day
+msgid "Nocleg / dziecko / dobę"
+msgstr "Nocleg / dziecko / dobę"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_create_wizard__cost_food_per_child_day
+msgid "Wyżywienie / dziecko / dobę"
+msgstr "Wyżywienie / dziecko / dobę"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_create_wizard__salary_wychowawca_per_turnus
+msgid "Stawka wychowawcy / turnus"
+msgstr "Stawka wychowawcy / turnus"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_create_wizard__salary_kierownik_per_turnus
+msgid "Stawka kierownika / turnus"
+msgstr "Stawka kierownika / turnus"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/wizards/camp_create_wizard.py:0
+#, python-format
+msgid "Shift end must be after the start."
+msgstr "Koniec turnusu musi być po jego początku."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/wizards/camp_create_wizard.py:0
+#, python-format
+msgid "Seats must be a positive number."
+msgstr "Liczba miejsc musi być dodatnia."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/wizards/camp_create_wizard.py:0
+#, python-format
+msgid "Auto-created camp venue (camp.create.wizard)."
+msgstr "Automatycznie utworzony ośrodek obozu (camp.create.wizard)."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/wizards/camp_create_wizard.py:0
+#, python-format
+msgid "Nocleg"
+msgstr "Nocleg"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/wizards/camp_create_wizard.py:0
+#, python-format
+msgid "Wyżywienie"
+msgstr "Wyżywienie"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/wizards/camp_create_wizard.py:0
+#, python-format
+msgid "Kierownik wypoczynku (wynagrodzenie)"
+msgstr "Kierownik wypoczynku (wynagrodzenie)"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/wizards/camp_create_wizard.py:0
+#, python-format
+msgid "Grupa 1"
+msgstr "Grupa 1"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/wizards/camp_create_wizard.py:0
+#, python-format
+msgid "Budget category for '%(line)s' not found (XML id %(xmlid)s missing and no name match) — check data/budget_categories.xml."
+msgstr "Nie znaleziono kategorii budżetowej dla '%(line)s' (brak XML id %(xmlid)s i dopasowania po nazwie) — sprawdź data/budget_categories.xml."
+
+#. module: fayna_camp_portal
+#: model:ir.model,name:fayna_camp_portal.model_camp_staff_vacancy
+msgid "Wakat kadry (autoштат §2 — легка модель, R13)"
+msgstr "Wakat kadry (autosztab §2 — lekki model, R13)"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/staffing.py:0
+#, python-format
+msgid "Wakat"
+msgstr "Wakat"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff_vacancy__candidate_name
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_staff_vacancy__state__candidate
+msgid "Candidate"
+msgstr "Kandydat"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_staff_vacancy__state__hired
+msgid "Hired"
+msgstr "Zatrudniony"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff_vacancy__salary_amount
+msgid "Stawka za turnus"
+msgstr "Stawka za turnus"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff_vacancy__created_reason
+msgid "Created because"
+msgstr "Powód utworzenia"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff_vacancy__staff_id
+msgid "Hired staff"
+msgstr "Zatrudniona kadra"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/staffing.py:0
+#, python-format
+msgid "This vacancy is already hired."
+msgstr "Na ten wakat już zatrudniono kandydata."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/staffing.py:0
+#, python-format
+msgid "This vacancy is closed — reopen it before hiring."
+msgstr "Ten wakat jest zamknięty — otwórz go ponownie przed zatrudnieniem."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/staffing.py:0
+#, python-format
+msgid "Enter the candidate name before hiring."
+msgstr "Przed zatrudnieniem podaj imię i nazwisko kandydata."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/staffing.py:0
+#, python-format
+msgid "Hired via vacancy '%(vacancy)s'."
+msgstr "Zatrudniono przez wakat '%(vacancy)s'."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/staffing.py:0
+#, python-format
+msgid "Zatrudniono: %(name)s (camp.staff draft — czeka na weryfikację KRK/RSPTS)."
+msgstr "Zatrudniono: %(name)s (camp.staff draft — czeka na weryfikację KRK/RSPTS)."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/staffing.py:0
+#, python-format
+msgid "Only open vacancies can move to Candidate."
+msgstr "Tylko otwarte wakaty mogą przejść do statusu Kandydat."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/staffing.py:0
+#, python-format
+msgid "Only closed vacancies can be reopened."
+msgstr "Ponownie otworzyć można tylko zamknięte wakaty."
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_event_event__staff_vacancy_ids
+msgid "Staff vacancies"
+msgstr "Wakaty kadry"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_event_event__staff_vacancy_count
+msgid "# vacancies (pipeline)"
+msgstr "Liczba wakatów (pipeline)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_event_event__required_wychowawcy
+msgid "Required wychowawcy"
+msgstr "Wymagani wychowawcy"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_event_event__current_wychowawcy
+msgid "Current wychowawcy"
+msgstr "Obecni wychowawcy"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_event_event__staffing_gap
+msgid "Staffing gap"
+msgstr "Brakująca kadra"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_event_event__overstaffed
+msgid "Overstaffed"
+msgstr "Nadmiar kadry"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_event_event__overstaffed_notified
+msgid "Overstaffing already notified"
+msgstr "Nadmiar kadry już zgłoszony"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/staffing.py:0
+#, python-format
+msgid "Auto: registrations crossed the art. 92c threshold (required %(req)d, covered %(cov)d)."
+msgstr "Auto: rejestracje przekroczyły próg art. 92c (wymagane %(req)d, pokryte %(cov)d)."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/staffing.py:0
+#, python-format
+msgid "Потрібен +%(n)d wychowawca: реєстрації перетнули поріг art. 92c (потреба %(req)d, покрито %(cov)d). Відкрито вакансії автоматично."
+msgstr "Potrzebny +%(n)d wychowawca: rejestracje przekroczyły próg art. 92c (wymagane %(req)d, pokryte %(cov)d). Wakaty otwarto automatycznie."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/staffing.py:0
+#, python-format
+msgid "Overstaffing: після скасувань потреба впала до %(req)d wychowawców, а найнято більше. Вакансії та кадра НЕ закриті автоматично (R13) — рішення за організатором."
+msgstr "Overstaffing: po anulacjach zapotrzebowanie spadło do %(req)d wychowawców, a zatrudniono więcej. Wakaty i kadra NIE zostały zamknięte automatycznie (R13) — decyzja należy do organizatora."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/staffing.py:0
+#, python-format
+msgid "Wakaty — %(event)s"
+msgstr "Wakaty — %(event)s"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_form
+msgid "Wakat kadry"
+msgstr "Wakat kadry"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_form
+msgid "Mam kandydata"
+msgstr "Mam kandydata"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_form
+msgid "Zatrudnij (draft staff)"
+msgstr "Zatrudnij (draft staff)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_form
+msgid "Створює camp.staff у draft — підтвердження лише після верифікації KRK/RSPTS (§13)."
+msgstr "Tworzy camp.staff w stanie draft — zatwierdzenie dopiero po weryfikacji KRK/RSPTS (§13)."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_form
+msgid "Zamknij"
+msgstr "Zamknij"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_form
+msgid "Закрити вакансію вручну? Двигун автоштату НЕ закриває вакансії сам (R13)."
+msgstr "Zamknąć wakat ręcznie? Silnik autosztabu NIE zamyka wakatów sam (R13)."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_form
+msgid "Otwórz ponownie"
+msgstr "Otwórz ponownie"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_form
+msgid "Wakat wychowawca #1"
+msgstr "Wakat wychowawca #1"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_form
+msgid "Notatki"
+msgstr "Notatki"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_form
+msgid "Джерело кандидата, нотатки співбесіди, доступність…"
+msgstr "Źródło kandydata, notatki z rozmowy, dostępność…"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_kanban
+msgid "Kandydat"
+msgstr "Kandydat"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_search
+msgid "Pipeline (open/candidate/hired)"
+msgstr "Pipeline (open/candidate/hired)"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_staff_vacancy
+msgid "Wakaty kadry"
+msgstr "Wakaty kadry"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.actions.act_window,help:fayna_camp_portal.action_camp_staff_vacancy
+msgid "Brak wakatów"
+msgstr "Brak wakatów"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.actions.act_window,help:fayna_camp_portal.action_camp_staff_vacancy
+msgid "Двигун автоштату (§2 art. 92c) відкриває вакансії автоматично,\n                   коли реєстрації перетинають поріг 15/20 дітей на wychowawcę."
+msgstr "Silnik autosztabu (§2 art. 92c) otwiera wakaty automatycznie, gdy rejestracje przekraczają próg 15/20 dzieci na wychowawcę."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_event_form_staffing
+msgid "Wychowawcy: zatrudnieni / wymagani (art. 92c) + wakaty."
+msgstr "Wychowawcy: zatrudnieni / wymagani (art. 92c) + wakaty."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_event_form_staffing
+msgid "Staffing"
+msgstr "Obsada kadrowa"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_event_form_staffing
+msgid "Potrzeba (art. 92c)"
+msgstr "Potrzeba (art. 92c)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_event_form_staffing
+msgid "Stan"
+msgstr "Stan"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_event_form_staffing
+msgid "Overstaffing: потреба впала нижче найнятої кадри.\n                            Вакансії/кадра НЕ закриваються автоматично (R13) — рішення за організатором."
+msgstr "Overstaffing: zapotrzebowanie spadło poniżej zatrudnionej kadry. Wakaty/kadra NIE są zamykane automatycznie (R13) — decyzja należy do organizatora."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_create_wizard_form
+msgid "Nowy obóz"
+msgstr "Nowy obóz"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_create_wizard_form
+msgid "Obóz NWŚ — turnus 2 (2026)"
+msgstr "Obóz NWŚ — turnus 2 (2026)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_create_wizard_form
+msgid "Ośrodek Leśna Polana, Drołtowice 12"
+msgstr "Ośrodek Leśna Polana, Drołtowice 12"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_create_wizard_form
+msgid "Finanse (plan)"
+msgstr "Finanse (plan)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_create_wizard_form
+msgid "Utwórz obóz"
+msgstr "Utwórz obóz"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_create_wizard_form
+msgid "Anuluj"
+msgstr "Anuluj"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_create_wizard
+msgid "Nowy obóz (kreator)"
+msgstr "Nowy obóz (kreator)"
+
+#. module: fayna_camp_portal
+#: model:ir.model,name:fayna_camp_portal.model_camp_incident_card
+msgid "Karta Wypadku — wzór 16 pkt (kurs kierownika)"
+msgstr "Karta Wypadku — wzór 16 pkt (kurs kierownika)"
+
+#. module: fayna_camp_portal
+#: model:ir.model,name:fayna_camp_portal.model_camp_incident_register
+msgid "Rejestr Wypadków — wzór 10 kolumn (per turnus)"
+msgstr "Rejestr Wypadków — wzór 10 kolumn (per turnus)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__event_id
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_register__event_id
+msgid "Turnus (camp shift)"
+msgstr "Turnus (camp shift)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__incident_report_id
+msgid "Operational incident report"
+msgstr "Operacyjny raport zdarzenia"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_incident_card__state__confirmed
+msgid "Zatwierdzona"
+msgstr "Zatwierdzona"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__notes
+msgid "Uwagi wewnętrzne"
+msgstr "Uwagi wewnętrzne"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__placowka_name
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "1. Nazwa placówki (pieczęć)"
+msgstr "1. Nazwa placówki (pieczęć)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__participant_id
+msgid "2. Imię i nazwisko poszkodowanego"
+msgstr "2. Imię i nazwisko poszkodowanego"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__participant_birth_date
+msgid "2. Data urodzenia"
+msgstr "2. Data urodzenia"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__participant_address
+msgid "2. Adres zamieszkania"
+msgstr "2. Adres zamieszkania"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__group_class
+msgid "2. Klasa / grupa"
+msgstr "2. Klasa / grupa"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__czynnosc
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "3. Czynność wykonywana podczas wypadku"
+msgstr "3. Czynność wykonywana podczas wypadku"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__bhp_rodzaj
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "4. Rodzaj przeszkolenia BHP"
+msgstr "4. Rodzaj przeszkolenia BHP"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__bhp_kiedy
+msgid "4. Przeszkolenie BHP — kiedy"
+msgstr "4. Przeszkolenie BHP — kiedy"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__bhp_przez_kogo
+msgid "4. Przeszkolenie BHP — przez kogo"
+msgstr "4. Przeszkolenie BHP — przez kogo"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__bhp_czas_trwania
+msgid "4. Przeszkolenie BHP — czas trwania"
+msgstr "4. Przeszkolenie BHP — czas trwania"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__zbadany_przez_lekarza
+msgid "5. Czy zbadany przez lekarza"
+msgstr "5. Czy zbadany przez lekarza"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__data_ostatniego_badania
+msgid "5. Data ostatniego badania lekarskiego"
+msgstr "5. Data ostatniego badania lekarskiego"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__przeciwwskazania
+msgid "5. Czy były przeciwwskazania"
+msgstr "5. Czy były przeciwwskazania"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__incident_datetime
+msgid "6. Data i czas wypadku"
+msgstr "6. Data i czas wypadku"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__miejsce
+msgid "6. Miejsce wypadku"
+msgstr "6. Miejsce wypadku"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__uraz_rodzaj
+msgid "7. Rodzaj uszkodzenia ciała"
+msgstr "7. Rodzaj uszkodzenia ciała"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__uraz_umiejscowienie
+msgid "7. Umiejscowienie uszkodzenia ciała"
+msgstr "7. Umiejscowienie uszkodzenia ciała"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__niezdolny_do_uczestnictwa
+msgid "8. Czy niezdolny do uczestnictwa w zajęciach"
+msgstr "8. Czy niezdolny do uczestnictwa w zajęciach"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__niezdolnosc_czas
+msgid "8. Przypuszczalny czas niezdolności"
+msgstr "8. Przypuszczalny czas niezdolności"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__opis_wypadku
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "9. Szczegółowy opis wypadku z podaniem przyczyny"
+msgstr "9. Szczegółowy opis wypadku z podaniem przyczyny"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__osoba_nadzoru
+msgid "10. Imię i nazwisko osoby sprawującej nadzór"
+msgstr "10. Imię i nazwisko osoby sprawującej nadzór"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__nadzor_obecny
+msgid "11. Czy osoba nadzoru była obecna na miejscu"
+msgstr "11. Czy osoba nadzoru była obecna na miejscu"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__nadzor_nieobecny_przyczyna
+msgid "11. Jeśli nieobecna — z jakiej przyczyny"
+msgstr "11. Jeśli nieobecna — z jakiej przyczyny"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__pierwsza_pomoc_godzina
+msgid "12. Pierwszej pomocy udzielono o godzinie"
+msgstr "12. Pierwszej pomocy udzielono o godzinie"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__swiadkowie
+msgid "13. Imiona, nazwiska i adresy świadków"
+msgstr "13. Imiona, nazwiska i adresy świadków"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__srodki_zapobiegawcze
+msgid "14. Podjęte środki zapobiegawcze (komendant / kierownik)"
+msgstr "14. Podjęte środki zapobiegawcze (komendant / kierownik)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__komisja_sklad
+msgid "15. Skład komisji (imiona i nazwiska)"
+msgstr "15. Skład komisji (imiona i nazwiska)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__kierownik_placowki
+msgid "15. Kierownik placówki (imię i nazwisko)"
+msgstr "15. Kierownik placówki (imię i nazwisko)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__zalaczniki_wykaz
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "16. Wykaz załączników"
+msgstr "16. Wykaz załączników"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__attachment_ids
+msgid "Załączniki (pliki)"
+msgstr "Załączniki (pliki)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__register_lp
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Lp."
+msgstr "Lp."
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_incident_card__zbadany_przez_lekarza__tak
+msgid "Tak"
+msgstr "Tak"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_incident_card__zbadany_przez_lekarza__nie
+msgid "Nie"
+msgstr "Nie"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/incident_card.py:0
+#, python-format
+msgid "Karta Wypadku — %(child)s (%(date)s)"
+msgstr "Karta Wypadku — %(child)s (%(date)s)"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/incident_card.py:0
+#, python-format
+msgid "Karta Wypadku (szkic)"
+msgstr "Karta Wypadku (szkic)"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/incident_card.py:0
+#, python-format
+msgid "Only draft cards can be confirmed."
+msgstr "Zatwierdzić można tylko karty w stanie szkicu."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/incident_card.py:0
+#, python-format
+msgid "9. Szczegółowy opis wypadku"
+msgstr "9. Szczegółowy opis wypadku"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/incident_card.py:0
+#, python-format
+msgid "10. Osoba sprawująca nadzór"
+msgstr "10. Osoba sprawująca nadzór"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/incident_card.py:0
+#, python-format
+msgid "Cannot confirm Karta Wypadku — missing: %(fields)s"
+msgstr "Nie można zatwierdzić Karty Wypadku — brakuje: %(fields)s"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/incident_card.py:0
+#, python-format
+msgid "Confirmed Karta Wypadku is frozen (legal evidence) — cannot modify: %(fields)s"
+msgstr "Zatwierdzona Karta Wypadku jest zamrożona (dowód prawny) — nie można zmienić: %(fields)s"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/incident_card.py:0
+#, python-format
+msgid "Confirmed Karta Wypadku cannot be deleted (legal evidence retention). Only draft cards may be removed."
+msgstr "Zatwierdzonej Karty Wypadku nie można usunąć (retencja dowodów prawnych). Usuwać można tylko szkice."
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_register__line_ids
+msgid "Karty wypadków (zatwierdzone)"
+msgstr "Karty wypadków (zatwierdzone)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_register__line_count
+msgid "# wypadków"
+msgstr "# wypadków"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_register__locked
+msgid "Zamknięty (turnus zakończony)"
+msgstr "Zamknięty (turnus zakończony)"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/incident_card.py:0
+#, python-format
+msgid "Rejestr Wypadków — %(event)s"
+msgstr "Rejestr Wypadków — %(event)s"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/incident_card.py:0
+#, python-format
+msgid "Only a Camp Administrator may unlock a closed Rejestr Wypadków."
+msgstr "Tylko administrator obozu może odblokować zamknięty Rejestr Wypadków."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/incident_card.py:0
+#, python-format
+msgid "Rejestr Wypadków is locked (turnus closed) — cannot modify: %(fields)s"
+msgstr "Rejestr Wypadków jest zablokowany (turnus zakończony) — nie można zmienić: %(fields)s"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/incident_card.py:0
+#, python-format
+msgid "Locked Rejestr Wypadków cannot be deleted (legal evidence retention)."
+msgstr "Zablokowanego Rejestru Wypadków nie można usunąć (retencja dowodów prawnych)."
+
+#. module: fayna_camp_portal
+#: model:ir.model.constraint,message:fayna_camp_portal.constraint_camp_incident_register_event_id_uniq
+msgid "Rejestr Wypadków already exists for this turnus — exactly one register per camp shift is allowed."
+msgstr "Rejestr Wypadków dla tego turnusu już istnieje — dozwolony jest dokładnie jeden rejestr na turnus."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_search
+msgid "Szkice"
+msgstr "Szkice"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_search
+msgid "Turnus"
+msgstr "Turnus"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "Zatwierdź kartę"
+msgstr "Zatwierdź kartę"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "Po zatwierdzeniu karta zostanie zamrożona jako dokument prawny (edytowalne pozostaną tylko załączniki i uwagi). Kontynuować?"
+msgstr "Po zatwierdzeniu karta zostanie zamrożona jako dokument prawny (edytowalne pozostaną tylko załączniki i uwagi). Kontynuować?"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "Powiązania"
+msgstr "Powiązania"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "2. Poszkodowany"
+msgstr "2. Poszkodowany"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "5. Badanie lekarskie"
+msgstr "5. Badanie lekarskie"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "6. Data, czas i miejsce wypadku"
+msgstr "6. Data, czas i miejsce wypadku"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "7. Rodzaj i umiejscowienie uszkodzenia ciała"
+msgstr "7. Rodzaj i umiejscowienie uszkodzenia ciała"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "8. Niezdolność do uczestnictwa w zajęciach"
+msgstr "8. Niezdolność do uczestnictwa w zajęciach"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "10–11. Nadzór w chwili wypadku"
+msgstr "10–11. Nadzór w chwili wypadku"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "12. Pierwsza pomoc"
+msgstr "12. Pierwsza pomoc"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "13. Świadkowie (imiona, nazwiska, adresy)"
+msgstr "13. Świadkowie (imiona, nazwiska, adresy)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "14. Podjęte środki zapobiegawcze"
+msgstr "14. Podjęte środki zapobiegawcze"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "15. Komisja i kierownik placówki"
+msgstr "15. Komisja i kierownik placówki"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "Uwagi wewnętrzne (poza wzorem)"
+msgstr "Uwagi wewnętrzne (poza wzorem)"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_incident_card
+msgid "Karty Wypadków"
+msgstr "Karty Wypadków"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.actions.act_window,help:fayna_camp_portal.action_camp_incident_card
+msgid "Brak kart wypadków"
+msgstr "Brak kart wypadków"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.actions.act_window,help:fayna_camp_portal.action_camp_incident_card
+msgid "Karta Wypadku — oficjalny wzór 16 punktów (kurs kierownika\n                    wypoczynku). Po zatwierdzeniu karta trafia automatycznie do\n                    Rejestru Wypadków turnusu."
+msgstr "Karta Wypadku — oficjalny wzór 16 punktów (kurs kierownika wypoczynku). Po zatwierdzeniu karta trafia automatycznie do Rejestru Wypadków turnusu."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Zamknij rejestr"
+msgstr "Zamknij rejestr"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Po zamknięciu turnusu rejestr stanie się niezmienny. Kontynuować?"
+msgstr "Po zamknięciu turnusu rejestr stanie się niezmienny. Kontynuować?"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Odblokuj (Admin)"
+msgstr "Odblokuj (Admin)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Imię i nazwisko"
+msgstr "Imię i nazwisko"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Grupa"
+msgstr "Grupa"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Data wypadku"
+msgstr "Data wypadku"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Rodzaj wypadku / urazu"
+msgstr "Rodzaj wypadku / urazu"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Miejsce wypadku"
+msgstr "Miejsce wypadku"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Rodzaj zajęć"
+msgstr "Rodzaj zajęć"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Umiejscowienie urazu"
+msgstr "Umiejscowienie urazu"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Okoliczności"
+msgstr "Okoliczności"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Udzielona pomoc o godz."
+msgstr "Udzielona pomoc o godz."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Środki zapobiegawcze, zarządzenia"
+msgstr "Środki zapobiegawcze, zarządzenia"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Wychowawca opiekun"
+msgstr "Wychowawca opiekun"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_incident_register
+msgid "Rejestry Wypadków"
+msgstr "Rejestry Wypadków"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.actions.act_window,help:fayna_camp_portal.action_camp_incident_register
+msgid "Brak rejestrów wypadków"
+msgstr "Brak rejestrów wypadków"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.actions.act_window,help:fayna_camp_portal.action_camp_incident_register
+msgid "Rejestr Wypadków — jeden na turnus. Agreguje automatycznie\n                    wszystkie zatwierdzone Karty Wypadków chronologicznie\n                    z automatyczną numeracją Lp. Po zamknięciu turnusu rejestr\n                    jest niezmienny (kontrola Kuratorium Oświaty)."
+msgstr "Rejestr Wypadków — jeden na turnus. Agreguje automatycznie wszystkie zatwierdzone Karty Wypadków chronologicznie z automatyczną numeracją Lp. Po zamknięciu turnusu rejestr jest niezmienny (kontrola Kuratorium Oświaty)."
+
+#. module: fayna_camp_portal
+#: model:ir.model,name:fayna_camp_portal.model_camp_regulamin
+msgid "Regulamin wypoczynku (dokument wydany przez kierownika)"
+msgstr "Regulamin wypoczynku (dokument wydany przez kierownika)"
+
+#. module: fayna_camp_portal
+#: model:ir.model,name:fayna_camp_portal.model_camp_regulamin_ack
+msgid "Potwierdzenie zapoznania się z regulaminem (kadra)"
+msgstr "Potwierdzenie zapoznania się z regulaminem (kadra)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_regulamin__regulamin_type__kolonii_obozu
+msgid "Regulamin kolonii / obozu"
+msgstr "Regulamin kolonii / obozu"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_regulamin__regulamin_type__kapieli
+msgid "Regulamin kąpieli"
+msgstr "Regulamin kąpieli"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_regulamin__regulamin_type__wycieczek
+msgid "Regulamin wycieczek"
+msgstr "Regulamin wycieczek"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_regulamin__regulamin_type__ppoz
+msgid "Instrukcja ppoż."
+msgstr "Instrukcja ppoż."
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_regulamin__regulamin_type__zakres_czynnosci_wychowawcy
+msgid "Zakres czynności wychowawcy"
+msgstr "Zakres czynności wychowawcy"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin__issued_by_id
+msgid "Issued by (kierownik)"
+msgstr "Wydał (kierownik)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin__date_published
+msgid "Published on"
+msgstr "Data publikacji"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin__ack_ids
+msgid "Acknowledgments"
+msgstr "Potwierdzenia zapoznania się"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin__signed_count
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin_ack__signed
+msgid "Signed"
+msgstr "Podpisano"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin__total_count
+msgid "Total acks"
+msgstr "Liczba potwierdzeń"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin__all_signed
+msgid "All signed"
+msgstr "Wszyscy podpisali"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/regulamin.py:0
+#, python-format
+msgid "Only draft regulaminy can be published."
+msgstr "Opublikować można tylko regulaminy w stanie szkicu."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/regulamin.py:0
+#, python-format
+msgid "Regulamin '%(name)s' is an organizer-wide template — pass the camp shift (event) explicitly to generate acknowledgments."
+msgstr "Regulamin '%(name)s' jest szablonem ogólnoorganizatorskim — aby wygenerować potwierdzenia, wskaż jawnie turnus (event)."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/regulamin.py:0
+#, python-format
+msgid "Regulamin nie podpisany przez: %(names)s (event: %(event)s)"
+msgstr "Regulamin nie podpisany przez: %(names)s (event: %(event)s)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin_ack__regulamin_id
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_view_form
+msgid "Regulamin"
+msgstr "Regulamin"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin_ack__user_id
+msgid "Staff user"
+msgstr "Użytkownik (kadra)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin_ack__can_sign
+msgid "Can sign"
+msgstr "Może podpisać"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/regulamin.py:0
+#, python-format
+msgid "Only %(staff)s can sign this acknowledgment with their own login. You are logged in as %(user)s."
+msgstr "Tylko %(staff)s może podpisać to potwierdzenie własnym loginem. Jesteś zalogowany(-a) jako %(user)s."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/regulamin.py:0
+#, python-format
+msgid "This acknowledgment is already signed."
+msgstr "To potwierdzenie jest już podpisane."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/regulamin.py:0
+#, python-format
+msgid "%(staff)s podpisał(a) zapoznanie się z regulaminem."
+msgstr "%(staff)s podpisał(a) zapoznanie się z regulaminem."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/regulamin.py:0
+#, python-format
+msgid "Acknowledgment '%(name)s' is signed and frozen — it cannot be modified (legal evidence). Archive the regulamin and issue a new version instead."
+msgstr "Potwierdzenie '%(name)s' jest podpisane i zamrożone — nie można go zmieniać (dowód prawny). Zarchiwizuj regulamin i wydaj nową wersję."
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff__regulamin_ack_ids
+msgid "Regulamin acknowledgments"
+msgstr "Potwierdzenia regulaminów"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff__unsigned_regulamin_count
+msgid "Unsigned regulaminy"
+msgstr "Niepodpisane regulaminy"
+
+#. module: fayna_camp_portal
+#: model:ir.model.constraint,message:fayna_camp_portal.constraint_camp_regulamin_ack_regulamin_staff_unique
+msgid "This staff member already has an acknowledgment for this regulamin."
+msgstr "Ten członek kadry ma już potwierdzenie dla tego regulaminu."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_view_form
+msgid "Generate acknowledgments"
+msgstr "Generuj potwierdzenia"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_view_form
+msgid "Create one acknowledgment per staff member of the event."
+msgstr "Tworzy po jednym potwierdzeniu dla każdego członka kadry turnusu."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_view_form
+msgid "np. Regulamin kąpieli — turnus 2"
+msgstr "np. Regulamin kąpieli — turnus 2"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_view_form
+msgid "Empty = organizer-wide template for all camps."
+msgstr "Puste = szablon organizatora dla wszystkich obozów."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_view_form
+msgid "Załączniki"
+msgstr "Załączniki"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_view_form
+msgid "Podpisy kadry"
+msgstr "Podpisy kadry"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_ack_view_tree
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_view_form
+msgid "Podpisuję"
+msgstr "Podpisuję"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_view_form
+msgid "Visible only to the staff member's own user."
+msgstr "Widoczne tylko dla własnego użytkownika członka kadry."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_view_search
+msgid "Templates (all camps)"
+msgstr "Szablony (wszystkie obozy)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_view_search
+msgid "Missing signatures"
+msgstr "Braki podpisów"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_ack_view_search
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_view_search
+msgid "Group by"
+msgstr "Grupuj według"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.actions.act_window,help:fayna_camp_portal.camp_regulamin_action
+msgid "Wydaj pierwszy regulamin"
+msgstr "Wydaj pierwszy regulamin"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.actions.act_window,help:fayna_camp_portal.camp_regulamin_action
+msgid "Regulamin kolonii/obozu, kąpieli, wycieczek, instrukcja ppoż.,\n                    zakres czynności wychowawcy — z podpisami kadry."
+msgstr "Regulamin kolonii/obozu, kąpieli, wycieczek, instrukcja ppoż., zakres czynności wychowawcy — z podpisami kadry."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_ack_view_form
+msgid "Acknowledgment"
+msgstr "Potwierdzenie"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_ack_view_form
+msgid "Podpisuję — zapoznałem(am) się"
+msgstr "Podpisuję — zapoznałem(am) się"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_ack_view_search
+msgid "Nie podpisane"
+msgstr "Nie podpisane"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_ack_view_search
+msgid "Moje do podpisu"
+msgstr "Moje do podpisu"
+
+#. module: fayna_camp_portal
+#: model:ir.model,name:fayna_camp_portal.model_camp_teczka_ko
+msgid "Teczka KO — gotowość do kontroli Kuratorium Oświaty"
+msgstr "Teczka KO — gotowość do kontroli Kuratorium Oświaty"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/teczka_ko.py:0
+#, python-format
+msgid "Teczka KO — %(event)s"
+msgstr "Teczka KO — %(event)s"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__karty_total
+msgid "Karty — uczestnicy"
+msgstr "Karty — uczestnicy"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__karty_signed
+msgid "Karty — podpisane"
+msgstr "Karty — podpisane"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__karty_percent
+msgid "Karty — % podpisanych"
+msgstr "Karty — % podpisanych"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__karty_ready
+msgid "Karty ✓"
+msgstr "Karty ✓"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__kadra_total
+msgid "Kadra — liczba"
+msgstr "Kadra — liczba"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__kadra_eligible
+msgid "Kadra — zweryfikowana"
+msgstr "Kadra — zweryfikowana"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__kadra_ready
+msgid "Kadra ✓"
+msgstr "Kadra ✓"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__regulamin_total
+msgid "Regulaminy — opublikowane"
+msgstr "Regulaminy — opublikowane"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__regulamin_unsigned
+msgid "Regulaminy — z brakami podpisów"
+msgstr "Regulaminy — z brakami podpisów"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__regulaminy_ready
+msgid "Regulaminy ✓"
+msgstr "Regulaminy ✓"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__dziennik_ready
+msgid "Dziennik ✓"
+msgstr "Dziennik ✓"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__wypadki_available
+msgid "Rejestr wypadków — moduł dostępny"
+msgstr "Rejestr wypadków — moduł dostępny"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__wypadki_count
+msgid "Rejestry wypadków"
+msgstr "Rejestry wypadków"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__wypadki_ready
+msgid "Rejestr wypadków ✓"
+msgstr "Rejestr wypadków ✓"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__program_count
+msgid "Programy wypoczynku"
+msgstr "Programy wypoczynku"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__program_ready
+msgid "Program ✓"
+msgstr "Program ✓"
+
+#. module: fayna_camp_portal
+#: model:ir.model.constraint,message:fayna_camp_portal.constraint_camp_teczka_ko_event_unique
+msgid "Each camp shift (event) has exactly one Teczka KO."
+msgstr "Każdy turnus (event) ma dokładnie jedną Teczkę KO."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
+msgid "Drukuj checklistę (PDF)"
+msgstr "Drukuj checklistę (PDF)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
+msgid "Eksport pełnego pakietu PDF"
+msgstr "Eksport pełnego pakietu PDF"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
+msgid "TODO: dostępne po integracji wszystkich raportów."
+msgstr "TODO: dostępne po integracji wszystkich raportów."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
+msgid "Sprawdź podpisy regulaminów"
+msgstr "Sprawdź podpisy regulaminów"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
+msgid "Tworzy activity dla wystawcy każdego regulaminu z brakami podpisów."
+msgstr "Tworzy activity dla wystawcy każdego regulaminu z brakami podpisów."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
+msgid "GOTOWE do kontroli KO"
+msgstr "GOTOWE do kontroli KO"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
+msgid "BRAKI w dokumentacji"
+msgstr "BRAKI w dokumentacji"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
+msgid "1. Karty kwalifikacyjne uczestników"
+msgstr "1. Karty kwalifikacyjne uczestników"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
+msgid "2. Kadra — KRK / RSPTS / kursy (Ustawa Kamilka)"
+msgstr "2. Kadra — KRK / RSPTS / kursy (Ustawa Kamilka)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
+msgid "3. Regulaminy — podpisy kadry"
+msgstr "3. Regulaminy — podpisy kadry"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
+msgid "4. Dziennik zajęć (Załącznik 5)"
+msgstr "4. Dziennik zajęć (Załącznik 5)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
+msgid "5. Rejestr wypadków"
+msgstr "5. Rejestr wypadków"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
+msgid "6. Program wypoczynku (Załącznik 9)"
+msgstr "6. Program wypoczynku (Załącznik 9)"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.camp_teczka_ko_action
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
+msgid "Teczka KO"
+msgstr "Teczka KO"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.actions.act_window,help:fayna_camp_portal.camp_teczka_ko_action
+msgid "Utwórz Teczkę KO dla turnusu"
+msgstr "Utwórz Teczkę KO dla turnusu"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.actions.act_window,help:fayna_camp_portal.camp_teczka_ko_action
+msgid "Checklist gotowości do kontroli Kuratorium Oświaty —\n                    karty, kadra, regulaminy, dziennik, rejestr wypadków, program.\n                    Wszystko liczone na żywo, nic nie wpisuje się ręcznie."
+msgstr "Checklist gotowości do kontroli Kuratorium Oświaty — karty, kadra, regulaminy, dziennik, rejestr wypadków, program. Wszystko liczone na żywo, nic nie wpisuje się ręcznie."
+
+#. module: fayna_camp_portal
+#: model:ir.model,name:fayna_camp_portal.model_camp_budget_category
+msgid "Camp Budget Cost Category"
+msgstr "Kategoria kosztów budżetu obozu"
+
+#. module: fayna_camp_portal
+#: model:ir.model,name:fayna_camp_portal.model_camp_budget
+msgid "Camp Shift Budget (BEP + VAT/business margins)"
+msgstr "Budżet turnusu (BEP + marża VAT / biznesowa)"
+
+#. module: fayna_camp_portal
+#: model:ir.model,name:fayna_camp_portal.model_camp_budget_line
+msgid "Camp Budget Cost Line"
+msgstr "Pozycja kosztów budżetu obozu"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_budget_category__cost_kind__stale
+msgid "Koszt stały (na turnus)"
+msgstr "Koszt stały (na turnus)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_budget_category__cost_kind__zmienne_na_dziecko
+msgid "Koszt zmienny (na dziecko)"
+msgstr "Koszt zmienny (na dziecko)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget_category__cost_kind
+msgid "Cost Kind"
+msgstr "Rodzaj kosztu"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget_category__vat_marza
+msgid "Do VAT-marży (art. 119)"
+msgstr "Do VAT-marży (art. 119)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget_category__is_salary
+msgid "Wynagrodzenia (kadra)"
+msgstr "Wynagrodzenia (kadra)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__capacity
+msgid "Capacity (seats_max)"
+msgstr "Pojemność (seats_max)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__price_per_child
+msgid "Cena za dziecko (realna)"
+msgstr "Cena za dziecko (realna)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__planned_children
+msgid "Planowana liczba dzieci"
+msgstr "Planowana liczba dzieci"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__days
+msgid "Days (doby)"
+msgstr "Dni (doby)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__line_ids
+msgid "Cost Lines"
+msgstr "Pozycje kosztów"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__revenue_planned
+msgid "Przychód (plan)"
+msgstr "Przychód (plan)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__total_fixed
+msgid "Koszty stałe"
+msgstr "Koszty stałe"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__variable_per_child
+msgid "Koszt zmienny / dziecko"
+msgstr "Koszt zmienny / dziecko"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__total_variable_planned
+msgid "Koszty zmienne (plan)"
+msgstr "Koszty zmienne (plan)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__contribution_margin
+msgid "Contribution margin / dziecko"
+msgstr "Contribution margin / dziecko"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__bep_children
+msgid "BEP (min. dzieci)"
+msgstr "BEP (min. dzieci)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__bep_warning
+msgid "BEP nieosiągalny"
+msgstr "BEP nieosiągalny"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__marza_vat_planned
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_tree
+msgid "Marża VAT (art. 119)"
+msgstr "Marża VAT (art. 119)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__marza_business_planned
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "Marża biznesowa (z reklamą)"
+msgstr "Marża biznesowa (z reklamą)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_tree
+msgid "Marża biznesowa"
+msgstr "Marża biznesowa"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__profit_at_planned
+msgid "Zysk przy planowanej liczbie"
+msgstr "Zysk przy planowanej liczbie"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__registered_children
+msgid "Zapisane dzieci"
+msgstr "Zapisane dzieci"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_budget__fill_vs_bep__ok
+msgid "OK — powyżej BEP"
+msgstr "OK — powyżej BEP"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_budget__fill_vs_bep__warning
+msgid "Uwaga — blisko BEP"
+msgstr "Uwaga — blisko BEP"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_budget__fill_vs_bep__loss
+msgid "Strata — poniżej BEP"
+msgstr "Strata — poniżej BEP"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__fill_vs_bep
+msgid "Status vs BEP"
+msgstr "Status vs BEP"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__fill_vs_bep_pct
+msgid "Wypełnienie vs BEP (%)"
+msgstr "Wypełnienie vs BEP (%)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__analytic_account_id
+msgid "Analytic Account"
+msgstr "Konto analityczne"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__actual_revenue
+msgid "Przychód (fakt)"
+msgstr "Przychód (fakt)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__actual_costs
+msgid "Koszty (fakt)"
+msgstr "Koszty (fakt)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__actual_profit
+msgid "Wynik (fakt)"
+msgstr "Wynik (fakt)"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/budget.py:0
+#, python-format
+msgid "Budżet: %s"
+msgstr "Budżet: %s"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/budget.py:0
+#, python-format
+msgid "Price per child cannot be negative."
+msgstr "Cena za dziecko nie może być ujemna."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/budget.py:0
+#, python-format
+msgid "Planned children count cannot be negative."
+msgstr "Planowana liczba dzieci nie może być ujemna."
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_budget_line__per__per_camp
+msgid "Na turnus (stały)"
+msgstr "Na turnus (stały)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_budget_line__per__per_child
+msgid "Na dziecko"
+msgstr "Na dziecko"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_budget_line__per__per_child_day
+msgid "Na dziecko / dobę"
+msgstr "Na dziecko / dobę"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget_line__per
+msgid "Per"
+msgstr "Naliczanie"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget_line__qty
+msgid "Qty (plan)"
+msgstr "Ilość (plan)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget_line__subtotal_planned
+msgid "Razem (plan)"
+msgstr "Razem (plan)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_event_event__camp_budget_ids
+msgid "Budgets"
+msgstr "Budżety"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_event_event__camp_budget_id
+msgid "Budget"
+msgstr "Budżet"
+
+#. module: fayna_camp_portal
+#: model:ir.model.constraint,message:fayna_camp_portal.constraint_camp_budget_unique_event_budget
+msgid "Each camp shift can only have one budget."
+msgstr "Każdy turnus może mieć tylko jeden budżet."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "Utwórz konto analityczne"
+msgstr "Utwórz konto analityczne"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "Creates the CAMP/{event} analytic account used for plan-vs-fact."
+msgstr "Tworzy konto analityczne CAMP/{event} używane do porównania plan-fakt."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "<strong>BEP nieosiągalny:</strong> cena za dziecko ≤ koszt zmienny na dziecko —\n                            każde dziecko powiększa stratę. Popraw cenę lub koszty zmienne."
+msgstr "<strong>BEP nieosiągalny:</strong> cena za dziecko ≤ koszt zmienny na dziecko — każde dziecko powiększa stratę. Popraw cenę lub koszty zmienne."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "Break-even"
+msgstr "Break-even (próg rentowności)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "BEP — min. dzieci"
+msgstr "BEP — min. dzieci"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "Wypełnienie vs BEP"
+msgstr "Wypełnienie vs BEP"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "Parametry"
+msgstr "Parametry"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "Marże (plan) — decyzja R8: dwie marże, nie jedna"
+msgstr "Marże (plan) — decyzja R8: dwie marże, nie jedna"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "Tylko koszty «dla bezpośredniej korzyści turysty». Baza zaliczek."
+msgstr "Tylko koszty «dla bezpośredniej korzyści turysty». Baza zaliczek."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "Wszystkie koszty: reklama, kadra, overhead."
+msgstr "Wszystkie koszty: reklama, kadra, overhead."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "Plan vs Fakt (konto analityczne)"
+msgstr "Plan vs Fakt (konto analityczne)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "Fakt"
+msgstr "Fakt"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "Koszty"
+msgstr "Koszty"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "Razem"
+msgstr "Razem"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_category_form
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_category_tree
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "VAT-marża (art. 119)"
+msgstr "VAT-marża (art. 119)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_search
+msgid "Sezon"
+msgstr "Sezon"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_budget
+msgid "Budżety obozów"
+msgstr "Budżety obozów"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.actions.act_window,help:fayna_camp_portal.action_camp_budget
+msgid "Brak budżetów — otwórz turnus (event) i kliknij «Budżet»."
+msgstr "Brak budżetów — otwórz turnus (event) i kliknij «Budżet»."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_event_form_budget_button
+msgid "Budżet"
+msgstr "Budżet"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_event_form_budget_button
+msgid "Open (or create) the financial budget of this camp shift."
+msgstr "Otwórz (lub utwórz) budżet finansowy tego turnusu."
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__health_risk_flags
+msgid "Risk flags"
+msgstr "Flagi ryzyka"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/participant.py:0
+#, python-format
+msgid "WATER-BLOCK"
+msgstr "BLOKADA-WODA"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/participant.py:0
+#, python-format
+msgid "HEIGHTS-BLOCK"
+msgstr "BLOKADA-WYSOKOŚĆ"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/participant.py:0
+#, python-format
+msgid "INSECT-VENOM"
+msgstr "JAD-OWADÓW"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/participant.py:0
+#, python-format
+msgid "ALLERGY-MEDS"
+msgstr "ALERGIA-LEKI"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/participant.py:0
+#, python-format
+msgid "ALLERGY-FOOD"
+msgstr "ALERGIA-POKARM"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/participant.py:0
+#, python-format
+msgid "PSYCHO-SUPPORT"
+msgstr "WSPARCIE-PSYCH"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_participant__wzor_version__2021
+msgid "Wzór 2021 (Dz.U. 2021/1548)"
+msgstr "Wzór 2021 (Dz.U. 2021/1548)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_participant__wzor_version__2026
+msgid "Wzór 2026 (Dz.U. 2026/704)"
+msgstr "Wzór 2026 (Dz.U. 2026/704)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__wzor_version
+msgid "Card template version"
+msgstr "Wersja wzoru karty"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__allergy_meds
+msgid "Allergy: medications"
+msgstr "Uczulenie: leki"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__allergy_pollen
+msgid "Allergy: pollen"
+msgstr "Uczulenie: pyłki"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__allergy_food
+msgid "Allergy: food"
+msgstr "Uczulenie: pokarmy"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__allergy_insect_venom
+msgid "Allergy: insect venom"
+msgstr "Uczulenie: jad owadów"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__motion_sickness
+msgid "Motion sickness"
+msgstr "Choroba lokomocyjna"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__orthodontic_appliance
+msgid "Orthodontic appliance"
+msgstr "Aparat ortodontyczny"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__wears_glasses
+msgid "Wears glasses"
+msgstr "Nosi okulary"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__wears_contact_lenses
+msgid "Wears contact lenses"
+msgstr "Nosi soczewki kontaktowe"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__diet_low_calorie
+msgid "Low-calorie diet"
+msgstr "Dieta niskokaloryczna"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__diet_vegetarian
+msgid "Vegetarian diet"
+msgstr "Dieta wegetariańska"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__emotional_expression_issues
+msgid "Issues expressing emotions"
+msgstr "Trudności z wyrażaniem emocji"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__group_functioning_issues
+msgid "Issues functioning in a group"
+msgstr "Trudności z funkcjonowaniem w grupie"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__fear_of_heights
+msgid "Fear of heights (lęk wysokości)"
+msgstr "Lęk wysokości"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__hydrophobia
+msgid "Hydrophobia (fear of water)"
+msgstr "Lęk przed wodą (hydrofobia)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__psycho_behavioral_notes
+msgid "Psycho-behavioral notes"
+msgstr "Uwagi psychologiczno-behawioralne"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__vacc_tetanus_year
+msgid "Vaccination: tetanus (year)"
+msgstr "Szczepienie: tężec (rok)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__vacc_diphtheria_year
+msgid "Vaccination: diphtheria (year)"
+msgstr "Szczepienie: błonica (rok)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__vacc_other
+msgid "Vaccination: other"
+msgstr "Szczepienia: inne"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_staff_cert__verification_status__pending
+msgid "Oczekuje na weryfikację"
+msgstr "Oczekuje na weryfikację"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_staff_cert__verification_status__verified
+msgid "Zweryfikowany"
+msgstr "Zweryfikowany"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_staff_cert__verification_status__rejected
+msgid "Odrzucony"
+msgstr "Odrzucony"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff_cert__verification_status
+msgid "Verification"
+msgstr "Weryfikacja"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff_cert__verified_by_id
+msgid "Verified by"
+msgstr "Zweryfikował(a)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff_cert__verified_date
+msgid "Verified on"
+msgstr "Data weryfikacji"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Only the Organizator/Admin may accept RSPTS/KRK verification (§13)."
+msgstr "Tylko Organizator/Admin może zaakceptować weryfikację RSPTS/KRK (§13)."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Only the Organizator/Admin may reject RSPTS/KRK verification (§13)."
+msgstr "Tylko Organizator/Admin może odrzucić weryfikację RSPTS/KRK (§13)."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Verification fields are protected — only Organizator/Admin may change them (Ustawa Kamilka §13)."
+msgstr "Pola weryfikacji są chronione — zmieniać je może tylko Organizator/Admin (Ustawa Kamilka §13)."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "%(name)s cannot be admitted to '%(event)s': KRK/RSPTS verification is missing, expired or not yet accepted by the administrator (Ustawa Kamilka; art. 21 ustawy z 16.05.2016 — admission without RSPTS verification is punishable by arrest or a fine of min. 1000 zł). Upload the documents and request admin acceptance."
+msgstr "%(name)s nie może zostać dopuszczony(-a) do '%(event)s': weryfikacja KRK/RSPTS jest brakująca, przeterminowana lub niezaakceptowana przez administratora (Ustawa Kamilka; art. 21 ustawy z 16.05.2016 — dopuszczenie bez weryfikacji RSPTS podlega karze aresztu albo grzywny min. 1000 zł). Wgraj dokumenty i poproś o akceptację administratora."
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program_activity__risk_water
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_camp_dziennik_activity__risk_water
+msgid "Water activity (§7)"
+msgstr "Zajęcia w wodzie (§7)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program_activity__risk_heights
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_camp_dziennik_activity__risk_heights
+msgid "Heights activity"
+msgstr "Zajęcia na wysokości"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Water activity blocked (karta kwalifikacyjna 2026, pkt 9): the group contains participants who must not take part in water activities: %s. Reassign the children to another group/activity first."
+msgstr "Zajęcia w wodzie zablokowane (karta kwalifikacyjna 2026, pkt 9): w grupie są uczestnicy, którzy nie mogą brać udziału w zajęciach w wodzie: %s. Najpierw przepisz dzieci do innej grupy/zajęć."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Heights activity blocked (karta kwalifikacyjna 2026, pkt 9): the group contains participants who must not take part in heights activities: %s. Reassign the children first."
+msgstr "Zajęcia na wysokości zablokowane (karta kwalifikacyjna 2026, pkt 9): w grupie są uczestnicy, którzy nie mogą brać udziału w zajęciach na wysokości: %s. Najpierw przepisz dzieci."

@@ -2009,7 +2009,7 @@ msgstr "Як батьки"
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_admin_access_log_search
 msgid "As Wychowawca"
-msgstr "Як вихователь"
+msgstr "Як вожатий"
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_form
@@ -2845,6 +2845,7 @@ msgid "Camp Settings"
 msgstr "Налаштування табору"
 
 #. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__event_id
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_discuss_channel__camp_event_id
 msgid "Camp Shift"
 msgstr "Заїзд табору"
@@ -2889,7 +2890,7 @@ msgstr "Трансфер табору"
 #. module: fayna_camp_portal
 #: model:res.groups,name:fayna_camp_portal.group_camp_wychowawca
 msgid "Camp Wychowawca (Counselor)"
-msgstr "Вихователь табору"
+msgstr "Вожатий табору"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -3105,6 +3106,11 @@ msgstr "Заїзд табору"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_report__event_id
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff__event_id
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_story__event_id
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_group__event_id
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin__event_id
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin_ack__event_id
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff_vacancy__event_id
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__event_id
 #, python-format
 msgid "Camp shift (event)"
 msgstr "Заїзд (event)"
@@ -3170,7 +3176,7 @@ msgstr "Працівник табору"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_staff_sms_log__staff_id
 #, python-format
 msgid "Camp staff member (wychowawca / kierownik) who sent the broadcast."
-msgstr "Працівник табору (вихователь/керівник), який надіслав розсилку."
+msgstr "Працівник табору (вожатий/керівник), який надіслав розсилку."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -3182,7 +3188,7 @@ msgid ""
 "from dziennik's kierownik or wychowawca list."
 msgstr ""
 "Працівник табору, який підписав цей запис активності. Автозаповнення при "
-"підписі зі списку керівника або вихователя dziennik."
+"підписі зі списку керівника або вожатого dziennik."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -4103,6 +4109,7 @@ msgid "Close from delivered or disputed only."
 msgstr "Закрити можна тільки з доставленого або оскарженого."
 
 #. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_staff_vacancy__state__closed
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_support_request__state__closed
 msgid "Closed"
 msgstr "Закрито"
@@ -4324,7 +4331,7 @@ msgstr "Чек-лист відповідності з типовими пунк�
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_camp_staff_sms_composer
 msgid "Compose & broadcast SMS to children in a wychowawca's group"
-msgstr "Створити і розіслати SMS дітям у групі вихователя"
+msgstr "Створити і розіслати SMS дітям у групі вожатого"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -4505,7 +4512,7 @@ msgstr "Вартість (PLN)"
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_staff__role__counselor
 msgid "Counselor"
-msgstr "Вихователь"
+msgstr "Вожатий"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -4513,7 +4520,7 @@ msgstr "Вихователь"
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_camp_dziennik__wychowawca_ids
 #, python-format
 msgid "Counselors assigned to this group."
-msgstr "Вихователі, призначені до цієї групи."
+msgstr "Вожаті, призначені до цієї групи."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__message_bounce
@@ -4574,7 +4581,7 @@ msgstr "Тип курсу"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_staff__course_certificate_attachment
 #, python-format
 msgid "Course completion certificate (wychowawca / kierownik)."
-msgstr "Сертифікат про завершення курсу (вихователь/керівник)."
+msgstr "Сертифікат про завершення курсу (вожатий/керівник)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -6084,6 +6091,7 @@ msgstr ""
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/camp.py:0
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__dziennik_count
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_event_event__dziennik_ids
 #, python-format
 msgid "Dzienniki zajęć"
@@ -8461,6 +8469,7 @@ msgstr ""
 #: code:addons/fayna_camp_portal/models/admin_access_log.py:0
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_vozhatyi_training__instructor_id
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_admin_access_log__impersonated_role__instructor
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_staff_vacancy__role__instructor
 #, python-format
 msgid "Instructor"
 msgstr "Інструктор"
@@ -8954,9 +8963,10 @@ msgstr "Kierownik signature required beдляe submit."
 #: code:addons/fayna_camp_portal/models/operations.py:0
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_kuratorium_notification__kierownik_id
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_kuratorium_staff__role__kierownik
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_staff_vacancy__role__kierownik
 #, python-format
 msgid "Kierownik wypoczynku"
-msgstr ""
+msgstr "Керівник табору"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_staff__role__leader
@@ -10669,6 +10679,8 @@ msgstr "My sдоries"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_transport__name
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_camp_season__name
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_payment_installment__name
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff_vacancy__name
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__name
 #, python-format
 msgid "Name"
 msgstr "Назва"
@@ -11812,6 +11824,8 @@ msgstr ""
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_report_search
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_staff_vacancy__state__open
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_search
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_support_request_search
 msgid "Open"
 msgstr "Відкрито"
@@ -12527,6 +12541,8 @@ msgstr ""
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_meal_plan__participant_count
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program__participant_count
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_transport__participant_ids
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_group__participant_ids
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_group_form
 #, python-format
 msgid "Participants"
 msgstr "Учасники"
@@ -15168,6 +15184,8 @@ msgstr "Search Sдоries"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_product_product__camp_season
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__camp_season_id
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff_cert__season_id
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_product_template__camp_season
 msgid "Season"
 msgstr "Сезон"
@@ -15307,7 +15325,7 @@ msgstr "Section VI is signed для %(name)s — можеnot modify %(fields)s."
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
 msgid "Section VI — Wychowawca Observations"
-msgstr "Секція VI — Спостереження вихователя"
+msgstr "Секція VI — Спостереження вожатого"
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_report_form
@@ -16339,6 +16357,8 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.fayna_vozhatyi_certificate_search
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.fayna_vozhatyi_training_search
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.vozhatyi_training_record_search
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin__state
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff_vacancy__state
 #, python-format
 msgid "Status"
 msgstr "Статус"
@@ -16817,9 +16837,10 @@ msgid "Sytuacja psychologiczna"
 msgstr ""
 
 #. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_incident_card__state__draft
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_nutrition__state__draft
 msgid "Szkic"
-msgstr ""
+msgstr "Чернетка"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17664,6 +17685,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_review__title
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_story__title
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_story_search
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin__name
 #, python-format
 msgid "Title"
 msgstr "Заголовок"
@@ -18214,6 +18236,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.fayna_vozhatyi_training_search
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_sms_template_search
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_support_request_search
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin__regulamin_type
 #, python-format
 msgid "Type"
 msgstr "Тип"
@@ -19224,9 +19247,10 @@ msgstr ""
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_kuratorium_staff__role__wychowawca
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__fayna_camp_dziennik_activity__author_role__wychowawca
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__fayna_vozhatyi_certificate__cert_type__wychowawca
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_staff_vacancy__role__wychowawca
 #, python-format
 msgid "Wychowawca"
-msgstr "Вихователь"
+msgstr "Вожатий"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__fayna_vozhatyi_training__training_type__wychowawca_36h
@@ -19255,9 +19279,12 @@ msgid "Wychowawca SMS broadcast log (RODO + cost audit)"
 msgstr ""
 
 #. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_group__wychowawca_ids
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_search
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_event_form_staffing
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_fayna_camp_dziennik_form
 msgid "Wychowawcy"
-msgstr "Вихователі"
+msgstr "Вожаті"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_transport__trip_type__excursion
@@ -20935,3 +20962,2270 @@ msgstr "🥶 <strong>Silver</strong> — 2+ заїзди (2% знижка)"
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_loyalty
 msgid "🦫 <strong>Platinum</strong> — 10+ заїздів (7% знижка)"
 msgstr "🦫 <strong>Platinum</strong> — 10+ заїздів (7% знижка)"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_campscout_root
+msgid "Portal CampScout"
+msgstr "Портал CampScout"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_management
+msgid "Obozy"
+msgstr "Табори"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_events
+msgid "Turnusy (Events)"
+msgstr "Заїзди (Events)"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_products
+msgid "Programy (Products)"
+msgstr "Програми (Products)"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_categories
+msgid "Kategorie"
+msgstr "Категорії"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_activities
+msgid "Aktywności"
+msgstr "Активності"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_schedule
+msgid "Harmonogram"
+msgstr "Розклад"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_participants
+msgid "Uczestnicy"
+msgstr "Учасники"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_participant_list
+msgid "Karty kwalifikacyjne"
+msgstr "Кваліфікаційні картки"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_operations
+msgid "Operacje"
+msgstr "Операції"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_journal
+msgid "Dziennik dnia"
+msgstr "Журнал дня"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_groups
+msgid "Grupy wychowawcze (§2)"
+msgstr "Виховні групи (§2)"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_incident_card
+msgid "Karty Wypadku (§11)"
+msgstr "Картки нещасних випадків (§11)"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_incident_register
+msgid "Rejestr Wypadków (§12)"
+msgstr "Реєстр нещасних випадків (§12)"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.camp_regulamin_action
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_regulaminy
+msgid "Regulaminy"
+msgstr "Регламенти"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.camp_regulamin_ack_action
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_regulamin_acks
+msgid "Podpisy regulaminów"
+msgstr "Підписи регламентів"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_teczka_ko
+msgid "Teczka kontroli KO"
+msgstr "Тека контролю KO"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_finance
+msgid "Finanse"
+msgstr "Фінанси"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_budget
+msgid "Budżety obozów (BEP / marże)"
+msgstr "Бюджети таборів (BEP / маржі)"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_budget_category
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_budget_category
+msgid "Kategorie kosztów"
+msgstr "Категорії витрат"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_nutrition
+msgid "Żywienie"
+msgstr "Харчування"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_meal_plans
+msgid "Plany żywieniowe"
+msgstr "Плани харчування"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_allergens
+msgid "Alergeny"
+msgstr "Алергени"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_diet_profiles
+msgid "Profile dietetyczne"
+msgstr "Дієтичні профілі"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_emergency
+msgid "Sytuacje nadzwyczajne"
+msgstr "Надзвичайні ситуації"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_incidents
+msgid "Protokoły zdarzeń"
+msgstr "Протоколи НС"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_commercial
+msgid "Sprzedaż"
+msgstr "Комерція"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_loyalty
+msgid "Program lojalnościowy"
+msgstr "Програма лояльності"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_support_requests
+msgid "Zgłoszenia rodziców"
+msgstr "Запити батьків"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_installment_plans
+msgid "Plany ratalne"
+msgstr "Розстрочки"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_reviews
+msgid "Opinie"
+msgstr "Відгуки"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_training
+msgid "Szkolenia"
+msgstr "Навчання"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_training_courses
+msgid "Kursy (eLearning)"
+msgstr "Курси (eLearning)"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_training_records
+msgid "Rejestr szkoleń"
+msgstr "Записи навчання"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_config
+msgid "Konfiguracja"
+msgstr "Налаштування"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_sms_routing
+msgid "Reguły routingu SMS"
+msgstr "SMS-маршрути"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_sms_templates
+msgid "Szablony SMS"
+msgstr "SMS-шаблони"
+
+#. module: fayna_camp_portal
+#: model:ir.ui.menu,name:fayna_camp_portal.menu_admin_access_log
+msgid "Dziennik dostępu admina (RODO)"
+msgstr "Журнал доступу адміна (RODO)"
+
+#. module: fayna_camp_portal
+#: model:ir.model,name:fayna_camp_portal.model_camp_group
+msgid "Grupa wychowawcza (art. 92c)"
+msgstr "Виховна група (art. 92c)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_group__name
+msgid "Group name"
+msgstr "Назва групи"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_group__participant_count
+msgid "# participants"
+msgstr "К-сть учасників"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_group__has_under_10
+msgid "Has children under 10"
+msgstr "Є діти до 10 років"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_group__capacity_limit
+msgid "Legal capacity limit"
+msgstr "Законний ліміт чисельності"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_group__disabled_count
+msgid "# special needs"
+msgstr "К-сть дітей з особливими потребами"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__group_id
+msgid "Grupa wychowawcza"
+msgstr "Виховна група"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__has_disability
+msgid "Niepełnosprawność / przewlekła choroba (§2)"
+msgstr "Інвалідність / хронічна хвороба (§2)"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/camp_group.py:0
+#, python-format
+msgid "Group '%(group)s' would have %(count)s participants — above the legal limit of %(limit)s. Art. 92c ust. 2 pkt 1 ustawy o systemie oświaty: max 20 participants per wychowawca group, max 15 when the group includes a child under 10 years old."
+msgstr "У групі «%(group)s» було б %(count)s учасників — понад законний ліміт %(limit)s. Art. 92c ust. 2 pkt 1 закону про систему освіти: макс. 20 учасників у виховній групі, макс. 15, якщо в групі є дитина до 10 років."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/camp_group.py:0
+#, python-format
+msgid "Group '%(group)s' would have %(count)s participants with special/disability needs — at most %(limit)s are allowed per wychowawca group (§2, art. 92c)."
+msgstr "У групі «%(group)s» було б %(count)s учасників з особливими потребами / інвалідністю — у виховній групі допустимо щонайбільше %(limit)s (§2, art. 92c)."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/camp_group.py:0
+#, python-format
+msgid "Participants %(children)s are not registered to camp shift '%(event)s' — a child can only be assigned to a wychowawca group of their own shift."
+msgstr "Учасники %(children)s не зареєстровані на заїзд «%(event)s» — дитину можна додати лише до виховної групи її власного заїзду."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/camp_group.py:0
+#, python-format
+msgid " (under 10)"
+msgstr " (до 10 років)"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/camp_group.py:0
+#, python-format
+msgid "Group %(no)s%(suffix)s"
+msgstr "Група %(no)s%(suffix)s"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/camp_group.py:0
+#, python-format
+msgid "Groups — %(event)s"
+msgstr "Групи — %(event)s"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_group_tree
+msgid "Limit (art. 92c)"
+msgstr "Ліміт (art. 92c)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_group_form
+msgid "Auto-split unassigned children"
+msgstr "Авторозподіл нерозподілених дітей"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_group_form
+msgid "Distribute the remaining unassigned children of this camp shift into age-based groups (under-10 separately, limits 15/20 per art. 92c)."
+msgstr "Розподіляє решту нерозподілених дітей цього заїзду за віковими групами (до 10 років окремо, ліміти 15/20 за art. 92c)."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_group_form
+msgid "e.g. Grupa A"
+msgstr "напр. Grupa A"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_group_kanban
+msgid "Includes children under 10 — limit 15 (art. 92c)"
+msgstr "У групі є діти до 10 років — ліміт 15 (art. 92c)"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_group
+msgid "Grupy wychowawcze"
+msgstr "Виховні групи"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.actions.act_window,help:fayna_camp_portal.action_camp_group
+msgid "Create a wychowawca group"
+msgstr "Створіть виховну групу"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.actions.act_window,help:fayna_camp_portal.action_camp_group
+msgid "Art. 92c: max 20 children per group, max 15 when the group\n                    includes a child under 10. Use the auto-split button to\n                    distribute unassigned children of a shift by age."
+msgstr "Art. 92c: макс. 20 дітей у групі, макс. 15, якщо в групі є дитина до 10 років. Скористайтеся кнопкою авторозподілу, щоб розподілити нерозподілених дітей заїзду за віком."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_camp_day
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_my_home_camp_day
+msgid "Dzień w obozie"
+msgstr "День у таборі"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_camp_day
+msgid "Wszystkie dni"
+msgstr "Усі дні"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_camp_day
+msgid "Jeszcze cicho"
+msgstr "Поки що тихо"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_camp_day
+msgid "Relacje z dnia pojawią się tutaj, gdy tylko kadra opublikuje\n                    pierwszy raport dnia lub zdjęcia."
+msgstr "Репортажі дня з'являться тут, щойно команда опублікує перший звіт дня або фото."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_camp_day
+msgid "☀️ Słonecznie"
+msgstr "☀️ Сонячно"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_camp_day
+msgid "☁️ Pochmurno"
+msgstr "☁️ Хмарно"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_camp_day
+msgid "🌧️ Deszczowo"
+msgstr "🌧️ Дощ"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_camp_day
+msgid "⛈️ Burza"
+msgstr "⛈️ Гроза"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_camp_day
+msgid "🌅 Poranek"
+msgstr "🌅 Ранок"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_camp_day
+msgid "☀️ Popołudnie"
+msgstr "☀️ Пообіддя"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_camp_day
+msgid "🌙 Wieczór"
+msgstr "🌙 Вечір"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_camp_day
+msgid "🍽️ Posiłki"
+msgstr "🍽️ Прийоми їжі"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.report,name:fayna_camp_portal.action_report_teczka_ko_checklist
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__overall_ready
+msgid "Gotowość do kontroli KO"
+msgstr "Готовність до контролю KO"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.report,name:fayna_camp_portal.action_report_camp_budget
+msgid "Zestawienie obozu (budżet)"
+msgstr "Зведення табору (бюджет)"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.report,name:fayna_camp_portal.action_report_season_budgets
+msgid "Zestawienie obozów (sezon)"
+msgstr "Зведення таборів (сезон)"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.report,name:fayna_camp_portal.action_report_incident_card
+msgid "Karta Wypadku (PDF)"
+msgstr "Картка нещасного випадку (PDF)"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.report,name:fayna_camp_portal.action_report_incident_register
+msgid "Rejestr Wypadków (PDF)"
+msgstr "Реєстр нещасних випадків (PDF)"
+
+#. module: fayna_camp_portal
+#: model:ir.model,name:fayna_camp_portal.model_camp_create_wizard
+msgid "Майстер «Новий табір» (event + квиток + бюджет + teczka + групи)"
+msgstr "Майстер «Новий табір» (event + квиток + бюджет + teczka + групи)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_create_wizard__name
+msgid "Camp shift name"
+msgstr "Назва заїзду"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_create_wizard__date_end
+msgid "End"
+msgstr "Кінець"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_create_wizard__location
+msgid "Address / location"
+msgstr "Адреса / локація"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_create_wizard__seats
+msgid "Seats (місткість)"
+msgstr "Місця (місткість)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_create_wizard__price_per_child
+msgid "Cena za dziecko"
+msgstr "Ціна за дитину"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_create_wizard__cost_lodging_per_day
+msgid "Nocleg / dziecko / dobę"
+msgstr "Нічліг / дитина / доба"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_create_wizard__cost_food_per_child_day
+msgid "Wyżywienie / dziecko / dobę"
+msgstr "Харчування / дитина / доба"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_create_wizard__salary_wychowawca_per_turnus
+msgid "Stawka wychowawcy / turnus"
+msgstr "Ставка вожатого / заїзд"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_create_wizard__salary_kierownik_per_turnus
+msgid "Stawka kierownika / turnus"
+msgstr "Ставка керівника / заїзд"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/wizards/camp_create_wizard.py:0
+#, python-format
+msgid "Shift end must be after the start."
+msgstr "Кінець заїзду має бути після його початку."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/wizards/camp_create_wizard.py:0
+#, python-format
+msgid "Seats must be a positive number."
+msgstr "Кількість місць має бути додатною."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/wizards/camp_create_wizard.py:0
+#, python-format
+msgid "Auto-created camp venue (camp.create.wizard)."
+msgstr "Автоматично створена локація табору (camp.create.wizard)."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/wizards/camp_create_wizard.py:0
+#, python-format
+msgid "Nocleg"
+msgstr "Нічліг"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/wizards/camp_create_wizard.py:0
+#, python-format
+msgid "Wyżywienie"
+msgstr "Харчування"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/wizards/camp_create_wizard.py:0
+#, python-format
+msgid "Kierownik wypoczynku (wynagrodzenie)"
+msgstr "Керівник табору (зарплата)"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/wizards/camp_create_wizard.py:0
+#, python-format
+msgid "Grupa 1"
+msgstr "Група 1"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/wizards/camp_create_wizard.py:0
+#, python-format
+msgid "Budget category for '%(line)s' not found (XML id %(xmlid)s missing and no name match) — check data/budget_categories.xml."
+msgstr "Не знайдено бюджетної категорії для «%(line)s» (немає XML id %(xmlid)s і збігу за назвою) — перевірте data/budget_categories.xml."
+
+#. module: fayna_camp_portal
+#: model:ir.model,name:fayna_camp_portal.model_camp_staff_vacancy
+msgid "Wakat kadry (autoштат §2 — легка модель, R13)"
+msgstr "Вакансія кадри (автоштат §2 — легка модель, R13)"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/staffing.py:0
+#, python-format
+msgid "Wakat"
+msgstr "Вакансія"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff_vacancy__candidate_name
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_staff_vacancy__state__candidate
+msgid "Candidate"
+msgstr "Кандидат"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_staff_vacancy__state__hired
+msgid "Hired"
+msgstr "Найнятий"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff_vacancy__salary_amount
+msgid "Stawka za turnus"
+msgstr "Ставка за заїзд"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff_vacancy__created_reason
+msgid "Created because"
+msgstr "Причина створення"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff_vacancy__staff_id
+msgid "Hired staff"
+msgstr "Найнятий працівник"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/staffing.py:0
+#, python-format
+msgid "This vacancy is already hired."
+msgstr "На цю вакансію вже найнято кандидата."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/staffing.py:0
+#, python-format
+msgid "This vacancy is closed — reopen it before hiring."
+msgstr "Ця вакансія закрита — відкрийте її знову перед наймом."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/staffing.py:0
+#, python-format
+msgid "Enter the candidate name before hiring."
+msgstr "Перед наймом вкажіть ім'я та прізвище кандидата."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/staffing.py:0
+#, python-format
+msgid "Hired via vacancy '%(vacancy)s'."
+msgstr "Найнято через вакансію «%(vacancy)s»."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/staffing.py:0
+#, python-format
+msgid "Zatrudniono: %(name)s (camp.staff draft — czeka na weryfikację KRK/RSPTS)."
+msgstr "Найнято: %(name)s (camp.staff draft — чекає на верифікацію KRK/RSPTS)."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/staffing.py:0
+#, python-format
+msgid "Only open vacancies can move to Candidate."
+msgstr "Лише відкриті вакансії можуть перейти в статус «Кандидат»."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/staffing.py:0
+#, python-format
+msgid "Only closed vacancies can be reopened."
+msgstr "Знову відкрити можна лише закриті вакансії."
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_event_event__staff_vacancy_ids
+msgid "Staff vacancies"
+msgstr "Вакансії кадри"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_event_event__staff_vacancy_count
+msgid "# vacancies (pipeline)"
+msgstr "К-сть вакансій (pipeline)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_event_event__required_wychowawcy
+msgid "Required wychowawcy"
+msgstr "Потрібно вожатих"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_event_event__current_wychowawcy
+msgid "Current wychowawcy"
+msgstr "Наявно вожатих"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_event_event__staffing_gap
+msgid "Staffing gap"
+msgstr "Кадровий розрив"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_event_event__overstaffed
+msgid "Overstaffed"
+msgstr "Надлишок кадри"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_event_event__overstaffed_notified
+msgid "Overstaffing already notified"
+msgstr "Про надлишок кадри вже повідомлено"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/staffing.py:0
+#, python-format
+msgid "Auto: registrations crossed the art. 92c threshold (required %(req)d, covered %(cov)d)."
+msgstr "Авто: реєстрації перетнули поріг art. 92c (потрібно %(req)d, покрито %(cov)d)."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/staffing.py:0
+#, python-format
+msgid "Потрібен +%(n)d wychowawca: реєстрації перетнули поріг art. 92c (потреба %(req)d, покрито %(cov)d). Відкрито вакансії автоматично."
+msgstr "Потрібен +%(n)d wychowawca: реєстрації перетнули поріг art. 92c (потреба %(req)d, покрито %(cov)d). Відкрито вакансії автоматично."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/staffing.py:0
+#, python-format
+msgid "Overstaffing: після скасувань потреба впала до %(req)d wychowawców, а найнято більше. Вакансії та кадра НЕ закриті автоматично (R13) — рішення за організатором."
+msgstr "Overstaffing: після скасувань потреба впала до %(req)d wychowawców, а найнято більше. Вакансії та кадра НЕ закриті автоматично (R13) — рішення за організатором."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/staffing.py:0
+#, python-format
+msgid "Wakaty — %(event)s"
+msgstr "Вакансії — %(event)s"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_form
+msgid "Wakat kadry"
+msgstr "Вакансія кадри"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_form
+msgid "Mam kandydata"
+msgstr "Є кандидат"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_form
+msgid "Zatrudnij (draft staff)"
+msgstr "Найняти (draft staff)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_form
+msgid "Створює camp.staff у draft — підтвердження лише після верифікації KRK/RSPTS (§13)."
+msgstr "Створює camp.staff у draft — підтвердження лише після верифікації KRK/RSPTS (§13)."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_form
+msgid "Zamknij"
+msgstr "Закрити"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_form
+msgid "Закрити вакансію вручну? Двигун автоштату НЕ закриває вакансії сам (R13)."
+msgstr "Закрити вакансію вручну? Двигун автоштату НЕ закриває вакансії сам (R13)."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_form
+msgid "Otwórz ponownie"
+msgstr "Відкрити знову"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_form
+msgid "Wakat wychowawca #1"
+msgstr "Вакансія вожатого #1"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_form
+msgid "Notatki"
+msgstr "Нотатки"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_form
+msgid "Джерело кандидата, нотатки співбесіди, доступність…"
+msgstr "Джерело кандидата, нотатки співбесіди, доступність…"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_kanban
+msgid "Kandydat"
+msgstr "Кандидат"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_vacancy_search
+msgid "Pipeline (open/candidate/hired)"
+msgstr "Пайплайн (відкриті/кандидат/найняті)"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_staff_vacancy
+msgid "Wakaty kadry"
+msgstr "Вакансії кадри"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.actions.act_window,help:fayna_camp_portal.action_camp_staff_vacancy
+msgid "Brak wakatów"
+msgstr "Вакансій немає"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.actions.act_window,help:fayna_camp_portal.action_camp_staff_vacancy
+msgid "Двигун автоштату (§2 art. 92c) відкриває вакансії автоматично,\n                   коли реєстрації перетинають поріг 15/20 дітей на wychowawcę."
+msgstr "Двигун автоштату (§2 art. 92c) відкриває вакансії автоматично, коли реєстрації перетинають поріг 15/20 дітей на wychowawcę."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_event_form_staffing
+msgid "Wychowawcy: zatrudnieni / wymagani (art. 92c) + wakaty."
+msgstr "Вожаті: найняті / потрібні (art. 92c) + вакансії."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_event_form_staffing
+msgid "Staffing"
+msgstr "Кадрове забезпечення"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_event_form_staffing
+msgid "Potrzeba (art. 92c)"
+msgstr "Потреба (art. 92c)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_event_form_staffing
+msgid "Stan"
+msgstr "Стан"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_event_form_staffing
+msgid "Overstaffing: потреба впала нижче найнятої кадри.\n                            Вакансії/кадра НЕ закриваються автоматично (R13) — рішення за організатором."
+msgstr "Overstaffing: потреба впала нижче найнятої кадри. Вакансії/кадра НЕ закриваються автоматично (R13) — рішення за організатором."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_create_wizard_form
+msgid "Nowy obóz"
+msgstr "Новий табір"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_create_wizard_form
+msgid "Obóz NWŚ — turnus 2 (2026)"
+msgstr "Obóz NWŚ — turnus 2 (2026)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_create_wizard_form
+msgid "Ośrodek Leśna Polana, Drołtowice 12"
+msgstr "Ośrodek Leśna Polana, Drołtowice 12"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_create_wizard_form
+msgid "Finanse (plan)"
+msgstr "Фінанси (план)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_create_wizard_form
+msgid "Utwórz obóz"
+msgstr "Створити табір"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_create_wizard_form
+msgid "Anuluj"
+msgstr "Скасувати"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_create_wizard
+msgid "Nowy obóz (kreator)"
+msgstr "Новий табір (майстер)"
+
+#. module: fayna_camp_portal
+#: model:ir.model,name:fayna_camp_portal.model_camp_incident_card
+msgid "Karta Wypadku — wzór 16 pkt (kurs kierownika)"
+msgstr "Картка нещасного випадку — зразок 16 пунктів (курс керівника)"
+
+#. module: fayna_camp_portal
+#: model:ir.model,name:fayna_camp_portal.model_camp_incident_register
+msgid "Rejestr Wypadków — wzór 10 kolumn (per turnus)"
+msgstr "Реєстр нещасних випадків — зразок 10 колонок (на заїзд)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__event_id
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_register__event_id
+msgid "Turnus (camp shift)"
+msgstr "Заїзд (зміна табору)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__incident_report_id
+msgid "Operational incident report"
+msgstr "Оперативний протокол події"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_incident_card__state__confirmed
+msgid "Zatwierdzona"
+msgstr "Затверджена"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__notes
+msgid "Uwagi wewnętrzne"
+msgstr "Внутрішні примітки"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__placowka_name
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "1. Nazwa placówki (pieczęć)"
+msgstr "1. Назва закладу (печатка)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__participant_id
+msgid "2. Imię i nazwisko poszkodowanego"
+msgstr "2. Ім'я та прізвище потерпілого"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__participant_birth_date
+msgid "2. Data urodzenia"
+msgstr "2. Дата народження"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__participant_address
+msgid "2. Adres zamieszkania"
+msgstr "2. Адреса проживання"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__group_class
+msgid "2. Klasa / grupa"
+msgstr "2. Клас / група"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__czynnosc
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "3. Czynność wykonywana podczas wypadku"
+msgstr "3. Дія, що виконувалася під час нещасного випадку"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__bhp_rodzaj
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "4. Rodzaj przeszkolenia BHP"
+msgstr "4. Вид інструктажу з охорони праці (BHP)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__bhp_kiedy
+msgid "4. Przeszkolenie BHP — kiedy"
+msgstr "4. Інструктаж BHP — коли"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__bhp_przez_kogo
+msgid "4. Przeszkolenie BHP — przez kogo"
+msgstr "4. Інструктаж BHP — ким проведений"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__bhp_czas_trwania
+msgid "4. Przeszkolenie BHP — czas trwania"
+msgstr "4. Інструктаж BHP — тривалість"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__zbadany_przez_lekarza
+msgid "5. Czy zbadany przez lekarza"
+msgstr "5. Чи оглянутий лікарем"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__data_ostatniego_badania
+msgid "5. Data ostatniego badania lekarskiego"
+msgstr "5. Дата останнього медичного огляду"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__przeciwwskazania
+msgid "5. Czy były przeciwwskazania"
+msgstr "5. Чи були протипоказання"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__incident_datetime
+msgid "6. Data i czas wypadku"
+msgstr "6. Дата і час нещасного випадку"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__miejsce
+msgid "6. Miejsce wypadku"
+msgstr "6. Місце нещасного випадку"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__uraz_rodzaj
+msgid "7. Rodzaj uszkodzenia ciała"
+msgstr "7. Вид тілесного ушкодження"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__uraz_umiejscowienie
+msgid "7. Umiejscowienie uszkodzenia ciała"
+msgstr "7. Локалізація тілесного ушкодження"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__niezdolny_do_uczestnictwa
+msgid "8. Czy niezdolny do uczestnictwa w zajęciach"
+msgstr "8. Чи неспроможний брати участь у заняттях"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__niezdolnosc_czas
+msgid "8. Przypuszczalny czas niezdolności"
+msgstr "8. Орієнтовний термін неспроможності"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__opis_wypadku
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "9. Szczegółowy opis wypadku z podaniem przyczyny"
+msgstr "9. Детальний опис нещасного випадку із зазначенням причини"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__osoba_nadzoru
+msgid "10. Imię i nazwisko osoby sprawującej nadzór"
+msgstr "10. Ім'я та прізвище особи, що здійснювала нагляд"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__nadzor_obecny
+msgid "11. Czy osoba nadzoru była obecna na miejscu"
+msgstr "11. Чи була особа нагляду присутня на місці"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__nadzor_nieobecny_przyczyna
+msgid "11. Jeśli nieobecna — z jakiej przyczyny"
+msgstr "11. Якщо відсутня — з якої причини"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__pierwsza_pomoc_godzina
+msgid "12. Pierwszej pomocy udzielono o godzinie"
+msgstr "12. Першу допомогу надано о годині"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__swiadkowie
+msgid "13. Imiona, nazwiska i adresy świadków"
+msgstr "13. Імена, прізвища та адреси свідків"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__srodki_zapobiegawcze
+msgid "14. Podjęte środki zapobiegawcze (komendant / kierownik)"
+msgstr "14. Вжиті запобіжні заходи (комендант / керівник)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__komisja_sklad
+msgid "15. Skład komisji (imiona i nazwiska)"
+msgstr "15. Склад комісії (імена та прізвища)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__kierownik_placowki
+msgid "15. Kierownik placówki (imię i nazwisko)"
+msgstr "15. Керівник закладу (ім'я та прізвище)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__zalaczniki_wykaz
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "16. Wykaz załączników"
+msgstr "16. Перелік додатків"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__attachment_ids
+msgid "Załączniki (pliki)"
+msgstr "Додатки (файли)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_card__register_lp
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Lp."
+msgstr "№ з/п"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_incident_card__zbadany_przez_lekarza__tak
+msgid "Tak"
+msgstr "Так"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_incident_card__zbadany_przez_lekarza__nie
+msgid "Nie"
+msgstr "Ні"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/incident_card.py:0
+#, python-format
+msgid "Karta Wypadku — %(child)s (%(date)s)"
+msgstr "Картка нещасного випадку — %(child)s (%(date)s)"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/incident_card.py:0
+#, python-format
+msgid "Karta Wypadku (szkic)"
+msgstr "Картка нещасного випадку (чернетка)"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/incident_card.py:0
+#, python-format
+msgid "Only draft cards can be confirmed."
+msgstr "Затвердити можна лише картки в статусі чернетки."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/incident_card.py:0
+#, python-format
+msgid "9. Szczegółowy opis wypadku"
+msgstr "9. Детальний опис нещасного випадку"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/incident_card.py:0
+#, python-format
+msgid "10. Osoba sprawująca nadzór"
+msgstr "10. Особа, що здійснювала нагляд"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/incident_card.py:0
+#, python-format
+msgid "Cannot confirm Karta Wypadku — missing: %(fields)s"
+msgstr "Неможливо затвердити Karta Wypadku — бракує: %(fields)s"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/incident_card.py:0
+#, python-format
+msgid "Confirmed Karta Wypadku is frozen (legal evidence) — cannot modify: %(fields)s"
+msgstr "Затверджена Karta Wypadku заморожена (юридичний доказ) — не можна змінити: %(fields)s"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/incident_card.py:0
+#, python-format
+msgid "Confirmed Karta Wypadku cannot be deleted (legal evidence retention). Only draft cards may be removed."
+msgstr "Затверджену Karta Wypadku не можна видалити (зберігання юридичних доказів). Видаляти можна лише чернетки."
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_register__line_ids
+msgid "Karty wypadków (zatwierdzone)"
+msgstr "Картки нещасних випадків (затверджені)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_register__line_count
+msgid "# wypadków"
+msgstr "К-сть нещасних випадків"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_register__locked
+msgid "Zamknięty (turnus zakończony)"
+msgstr "Закритий (заїзд завершено)"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/incident_card.py:0
+#, python-format
+msgid "Rejestr Wypadków — %(event)s"
+msgstr "Реєстр нещасних випадків — %(event)s"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/incident_card.py:0
+#, python-format
+msgid "Only a Camp Administrator may unlock a closed Rejestr Wypadków."
+msgstr "Лише адміністратор табору може розблокувати закритий Rejestr Wypadków."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/incident_card.py:0
+#, python-format
+msgid "Rejestr Wypadków is locked (turnus closed) — cannot modify: %(fields)s"
+msgstr "Rejestr Wypadków заблоковано (заїзд завершено) — не можна змінити: %(fields)s"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/incident_card.py:0
+#, python-format
+msgid "Locked Rejestr Wypadków cannot be deleted (legal evidence retention)."
+msgstr "Заблокований Rejestr Wypadków не можна видалити (зберігання юридичних доказів)."
+
+#. module: fayna_camp_portal
+#: model:ir.model.constraint,message:fayna_camp_portal.constraint_camp_incident_register_event_id_uniq
+msgid "Rejestr Wypadków already exists for this turnus — exactly one register per camp shift is allowed."
+msgstr "Реєстр нещасних випадків для цього заїзду вже існує — дозволений рівно один реєстр на заїзд."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_search
+msgid "Szkice"
+msgstr "Чернетки"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_search
+msgid "Turnus"
+msgstr "Заїзд"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "Zatwierdź kartę"
+msgstr "Затвердити картку"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "Po zatwierdzeniu karta zostanie zamrożona jako dokument prawny (edytowalne pozostaną tylko załączniki i uwagi). Kontynuować?"
+msgstr "Після затвердження картку буде заморожено як юридичний документ (редагованими залишаться лише додатки та примітки). Продовжити?"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "Powiązania"
+msgstr "Зв'язки"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "2. Poszkodowany"
+msgstr "2. Потерпілий"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "5. Badanie lekarskie"
+msgstr "5. Медичний огляд"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "6. Data, czas i miejsce wypadku"
+msgstr "6. Дата, час і місце нещасного випадку"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "7. Rodzaj i umiejscowienie uszkodzenia ciała"
+msgstr "7. Вид і локалізація тілесного ушкодження"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "8. Niezdolność do uczestnictwa w zajęciach"
+msgstr "8. Неспроможність брати участь у заняттях"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "10–11. Nadzór w chwili wypadku"
+msgstr "10–11. Нагляд у момент нещасного випадку"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "12. Pierwsza pomoc"
+msgstr "12. Перша допомога"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "13. Świadkowie (imiona, nazwiska, adresy)"
+msgstr "13. Свідки (імена, прізвища, адреси)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "14. Podjęte środki zapobiegawcze"
+msgstr "14. Вжиті запобіжні заходи"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "15. Komisja i kierownik placówki"
+msgstr "15. Комісія та керівник закладу"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_card_form
+msgid "Uwagi wewnętrzne (poza wzorem)"
+msgstr "Внутрішні примітки (поза зразком)"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_incident_card
+msgid "Karty Wypadków"
+msgstr "Картки нещасних випадків"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.actions.act_window,help:fayna_camp_portal.action_camp_incident_card
+msgid "Brak kart wypadków"
+msgstr "Немає карток нещасних випадків"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.actions.act_window,help:fayna_camp_portal.action_camp_incident_card
+msgid "Karta Wypadku — oficjalny wzór 16 punktów (kurs kierownika\n                    wypoczynku). Po zatwierdzeniu karta trafia automatycznie do\n                    Rejestru Wypadków turnusu."
+msgstr "Karta Wypadku — офіційний зразок із 16 пунктів (курс керівника табору). Після затвердження картка автоматично потрапляє до Реєстру нещасних випадків заїзду."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Zamknij rejestr"
+msgstr "Закрити реєстр"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Po zamknięciu turnusu rejestr stanie się niezmienny. Kontynuować?"
+msgstr "Після закриття заїзду реєстр стане незмінним. Продовжити?"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Odblokuj (Admin)"
+msgstr "Розблокувати (Admin)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Imię i nazwisko"
+msgstr "Ім'я та прізвище"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Grupa"
+msgstr "Група"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Data wypadku"
+msgstr "Дата нещасного випадку"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Rodzaj wypadku / urazu"
+msgstr "Вид нещасного випадку / травми"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Miejsce wypadku"
+msgstr "Місце нещасного випадку"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Rodzaj zajęć"
+msgstr "Вид занять"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Umiejscowienie urazu"
+msgstr "Локалізація травми"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Okoliczności"
+msgstr "Обставини"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Udzielona pomoc o godz."
+msgstr "Надана допомога о год."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Środki zapobiegawcze, zarządzenia"
+msgstr "Запобіжні заходи, розпорядження"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_incident_register_form
+msgid "Wychowawca opiekun"
+msgstr "Вожатий-опікун"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_incident_register
+msgid "Rejestry Wypadków"
+msgstr "Реєстри нещасних випадків"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.actions.act_window,help:fayna_camp_portal.action_camp_incident_register
+msgid "Brak rejestrów wypadków"
+msgstr "Немає реєстрів нещасних випадків"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.actions.act_window,help:fayna_camp_portal.action_camp_incident_register
+msgid "Rejestr Wypadków — jeden na turnus. Agreguje automatycznie\n                    wszystkie zatwierdzone Karty Wypadków chronologicznie\n                    z automatyczną numeracją Lp. Po zamknięciu turnusu rejestr\n                    jest niezmienny (kontrola Kuratorium Oświaty)."
+msgstr "Реєстр нещасних випадків — один на заїзд. Автоматично агрегує всі затверджені картки нещасних випадків у хронологічному порядку з автоматичною нумерацією Lp. Після закриття заїзду реєстр незмінний (контроль Кураторіуму освіти)."
+
+#. module: fayna_camp_portal
+#: model:ir.model,name:fayna_camp_portal.model_camp_regulamin
+msgid "Regulamin wypoczynku (dokument wydany przez kierownika)"
+msgstr "Регламент відпочинку (документ, виданий керівником)"
+
+#. module: fayna_camp_portal
+#: model:ir.model,name:fayna_camp_portal.model_camp_regulamin_ack
+msgid "Potwierdzenie zapoznania się z regulaminem (kadra)"
+msgstr "Підтвердження ознайомлення з регламентом (кадра)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_regulamin__regulamin_type__kolonii_obozu
+msgid "Regulamin kolonii / obozu"
+msgstr "Регламент колонії / табору"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_regulamin__regulamin_type__kapieli
+msgid "Regulamin kąpieli"
+msgstr "Регламент купання"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_regulamin__regulamin_type__wycieczek
+msgid "Regulamin wycieczek"
+msgstr "Регламент екскурсій"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_regulamin__regulamin_type__ppoz
+msgid "Instrukcja ppoż."
+msgstr "Протипожежна інструкція"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_regulamin__regulamin_type__zakres_czynnosci_wychowawcy
+msgid "Zakres czynności wychowawcy"
+msgstr "Обсяг обов'язків вожатого"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin__issued_by_id
+msgid "Issued by (kierownik)"
+msgstr "Видав (керівник)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin__date_published
+msgid "Published on"
+msgstr "Дата публікації"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin__ack_ids
+msgid "Acknowledgments"
+msgstr "Підтвердження ознайомлення"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin__signed_count
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin_ack__signed
+msgid "Signed"
+msgstr "Підписано"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin__total_count
+msgid "Total acks"
+msgstr "Усього підтверджень"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin__all_signed
+msgid "All signed"
+msgstr "Усі підписали"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/regulamin.py:0
+#, python-format
+msgid "Only draft regulaminy can be published."
+msgstr "Опублікувати можна лише регламенти в статусі чернетки."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/regulamin.py:0
+#, python-format
+msgid "Regulamin '%(name)s' is an organizer-wide template — pass the camp shift (event) explicitly to generate acknowledgments."
+msgstr "Регламент «%(name)s» — загальний шаблон організатора; щоб згенерувати підтвердження, явно вкажіть заїзд (event)."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/regulamin.py:0
+#, python-format
+msgid "Regulamin nie podpisany przez: %(names)s (event: %(event)s)"
+msgstr "Регламент не підписали: %(names)s (заїзд: %(event)s)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin_ack__regulamin_id
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_view_form
+msgid "Regulamin"
+msgstr "Регламент"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin_ack__user_id
+msgid "Staff user"
+msgstr "Користувач (кадра)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_regulamin_ack__can_sign
+msgid "Can sign"
+msgstr "Може підписати"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/regulamin.py:0
+#, python-format
+msgid "Only %(staff)s can sign this acknowledgment with their own login. You are logged in as %(user)s."
+msgstr "Лише %(staff)s може підписати це підтвердження власним логіном. Ви ввійшли як %(user)s."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/regulamin.py:0
+#, python-format
+msgid "This acknowledgment is already signed."
+msgstr "Це підтвердження вже підписане."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/regulamin.py:0
+#, python-format
+msgid "%(staff)s podpisał(a) zapoznanie się z regulaminem."
+msgstr "%(staff)s підписав(ла) ознайомлення з регламентом."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/regulamin.py:0
+#, python-format
+msgid "Acknowledgment '%(name)s' is signed and frozen — it cannot be modified (legal evidence). Archive the regulamin and issue a new version instead."
+msgstr "Підтвердження «%(name)s» підписане й заморожене — його не можна змінювати (юридичний доказ). Заархівуйте регламент і видайте нову версію."
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff__regulamin_ack_ids
+msgid "Regulamin acknowledgments"
+msgstr "Підтвердження регламентів"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff__unsigned_regulamin_count
+msgid "Unsigned regulaminy"
+msgstr "Непідписані регламенти"
+
+#. module: fayna_camp_portal
+#: model:ir.model.constraint,message:fayna_camp_portal.constraint_camp_regulamin_ack_regulamin_staff_unique
+msgid "This staff member already has an acknowledgment for this regulamin."
+msgstr "Цей член кадри вже має підтвердження для цього регламенту."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_view_form
+msgid "Generate acknowledgments"
+msgstr "Згенерувати підтвердження"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_view_form
+msgid "Create one acknowledgment per staff member of the event."
+msgstr "Створює по одному підтвердженню для кожного члена кадри заїзду."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_view_form
+msgid "np. Regulamin kąpieli — turnus 2"
+msgstr "напр. Регламент купання — заїзд 2"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_view_form
+msgid "Empty = organizer-wide template for all camps."
+msgstr "Порожнє = загальний шаблон організатора для всіх таборів."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_view_form
+msgid "Załączniki"
+msgstr "Додатки"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_view_form
+msgid "Podpisy kadry"
+msgstr "Підписи кадри"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_ack_view_tree
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_view_form
+msgid "Podpisuję"
+msgstr "Підписую"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_view_form
+msgid "Visible only to the staff member's own user."
+msgstr "Видно лише власному користувачеві члена кадри."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_view_search
+msgid "Templates (all camps)"
+msgstr "Шаблони (всі табори)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_view_search
+msgid "Missing signatures"
+msgstr "Бракує підписів"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_ack_view_search
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_view_search
+msgid "Group by"
+msgstr "Групувати за"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.actions.act_window,help:fayna_camp_portal.camp_regulamin_action
+msgid "Wydaj pierwszy regulamin"
+msgstr "Видайте перший регламент"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.actions.act_window,help:fayna_camp_portal.camp_regulamin_action
+msgid "Regulamin kolonii/obozu, kąpieli, wycieczek, instrukcja ppoż.,\n                    zakres czynności wychowawcy — z podpisami kadry."
+msgstr "Регламент колонії/табору, купання, екскурсій, протипожежна інструкція, обсяг обов'язків вожатого — з підписами кадри."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_ack_view_form
+msgid "Acknowledgment"
+msgstr "Підтвердження"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_ack_view_form
+msgid "Podpisuję — zapoznałem(am) się"
+msgstr "Підписую — ознайомився(лась)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_ack_view_search
+msgid "Nie podpisane"
+msgstr "Не підписані"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_regulamin_ack_view_search
+msgid "Moje do podpisu"
+msgstr "Мої до підпису"
+
+#. module: fayna_camp_portal
+#: model:ir.model,name:fayna_camp_portal.model_camp_teczka_ko
+msgid "Teczka KO — gotowość do kontroli Kuratorium Oświaty"
+msgstr "Тека KO — готовність до контролю Кураторіуму освіти"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/teczka_ko.py:0
+#, python-format
+msgid "Teczka KO — %(event)s"
+msgstr "Тека KO — %(event)s"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__karty_total
+msgid "Karty — uczestnicy"
+msgstr "Картки — учасники"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__karty_signed
+msgid "Karty — podpisane"
+msgstr "Картки — підписані"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__karty_percent
+msgid "Karty — % podpisanych"
+msgstr "Картки — % підписаних"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__karty_ready
+msgid "Karty ✓"
+msgstr "Картки ✓"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__kadra_total
+msgid "Kadra — liczba"
+msgstr "Кадра — кількість"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__kadra_eligible
+msgid "Kadra — zweryfikowana"
+msgstr "Кадра — верифікована"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__kadra_ready
+msgid "Kadra ✓"
+msgstr "Кадра ✓"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__regulamin_total
+msgid "Regulaminy — opublikowane"
+msgstr "Регламенти — опубліковані"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__regulamin_unsigned
+msgid "Regulaminy — z brakami podpisów"
+msgstr "Регламенти — з браком підписів"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__regulaminy_ready
+msgid "Regulaminy ✓"
+msgstr "Регламенти ✓"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__dziennik_ready
+msgid "Dziennik ✓"
+msgstr "Щоденник ✓"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__wypadki_available
+msgid "Rejestr wypadków — moduł dostępny"
+msgstr "Реєстр нещасних випадків — модуль доступний"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__wypadki_count
+msgid "Rejestry wypadków"
+msgstr "Реєстри нещасних випадків"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__wypadki_ready
+msgid "Rejestr wypadków ✓"
+msgstr "Реєстр нещасних випадків ✓"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__program_count
+msgid "Programy wypoczynku"
+msgstr "Програми відпочинку"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_teczka_ko__program_ready
+msgid "Program ✓"
+msgstr "Програма ✓"
+
+#. module: fayna_camp_portal
+#: model:ir.model.constraint,message:fayna_camp_portal.constraint_camp_teczka_ko_event_unique
+msgid "Each camp shift (event) has exactly one Teczka KO."
+msgstr "Кожен заїзд (event) має рівно одну теку KO."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
+msgid "Drukuj checklistę (PDF)"
+msgstr "Друкувати чекліст (PDF)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
+msgid "Eksport pełnego pakietu PDF"
+msgstr "Експорт повного пакета PDF"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
+msgid "TODO: dostępne po integracji wszystkich raportów."
+msgstr "TODO: доступно після інтеграції всіх звітів."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
+msgid "Sprawdź podpisy regulaminów"
+msgstr "Перевірити підписи регламентів"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
+msgid "Tworzy activity dla wystawcy każdego regulaminu z brakami podpisów."
+msgstr "Створює activity для видавця кожного регламенту з браком підписів."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
+msgid "GOTOWE do kontroli KO"
+msgstr "ГОТОВО до контролю KO"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
+msgid "BRAKI w dokumentacji"
+msgstr "ПРОГАЛИНИ в документації"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
+msgid "1. Karty kwalifikacyjne uczestników"
+msgstr "1. Кваліфікаційні картки учасників"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
+msgid "2. Kadra — KRK / RSPTS / kursy (Ustawa Kamilka)"
+msgstr "2. Кадра — KRK / RSPTS / курси (Ustawa Kamilka)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
+msgid "3. Regulaminy — podpisy kadry"
+msgstr "3. Регламенти — підписи кадри"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
+msgid "4. Dziennik zajęć (Załącznik 5)"
+msgstr "4. Щоденник занять (Załącznik 5)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
+msgid "5. Rejestr wypadków"
+msgstr "5. Реєстр нещасних випадків"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
+msgid "6. Program wypoczynku (Załącznik 9)"
+msgstr "6. Програма відпочинку (Załącznik 9)"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.camp_teczka_ko_action
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
+msgid "Teczka KO"
+msgstr "Тека KO"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.actions.act_window,help:fayna_camp_portal.camp_teczka_ko_action
+msgid "Utwórz Teczkę KO dla turnusu"
+msgstr "Створіть теку KO для заїзду"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.actions.act_window,help:fayna_camp_portal.camp_teczka_ko_action
+msgid "Checklist gotowości do kontroli Kuratorium Oświaty —\n                    karty, kadra, regulaminy, dziennik, rejestr wypadków, program.\n                    Wszystko liczone na żywo, nic nie wpisuje się ręcznie."
+msgstr "Чекліст готовності до контролю Кураторіуму освіти — картки, кадра, регламенти, щоденник, реєстр нещасних випадків, програма. Усе рахується наживо, нічого не вписується вручну."
+
+#. module: fayna_camp_portal
+#: model:ir.model,name:fayna_camp_portal.model_camp_budget_category
+msgid "Camp Budget Cost Category"
+msgstr "Категорія витрат бюджету табору"
+
+#. module: fayna_camp_portal
+#: model:ir.model,name:fayna_camp_portal.model_camp_budget
+msgid "Camp Shift Budget (BEP + VAT/business margins)"
+msgstr "Бюджет заїзду (BEP + маржа VAT / бізнесова)"
+
+#. module: fayna_camp_portal
+#: model:ir.model,name:fayna_camp_portal.model_camp_budget_line
+msgid "Camp Budget Cost Line"
+msgstr "Рядок витрат бюджету табору"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_budget_category__cost_kind__stale
+msgid "Koszt stały (na turnus)"
+msgstr "Постійні витрати (на заїзд)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_budget_category__cost_kind__zmienne_na_dziecko
+msgid "Koszt zmienny (na dziecko)"
+msgstr "Змінні витрати (на дитину)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget_category__cost_kind
+msgid "Cost Kind"
+msgstr "Тип витрат"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget_category__vat_marza
+msgid "Do VAT-marży (art. 119)"
+msgstr "До VAT-маржі (art. 119)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget_category__is_salary
+msgid "Wynagrodzenia (kadra)"
+msgstr "Зарплати (кадра)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__capacity
+msgid "Capacity (seats_max)"
+msgstr "Місткість (seats_max)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__price_per_child
+msgid "Cena za dziecko (realna)"
+msgstr "Ціна за дитину (реальна)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__planned_children
+msgid "Planowana liczba dzieci"
+msgstr "Планована кількість дітей"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__days
+msgid "Days (doby)"
+msgstr "Дні (доби)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__line_ids
+msgid "Cost Lines"
+msgstr "Рядки витрат"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__revenue_planned
+msgid "Przychód (plan)"
+msgstr "Дохід (план)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__total_fixed
+msgid "Koszty stałe"
+msgstr "Постійні витрати"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__variable_per_child
+msgid "Koszt zmienny / dziecko"
+msgstr "Змінні витрати / дитина"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__total_variable_planned
+msgid "Koszty zmienne (plan)"
+msgstr "Змінні витрати (план)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__contribution_margin
+msgid "Contribution margin / dziecko"
+msgstr "Contribution margin / дитина"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__bep_children
+msgid "BEP (min. dzieci)"
+msgstr "BEP (мін. дітей)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__bep_warning
+msgid "BEP nieosiągalny"
+msgstr "BEP недосяжний"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__marza_vat_planned
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_tree
+msgid "Marża VAT (art. 119)"
+msgstr "Маржа VAT (art. 119)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__marza_business_planned
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "Marża biznesowa (z reklamą)"
+msgstr "Бізнес-маржа (з рекламою)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_tree
+msgid "Marża biznesowa"
+msgstr "Бізнес-маржа"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__profit_at_planned
+msgid "Zysk przy planowanej liczbie"
+msgstr "Прибуток за планової кількості"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__registered_children
+msgid "Zapisane dzieci"
+msgstr "Записані діти"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_budget__fill_vs_bep__ok
+msgid "OK — powyżej BEP"
+msgstr "OK — вище BEP"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_budget__fill_vs_bep__warning
+msgid "Uwaga — blisko BEP"
+msgstr "Увага — близько BEP"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_budget__fill_vs_bep__loss
+msgid "Strata — poniżej BEP"
+msgstr "Збиток — нижче BEP"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__fill_vs_bep
+msgid "Status vs BEP"
+msgstr "Статус відносно BEP"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__fill_vs_bep_pct
+msgid "Wypełnienie vs BEP (%)"
+msgstr "Заповнення відносно BEP (%)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__analytic_account_id
+msgid "Analytic Account"
+msgstr "Аналітичний рахунок"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__actual_revenue
+msgid "Przychód (fakt)"
+msgstr "Дохід (факт)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__actual_costs
+msgid "Koszty (fakt)"
+msgstr "Витрати (факт)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget__actual_profit
+msgid "Wynik (fakt)"
+msgstr "Результат (факт)"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/budget.py:0
+#, python-format
+msgid "Budżet: %s"
+msgstr "Бюджет: %s"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/budget.py:0
+#, python-format
+msgid "Price per child cannot be negative."
+msgstr "Ціна за дитину не може бути від'ємною."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/budget.py:0
+#, python-format
+msgid "Planned children count cannot be negative."
+msgstr "Планована кількість дітей не може бути від'ємною."
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_budget_line__per__per_camp
+msgid "Na turnus (stały)"
+msgstr "На заїзд (постійні)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_budget_line__per__per_child
+msgid "Na dziecko"
+msgstr "На дитину"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_budget_line__per__per_child_day
+msgid "Na dziecko / dobę"
+msgstr "На дитину / добу"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget_line__per
+msgid "Per"
+msgstr "Нарахування"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget_line__qty
+msgid "Qty (plan)"
+msgstr "К-сть (план)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_budget_line__subtotal_planned
+msgid "Razem (plan)"
+msgstr "Разом (план)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_event_event__camp_budget_ids
+msgid "Budgets"
+msgstr "Бюджети"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_event_event__camp_budget_id
+msgid "Budget"
+msgstr "Бюджет"
+
+#. module: fayna_camp_portal
+#: model:ir.model.constraint,message:fayna_camp_portal.constraint_camp_budget_unique_event_budget
+msgid "Each camp shift can only have one budget."
+msgstr "Кожен заїзд може мати лише один бюджет."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "Utwórz konto analityczne"
+msgstr "Створити аналітичний рахунок"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "Creates the CAMP/{event} analytic account used for plan-vs-fact."
+msgstr "Створює аналітичний рахунок CAMP/{event} для порівняння план-факт."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "<strong>BEP nieosiągalny:</strong> cena za dziecko ≤ koszt zmienny na dziecko —\n                            każde dziecko powiększa stratę. Popraw cenę lub koszty zmienne."
+msgstr "<strong>BEP недосяжний:</strong> ціна за дитину ≤ змінні витрати на дитину — кожна дитина збільшує збиток. Виправте ціну або змінні витрати."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "Break-even"
+msgstr "Break-even (поріг беззбитковості)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "BEP — min. dzieci"
+msgstr "BEP — мін. дітей"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "Wypełnienie vs BEP"
+msgstr "Заповнення відносно BEP"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "Parametry"
+msgstr "Параметри"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "Marże (plan) — decyzja R8: dwie marże, nie jedna"
+msgstr "Маржі (план) — рішення R8: дві маржі, не одна"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "Tylko koszty «dla bezpośredniej korzyści turysty». Baza zaliczek."
+msgstr "Лише витрати «для безпосередньої вигоди туриста». База авансів."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "Wszystkie koszty: reklama, kadra, overhead."
+msgstr "Усі витрати: реклама, кадра, overhead."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "Plan vs Fakt (konto analityczne)"
+msgstr "План vs Факт (аналітичний рахунок)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "Fakt"
+msgstr "Факт"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "Koszty"
+msgstr "Витрати"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "Razem"
+msgstr "Разом"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_category_form
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_category_tree
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_form
+msgid "VAT-marża (art. 119)"
+msgstr "VAT-маржа (art. 119)"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_budget_search
+msgid "Sezon"
+msgstr "Сезон"
+
+#. module: fayna_camp_portal
+#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_budget
+msgid "Budżety obozów"
+msgstr "Бюджети таборів"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.actions.act_window,help:fayna_camp_portal.action_camp_budget
+msgid "Brak budżetów — otwórz turnus (event) i kliknij «Budżet»."
+msgstr "Бюджетів немає — відкрийте заїзд (event) і натисніть «Budżet»."
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_event_form_budget_button
+msgid "Budżet"
+msgstr "Бюджет"
+
+#. module: fayna_camp_portal
+#: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_event_form_budget_button
+msgid "Open (or create) the financial budget of this camp shift."
+msgstr "Відкрити (або створити) фінансовий бюджет цього заїзду."
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__health_risk_flags
+msgid "Risk flags"
+msgstr "Прапорці ризику"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/participant.py:0
+#, python-format
+msgid "WATER-BLOCK"
+msgstr "БЛОК-ВОДА"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/participant.py:0
+#, python-format
+msgid "HEIGHTS-BLOCK"
+msgstr "БЛОК-ВИСОТА"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/participant.py:0
+#, python-format
+msgid "INSECT-VENOM"
+msgstr "ОТРУТА-КОМАХ"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/participant.py:0
+#, python-format
+msgid "ALLERGY-MEDS"
+msgstr "АЛЕРГІЯ-ЛІКИ"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/participant.py:0
+#, python-format
+msgid "ALLERGY-FOOD"
+msgstr "АЛЕРГІЯ-ЇЖА"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/participant.py:0
+#, python-format
+msgid "PSYCHO-SUPPORT"
+msgstr "ПСИХО-ПІДТРИМКА"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_participant__wzor_version__2021
+msgid "Wzór 2021 (Dz.U. 2021/1548)"
+msgstr "Зразок 2021 (Dz.U. 2021/1548)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_participant__wzor_version__2026
+msgid "Wzór 2026 (Dz.U. 2026/704)"
+msgstr "Зразок 2026 (Dz.U. 2026/704)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__wzor_version
+msgid "Card template version"
+msgstr "Версія зразка картки"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__allergy_meds
+msgid "Allergy: medications"
+msgstr "Алергія: ліки"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__allergy_pollen
+msgid "Allergy: pollen"
+msgstr "Алергія: пилок"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__allergy_food
+msgid "Allergy: food"
+msgstr "Алергія: їжа"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__allergy_insect_venom
+msgid "Allergy: insect venom"
+msgstr "Алергія: отрута комах"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__motion_sickness
+msgid "Motion sickness"
+msgstr "Захитування в транспорті"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__orthodontic_appliance
+msgid "Orthodontic appliance"
+msgstr "Ортодонтичний апарат"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__wears_glasses
+msgid "Wears glasses"
+msgstr "Носить окуляри"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__wears_contact_lenses
+msgid "Wears contact lenses"
+msgstr "Носить контактні лінзи"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__diet_low_calorie
+msgid "Low-calorie diet"
+msgstr "Низькокалорійна дієта"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__diet_vegetarian
+msgid "Vegetarian diet"
+msgstr "Вегетаріанська дієта"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__emotional_expression_issues
+msgid "Issues expressing emotions"
+msgstr "Труднощі з вираженням емоцій"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__group_functioning_issues
+msgid "Issues functioning in a group"
+msgstr "Труднощі з функціонуванням у групі"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__fear_of_heights
+msgid "Fear of heights (lęk wysokości)"
+msgstr "Страх висоти"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__hydrophobia
+msgid "Hydrophobia (fear of water)"
+msgstr "Страх води (гідрофобія)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__psycho_behavioral_notes
+msgid "Psycho-behavioral notes"
+msgstr "Психолого-поведінкові примітки"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__vacc_tetanus_year
+msgid "Vaccination: tetanus (year)"
+msgstr "Щеплення: правець (рік)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__vacc_diphtheria_year
+msgid "Vaccination: diphtheria (year)"
+msgstr "Щеплення: дифтерія (рік)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__vacc_other
+msgid "Vaccination: other"
+msgstr "Щеплення: інші"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_staff_cert__verification_status__pending
+msgid "Oczekuje na weryfikację"
+msgstr "Очікує верифікації"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_staff_cert__verification_status__verified
+msgid "Zweryfikowany"
+msgstr "Верифікований"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_staff_cert__verification_status__rejected
+msgid "Odrzucony"
+msgstr "Відхилений"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff_cert__verification_status
+msgid "Verification"
+msgstr "Верифікація"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff_cert__verified_by_id
+msgid "Verified by"
+msgstr "Верифікував(ла)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff_cert__verified_date
+msgid "Verified on"
+msgstr "Дата верифікації"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Only the Organizator/Admin may accept RSPTS/KRK verification (§13)."
+msgstr "Лише Organizator/Admin може прийняти верифікацію RSPTS/KRK (§13)."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Only the Organizator/Admin may reject RSPTS/KRK verification (§13)."
+msgstr "Лише Organizator/Admin може відхилити верифікацію RSPTS/KRK (§13)."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Verification fields are protected — only Organizator/Admin may change them (Ustawa Kamilka §13)."
+msgstr "Поля верифікації захищені — змінювати їх може лише Organizator/Admin (Ustawa Kamilka §13)."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "%(name)s cannot be admitted to '%(event)s': KRK/RSPTS verification is missing, expired or not yet accepted by the administrator (Ustawa Kamilka; art. 21 ustawy z 16.05.2016 — admission without RSPTS verification is punishable by arrest or a fine of min. 1000 zł). Upload the documents and request admin acceptance."
+msgstr "%(name)s не може бути допущений(а) до «%(event)s»: верифікація KRK/RSPTS відсутня, прострочена або ще не прийнята адміністратором (Ustawa Kamilka; art. 21 закону від 16.05.2016 — допуск без верифікації RSPTS карається арештом або штрафом мін. 1000 zł). Завантажте документи й запросіть прийняття адміністратором."
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program_activity__risk_water
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_camp_dziennik_activity__risk_water
+msgid "Water activity (§7)"
+msgstr "Заняття на воді (§7)"
+
+#. module: fayna_camp_portal
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program_activity__risk_heights
+#: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_camp_dziennik_activity__risk_heights
+msgid "Heights activity"
+msgstr "Заняття на висоті"
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Water activity blocked (karta kwalifikacyjna 2026, pkt 9): the group contains participants who must not take part in water activities: %s. Reassign the children to another group/activity first."
+msgstr "Заняття на воді заблоковано (кваліфікаційна картка 2026, pkt 9): у групі є учасники, яким не можна брати участь у заняттях на воді: %s. Спершу переведіть дітей до іншої групи/заняття."
+
+#. module: fayna_camp_portal
+#. odoo-python
+#: code:addons/fayna_camp_portal/models/operations.py:0
+#, python-format
+msgid "Heights activity blocked (karta kwalifikacyjna 2026, pkt 9): the group contains participants who must not take part in heights activities: %s. Reassign the children first."
+msgstr "Заняття на висоті заблоковано (кваліфікаційна картка 2026, pkt 9): у групі є учасники, яким не можна брати участь у заняттях на висоті: %s. Спершу переведіть дітей."
