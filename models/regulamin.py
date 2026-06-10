@@ -338,9 +338,8 @@ class CampRegulaminAck(models.Model):
     @api.depends("regulamin_id.name", "staff_id.name")
     def _compute_display_name(self):
         for ack in self:
-            ack.display_name = "%s — %s" % (
-                ack.regulamin_id.name or "?",
-                ack.staff_id.name or "?",
+            ack.display_name = (
+                f"{ack.regulamin_id.name or '?'} — {ack.staff_id.name or '?'}"
             )
 
     @api.depends("signed", "user_id")
