@@ -229,11 +229,18 @@ class TestRegulaminTeczka(TransactionCase):
 
     def test_teczka_karty_percent(self):
         Participant = self.env["camp.participant"]
+        # Emergency contact обов'язковий перед підписом картки
+        # (_check_emergency_before_signoff) — INC staging 10.06.
+        emergency = {
+            "emergency_contact_1_name": "Rodzic Testowy",
+            "emergency_contact_1_phone": "+48 600 000 000",
+        }
         child_1 = Participant.create(
             {
                 "first_name": "Jan",
                 "last_name": "Testowy",
                 "birth_date": "2015-03-01",
+                **emergency,
             }
         )
         child_2 = Participant.create(
@@ -241,6 +248,7 @@ class TestRegulaminTeczka(TransactionCase):
                 "first_name": "Ola",
                 "last_name": "Testowa",
                 "birth_date": "2014-09-15",
+                **emergency,
             }
         )
         Registration = self.env["event.registration"]
