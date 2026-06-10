@@ -141,6 +141,11 @@
                     <field name="cert_number"/>
                     <field name="issue_date"/>
                     <field name="expiry_date"/>
+                    <field name="verification_status" widget="badge"
+                           decoration-success="verification_status == 'verified'"
+                           decoration-warning="verification_status == 'pending'"
+                           decoration-danger="verification_status == 'rejected'"/>
+                    <field name="season_id" optional="show"/>
                     <field name="is_valid" readonly="1"/>
                 </tree>
             </field>
@@ -151,18 +156,34 @@
             <field name="model">camp.staff.cert</field>
             <field name="arch" type="xml">
                 <form>
+                    <header>
+                        <!-- §13: акцепт ЛИШЕ Organizator/Admin — серверний гейт
+                             у write()/action_*; кнопки додатково сховані групою. -->
+                        <button name="action_verify" type="object" string="Akceptuj weryfikację"
+                                class="btn-primary"
+                                invisible="verification_status == 'verified'"
+                                groups="fayna_camp_portal.group_camp_organizator,fayna_camp_portal.group_camp_admin"/>
+                        <button name="action_reject" type="object" string="Odrzuć"
+                                invisible="verification_status == 'rejected'"
+                                groups="fayna_camp_portal.group_camp_organizator,fayna_camp_portal.group_camp_admin"/>
+                        <field name="verification_status" widget="statusbar"
+                               statusbar_visible="pending,verified"/>
+                    </header>
                     <sheet>
                         <group>
                             <group>
                                 <field name="staff_id"/>
                                 <field name="cert_type"/>
                                 <field name="cert_number"/>
+                                <field name="season_id"/>
                             </group>
                             <group>
                                 <field name="issue_date"/>
                                 <field name="expiry_date"/>
                                 <field name="is_valid" readonly="1"/>
                                 <field name="attachment_id"/>
+                                <field name="verified_by_id" readonly="1"/>
+                                <field name="verified_date" readonly="1"/>
                             </group>
                         </group>
                         <group string="Notes">
