@@ -2075,6 +2075,22 @@ class CampProgramActivity(models.Model):
         index=True,
         help=_("Activity type — used for program statistics and reporting."),
     )
+    risk_water = fields.Boolean(
+        string=_("Water activity (§7)"),
+        help=_(
+            "Activity takes place on/in water (kąpiel, kajaki, basen). "
+            "Triggers the hard block for participants flagged with hydrophobia "
+            "(wzór 2026 pkt 9, sprint decision R1) and §7 lifeguard validation."
+        ),
+    )
+    risk_heights = fields.Boolean(
+        string=_("Heights activity"),
+        help=_(
+            "Activity involves heights (park linowy, wspinaczka, zjazdy). "
+            "Triggers the hard block for participants flagged with fear of heights "
+            "(wzór 2026 pkt 9, sprint decision R1)."
+        ),
+    )
     notes = fields.Text(
         string=_("Notes"),
         help=_("Preparation notes, materials needed, special instructions."),
@@ -2441,6 +2457,58 @@ class FaynaCampDziennikActivity(models.Model):
         tracking=True,
         help=_("Achievements, difficulties, conclusions."),
     )
+    risk_water = fields.Boolean(
+        string=_("Water activity (§7)"),
+        tracking=True,
+        help=_(
+            "Hard block: dziennik group must not contain participants with "
+            "hydrophobia (wzór 2026 pkt 9, decision R1 — no override)."
+        ),
+    )
+    risk_heights = fields.Boolean(
+        string=_("Heights activity"),
+        tracking=True,
+        help=_(
+            "Hard block: dziennik group must not contain participants with "
+            "fear of heights (wzór 2026 pkt 9, decision R1 — no override)."
+        ),
+    )
+
+    @api.constrains("risk_water", "risk_heights", "dziennik_id")
+    def _check_risk_flags_vs_participants(self):
+        """R1 hard block (no override): a water/heights activity cannot be
+        scheduled for a group containing a child flagged hydrophobia /
+        fear_of_heights on the qualification card (wzór 2026 pkt 9).
+        Fields are RODO art. 9 group-gated → read via sudo() but never
+        expose the medical flag itself, only the legal block reason."""
+        for rec in self:
+            if not (rec.risk_water or rec.risk_heights):
+                continue
+            participants = rec.dziennik_id.sudo().participant_ids
+            if rec.risk_water:
+                blocked = participants.filtered("hydrophobia")
+                if blocked:
+                    raise ValidationError(
+                        _(
+                            "Water activity blocked (karta kwalifikacyjna 2026, "
+                            "pkt 9): the group contains participants who must "
+                            "not take part in water activities: %s. Reassign "
+                            "the children to another group/activity first."
+                        )
+                        % ", ".join(blocked.mapped("display_name"))
+                    )
+            if rec.risk_heights:
+                blocked = participants.filtered("fear_of_heights")
+                if blocked:
+                    raise ValidationError(
+                        _(
+                            "Heights activity blocked (karta kwalifikacyjna "
+                            "2026, pkt 9): the group contains participants who "
+                            "must not take part in heights activities: %s. "
+                            "Reassign the children first."
+                        )
+                        % ", ".join(blocked.mapped("display_name"))
+                    )
 
     author_id = fields.Many2one(
         "res.users",
