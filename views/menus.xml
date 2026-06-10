@@ -104,6 +104,65 @@
             action="action_camp_kuratorium_notification"
             sequence="50"/>
 
+        <!-- ── sprint 2026-06-10: §2/§4/§11/§12 ─────────────────────── -->
+
+        <menuitem id="menu_camp_groups"
+            name="Grupy wychowawcze (§2)"
+            parent="menu_operations"
+            action="action_camp_group"
+            sequence="15"/>
+
+        <menuitem id="menu_camp_incident_card"
+            name="Karty Wypadku (§11)"
+            parent="menu_operations"
+            action="action_camp_incident_card"
+            sequence="60"/>
+
+        <menuitem id="menu_camp_incident_register"
+            name="Rejestr Wypadków (§12)"
+            parent="menu_operations"
+            action="action_camp_incident_register"
+            sequence="61"/>
+
+        <menuitem id="menu_camp_regulaminy"
+            name="Regulaminy"
+            parent="menu_operations"
+            action="camp_regulamin_action"
+            sequence="70"/>
+
+        <menuitem id="menu_camp_regulamin_acks"
+            name="Podpisy regulaminów"
+            parent="menu_operations"
+            action="camp_regulamin_ack_action"
+            sequence="71"/>
+
+        <menuitem id="menu_camp_teczka_ko"
+            name="Teczka kontroli KO"
+            parent="menu_operations"
+            action="camp_teczka_ko_action"
+            sequence="80"/>
+
+        <!-- ── Фінанси (кабінет №7, sprint 2026-06-10) ──────────────── -->
+
+        <menuitem id="menu_finance"
+            name="Finanse"
+            parent="menu_campscout_root"
+            sequence="60"
+            groups="fayna_camp_portal.group_camp_finance,fayna_camp_portal.group_camp_organizator,fayna_camp_portal.group_camp_kierownik,base.group_system"/>
+
+        <menuitem id="menu_camp_budget"
+            name="Budżety obozów (BEP / marże)"
+            parent="menu_finance"
+            action="action_camp_budget"
+            sequence="10"/>
+
+        <menuitem id="menu_camp_budget_category"
+            name="Kategorie kosztów"
+            parent="menu_finance"
+            action="action_camp_budget_category"
+            sequence="20"
+            groups="fayna_camp_portal.group_camp_finance,fayna_camp_portal.group_camp_organizator,base.group_system"/>
+
         <!-- ═══════════════════════════════════════════════════════════════
              Nutrition
         ═══════════════════════════════════════════════════════════════ -->
