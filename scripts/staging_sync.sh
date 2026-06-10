@@ -65,6 +65,13 @@ ssh $STG "
   docker restart campscout_web
 "
 
+echo "=== [6.5/7] РЕ-НЕЙТРАЛІЗАЦІЯ після install (модуль створює СВОЇ crons активними — INC 10.06!) ==="
+ssh $STG "docker exec -i campscout_db psql -U odoo -d $STG_DB" << 'SQL'
+UPDATE ir_cron SET active = false;
+UPDATE ir_mail_server SET active = false;
+SQL
+ssh $STG "docker exec campscout_db psql -U odoo -d $STG_DB -tc \"SELECT count(*) FROM ir_cron WHERE active;\"" | grep -q '^ *0$' || { echo "🔴 CRONS ЖИВІ ПІСЛЯ INSTALL — СТОП"; exit 1; }
+
 echo "=== [7/7] Перевірка ==="
 ssh $STG "docker exec campscout_db psql -U odoo -d $STG_DB -tc \"SELECT name,state FROM ir_module_module WHERE name IN ('campscout_management','fayna_camp_portal');\""
 ssh $STG "docker exec campscout_db psql -U odoo -d $STG_DB -tc \"SELECT count(*) FROM ir_mail_server WHERE active;\" | grep -q ' 0' && echo 'NEUTRALIZED ✅' || echo '⚠️ MAIL ЩЕ АКТИВНИЙ — ПЕРЕВІР!'"

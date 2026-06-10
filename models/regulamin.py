@@ -131,6 +131,7 @@ class CampRegulamin(models.Model):
     )
     all_signed = fields.Boolean(
         compute="_compute_ack_stats",
+        store=True,  # stored: фільтр у search view вимагає searchable (INC staging 10.06)
         string=_("All signed"),
         help=_("True when every generated acknowledgment is signed (and at least one exists)."),
     )
