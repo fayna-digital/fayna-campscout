@@ -386,12 +386,23 @@ class CampRegulaminAck(models.Model):
                 "signed_ip": ip_address or "",
             }
         )
-        self.regulamin_id.message_post(
-            body=_(
-                "%(staff)s podpisał(a) zapoznanie się z regulaminem.",
-                staff=self.staff_id.name,
+        # Chatter-нотатка — допоміжна; ПІДПИС (вище) — юридична дія і вже
+        # відбувся. message_post падає UserError, якщо у користувача-підписанта
+        # немає email (mail author) — реальний кейс для кадри (INC staging
+        # 10.06, тест test_double_sign_raises). Не валимо підпис через chatter.
+        try:
+            self.regulamin_id.message_post(
+                body=_(
+                    "%(staff)s podpisał(a) zapoznanie się z regulaminem.",
+                    staff=self.staff_id.name,
+                ),
+                author_id=self.env.user.partner_id.id,
             )
-        )
+        except Exception:  # noqa: BLE001 — chatter must never block signing
+            _logger.warning(
+                "[camp_regulamin] chatter note skipped for ack %s (no usable author email)",
+                self.id,
+            )
         return True
 
     def write(self, vals):
