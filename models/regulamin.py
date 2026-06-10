@@ -168,8 +168,8 @@ class CampRegulamin(models.Model):
         (regulamin, staff) pairs are skipped — safe to re-run after adding
         staff. Finished staff are excluded.
         """
-        Ack = self.env["camp.regulamin.ack"]
-        created = Ack.browse()
+        ack_model = self.env["camp.regulamin.ack"]
+        created = ack_model.browse()
         for regulamin in self:
             target_event = event or regulamin.event_id
             if not target_event:
@@ -189,7 +189,7 @@ class CampRegulamin(models.Model):
             )
             existing_staff = regulamin.ack_ids.mapped("staff_id")
             for member in staff - existing_staff:
-                created |= Ack.create(
+                created |= ack_model.create(
                     {
                         "regulamin_id": regulamin.id,
                         "staff_id": member.id,

@@ -29,5 +29,17 @@
             <field name="value">0.05</field>
         </record>
 
+        <!-- R12: дефолтні ставки кадри за турнус (PLN) для майстра табору і
+             автоштату. 0 = СВІДОМО не вигадані — організатор задає реальні
+             у Налаштуваннях (ir.config_parameter) або в самому майстрі. -->
+        <record id="cfg_salary_wychowawca_default" model="ir.config_parameter">
+            <field name="key">fayna_camp_portal.salary_wychowawca_default</field>
+            <field name="value">0</field>
+        </record>
+        <record id="cfg_salary_kierownik_default" model="ir.config_parameter">
+            <field name="key">fayna_camp_portal.salary_kierownik_default</field>
+            <field name="value">0</field>
+        </record>
+
     </data>
 </odoo>
