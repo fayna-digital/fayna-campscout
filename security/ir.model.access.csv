@@ -173,3 +173,13 @@ access_camp_group_admin,camp.group admin,model_camp_group,base.group_system,1,1,
 access_camp_group_organizator,camp.group organizator,model_camp_group,fayna_camp_portal.group_camp_organizator,1,1,1,1
 access_camp_group_kierownik,camp.group kierownik,model_camp_group,fayna_camp_portal.group_camp_kierownik,1,1,1,1
 access_camp_group_wychowawca,camp.group wychowawca,model_camp_group,fayna_camp_portal.group_camp_wychowawca,1,0,0,0
+access_camp_incident_card_wychowawca,camp.incident.card wychowawca read,model_camp_incident_card,fayna_camp_portal.group_camp_wychowawca,1,0,0,0
+access_camp_incident_card_kierownik,camp.incident.card kierownik,model_camp_incident_card,fayna_camp_portal.group_camp_kierownik,1,1,1,0
+access_camp_incident_card_organizator,camp.incident.card organizator,model_camp_incident_card,fayna_camp_portal.group_camp_organizator,1,1,1,0
+access_camp_incident_card_admin,camp.incident.card camp admin,model_camp_incident_card,fayna_camp_portal.group_camp_admin,1,1,1,1
+access_camp_incident_card_system,camp.incident.card system,model_camp_incident_card,base.group_system,1,1,1,1
+access_camp_incident_register_wychowawca,camp.incident.register wychowawca read,model_camp_incident_register,fayna_camp_portal.group_camp_wychowawca,1,0,0,0
+access_camp_incident_register_kierownik,camp.incident.register kierownik,model_camp_incident_register,fayna_camp_portal.group_camp_kierownik,1,1,1,0
+access_camp_incident_register_organizator,camp.incident.register organizator,model_camp_incident_register,fayna_camp_portal.group_camp_organizator,1,1,1,0
+access_camp_incident_register_admin,camp.incident.register camp admin,model_camp_incident_register,fayna_camp_portal.group_camp_admin,1,1,1,1
+access_camp_incident_register_system,camp.incident.register system,model_camp_incident_register,base.group_system,1,1,1,1

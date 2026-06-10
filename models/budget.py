@@ -88,7 +88,6 @@ class CampBudgetCategory(models.Model):
 class CampBudget(models.Model):
     _name = "camp.budget"
     _description = "Camp Shift Budget (BEP + VAT/business margins)"
-    _rec_name = "display_name"
     _order = "event_id"
 
     event_id = fields.Many2one(
@@ -259,6 +258,7 @@ class CampBudget(models.Model):
 
     # ── Computes ──────────────────────────────────────────────────────────────
 
+    @api.depends("event_id.name")
     def _compute_display_name(self):
         for rec in self:
             rec.display_name = _("Budżet: %s") % (rec.event_id.name or "—")
@@ -354,24 +354,15 @@ class CampBudget(models.Model):
         for rec in self:
             revenue = costs = 0.0
             if line_model is not None and rec.analytic_account_id:
-                groups = line_model.sudo().read_group(
-                    domain=[("account_id", "=", rec.analytic_account_id.id)],
-                    fields=["amount:sum"],
-                    groupby=[],
+                # +/- split needs raw amounts (a single read_group sum would
+                # net revenue against costs).
+                amounts = (
+                    line_model.sudo()
+                    .search([("account_id", "=", rec.analytic_account_id.id)])
+                    .mapped("amount")
                 )
-                # read_group without groupby returns one aggregate row; we need
-                # the +/- split, so read amounts in one search instead.
-                amounts = line_model.sudo().search(
-                    [("account_id", "=", rec.analytic_account_id.id)]
-                ).mapped("amount")
                 revenue = sum(a for a in amounts if a > 0)
                 costs = -sum(a for a in amounts if a < 0)
-                _logger.debug(
-                    "camp.budget %s actuals: %s lines (agg=%s)",
-                    rec.id,
-                    len(amounts),
-                    groups,
-                )
             rec.actual_revenue = revenue
             rec.actual_costs = costs
             rec.actual_profit = revenue - costs
@@ -521,9 +512,7 @@ class CampBudgetLine(models.Model):
                 continue
             if not line.name:
                 line.name = line.category_id.name
-            line.per = (
-                "per_camp" if line.category_id.cost_kind == "stale" else "per_child"
-            )
+            line.per = "per_camp" if line.category_id.cost_kind == "stale" else "per_child"
 
 
 # ──────────────────────────────────────────────────────────────────────────────

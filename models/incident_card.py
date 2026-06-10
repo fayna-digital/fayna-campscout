@@ -573,16 +573,9 @@ class CampIncidentRegister(models.Model):
     def _check_unlock_allowed(self):
         """Only Camp Admin / System may unlock a closed register."""
         if not (
-            self.env.su
-            or self.env.user.has_group("base.group_system")
-            or self.env.user.has_group("fayna_camp_portal.group_camp_admin")
+            self.env.is_system() or self.env.user.has_group("fayna_camp_portal.group_camp_admin")
         ):
-            raise UserError(
-                _(
-                    "Only a Camp Administrator may unlock a closed "
-                    "Rejestr Wypadków."
-                )
-            )
+            raise UserError(_("Only a Camp Administrator may unlock a closed " "Rejestr Wypadków."))
 
     def action_lock(self):
         """Lock the register — call when the turnus is closed."""

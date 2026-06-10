@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ================================================================ -->
+        <!-- camp.budget — фінансовий дашборд турнусу (TZ §5, R8)             -->
+        <!-- NOTE: menu items are added in views/menus.xml by the integrator. -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_budget_form" model="ir.ui.view">
+            <field name="name">camp.budget.form</field>
+            <field name="model">camp.budget</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_ensure_analytic"
+                                type="object"
+                                string="Utwórz konto analityczne"
+                                class="btn-secondary"
+                                invisible="analytic_account_id"
+                                help="Creates the CAMP/{event} analytic account used for plan-vs-fact."/>
+                        <field name="fill_vs_bep" widget="badge"
+                               decoration-success="fill_vs_bep == 'ok'"
+                               decoration-warning="fill_vs_bep == 'warning'"
+                               decoration-danger="fill_vs_bep == 'loss'"/>
+                    </header>
+                    <sheet>
+                        <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                        <div class="oe_title">
+                            <h1><field name="display_name" readonly="1"/></h1>
+                        </div>
+
+                        <!-- ── BEP — найбільша цифра дашборду ─────────────── -->
+                        <div class="alert alert-danger" role="alert" invisible="not bep_warning">
+                            <strong>BEP nieosiągalny:</strong> cena za dziecko ≤ koszt zmienny na dziecko —
+                            każde dziecko powiększa stratę. Popraw cenę lub koszty zmienne.
+                        </div>
+                        <group>
+                            <group string="Break-even">
+                                <label for="bep_children" string="BEP — min. dzieci"/>
+                                <div>
+                                    <field name="bep_children" readonly="1"
+                                           style="font-size: 2.5rem; font-weight: bold;"/>
+                                </div>
+                                <field name="registered_children" readonly="1"/>
+                                <label for="fill_vs_bep_pct" string="Wypełnienie vs BEP"/>
+                                <field name="fill_vs_bep_pct" widget="progressbar" nolabel="1"/>
+                                <field name="contribution_margin" readonly="1"/>
+                                <field name="bep_warning" invisible="1"/>
+                            </group>
+                            <group string="Parametry">
+                                <field name="event_id" options="{'no_create': True}"/>
+                                <field name="capacity" readonly="1"/>
+                                <field name="days" readonly="1"/>
+                                <field name="planned_children"/>
+                                <field name="price_per_child"/>
+                                <field name="currency_id" groups="base.group_multi_currency"/>
+                                <field name="camp_season_id" readonly="1"/>
+                                <field name="active" invisible="1"/>
+                            </group>
+                        </group>
+
+                        <!-- ── Дві маржі поруч (R8) ───────────────────────── -->
+                        <group string="Marże (plan) — decyzja R8: dwie marże, nie jedna">
+                            <group>
+                                <field name="marza_vat_planned" readonly="1"
+                                       string="Marża VAT (art. 119)"
+                                       help="Tylko koszty «dla bezpośredniej korzyści turysty». Baza zaliczek."/>
+                            </group>
+                            <group>
+                                <field name="marza_business_planned" readonly="1"
+                                       string="Marża biznesowa (z reklamą)"
+                                       help="Wszystkie koszty: reklama, kadra, overhead."/>
+                            </group>
+                        </group>
+
+                        <!-- ── План vs Факт ───────────────────────────────── -->
+                        <group string="Plan vs Fakt (konto analityczne)">
+                            <group string="Plan">
+                                <field name="revenue_planned" readonly="1"/>
+                                <field name="total_fixed" readonly="1"/>
+                                <field name="variable_per_child" readonly="1"/>
+                                <field name="total_variable_planned" readonly="1"/>
+                                <field name="profit_at_planned" readonly="1"/>
+                            </group>
+                            <group string="Fakt">
+                                <field name="analytic_account_id" readonly="1"/>
+                                <field name="actual_revenue" readonly="1"/>
+                                <field name="actual_costs" readonly="1"/>
+                                <field name="actual_profit" readonly="1"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Koszty" name="lines">
+                                <field name="line_ids">
+                                    <tree editable="bottom">
+                                        <field name="category_id"/>
+                                        <field name="name"/>
+                                        <field name="per"/>
+                                        <field name="amount"/>
+                                        <field name="days" optional="hide"/>
+                                        <field name="qty"/>
+                                        <field name="subtotal_planned" sum="Razem"/>
+                                        <field name="vat_marza" optional="show"
+                                               string="VAT-marża (art. 119)"/>
+                                        <field name="is_salary" column_invisible="1"/>
+                                        <field name="currency_id" column_invisible="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_camp_budget_tree" model="ir.ui.view">
+            <field name="name">camp.budget.tree</field>
+            <field name="model">camp.budget</field>
+            <field name="arch" type="xml">
+                <tree decoration-success="fill_vs_bep == 'ok'"
+                      decoration-warning="fill_vs_bep == 'warning'"
+                      decoration-danger="fill_vs_bep == 'loss'">
+                    <field name="event_id"/>
+                    <field name="camp_season_id" optional="show"/>
+                    <field name="capacity"/>
+                    <field name="planned_children"/>
+                    <field name="registered_children"/>
+                    <field name="bep_children"/>
+                    <field name="price_per_child"/>
+                    <field name="marza_vat_planned" sum="Σ" string="Marża VAT (art. 119)"/>
+                    <field name="marza_business_planned" sum="Σ" string="Marża biznesowa"/>
+                    <field name="fill_vs_bep" widget="badge"
+                           decoration-success="fill_vs_bep == 'ok'"
+                           decoration-warning="fill_vs_bep == 'warning'"
+                           decoration-danger="fill_vs_bep == 'loss'"/>
+                    <field name="currency_id" column_invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_budget_search" model="ir.ui.view">
+            <field name="name">camp.budget.search</field>
+            <field name="model">camp.budget</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="event_id"/>
+                    <field name="camp_season_id"/>
+                    <!-- NOTE: no filter on fill_vs_bep — non-stored compute without
+                         a search method is not searchable; tree decorations cover
+                         the visual cue instead. -->
+                    <group expand="0" string="Group By">
+                        <filter name="group_season" string="Sezon"
+                                context="{'group_by': 'camp_season_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_camp_budget" model="ir.actions.act_window">
+            <field name="name">Budżety obozów</field>
+            <field name="res_model">camp.budget</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_group_season': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Brak budżetów — otwórz turnus (event) i kliknij «Budżet».
+                </p>
+            </field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.budget.category — простий довідник                          -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_budget_category_tree" model="ir.ui.view">
+            <field name="name">camp.budget.category.tree</field>
+            <field name="model">camp.budget.category</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="cost_kind"/>
+                    <field name="vat_marza" string="VAT-marża (art. 119)"/>
+                    <field name="is_salary"/>
+                    <field name="active" optional="hide"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_budget_category_form" model="ir.ui.view">
+            <field name="name">camp.budget.category.form</field>
+            <field name="model">camp.budget.category</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="cost_kind"/>
+                            <field name="vat_marza" string="VAT-marża (art. 119)"/>
+                            <field name="is_salary"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_camp_budget_category" model="ir.actions.act_window">
+            <field name="name">Kategorie kosztów</field>
+            <field name="res_model">camp.budget.category</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- event.event form — кнопка «Budżet» у button-box                  -->
+        <!-- ================================================================ -->
+
+        <record id="view_event_form_budget_button" model="ir.ui.view">
+            <field name="name">event.event.form.budget.button</field>
+            <field name="model">event.event</field>
+            <field name="inherit_id" ref="event.view_event_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="action_open_budget"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-money"
+                            groups="fayna_camp_portal.group_camp_finance,fayna_camp_portal.group_camp_organizator,fayna_camp_portal.group_camp_kierownik"
+                            help="Open (or create) the financial budget of this camp shift.">
+                        <span class="o_stat_text">Budżet</span>
+                    </button>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

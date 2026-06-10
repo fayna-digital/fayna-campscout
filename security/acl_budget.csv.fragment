@@ -1,0 +1,24 @@
+# FRAGMENT — append these rows to security/ir.model.access.csv (without this comment block).
+# camp.budget / camp.budget.line / camp.budget.category (TZ §5 «Фінанси»).
+#
+# ⚠️ fayna_camp_portal.group_camp_finance НЕ існує ще — інтегратор додає групу
+#    в security/groups.xml (Księgowa cabinet) ПЕРЕД мержем цих рядків.
+#
+# finance / organizator / admin: full CRUD.
+# kierownik: read-only — scoped до власного табору record rules
+#            (rules_budget.xml.fragment); лінії категорій wynagrodzeń (is_salary)
+#            сховані record rule'ом — field-level на amount неможливий, тому
+#            відсікаємо ЦІЛІ рядки kadra.
+# category: довідник — read для kierownika, CRUD для finance/organizator/admin.
+access_camp_budget_admin,camp.budget admin,model_camp_budget,base.group_system,1,1,1,1
+access_camp_budget_finance,camp.budget finance,model_camp_budget,fayna_camp_portal.group_camp_finance,1,1,1,1
+access_camp_budget_organizator,camp.budget organizator,model_camp_budget,fayna_camp_portal.group_camp_organizator,1,1,1,1
+access_camp_budget_kierownik,camp.budget kierownik,model_camp_budget,fayna_camp_portal.group_camp_kierownik,1,0,0,0
+access_camp_budget_line_admin,camp.budget.line admin,model_camp_budget_line,base.group_system,1,1,1,1
+access_camp_budget_line_finance,camp.budget.line finance,model_camp_budget_line,fayna_camp_portal.group_camp_finance,1,1,1,1
+access_camp_budget_line_organizator,camp.budget.line organizator,model_camp_budget_line,fayna_camp_portal.group_camp_organizator,1,1,1,1
+access_camp_budget_line_kierownik,camp.budget.line kierownik,model_camp_budget_line,fayna_camp_portal.group_camp_kierownik,1,0,0,0
+access_camp_budget_category_admin,camp.budget.category admin,model_camp_budget_category,base.group_system,1,1,1,1
+access_camp_budget_category_finance,camp.budget.category finance,model_camp_budget_category,fayna_camp_portal.group_camp_finance,1,1,1,1
+access_camp_budget_category_organizator,camp.budget.category organizator,model_camp_budget_category,fayna_camp_portal.group_camp_organizator,1,1,1,1
+access_camp_budget_category_kierownik,camp.budget.category kierownik,model_camp_budget_category,fayna_camp_portal.group_camp_kierownik,1,0,0,0

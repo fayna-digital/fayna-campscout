@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Default budget cost-category dictionary (TZ_SPRINT_2026-06-10 §5, decision R8).
+     noupdate="1" — категорії редагуються користувачем у UI; -u не перетирає
+     (правило feedback_xml_noupdate_user_fields).
+     vat_marza: True ТІЛЬКИ для kosztów «dla bezpośredniej korzyści turysty»
+     (art. 119 ustawy o VAT). Reklama / kadra / gadżety / inne — False (R8). -->
+<odoo>
+    <data noupdate="1">
+
+        <record id="budget_categ_osrodek" model="camp.budget.category">
+            <field name="name">Ośrodek / nocleg</field>
+            <field name="cost_kind">stale</field>
+            <field name="vat_marza" eval="True"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="budget_categ_transport" model="camp.budget.category">
+            <field name="name">Transport</field>
+            <field name="cost_kind">stale</field>
+            <field name="vat_marza" eval="True"/>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="budget_categ_wyzywienie" model="camp.budget.category">
+            <field name="name">Wyżywienie (na dziecko / dobę)</field>
+            <field name="cost_kind">zmienne_na_dziecko</field>
+            <field name="vat_marza" eval="True"/>
+            <field name="sequence">30</field>
+        </record>
+
+        <record id="budget_categ_ubezpieczenie" model="camp.budget.category">
+            <field name="name">Ubezpieczenie NNW</field>
+            <field name="cost_kind">stale</field>
+            <field name="vat_marza" eval="True"/>
+            <field name="sequence">40</field>
+        </record>
+
+        <record id="budget_categ_atrakcje" model="camp.budget.category">
+            <field name="name">Atrakcje / program</field>
+            <field name="cost_kind">zmienne_na_dziecko</field>
+            <field name="vat_marza" eval="True"/>
+            <field name="sequence">50</field>
+        </record>
+
+        <record id="budget_categ_kadra" model="camp.budget.category">
+            <field name="name">Kadra (wynagrodzenia)</field>
+            <field name="cost_kind">stale</field>
+            <field name="vat_marza" eval="False"/>
+            <field name="is_salary" eval="True"/>
+            <field name="sequence">60</field>
+        </record>
+
+        <!-- R8: reklama зменшує ТІЛЬКИ бізнес-маржу, НЕ VAT-маржу art. 119. -->
+        <record id="budget_categ_reklama" model="camp.budget.category">
+            <field name="name">Reklama / marketing</field>
+            <field name="cost_kind">stale</field>
+            <field name="vat_marza" eval="False"/>
+            <field name="sequence">70</field>
+        </record>
+
+        <record id="budget_categ_gadzety" model="camp.budget.category">
+            <field name="name">Gadżety (COGS)</field>
+            <field name="cost_kind">zmienne_na_dziecko</field>
+            <field name="vat_marza" eval="False"/>
+            <field name="sequence">80</field>
+        </record>
+
+        <record id="budget_categ_inne" model="camp.budget.category">
+            <field name="name">Inne koszty własne</field>
+            <field name="cost_kind">stale</field>
+            <field name="vat_marza" eval="False"/>
+            <field name="sequence">90</field>
+        </record>
+
+    </data>
+</odoo>

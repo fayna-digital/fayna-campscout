@@ -1,0 +1,13 @@
+access_camp_regulamin_admin,camp.regulamin admin,model_camp_regulamin,base.group_system,1,1,1,1
+access_camp_regulamin_organizator,camp.regulamin organizator,model_camp_regulamin,fayna_camp_portal.group_camp_organizator,1,1,1,1
+access_camp_regulamin_kierownik,camp.regulamin kierownik,model_camp_regulamin,fayna_camp_portal.group_camp_kierownik,1,1,1,0
+access_camp_regulamin_wychowawca,camp.regulamin wychowawca,model_camp_regulamin,fayna_camp_portal.group_camp_wychowawca,1,0,0,0
+access_camp_regulamin_instructor,camp.regulamin instructor,model_camp_regulamin,fayna_camp_portal.group_camp_instructor,1,0,0,0
+access_camp_regulamin_ack_admin,camp.regulamin.ack admin,model_camp_regulamin_ack,base.group_system,1,1,1,1
+access_camp_regulamin_ack_organizator,camp.regulamin.ack organizator,model_camp_regulamin_ack,fayna_camp_portal.group_camp_organizator,1,1,1,1
+access_camp_regulamin_ack_kierownik,camp.regulamin.ack kierownik,model_camp_regulamin_ack,fayna_camp_portal.group_camp_kierownik,1,1,1,1
+access_camp_regulamin_ack_wychowawca,camp.regulamin.ack wychowawca,model_camp_regulamin_ack,fayna_camp_portal.group_camp_wychowawca,1,1,0,0
+access_camp_regulamin_ack_instructor,camp.regulamin.ack instructor,model_camp_regulamin_ack,fayna_camp_portal.group_camp_instructor,1,1,0,0
+access_camp_teczka_ko_admin,camp.teczka.ko admin,model_camp_teczka_ko,base.group_system,1,1,1,1
+access_camp_teczka_ko_organizator,camp.teczka.ko organizator,model_camp_teczka_ko,fayna_camp_portal.group_camp_organizator,1,1,1,1
+access_camp_teczka_ko_kierownik,camp.teczka.ko kierownik,model_camp_teczka_ko,fayna_camp_portal.group_camp_kierownik,1,0,0,0

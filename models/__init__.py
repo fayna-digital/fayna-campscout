@@ -55,3 +55,6 @@ from . import training_vozhatyi  # noqa: E402,I001
 
 # camp.group — grupa wychowawcza §2 art. 92c (sprint 2026-06-10).
 from . import camp_group  # noqa: E402,I001
+
+# §11 Karta Wypadku (16 pkt) + §12 Rejestr Wypadków — TZ_SPRINT_2026-06-10.
+from . import incident_card  # noqa: E402,I001

@@ -354,5 +354,52 @@
             <field name="perm_unlink" eval="True"/>
         </record>
 
+
+        <!-- ─── §11/§12 incident card + register — sprint 2026-06-10 ──── -->
+
+        <record id="rule_incident_card_kierownik_own_event" model="ir.rule">
+            <field name="name">Kierownik: karty wypadków of own event</field>
+            <field name="model_id" ref="model_camp_incident_card"/>
+            <field name="groups" eval="[(4, ref('group_camp_kierownik'))]"/>
+            <field name="domain_force">['|', ('event_id.user_id', '=', user.id), ('event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_incident_card_wychowawca_own_event" model="ir.rule">
+            <field name="name">Wychowawca: karty wypadków of own event (read)</field>
+            <field name="model_id" ref="model_camp_incident_card"/>
+            <field name="groups" eval="[(4, ref('group_camp_wychowawca'))]"/>
+            <field name="domain_force">[('event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_incident_register_kierownik_own_event" model="ir.rule">
+            <field name="name">Kierownik: rejestr wypadków of own event</field>
+            <field name="model_id" ref="model_camp_incident_register"/>
+            <field name="groups" eval="[(4, ref('group_camp_kierownik'))]"/>
+            <field name="domain_force">['|', ('event_id.user_id', '=', user.id), ('event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_incident_register_wychowawca_own_event" model="ir.rule">
+            <field name="name">Wychowawca: rejestr wypadków of own event (read)</field>
+            <field name="model_id" ref="model_camp_incident_register"/>
+            <field name="groups" eval="[(4, ref('group_camp_wychowawca'))]"/>
+            <field name="domain_force">[('event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
     </data>
 </odoo>

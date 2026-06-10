@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Teczka KO — readiness dashboard (TZ_SPRINT_2026-06-10 §4).
+     NOTE: menus deliberately NOT added — integration pass owns menus.xml. -->
+<odoo>
+    <data>
+
+        <record id="camp_teczka_ko_view_tree" model="ir.ui.view">
+            <field name="name">camp.teczka.ko.tree</field>
+            <field name="model">camp.teczka.ko</field>
+            <field name="arch" type="xml">
+                <tree decoration-success="overall_ready" decoration-danger="not overall_ready">
+                    <field name="event_id"/>
+                    <field name="karty_percent" widget="progressbar"/>
+                    <field name="kadra_ready" widget="boolean_toggle" readonly="1"/>
+                    <field name="regulaminy_ready" widget="boolean_toggle" readonly="1"/>
+                    <field name="dziennik_ready" widget="boolean_toggle" readonly="1"/>
+                    <field name="wypadki_ready" widget="boolean_toggle" readonly="1"/>
+                    <field name="program_ready" widget="boolean_toggle" readonly="1"/>
+                    <field name="overall_ready" widget="boolean_toggle" readonly="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="camp_teczka_ko_view_form" model="ir.ui.view">
+            <field name="name">camp.teczka.ko.form</field>
+            <field name="model">camp.teczka.ko</field>
+            <field name="arch" type="xml">
+                <form string="Teczka KO">
+                    <header>
+                        <button name="action_print_checklist" type="object"
+                                string="Drukuj checklistę (PDF)" class="oe_highlight"
+                                icon="fa-print"/>
+                        <button name="action_export_pdf_pack" type="object"
+                                string="Eksport pełnego pakietu PDF"
+                                help="TODO: dostępne po integracji wszystkich raportów."/>
+                        <button name="action_check_regulamin_acks" type="object"
+                                string="Sprawdź podpisy regulaminów"
+                                help="Tworzy activity dla wystawcy każdego regulaminu z brakami podpisów."/>
+                    </header>
+                    <sheet>
+                        <widget name="web_ribbon" title="GOTOWE do kontroli KO"
+                                bg_color="text-bg-success"
+                                invisible="not overall_ready"/>
+                        <widget name="web_ribbon" title="BRAKI w dokumentacji"
+                                bg_color="text-bg-danger"
+                                invisible="overall_ready"/>
+                        <div class="oe_title">
+                            <h1><field name="name"/></h1>
+                        </div>
+                        <group>
+                            <field name="event_id"/>
+                            <field name="overall_ready" widget="boolean_toggle" readonly="1"/>
+                        </group>
+                        <group string="1. Karty kwalifikacyjne uczestników">
+                            <field name="karty_percent" widget="progressbar"/>
+                            <field name="karty_signed"/>
+                            <field name="karty_total"/>
+                            <field name="karty_ready" widget="boolean_toggle" readonly="1"/>
+                        </group>
+                        <group string="2. Kadra — KRK / RSPTS / kursy (Ustawa Kamilka)">
+                            <field name="kadra_eligible"/>
+                            <field name="kadra_total"/>
+                            <field name="kadra_ready" widget="boolean_toggle" readonly="1"/>
+                        </group>
+                        <group string="3. Regulaminy — podpisy kadry">
+                            <field name="regulamin_total"/>
+                            <field name="regulamin_unsigned"/>
+                            <field name="regulaminy_ready" widget="boolean_toggle" readonly="1"/>
+                        </group>
+                        <group string="4. Dziennik zajęć (Załącznik 5)">
+                            <field name="dziennik_count"/>
+                            <field name="dziennik_ready" widget="boolean_toggle" readonly="1"/>
+                        </group>
+                        <group string="5. Rejestr wypadków">
+                            <field name="wypadki_available" widget="boolean_toggle" readonly="1"/>
+                            <field name="wypadki_count"/>
+                            <field name="wypadki_ready" widget="boolean_toggle" readonly="1"/>
+                        </group>
+                        <group string="6. Program wypoczynku (Załącznik 9)">
+                            <field name="program_count"/>
+                            <field name="program_ready" widget="boolean_toggle" readonly="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="camp_teczka_ko_action" model="ir.actions.act_window">
+            <field name="name">Teczka KO</field>
+            <field name="res_model">camp.teczka.ko</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Utwórz Teczkę KO dla turnusu
+                </p>
+                <p>
+                    Checklist gotowości do kontroli Kuratorium Oświaty —
+                    karty, kadra, regulaminy, dziennik, rejestr wypadków, program.
+                    Wszystko liczone na żywo, nic nie wpisuje się ręcznie.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

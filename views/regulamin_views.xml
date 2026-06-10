@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Regulaminy wypoczynku + acknowledgments kadry (TZ_SPRINT_2026-06-10 §4).
+     NOTE: menus deliberately NOT added here — menu wiring happens in the
+     integration pass (views/menus.xml is owned by another agent this sprint). -->
+<odoo>
+    <data>
+
+        <!-- ════════════════════════════════════════════════════════════════
+             camp.regulamin
+        ════════════════════════════════════════════════════════════════ -->
+
+        <record id="camp_regulamin_view_tree" model="ir.ui.view">
+            <field name="name">camp.regulamin.tree</field>
+            <field name="model">camp.regulamin</field>
+            <field name="arch" type="xml">
+                <tree decoration-success="all_signed" decoration-muted="state == 'archived'">
+                    <field name="name"/>
+                    <field name="regulamin_type"/>
+                    <field name="event_id"/>
+                    <field name="issued_by_id" widget="many2one_avatar_user"/>
+                    <field name="date_published"/>
+                    <field name="signed_count"/>
+                    <field name="total_count"/>
+                    <field name="all_signed" widget="boolean_toggle" readonly="1"/>
+                    <field name="state" widget="badge"
+                           decoration-info="state == 'draft'"
+                           decoration-success="state == 'published'"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="camp_regulamin_view_form" model="ir.ui.view">
+            <field name="name">camp.regulamin.form</field>
+            <field name="model">camp.regulamin</field>
+            <field name="arch" type="xml">
+                <form string="Regulamin">
+                    <header>
+                        <button name="action_publish" type="object"
+                                string="Publish" class="oe_highlight"
+                                invisible="state != 'draft'"/>
+                        <button name="action_generate_acks" type="object"
+                                string="Generate acknowledgments"
+                                invisible="state != 'published' or not event_id"
+                                help="Create one acknowledgment per staff member of the event."/>
+                        <button name="action_archive_regulamin" type="object"
+                                string="Archive"
+                                invisible="state == 'archived'"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,published"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1><field name="name" placeholder="np. Regulamin kąpieli — turnus 2"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="regulamin_type"/>
+                                <field name="event_id"
+                                       help="Empty = organizer-wide template for all camps."/>
+                                <field name="issued_by_id" widget="many2one_avatar_user"/>
+                            </group>
+                            <group>
+                                <field name="date_published"/>
+                                <field name="signed_count"/>
+                                <field name="total_count"/>
+                                <field name="all_signed" widget="boolean_toggle" readonly="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Treść" name="content">
+                                <field name="content"/>
+                            </page>
+                            <page string="Załączniki" name="attachments">
+                                <field name="attachment_ids" widget="many2many_binary"/>
+                            </page>
+                            <page string="Podpisy kadry" name="acks">
+                                <field name="ack_ids" readonly="1">
+                                    <tree decoration-success="signed" decoration-danger="not signed">
+                                        <field name="staff_id"/>
+                                        <field name="event_id" optional="hide"/>
+                                        <field name="user_id" optional="hide"/>
+                                        <field name="signed" widget="boolean_toggle" readonly="1"/>
+                                        <field name="signed_date"/>
+                                        <field name="signed_ip" optional="hide"/>
+                                        <field name="can_sign" column_invisible="1"/>
+                                        <button name="action_sign" type="object"
+                                                string="Podpisuję" icon="fa-pencil"
+                                                class="btn btn-primary btn-sm"
+                                                invisible="not can_sign"
+                                                help="Visible only to the staff member's own user."/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="camp_regulamin_view_search" model="ir.ui.view">
+            <field name="name">camp.regulamin.search</field>
+            <field name="model">camp.regulamin</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="event_id"/>
+                    <filter name="filter_published" string="Published"
+                            domain="[('state', '=', 'published')]"/>
+                    <filter name="filter_templates" string="Templates (all camps)"
+                            domain="[('event_id', '=', False)]"/>
+                    <filter name="filter_missing_signatures" string="Missing signatures"
+                            domain="[('state', '=', 'published'), ('all_signed', '=', False)]"/>
+                    <group expand="0" string="Group by">
+                        <filter name="group_by_event" string="Camp shift"
+                                context="{'group_by': 'event_id'}"/>
+                        <filter name="group_by_type" string="Type"
+                                context="{'group_by': 'regulamin_type'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="camp_regulamin_action" model="ir.actions.act_window">
+            <field name="name">Regulaminy</field>
+            <field name="res_model">camp.regulamin</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="camp_regulamin_view_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Wydaj pierwszy regulamin
+                </p>
+                <p>
+                    Regulamin kolonii/obozu, kąpieli, wycieczek, instrukcja ppoż.,
+                    zakres czynności wychowawcy — z podpisami kadry.
+                </p>
+            </field>
+        </record>
+
+        <!-- ════════════════════════════════════════════════════════════════
+             camp.regulamin.ack — standalone views ("kto nie podpisał")
+        ════════════════════════════════════════════════════════════════ -->
+
+        <record id="camp_regulamin_ack_view_tree" model="ir.ui.view">
+            <field name="name">camp.regulamin.ack.tree</field>
+            <field name="model">camp.regulamin.ack</field>
+            <field name="arch" type="xml">
+                <tree decoration-success="signed" decoration-danger="not signed">
+                    <field name="regulamin_id"/>
+                    <field name="staff_id"/>
+                    <field name="event_id"/>
+                    <field name="signed" widget="boolean_toggle" readonly="1"/>
+                    <field name="signed_date"/>
+                    <field name="can_sign" column_invisible="1"/>
+                    <button name="action_sign" type="object"
+                            string="Podpisuję" icon="fa-pencil"
+                            class="btn btn-primary btn-sm"
+                            invisible="not can_sign"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="camp_regulamin_ack_view_form" model="ir.ui.view">
+            <field name="name">camp.regulamin.ack.form</field>
+            <field name="model">camp.regulamin.ack</field>
+            <field name="arch" type="xml">
+                <form string="Acknowledgment">
+                    <header>
+                        <button name="action_sign" type="object"
+                                string="Podpisuję — zapoznałem(am) się"
+                                class="oe_highlight"
+                                invisible="not can_sign"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="regulamin_id"/>
+                                <field name="staff_id"/>
+                                <field name="event_id"/>
+                                <field name="user_id"/>
+                            </group>
+                            <group>
+                                <field name="signed" readonly="1"/>
+                                <field name="signed_date"/>
+                                <field name="signed_ip"/>
+                                <field name="can_sign" invisible="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="camp_regulamin_ack_action" model="ir.actions.act_window">
+            <field name="name">Podpisy regulaminów</field>
+            <field name="res_model">camp.regulamin.ack</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_filter_unsigned': 1}</field>
+        </record>
+
+        <record id="camp_regulamin_ack_view_search" model="ir.ui.view">
+            <field name="name">camp.regulamin.ack.search</field>
+            <field name="model">camp.regulamin.ack</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="staff_id"/>
+                    <field name="regulamin_id"/>
+                    <field name="event_id"/>
+                    <filter name="filter_unsigned" string="Nie podpisane"
+                            domain="[('signed', '=', False)]"/>
+                    <filter name="filter_my" string="Moje do podpisu"
+                            domain="[('user_id', '=', uid), ('signed', '=', False)]"/>
+                    <group expand="0" string="Group by">
+                        <filter name="group_by_regulamin" string="Regulamin"
+                                context="{'group_by': 'regulamin_id'}"/>
+                        <filter name="group_by_staff" string="Staff"
+                                context="{'group_by': 'staff_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+    </data>
+</odoo>

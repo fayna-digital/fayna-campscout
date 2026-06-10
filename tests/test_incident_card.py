@@ -10,11 +10,10 @@ Covers:
   * register lock after turnus closing (write/unlink guard, admin unlock).
 """
 
-from psycopg2 import IntegrityError
-
 from odoo.exceptions import UserError
 from odoo.tests.common import TransactionCase, tagged
 from odoo.tools import mute_logger
+from psycopg2 import IntegrityError
 
 
 @tagged("post_install", "-at_install", "fayna_camp_portal")

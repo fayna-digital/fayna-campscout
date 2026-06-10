@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ================================================================ -->
+        <!-- camp.incident.card — Karta Wypadku (16 pkt)                      -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_incident_card_tree" model="ir.ui.view">
+            <field name="name">camp.incident.card.tree</field>
+            <field name="model">camp.incident.card</field>
+            <field name="arch" type="xml">
+                <tree decoration-muted="state == 'draft'"
+                      decoration-success="state == 'confirmed'">
+                    <field name="incident_datetime"/>
+                    <field name="participant_id"/>
+                    <field name="group_class" optional="show"/>
+                    <field name="event_id"/>
+                    <field name="miejsce"/>
+                    <field name="uraz_rodzaj" optional="show"/>
+                    <field name="uraz_umiejscowienie" optional="hide"/>
+                    <field name="osoba_nadzoru" optional="show"/>
+                    <field name="incident_report_id" optional="hide"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_incident_card_search" model="ir.ui.view">
+            <field name="name">camp.incident.card.search</field>
+            <field name="model">camp.incident.card</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="participant_id"/>
+                    <field name="event_id"/>
+                    <field name="miejsce"/>
+                    <field name="osoba_nadzoru"/>
+                    <filter name="filter_draft" string="Szkice"
+                            domain="[('state', '=', 'draft')]"/>
+                    <filter name="filter_confirmed" string="Zatwierdzone"
+                            domain="[('state', '=', 'confirmed')]"/>
+                    <group expand="1" string="Group By">
+                        <filter name="group_by_event" string="Turnus"
+                                context="{'group_by': 'event_id'}"/>
+                        <filter name="group_by_state" string="Status"
+                                context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="view_camp_incident_card_form" model="ir.ui.view">
+            <field name="name">camp.incident.card.form</field>
+            <field name="model">camp.incident.card</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_confirm" string="Zatwierdź kartę" type="object"
+                                class="btn-primary" invisible="state != 'draft'"
+                                confirm="Po zatwierdzeniu karta zostanie zamrożona jako dokument prawny (edytowalne pozostaną tylko załączniki i uwagi). Kontynuować?"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,confirmed"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1><field name="display_name" readonly="1"/></h1>
+                        </div>
+
+                        <group string="Powiązania">
+                            <group>
+                                <field name="event_id"/>
+                                <field name="incident_report_id"/>
+                            </group>
+                            <group>
+                                <field name="register_lp" readonly="1"/>
+                            </group>
+                        </group>
+
+                        <group string="1. Nazwa placówki (pieczęć)">
+                            <field name="placowka_name" nolabel="1"/>
+                        </group>
+
+                        <group string="2. Poszkodowany">
+                            <group>
+                                <field name="participant_id"/>
+                                <field name="participant_birth_date"/>
+                            </group>
+                            <group>
+                                <field name="participant_address"/>
+                                <field name="group_class"/>
+                            </group>
+                        </group>
+
+                        <group string="3. Czynność wykonywana podczas wypadku">
+                            <field name="czynnosc" nolabel="1"/>
+                        </group>
+
+                        <group string="4. Rodzaj przeszkolenia BHP">
+                            <group>
+                                <field name="bhp_rodzaj"/>
+                                <field name="bhp_kiedy"/>
+                            </group>
+                            <group>
+                                <field name="bhp_przez_kogo"/>
+                                <field name="bhp_czas_trwania"/>
+                            </group>
+                        </group>
+
+                        <group string="5. Badanie lekarskie">
+                            <group>
+                                <field name="zbadany_przez_lekarza"/>
+                                <field name="data_ostatniego_badania"/>
+                            </group>
+                            <group>
+                                <field name="przeciwwskazania"/>
+                            </group>
+                        </group>
+
+                        <group string="6. Data, czas i miejsce wypadku">
+                            <group>
+                                <field name="incident_datetime"/>
+                            </group>
+                            <group>
+                                <field name="miejsce"/>
+                            </group>
+                        </group>
+
+                        <group string="7. Rodzaj i umiejscowienie uszkodzenia ciała">
+                            <group>
+                                <field name="uraz_rodzaj"/>
+                            </group>
+                            <group>
+                                <field name="uraz_umiejscowienie"/>
+                            </group>
+                        </group>
+
+                        <group string="8. Niezdolność do uczestnictwa w zajęciach">
+                            <group>
+                                <field name="niezdolny_do_uczestnictwa"/>
+                            </group>
+                            <group>
+                                <field name="niezdolnosc_czas"/>
+                            </group>
+                        </group>
+
+                        <group string="9. Szczegółowy opis wypadku z podaniem przyczyny">
+                            <field name="opis_wypadku" nolabel="1"/>
+                        </group>
+
+                        <group string="10–11. Nadzór w chwili wypadku">
+                            <group>
+                                <field name="osoba_nadzoru"/>
+                                <field name="nadzor_obecny"/>
+                            </group>
+                            <group>
+                                <field name="nadzor_nieobecny_przyczyna"
+                                       invisible="nadzor_obecny != 'nie'"/>
+                            </group>
+                        </group>
+
+                        <group string="12. Pierwsza pomoc">
+                            <field name="pierwsza_pomoc_godzina"/>
+                        </group>
+
+                        <group string="13. Świadkowie (imiona, nazwiska, adresy)">
+                            <field name="swiadkowie" nolabel="1"/>
+                        </group>
+
+                        <group string="14. Podjęte środki zapobiegawcze">
+                            <field name="srodki_zapobiegawcze" nolabel="1"/>
+                        </group>
+
+                        <group string="15. Komisja i kierownik placówki">
+                            <group>
+                                <field name="komisja_sklad"/>
+                            </group>
+                            <group>
+                                <field name="kierownik_placowki"/>
+                            </group>
+                        </group>
+
+                        <group string="16. Wykaz załączników">
+                            <field name="zalaczniki_wykaz" nolabel="1"/>
+                            <field name="attachment_ids" widget="many2many_binary" nolabel="1"/>
+                        </group>
+
+                        <group string="Uwagi wewnętrzne (poza wzorem)">
+                            <field name="notes" nolabel="1"/>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_camp_incident_card" model="ir.actions.act_window">
+            <field name="name">Karty Wypadków</field>
+            <field name="res_model">camp.incident.card</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_camp_incident_card_search"/>
+            <field name="context">{'search_default_group_by_event': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Brak kart wypadków
+                </p>
+                <p>
+                    Karta Wypadku — oficjalny wzór 16 punktów (kurs kierownika
+                    wypoczynku). Po zatwierdzeniu karta trafia automatycznie do
+                    Rejestru Wypadków turnusu.
+                </p>
+            </field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.incident.register — Rejestr Wypadków (10 kolumn)            -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_incident_register_tree" model="ir.ui.view">
+            <field name="name">camp.incident.register.tree</field>
+            <field name="model">camp.incident.register</field>
+            <field name="arch" type="xml">
+                <tree decoration-muted="locked">
+                    <field name="display_name"/>
+                    <field name="event_id"/>
+                    <field name="line_count"/>
+                    <field name="locked"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_incident_register_form" model="ir.ui.view">
+            <field name="name">camp.incident.register.form</field>
+            <field name="model">camp.incident.register</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_lock" string="Zamknij rejestr" type="object"
+                                invisible="locked"
+                                confirm="Po zamknięciu turnusu rejestr stanie się niezmienny. Kontynuować?"/>
+                        <button name="action_unlock" string="Odblokuj (Admin)" type="object"
+                                invisible="not locked"
+                                groups="fayna_camp_portal.group_camp_admin,base.group_system"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1><field name="display_name" readonly="1"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="event_id" readonly="locked"/>
+                            </group>
+                            <group>
+                                <field name="line_count" readonly="1"/>
+                                <field name="locked" readonly="1"/>
+                            </group>
+                        </group>
+                        <!-- Rejestr Wypadków — 10 kolumn wzoru (readonly,
+                             auto-aggregated from confirmed cards) -->
+                        <field name="line_ids" readonly="1">
+                            <tree create="false" delete="false" edit="false">
+                                <field name="register_lp" string="Lp."/>
+                                <field name="participant_id" string="Imię i nazwisko"/>
+                                <field name="group_class" string="Grupa"/>
+                                <field name="incident_datetime" string="Data wypadku"/>
+                                <field name="uraz_rodzaj" string="Rodzaj wypadku / urazu"/>
+                                <field name="miejsce" string="Miejsce wypadku"/>
+                                <field name="czynnosc" string="Rodzaj zajęć"/>
+                                <field name="uraz_umiejscowienie" string="Umiejscowienie urazu"/>
+                                <field name="opis_wypadku" string="Okoliczności"/>
+                                <field name="pierwsza_pomoc_godzina" string="Udzielona pomoc o godz."/>
+                                <field name="srodki_zapobiegawcze" string="Środki zapobiegawcze, zarządzenia"/>
+                                <field name="notes" string="Uwagi"/>
+                                <field name="osoba_nadzoru" string="Wychowawca opiekun"/>
+                            </tree>
+                        </field>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_camp_incident_register" model="ir.actions.act_window">
+            <field name="name">Rejestry Wypadków</field>
+            <field name="res_model">camp.incident.register</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Brak rejestrów wypadków
+                </p>
+                <p>
+                    Rejestr Wypadków — jeden na turnus. Agreguje automatycznie
+                    wszystkie zatwierdzone Karty Wypadków chronologicznie
+                    z automatyczną numeracją Lp. Po zamknięciu turnusu rejestr
+                    jest niezmienny (kontrola Kuratorium Oświaty).
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>
