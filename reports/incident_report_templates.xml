@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ================================================================ -->
+        <!-- Karta Wypadku — pełny wzór 16 punktów (kurs kierownika)          -->
+        <!-- ================================================================ -->
+
+        <template id="report_incident_card">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="fayna_camp_portal.report_incident_card_document"/>
+                </t>
+            </t>
+        </template>
+
+        <template id="report_incident_card_document">
+            <t t-call="web.basic_layout">
+                <div class="page" style="font-size:10pt; font-family:'DejaVu Sans', sans-serif;">
+
+                    <!-- Pkt 1 — Nazwa placówki (pieczęć) -->
+                    <table style="width:100%; margin-bottom:14px;">
+                        <tr>
+                            <td style="width:55%; vertical-align:top;">
+                                <div style="border:1px solid #000; min-height:70px; padding:6px;">
+                                    <span style="font-size:8pt;">1. Nazwa placówki (pieczęć)</span><br/>
+                                    <strong style="font-size:11pt;"><t t-esc="o.placowka_name or ''"/></strong>
+                                </div>
+                            </td>
+                            <td style="width:45%; vertical-align:bottom; text-align:center;">
+                                <h2 style="margin:0;">KARTA WYPADKU</h2>
+                                <div style="font-size:9pt;">
+                                    Turnus: <t t-esc="o.event_id.name or ''"/>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <table style="width:100%; border-collapse:collapse;" class="table table-sm">
+                        <tbody>
+                            <!-- Pkt 2 -->
+                            <tr>
+                                <td style="border:1px solid #000; width:4%; text-align:center; vertical-align:top;">2.</td>
+                                <td style="border:1px solid #000; padding:4px;">
+                                    Imię i nazwisko poszkodowanego:
+                                    <strong><t t-esc="o.participant_id.display_name or ''"/></strong><br/>
+                                    Data urodzenia:
+                                    <strong><span t-field="o.participant_birth_date"/></strong><br/>
+                                    Adres zamieszkania:
+                                    <strong><t t-esc="o.participant_address or ''"/></strong><br/>
+                                    Klasa / grupa:
+                                    <strong><t t-esc="o.group_class or ''"/></strong>
+                                </td>
+                            </tr>
+                            <!-- Pkt 3 -->
+                            <tr>
+                                <td style="border:1px solid #000; text-align:center; vertical-align:top;">3.</td>
+                                <td style="border:1px solid #000; padding:4px;">
+                                    Czynność wykonywana podczas wypadku:<br/>
+                                    <strong><t t-esc="o.czynnosc or ''"/></strong>
+                                </td>
+                            </tr>
+                            <!-- Pkt 4 -->
+                            <tr>
+                                <td style="border:1px solid #000; text-align:center; vertical-align:top;">4.</td>
+                                <td style="border:1px solid #000; padding:4px;">
+                                    Rodzaj przeszkolenia BHP:
+                                    <strong><t t-esc="o.bhp_rodzaj or ''"/></strong><br/>
+                                    kiedy: <strong><span t-field="o.bhp_kiedy"/></strong>,
+                                    przez kogo: <strong><t t-esc="o.bhp_przez_kogo or ''"/></strong>,
+                                    czas trwania: <strong><t t-esc="o.bhp_czas_trwania or ''"/></strong>
+                                </td>
+                            </tr>
+                            <!-- Pkt 5 -->
+                            <tr>
+                                <td style="border:1px solid #000; text-align:center; vertical-align:top;">5.</td>
+                                <td style="border:1px solid #000; padding:4px;">
+                                    Czy poszkodowany był zbadany przez lekarza:
+                                    <strong><t t-esc="(o.zbadany_przez_lekarza or '— / —').capitalize()"/></strong><br/>
+                                    Data ostatniego badania lekarskiego:
+                                    <strong><span t-field="o.data_ostatniego_badania"/></strong><br/>
+                                    Czy były przeciwwskazania:
+                                    <strong><t t-esc="(o.przeciwwskazania or '— / —').capitalize()"/></strong>
+                                </td>
+                            </tr>
+                            <!-- Pkt 6 -->
+                            <tr>
+                                <td style="border:1px solid #000; text-align:center; vertical-align:top;">6.</td>
+                                <td style="border:1px solid #000; padding:4px;">
+                                    Data i czas wypadku:
+                                    <strong><span t-field="o.incident_datetime"/></strong><br/>
+                                    Miejsce wypadku:
+                                    <strong><t t-esc="o.miejsce or ''"/></strong>
+                                </td>
+                            </tr>
+                            <!-- Pkt 7 -->
+                            <tr>
+                                <td style="border:1px solid #000; text-align:center; vertical-align:top;">7.</td>
+                                <td style="border:1px solid #000; padding:4px;">
+                                    Rodzaj i umiejscowienie uszkodzenia ciała:<br/>
+                                    <strong><t t-esc="o.uraz_rodzaj or ''"/></strong>
+                                    <t t-if="o.uraz_umiejscowienie">
+                                        — <strong><t t-esc="o.uraz_umiejscowienie"/></strong>
+                                    </t>
+                                </td>
+                            </tr>
+                            <!-- Pkt 8 -->
+                            <tr>
+                                <td style="border:1px solid #000; text-align:center; vertical-align:top;">8.</td>
+                                <td style="border:1px solid #000; padding:4px;">
+                                    Czy poszkodowany jest niezdolny do uczestnictwa w zajęciach:
+                                    <strong><t t-esc="(o.niezdolny_do_uczestnictwa or '— / —').capitalize()"/></strong><br/>
+                                    Przypuszczalny czas niezdolności:
+                                    <strong><t t-esc="o.niezdolnosc_czas or ''"/></strong>
+                                </td>
+                            </tr>
+                            <!-- Pkt 9 -->
+                            <tr>
+                                <td style="border:1px solid #000; text-align:center; vertical-align:top;">9.</td>
+                                <td style="border:1px solid #000; padding:4px;">
+                                    Szczegółowy opis wypadku z podaniem przyczyny:<br/>
+                                    <strong style="white-space:pre-wrap;"><t t-esc="o.opis_wypadku or ''"/></strong>
+                                </td>
+                            </tr>
+                            <!-- Pkt 10 -->
+                            <tr>
+                                <td style="border:1px solid #000; text-align:center; vertical-align:top;">10.</td>
+                                <td style="border:1px solid #000; padding:4px;">
+                                    Imię i nazwisko osoby sprawującej nadzór w chwili wypadku:
+                                    <strong><t t-esc="o.osoba_nadzoru or ''"/></strong>
+                                </td>
+                            </tr>
+                            <!-- Pkt 11 -->
+                            <tr>
+                                <td style="border:1px solid #000; text-align:center; vertical-align:top;">11.</td>
+                                <td style="border:1px solid #000; padding:4px;">
+                                    Czy osoba sprawująca nadzór była obecna na miejscu wypadku:
+                                    <strong><t t-esc="(o.nadzor_obecny or '— / —').capitalize()"/></strong>
+                                    <t t-if="o.nadzor_obecny == 'nie'">
+                                        <br/>jeśli nie — z jakiej przyczyny:
+                                        <strong style="white-space:pre-wrap;"><t t-esc="o.nadzor_nieobecny_przyczyna or ''"/></strong>
+                                    </t>
+                                </td>
+                            </tr>
+                            <!-- Pkt 12 -->
+                            <tr>
+                                <td style="border:1px solid #000; text-align:center; vertical-align:top;">12.</td>
+                                <td style="border:1px solid #000; padding:4px;">
+                                    Pierwszej pomocy udzielono o godzinie:
+                                    <strong><span t-field="o.pierwsza_pomoc_godzina"/></strong>
+                                </td>
+                            </tr>
+                            <!-- Pkt 13 -->
+                            <tr>
+                                <td style="border:1px solid #000; text-align:center; vertical-align:top;">13.</td>
+                                <td style="border:1px solid #000; padding:4px;">
+                                    Imiona, nazwiska i adresy świadków:<br/>
+                                    <strong style="white-space:pre-wrap;"><t t-esc="o.swiadkowie or ''"/></strong>
+                                </td>
+                            </tr>
+                            <!-- Pkt 14 -->
+                            <tr>
+                                <td style="border:1px solid #000; text-align:center; vertical-align:top;">14.</td>
+                                <td style="border:1px solid #000; padding:4px;">
+                                    Podjęte środki zapobiegawcze (komendant / kierownik):<br/>
+                                    <strong style="white-space:pre-wrap;"><t t-esc="o.srodki_zapobiegawcze or ''"/></strong>
+                                </td>
+                            </tr>
+                            <!-- Pkt 16 -->
+                            <tr>
+                                <td style="border:1px solid #000; text-align:center; vertical-align:top;">16.</td>
+                                <td style="border:1px solid #000; padding:4px;">
+                                    Wykaz załączników:<br/>
+                                    <strong style="white-space:pre-wrap;"><t t-esc="o.zalaczniki_wykaz or ''"/></strong>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Pkt 15 — Podpisy komisji + klauzula art. 247 KK -->
+                    <div style="margin-top:18px; font-size:9pt;">
+                        <p style="font-style:italic; border:1px solid #000; padding:6px;">
+                            Świadomy(-a) odpowiedzialności karnej wynikającej z art. 247
+                            Kodeksu karnego potwierdzam własnoręcznym podpisem, że dane
+                            zawarte w niniejszej karcie wypadku są zgodne ze stanem
+                            faktycznym.
+                        </p>
+
+                        <p style="margin-top:14px;"><strong>15. Podpisy członków komisji:</strong></p>
+                        <table style="width:100%; margin-top:6px;">
+                            <t t-set="komisja_lines"
+                               t-value="[l.strip() for l in (o.komisja_sklad or '').splitlines() if l.strip()] or ['', '']"/>
+                            <t t-foreach="komisja_lines" t-as="member">
+                                <tr>
+                                    <td style="width:50%; padding-top:24px;">
+                                        <t t-esc="member"/>
+                                    </td>
+                                    <td style="width:50%; padding-top:24px; text-align:center;">
+                                        <div style="border-top:1px dotted #000; width:90%; margin:0 auto;">
+                                            <span style="font-size:8pt;">(data i podpis członka komisji)</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </t>
+                            <tr>
+                                <td style="width:50%; padding-top:32px;">
+                                    Kierownik placówki:
+                                    <strong><t t-esc="o.kierownik_placowki or ''"/></strong>
+                                </td>
+                                <td style="width:50%; padding-top:32px; text-align:center;">
+                                    <div style="border-top:1px dotted #000; width:90%; margin:0 auto;">
+                                        <span style="font-size:8pt;">(data i podpis kierownika placówki)</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <p style="page-break-after:always;"/>
+                </div>
+            </t>
+        </template>
+
+        <!-- ================================================================ -->
+        <!-- Rejestr Wypadków — 10 kolumn wzoru, albumowo (kontrola KO)       -->
+        <!-- ================================================================ -->
+
+        <template id="report_incident_register">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="fayna_camp_portal.report_incident_register_document"/>
+                </t>
+            </t>
+        </template>
+
+        <template id="report_incident_register_document">
+            <t t-call="web.basic_layout">
+                <div class="page" style="font-size:8pt; font-family:'DejaVu Sans', sans-serif;">
+
+                    <div style="text-align:center; margin-bottom:10px;">
+                        <h3 style="margin:0;">REJESTR WYPADKÓW</h3>
+                        <div style="font-size:9pt;">
+                            Placówka: <strong><t t-esc="o.event_id.company_id.name or ''"/></strong>
+                            — Turnus: <strong><t t-esc="o.event_id.name or ''"/></strong>
+                            (<span t-field="o.event_id.date_begin" t-options="{'widget': 'date'}"/>
+                            – <span t-field="o.event_id.date_end" t-options="{'widget': 'date'}"/>)
+                        </div>
+                    </div>
+
+                    <table style="width:100%; border-collapse:collapse;">
+                        <thead>
+                            <tr style="background-color:#eee;">
+                                <th style="border:1px solid #000; padding:3px; width:3%;">Lp.</th>
+                                <th style="border:1px solid #000; padding:3px; width:11%;">Imię i nazwisko<br/>(grupa)</th>
+                                <th style="border:1px solid #000; padding:3px; width:10%;">Data i rodzaj<br/>wypadku</th>
+                                <th style="border:1px solid #000; padding:3px; width:11%;">Miejsce wypadku<br/>i rodzaj zajęć</th>
+                                <th style="border:1px solid #000; padding:3px; width:12%;">Rodzaj urazu<br/>i opis</th>
+                                <th style="border:1px solid #000; padding:3px; width:14%;">Okoliczności</th>
+                                <th style="border:1px solid #000; padding:3px; width:9%;">Udzielona<br/>pomoc</th>
+                                <th style="border:1px solid #000; padding:3px; width:12%;">Środki zapobiegawcze,<br/>zarządzenia</th>
+                                <th style="border:1px solid #000; padding:3px; width:11%;">Uwagi<br/>(Wychowawca opiekun)</th>
+                                <th style="border:1px solid #000; padding:3px; width:7%;">Podpis<br/>Kierownika</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="o.line_ids" t-as="card">
+                                <tr>
+                                    <!-- 1. Lp. -->
+                                    <td style="border:1px solid #000; padding:3px; text-align:center;">
+                                        <t t-esc="card_index + 1"/>
+                                    </td>
+                                    <!-- 2. Imię i nazwisko (+grupa) -->
+                                    <td style="border:1px solid #000; padding:3px;">
+                                        <t t-esc="card.participant_id.display_name or ''"/>
+                                        <t t-if="card.group_class">
+                                            <br/>(<t t-esc="card.group_class"/>)
+                                        </t>
+                                    </td>
+                                    <!-- 3. Data i rodzaj wypadku -->
+                                    <td style="border:1px solid #000; padding:3px;">
+                                        <span t-field="card.incident_datetime"/>
+                                        <t t-if="card.uraz_rodzaj">
+                                            <br/><t t-esc="card.uraz_rodzaj"/>
+                                        </t>
+                                    </td>
+                                    <!-- 4. Miejsce wypadku i rodzaj zajęć -->
+                                    <td style="border:1px solid #000; padding:3px;">
+                                        <t t-esc="card.miejsce or ''"/>
+                                        <t t-if="card.czynnosc">
+                                            <br/><t t-esc="card.czynnosc"/>
+                                        </t>
+                                    </td>
+                                    <!-- 5. Rodzaj urazu i opis -->
+                                    <td style="border:1px solid #000; padding:3px;">
+                                        <t t-esc="card.uraz_rodzaj or ''"/>
+                                        <t t-if="card.uraz_umiejscowienie">
+                                            — <t t-esc="card.uraz_umiejscowienie"/>
+                                        </t>
+                                    </td>
+                                    <!-- 6. Okoliczności -->
+                                    <td style="border:1px solid #000; padding:3px;">
+                                        <t t-esc="card.opis_wypadku or ''"/>
+                                    </td>
+                                    <!-- 7. Udzielona pomoc -->
+                                    <td style="border:1px solid #000; padding:3px;">
+                                        <t t-if="card.pierwsza_pomoc_godzina">
+                                            Pierwsza pomoc o godz.
+                                            <span t-field="card.pierwsza_pomoc_godzina"/>
+                                        </t>
+                                    </td>
+                                    <!-- 8. Środki zapobiegawcze, zarządzenia -->
+                                    <td style="border:1px solid #000; padding:3px;">
+                                        <t t-esc="card.srodki_zapobiegawcze or ''"/>
+                                    </td>
+                                    <!-- 9. Uwagi + wskazanie Wychowawcy opiekuna -->
+                                    <td style="border:1px solid #000; padding:3px;">
+                                        <t t-esc="card.notes or ''"/>
+                                        <t t-if="card.osoba_nadzoru">
+                                            <br/>Opiekun: <t t-esc="card.osoba_nadzoru"/>
+                                        </t>
+                                    </td>
+                                    <!-- 10. Podpis Kierownika (miejsce na podpis) -->
+                                    <td style="border:1px solid #000; padding:3px;">
+                                        <span/>
+                                    </td>
+                                </tr>
+                            </t>
+                            <t t-if="not o.line_ids">
+                                <tr>
+                                    <td colspan="10"
+                                        style="border:1px solid #000; padding:8px; text-align:center; font-style:italic;">
+                                        Brak wypadków w turnusie
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <table style="width:100%; margin-top:28px; font-size:8pt;">
+                        <tr>
+                            <td style="width:60%;"></td>
+                            <td style="width:40%; text-align:center;">
+                                <div style="border-top:1px dotted #000;">
+                                    (data i podpis kierownika wypoczynku)
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <p style="page-break-after:always;"/>
+                </div>
+            </t>
+        </template>
+
+    </data>
+</odoo>

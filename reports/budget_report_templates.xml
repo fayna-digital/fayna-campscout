@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- QWeb PDF templates for camp budgets (TZ §5).
+     Two reports:
+       * report_budget_zestawienie — «Zestawienie obozu» (one camp.budget)
+       * report_season_budgets     — «Zestawienie obozów» (all shifts of a season)
+     R8: both margins are always shown side by side with explicit labels.
+     NOTE: Rejestr faktur za miesiąc (P_PMarzy / l10n_pl_ksef_margin) — TODO,
+     окремий крок з account-інтеграцією. -->
+<odoo>
+    <data>
+
+        <!-- ============================================================ -->
+        <!-- «Zestawienie obozu» — один турнус                            -->
+        <!-- ============================================================ -->
+        <template id="report_budget_zestawienie">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <h2>Zestawienie obozu: <span t-field="doc.event_id.name"/></h2>
+                            <p class="text-muted">
+                                <span t-field="doc.event_id.date_begin" t-options="{'widget': 'date'}"/> —
+                                <span t-field="doc.event_id.date_end" t-options="{'widget': 'date'}"/>
+                                (<span t-field="doc.days"/> dób) ·
+                                Sezon: <span t-field="doc.camp_season_id.name"/>
+                            </p>
+
+                            <h4>Parametry</h4>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td>Miejsca (capacity)</td>
+                                    <td class="text-end"><span t-field="doc.capacity"/></td>
+                                    <td>Planowane dzieci</td>
+                                    <td class="text-end"><span t-field="doc.planned_children"/></td>
+                                </tr>
+                                <tr>
+                                    <td>Zapisane dzieci (fakt)</td>
+                                    <td class="text-end"><span t-field="doc.registered_children"/></td>
+                                    <td>Cena za dziecko (realna)</td>
+                                    <td class="text-end">
+                                        <span t-field="doc.price_per_child"
+                                              t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <h4>Koszty (plan)</h4>
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Kategoria</th>
+                                        <th>Opis</th>
+                                        <th>Jednostka</th>
+                                        <th class="text-end">Kwota</th>
+                                        <th class="text-end">Ilość</th>
+                                        <th class="text-end">Razem</th>
+                                        <th class="text-center">VAT-marża (art. 119)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="doc.line_ids" t-as="line">
+                                        <td><span t-field="line.category_id.name"/></td>
+                                        <td><span t-field="line.name"/></td>
+                                        <td><span t-field="line.per"/></td>
+                                        <td class="text-end">
+                                            <span t-field="line.amount"
+                                                  t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                        </td>
+                                        <td class="text-end"><span t-esc="'%g' % line.qty"/></td>
+                                        <td class="text-end">
+                                            <span t-field="line.subtotal_planned"
+                                                  t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                        </td>
+                                        <td class="text-center">
+                                            <span t-if="line.vat_marza">✓</span>
+                                            <span t-else="">—</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="5">Koszty stałe</th>
+                                        <th class="text-end">
+                                            <span t-field="doc.total_fixed"
+                                                  t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                        </th>
+                                        <th/>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="5">Koszty zmienne (plan, na dziecko: <span t-field="doc.variable_per_child" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>)</th>
+                                        <th class="text-end">
+                                            <span t-field="doc.total_variable_planned"
+                                                  t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                        </th>
+                                        <th/>
+                                    </tr>
+                                </tfoot>
+                            </table>
+
+                            <h4>Wynik — plan vs fakt</h4>
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th/>
+                                        <th class="text-end">Plan</th>
+                                        <th class="text-end">Fakt (analityka)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Przychód</td>
+                                        <td class="text-end">
+                                            <span t-field="doc.revenue_planned"
+                                                  t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                        </td>
+                                        <td class="text-end">
+                                            <span t-field="doc.actual_revenue"
+                                                  t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Koszty</td>
+                                        <td class="text-end">
+                                            <span t-esc="doc.total_fixed + doc.total_variable_planned"
+                                                  t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                        </td>
+                                        <td class="text-end">
+                                            <span t-field="doc.actual_costs"
+                                                  t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-top">
+                                        <td><strong>Marża VAT (art. 119)</strong> — tylko koszty dla bezpośredniej korzyści turysty</td>
+                                        <td class="text-end">
+                                            <strong><span t-field="doc.marza_vat_planned"
+                                                  t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/></strong>
+                                        </td>
+                                        <td class="text-end">—</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Marża biznesowa (z reklamą)</strong> — wszystkie koszty (R8)</td>
+                                        <td class="text-end">
+                                            <strong><span t-field="doc.marza_business_planned"
+                                                  t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/></strong>
+                                        </td>
+                                        <td class="text-end">
+                                            <strong><span t-field="doc.actual_profit"
+                                                  t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/></strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <h4>Break-even</h4>
+                            <p t-if="doc.bep_warning" class="text-danger">
+                                <strong>BEP nieosiągalny:</strong> cena za dziecko ≤ koszt zmienny na dziecko.
+                            </p>
+                            <p t-else="">
+                                BEP: <strong style="font-size:1.4em;"><span t-field="doc.bep_children"/> dzieci</strong> ·
+                                zapisanych: <span t-field="doc.registered_children"/> ·
+                                contribution margin / dziecko:
+                                <span t-field="doc.contribution_margin"
+                                      t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/> ·
+                                status: <span t-field="doc.fill_vs_bep"/>
+                            </p>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+        <!-- ============================================================ -->
+        <!-- «Zestawienie obozów» — всі турнуси сезону                    -->
+        <!-- ============================================================ -->
+        <template id="report_season_budgets">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <h2>Zestawienie obozów — sezon <span t-field="doc.name"/></h2>
+                            <t t-set="budgets" t-value="doc.event_ids.mapped('camp_budget_ids')"/>
+                            <p t-if="not budgets" class="text-muted">
+                                Brak budżetów w tym sezonie.
+                            </p>
+                            <table t-if="budgets" class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Obóz</th>
+                                        <th class="text-end">Miejsca</th>
+                                        <th class="text-end">Plan dzieci</th>
+                                        <th class="text-end">Zapisane</th>
+                                        <th class="text-end">BEP</th>
+                                        <th class="text-end">Przychód (plan)</th>
+                                        <th class="text-end">Koszty (plan)</th>
+                                        <th class="text-end">Marża VAT (art. 119)</th>
+                                        <th class="text-end">Marża biznesowa</th>
+                                        <th class="text-center">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="budgets" t-as="b">
+                                        <td><span t-field="b.event_id.name"/></td>
+                                        <td class="text-end"><span t-field="b.capacity"/></td>
+                                        <td class="text-end"><span t-field="b.planned_children"/></td>
+                                        <td class="text-end"><span t-field="b.registered_children"/></td>
+                                        <td class="text-end">
+                                            <span t-if="b.bep_warning" class="text-danger">n/d</span>
+                                            <span t-else="" t-field="b.bep_children"/>
+                                        </td>
+                                        <td class="text-end">
+                                            <span t-field="b.revenue_planned"
+                                                  t-options="{'widget': 'monetary', 'display_currency': b.currency_id}"/>
+                                        </td>
+                                        <td class="text-end">
+                                            <span t-esc="b.total_fixed + b.total_variable_planned"
+                                                  t-options="{'widget': 'monetary', 'display_currency': b.currency_id}"/>
+                                        </td>
+                                        <td class="text-end">
+                                            <span t-field="b.marza_vat_planned"
+                                                  t-options="{'widget': 'monetary', 'display_currency': b.currency_id}"/>
+                                        </td>
+                                        <td class="text-end">
+                                            <span t-field="b.marza_business_planned"
+                                                  t-options="{'widget': 'monetary', 'display_currency': b.currency_id}"/>
+                                        </td>
+                                        <td class="text-center"><span t-field="b.fill_vs_bep"/></td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Razem</th>
+                                        <th/>
+                                        <th class="text-end"><span t-esc="sum(budgets.mapped('planned_children'))"/></th>
+                                        <th class="text-end"><span t-esc="sum(budgets.mapped('registered_children'))"/></th>
+                                        <th/>
+                                        <th class="text-end">
+                                            <span t-esc="sum(budgets.mapped('revenue_planned'))"
+                                                  t-options="{'widget': 'monetary', 'display_currency': budgets[0].currency_id}"/>
+                                        </th>
+                                        <th class="text-end">
+                                            <span t-esc="sum(b2.total_fixed + b2.total_variable_planned for b2 in budgets)"
+                                                  t-options="{'widget': 'monetary', 'display_currency': budgets[0].currency_id}"/>
+                                        </th>
+                                        <th class="text-end">
+                                            <span t-esc="sum(budgets.mapped('marza_vat_planned'))"
+                                                  t-options="{'widget': 'monetary', 'display_currency': budgets[0].currency_id}"/>
+                                        </th>
+                                        <th class="text-end">
+                                            <span t-esc="sum(budgets.mapped('marza_business_planned'))"
+                                                  t-options="{'widget': 'monetary', 'display_currency': budgets[0].currency_id}"/>
+                                        </th>
+                                        <th/>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</odoo>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ================================================================ -->
+        <!-- Karta Kwalifikacyjna Uczestnika Wypoczynku — paperformat + action -->
+        <!-- (§10 TZ_SPRINT — wzór 2026 Dz.U. 2026/704 / wzór 2021 1548)      -->
+        <!-- ================================================================ -->
+
+        <record id="paperformat_karta_kwalifikacyjna" model="report.paperformat">
+            <field name="name">Karta Kwalifikacyjna A4</field>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">12</field>
+            <field name="margin_bottom">12</field>
+            <field name="margin_left">12</field>
+            <field name="margin_right">12</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">8</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <record id="action_report_karta_kwalifikacyjna" model="ir.actions.report">
+            <field name="name">Karta kwalifikacyjna (PDF)</field>
+            <field name="model">camp.participant</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">fayna_camp_portal.report_karta_kwalifikacyjna</field>
+            <field name="report_file">fayna_camp_portal.report_karta_kwalifikacyjna</field>
+            <field name="binding_model_id" ref="model_camp_participant"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="paperformat_karta_kwalifikacyjna"/>
+            <field name="print_report_name">'Karta_Kwalifikacyjna_%s' % (object.display_name or '').replace(' ', '_')</field>
+        </record>
+
+    </data>
+</odoo>

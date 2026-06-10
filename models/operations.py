@@ -212,6 +212,33 @@ class CampStaff(models.Model):
             staff.has_valid_course = course_ok
             staff.is_eligible_for_camp = krk_ok and rps_ok and course_ok
 
+    # --- §13 hard block: no admission without verified KRK+RSPTS -----------
+
+    @api.constrains("event_id", "state")
+    def _check_rspts_before_admission(self):
+        """Ustawa Kamilka / art. 21 ustawy z 16.05.2016: staff may not be
+        admitted to a camp shift without verified KRK + RSPTS certificates
+        (manually accepted by Organizator/Admin, per-season — decision R2).
+        Fires on confirmation/activation so legacy draft records migrate
+        cleanly; the moment anyone confirms staff — the gate applies."""
+        for staff in self:
+            if (
+                staff.state in ("confirmed", "active")
+                and staff.event_id
+                and not staff.is_eligible_for_camp
+            ):
+                raise ValidationError(
+                    _(
+                        "%(name)s cannot be admitted to '%(event)s': KRK/RSPTS "
+                        "verification is missing, expired or not yet accepted "
+                        "by the administrator (Ustawa Kamilka; art. 21 ustawy "
+                        "z 16.05.2016 — admission without RSPTS verification "
+                        "is punishable by arrest or a fine of min. 1000 zł). "
+                        "Upload the documents and request admin acceptance."
+                    )
+                    % {"name": staff.name, "event": staff.event_id.name}
+                )
+
     # ------------------------------------------------------------------
     # PL-law A6/A7 qualification attachments
     # ------------------------------------------------------------------
@@ -219,7 +246,16 @@ class CampStaff(models.Model):
     krk_attachment = fields.Binary(
         attachment=True,
         string=_("KRK Wyciąg"),
-        help=_("Criminal record extract (Krajowy Rejestr Karny) — required by PL law."),
+        groups=(
+            "fayna_camp_portal.group_camp_organizator,"
+            "fayna_camp_portal.group_camp_admin,"
+            "fayna_camp_portal.group_camp_kierownik"
+        ),
+        help=_(
+            "Criminal record extract (Krajowy Rejestr Karny) — RODO art. 10 "
+            "data: visible only to Organizator/Admin and the Kierownik of this "
+            "camp (presents it during KO inspection, decision R3)."
+        ),
     )
     krk_expiry_date = fields.Date(
         string=_("KRK ważna do"),
@@ -354,14 +390,27 @@ class CampStaffCert(models.Model):
     attachment_id = fields.Many2one(
         "ir.attachment",
         string=_("Scanned document"),
-        help=_("Scanned copy of the certificate (stored as ir.attachment)."),
+        groups=(
+            "fayna_camp_portal.group_camp_organizator,"
+            "fayna_camp_portal.group_camp_admin,"
+            "fayna_camp_portal.group_camp_kierownik"
+        ),
+        help=_(
+            "Scanned copy of the certificate. KRK/RPS scans are criminal-record "
+            "data (RODO art. 10) — visible only to Organizator/Admin and the "
+            "Kierownik of this staff member's camp (record rule scoped). "
+            "Kierownik presents these documents during a KO inspection (R3)."
+        ),
     )
 
     is_valid = fields.Boolean(
         compute="_compute_is_valid",
         store=True,
         string=_("Valid"),
-        help=_("True when the certificate has no expiry date or expiry is today or in the future."),
+        help=_(
+            "True when the certificate is not expired AND has been manually "
+            "verified by an Organizator/Admin (Ustawa Kamilka §13 workflow)."
+        ),
     )
 
     notes = fields.Text(
@@ -369,11 +418,100 @@ class CampStaffCert(models.Model):
         help=_("Additional notes about this certificate."),
     )
 
-    @api.depends("expiry_date")
+    # --- §13 RSPTS manual verification workflow (sprint R2/R3) -------------
+    # Docs are uploaded in advance by HR/staff ("ready for acceptance");
+    # ONLY Organizator/Admin may accept — checked in write(), not just UI.
+
+    verification_status = fields.Selection(
+        [
+            ("pending", _("Oczekuje na weryfikację")),
+            ("verified", _("Zweryfikowany")),
+            ("rejected", _("Odrzucony")),
+        ],
+        default="pending",
+        required=True,
+        tracking=True,
+        string=_("Verification"),
+        help=_(
+            "Manual verification by the portal administrator (Organizator/Admin). "
+            "KRK/RPS verification is required BEFORE admitting staff to work with "
+            "minors (art. 21 ustawy z 16.05.2016; brak weryfikacji = kara aresztu "
+            "lub grzywny min. 1000 zł). Re-verified every season (decision R2)."
+        ),
+    )
+    verified_by_id = fields.Many2one(
+        "res.users",
+        string=_("Verified by"),
+        readonly=True,
+        copy=False,
+        help=_("Administrator who accepted/rejected — set automatically, immutable."),
+    )
+    verified_date = fields.Datetime(
+        string=_("Verified on"),
+        readonly=True,
+        copy=False,
+        help=_("Timestamp of the manual verification — set automatically."),
+    )
+    season_id = fields.Many2one(
+        "fayna.camp.season",
+        string=_("Season"),
+        index=True,
+        help=_(
+            "Season this verification is valid for (decision R2: verification "
+            "is re-done every season). Empty = legacy record, treat as expired."
+        ),
+    )
+
+    _VERIFY_PROTECTED = ("verification_status", "verified_by_id", "verified_date")
+
+    def _is_verifier(self):
+        return self.env.user.has_group(
+            "fayna_camp_portal.group_camp_organizator"
+        ) or self.env.user.has_group("fayna_camp_portal.group_camp_admin")
+
+    def action_verify(self):
+        if not self._is_verifier():
+            raise UserError(
+                _("Only the Organizator/Admin may accept RSPTS/KRK verification (§13).")
+            )
+        self.write(
+            {
+                "verification_status": "verified",
+                "verified_by_id": self.env.user.id,
+                "verified_date": fields.Datetime.now(),
+            }
+        )
+
+    def action_reject(self):
+        if not self._is_verifier():
+            raise UserError(
+                _("Only the Organizator/Admin may reject RSPTS/KRK verification (§13).")
+            )
+        self.write(
+            {
+                "verification_status": "rejected",
+                "verified_by_id": self.env.user.id,
+                "verified_date": fields.Datetime.now(),
+            }
+        )
+
+    def write(self, vals):
+        # Hard server-side gate: status fields only via verifier (not just UI).
+        if any(f in vals for f in self._VERIFY_PROTECTED) and not self._is_verifier():
+            raise UserError(
+                _(
+                    "Verification fields are protected — only Organizator/Admin "
+                    "may change them (Ustawa Kamilka §13)."
+                )
+            )
+        return super().write(vals)
+
+    @api.depends("expiry_date", "verification_status")
     def _compute_is_valid(self):
         today = fields.Date.today()
         for rec in self:
-            rec.is_valid = not rec.expiry_date or rec.expiry_date >= today
+            not_expired = not rec.expiry_date or rec.expiry_date >= today
+            rec.is_valid = not_expired and rec.verification_status == "verified"
 
     def name_get(self):
         result = []
@@ -2075,6 +2213,22 @@ class CampProgramActivity(models.Model):
         index=True,
         help=_("Activity type — used for program statistics and reporting."),
     )
+    risk_water = fields.Boolean(
+        string=_("Water activity (§7)"),
+        help=_(
+            "Activity takes place on/in water (kąpiel, kajaki, basen). "
+            "Triggers the hard block for participants flagged with hydrophobia "
+            "(wzór 2026 pkt 9, sprint decision R1) and §7 lifeguard validation."
+        ),
+    )
+    risk_heights = fields.Boolean(
+        string=_("Heights activity"),
+        help=_(
+            "Activity involves heights (park linowy, wspinaczka, zjazdy). "
+            "Triggers the hard block for participants flagged with fear of heights "
+            "(wzór 2026 pkt 9, sprint decision R1)."
+        ),
+    )
     notes = fields.Text(
         string=_("Notes"),
         help=_("Preparation notes, materials needed, special instructions."),
@@ -2441,6 +2595,58 @@ class FaynaCampDziennikActivity(models.Model):
         tracking=True,
         help=_("Achievements, difficulties, conclusions."),
     )
+    risk_water = fields.Boolean(
+        string=_("Water activity (§7)"),
+        tracking=True,
+        help=_(
+            "Hard block: dziennik group must not contain participants with "
+            "hydrophobia (wzór 2026 pkt 9, decision R1 — no override)."
+        ),
+    )
+    risk_heights = fields.Boolean(
+        string=_("Heights activity"),
+        tracking=True,
+        help=_(
+            "Hard block: dziennik group must not contain participants with "
+            "fear of heights (wzór 2026 pkt 9, decision R1 — no override)."
+        ),
+    )
+
+    @api.constrains("risk_water", "risk_heights", "dziennik_id")
+    def _check_risk_flags_vs_participants(self):
+        """R1 hard block (no override): a water/heights activity cannot be
+        scheduled for a group containing a child flagged hydrophobia /
+        fear_of_heights on the qualification card (wzór 2026 pkt 9).
+        Fields are RODO art. 9 group-gated → read via sudo() but never
+        expose the medical flag itself, only the legal block reason."""
+        for rec in self:
+            if not (rec.risk_water or rec.risk_heights):
+                continue
+            participants = rec.dziennik_id.sudo().participant_ids
+            if rec.risk_water:
+                blocked = participants.filtered("hydrophobia")
+                if blocked:
+                    raise ValidationError(
+                        _(
+                            "Water activity blocked (karta kwalifikacyjna 2026, "
+                            "pkt 9): the group contains participants who must "
+                            "not take part in water activities: %s. Reassign "
+                            "the children to another group/activity first."
+                        )
+                        % ", ".join(blocked.mapped("display_name"))
+                    )
+            if rec.risk_heights:
+                blocked = participants.filtered("fear_of_heights")
+                if blocked:
+                    raise ValidationError(
+                        _(
+                            "Heights activity blocked (karta kwalifikacyjna "
+                            "2026, pkt 9): the group contains participants who "
+                            "must not take part in heights activities: %s. "
+                            "Reassign the children first."
+                        )
+                        % ", ".join(blocked.mapped("display_name"))
+                    )
 
     author_id = fields.Many2one(
         "res.users",

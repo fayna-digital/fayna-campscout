@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ================================================================ -->
+        <!-- Dziennik Zajęć — Załącznik 5 Rozp. MEN 30.03.2016 (Dz.U. 2016/452) -->
+        <!-- ================================================================ -->
+
+        <template id="report_dziennik">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="fayna_camp_portal.report_dziennik_document"/>
+                </t>
+            </t>
+        </template>
+
+        <template id="report_dziennik_document">
+            <t t-call="web.basic_layout">
+                <div class="page" style="font-size:9pt; font-family:'DejaVu Sans', sans-serif;">
+
+                    <!-- ======================================================== -->
+                    <!-- Nagłówek — wzór Załącznik 5                              -->
+                    <!-- ======================================================== -->
+                    <div style="text-align:center; margin-bottom:14px;">
+                        <h2 style="margin:0;">DZIENNIK ZAJĘĆ</h2>
+                        <div style="font-size:8pt;">
+                            (Załącznik nr 5 do rozporządzenia Ministra Edukacji Narodowej
+                            z dnia 30 marca 2016 r. — Dz.U. 2016 poz. 452)
+                        </div>
+                    </div>
+
+                    <table style="width:100%; border-collapse:collapse; margin-bottom:14px;">
+                        <tbody>
+                            <tr>
+                                <td style="border:1px solid #000; padding:4px; width:40%;">
+                                    Miejsce wypoczynku (adres)
+                                </td>
+                                <td style="border:1px solid #000; padding:4px;">
+                                    <strong><t t-esc="o.location or ''"/></strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #000; padding:4px;">
+                                    Organizator wypoczynku
+                                </td>
+                                <td style="border:1px solid #000; padding:4px;">
+                                    <strong><t t-esc="o.organizer or ''"/></strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #000; padding:4px;">
+                                    Oznaczenie grupy wypoczynku
+                                </td>
+                                <td style="border:1px solid #000; padding:4px;">
+                                    <strong><t t-esc="o.group_name or ''"/></strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #000; padding:4px;">
+                                    Imię i nazwisko kierownika wypoczynku
+                                </td>
+                                <td style="border:1px solid #000; padding:4px;">
+                                    <strong><t t-esc="o.kierownik_id.name or ''"/></strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #000; padding:4px;">
+                                    Imiona i nazwiska wychowawców wypoczynku
+                                </td>
+                                <td style="border:1px solid #000; padding:4px;">
+                                    <strong><t t-esc="', '.join(o.wychowawca_ids.mapped('name'))"/></strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #000; padding:4px;">
+                                    Zajęcia rozpoczęto (dd-mm-rrrr)
+                                </td>
+                                <td style="border:1px solid #000; padding:4px;">
+                                    <strong><t t-esc="o.date_start and o.date_start.strftime('%d-%m-%Y') or ''"/></strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #000; padding:4px;">
+                                    Zajęcia zakończono (dd-mm-rrrr)
+                                </td>
+                                <td style="border:1px solid #000; padding:4px;">
+                                    <strong><t t-esc="o.date_end and o.date_end.strftime('%d-%m-%Y') or ''"/></strong>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- ======================================================== -->
+                    <!-- Sekcja 1 — Uczestnicy grupy                              -->
+                    <!-- ======================================================== -->
+                    <h4 style="margin:10px 0 6px 0;">1. Uczestnicy grupy</h4>
+                    <table style="width:100%; border-collapse:collapse;">
+                        <thead>
+                            <tr style="background-color:#eee;">
+                                <th style="border:1px solid #000; padding:3px; width:8%;">L.p.</th>
+                                <th style="border:1px solid #000; padding:3px;">Nazwisko i imię</th>
+                                <th style="border:1px solid #000; padding:3px; width:20%;">Rok urodzenia</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="o.participant_ids" t-as="p">
+                                <tr>
+                                    <td style="border:1px solid #000; padding:3px; text-align:center;">
+                                        <t t-esc="p_index + 1"/>
+                                    </td>
+                                    <td style="border:1px solid #000; padding:3px;">
+                                        <t t-esc="(p.last_name or '') + ' ' + (p.first_name or '')"/>
+                                    </td>
+                                    <td style="border:1px solid #000; padding:3px; text-align:center;">
+                                        <t t-esc="p.birth_date and p.birth_date.year or ''"/>
+                                    </td>
+                                </tr>
+                            </t>
+                            <!-- wzór przewiduje 20 pozycji — puste wiersze do 20 -->
+                            <t t-foreach="range(max(0, 20 - len(o.participant_ids)))" t-as="empty_row">
+                                <tr>
+                                    <td style="border:1px solid #000; padding:3px; text-align:center; height:16px;">
+                                        <t t-esc="len(o.participant_ids) + empty_row_index + 1"/>
+                                    </td>
+                                    <td style="border:1px solid #000; padding:3px;"><span/></td>
+                                    <td style="border:1px solid #000; padding:3px;"><span/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <p style="page-break-after:always;"/>
+
+                    <!-- ======================================================== -->
+                    <!-- Sekcja 2 — Tygodniowe plany pracy                        -->
+                    <!-- ======================================================== -->
+                    <h4 style="margin:10px 0 6px 0;">2. Tygodniowe plany pracy</h4>
+                    <table style="width:100%; border-collapse:collapse;">
+                        <thead>
+                            <tr style="background-color:#eee;">
+                                <th style="border:1px solid #000; padding:3px; width:8%;">Tydzień</th>
+                                <th style="border:1px solid #000; padding:3px; width:34%;">Zadania do wykonania</th>
+                                <th style="border:1px solid #000; padding:3px; width:13%;">Termin</th>
+                                <th style="border:1px solid #000; padding:3px; width:20%;">Odpowiedzialny za wykonanie</th>
+                                <th style="border:1px solid #000; padding:3px; width:25%;">Uwagi o wykonaniu</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="o.plan_line_ids" t-as="pl">
+                                <tr>
+                                    <td style="border:1px solid #000; padding:3px; text-align:center;">
+                                        <t t-esc="pl.week_number or ''"/>
+                                    </td>
+                                    <td style="border:1px solid #000; padding:3px;">
+                                        <t t-esc="pl.task or ''"/>
+                                    </td>
+                                    <td style="border:1px solid #000; padding:3px; text-align:center;">
+                                        <t t-esc="pl.deadline and pl.deadline.strftime('%d-%m-%Y') or ''"/>
+                                    </td>
+                                    <td style="border:1px solid #000; padding:3px;">
+                                        <t t-esc="pl.responsible_id.name or ''"/>
+                                    </td>
+                                    <td style="border:1px solid #000; padding:3px; white-space:pre-wrap;">
+                                        <t t-esc="pl.completion_note or ''"/>
+                                    </td>
+                                </tr>
+                            </t>
+                            <t t-if="not o.plan_line_ids">
+                                <tr>
+                                    <td colspan="5"
+                                        style="border:1px solid #000; padding:8px; text-align:center; font-style:italic;">
+                                        Brak wpisów
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <p style="page-break-after:always;"/>
+
+                    <!-- ======================================================== -->
+                    <!-- Sekcja 3 — Dziennik zajęć                                -->
+                    <!-- ======================================================== -->
+                    <h4 style="margin:10px 0 6px 0;">3. Dziennik zajęć</h4>
+                    <table style="width:100%; border-collapse:collapse;">
+                        <thead>
+                            <tr style="background-color:#eee;">
+                                <th style="border:1px solid #000; padding:3px; width:15%;">Data, godzina</th>
+                                <th style="border:1px solid #000; padding:3px; width:35%;">Treść zajęcia</th>
+                                <th style="border:1px solid #000; padding:3px; width:32%;">
+                                    Uwagi (osiągnięcia, trudności, wnioski)
+                                </th>
+                                <th style="border:1px solid #000; padding:3px; width:18%;">Podpis wychowawcy</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="o.activity_ids.sorted(key=lambda a: a.datetime)" t-as="a">
+                                <tr>
+                                    <td style="border:1px solid #000; padding:3px; text-align:center;">
+                                        <span t-field="a.datetime"
+                                              t-options="{'format': 'dd-MM-yyyy HH:mm'}"/>
+                                    </td>
+                                    <td style="border:1px solid #000; padding:3px; white-space:pre-wrap;">
+                                        <t t-esc="a.content or ''"/>
+                                    </td>
+                                    <td style="border:1px solid #000; padding:3px; white-space:pre-wrap;">
+                                        <t t-esc="a.notes or ''"/>
+                                    </td>
+                                    <!-- miejsce na własnoręczny podpis wychowawcy -->
+                                    <td style="border:1px solid #000; padding:3px; height:28px;">
+                                        <span/>
+                                    </td>
+                                </tr>
+                            </t>
+                            <t t-if="not o.activity_ids">
+                                <tr>
+                                    <td colspan="4"
+                                        style="border:1px solid #000; padding:8px; text-align:center; font-style:italic;">
+                                        Brak wpisów
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <p style="page-break-after:always;"/>
+
+                    <!-- ======================================================== -->
+                    <!-- Sekcja 4 — Uwagi i zalecenia                             -->
+                    <!-- ======================================================== -->
+                    <h4 style="margin:10px 0 6px 0;">
+                        4. Uwagi i zalecenia kierownika wypoczynku oraz osób upoważnionych
+                        do prowadzenia nadzoru
+                    </h4>
+                    <table style="width:100%; border-collapse:collapse;">
+                        <thead>
+                            <tr style="background-color:#eee;">
+                                <th style="border:1px solid #000; padding:3px; width:15%;">Data</th>
+                                <th style="border:1px solid #000; padding:3px; width:65%;">Treść</th>
+                                <th style="border:1px solid #000; padding:3px; width:20%;">Podpis</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="o.note_ids.sorted(key=lambda n: n.date)" t-as="n">
+                                <tr>
+                                    <td style="border:1px solid #000; padding:3px; text-align:center;">
+                                        <t t-esc="n.date and n.date.strftime('%d-%m-%Y') or ''"/>
+                                    </td>
+                                    <td style="border:1px solid #000; padding:3px; white-space:pre-wrap;">
+                                        <t t-esc="n.content or ''"/>
+                                    </td>
+                                    <!-- miejsce na własnoręczny podpis -->
+                                    <td style="border:1px solid #000; padding:3px; height:28px;">
+                                        <span/>
+                                    </td>
+                                </tr>
+                            </t>
+                            <t t-if="not o.note_ids">
+                                <tr>
+                                    <td colspan="3"
+                                        style="border:1px solid #000; padding:8px; text-align:center; font-style:italic;">
+                                        Brak wpisów
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <p style="page-break-after:always;"/>
+                </div>
+            </t>
+        </template>
+
+    </data>
+</odoo>

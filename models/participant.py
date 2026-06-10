@@ -26,6 +26,26 @@ _PROTECTED_AFTER_SIGNOFF = frozenset(
         "vaccination_status",
         "diet_restrictions",
         "doctor_notes",
+        # wzór 2026 (Dz.U. 2026/704) pkt 9 — parent-declared, locked after signature
+        "wzor_version",
+        "allergy_meds",
+        "allergy_pollen",
+        "allergy_food",
+        "allergy_insect_venom",
+        "motion_sickness",
+        "orthodontic_appliance",
+        "wears_glasses",
+        "wears_contact_lenses",
+        "diet_low_calorie",
+        "diet_vegetarian",
+        "emotional_expression_issues",
+        "group_functioning_issues",
+        "fear_of_heights",
+        "hydrophobia",
+        "psycho_behavioral_notes",
+        "vacc_tetanus_year",
+        "vacc_diphtheria_year",
+        "vacc_other",
         "emergency_contact_1_name",
         "emergency_contact_1_phone",
         "emergency_contact_1_relation",
@@ -123,9 +143,15 @@ class CampParticipant(models.Model):
     )
     birth_date = fields.Date(
         string=_("Date of birth"),
-        required=True,
+        required=False,  # LOOP-E: чернетка може бути без дати (132 реєстрації
+        # без bs_-даних); ПІДПИС картки без дати блокує
+        # _check_birth_date_before_signoff — юридично картка
+        # неповна не підписується, але дитина в системі видима.
         tracking=True,
-        help=_("Child's date of birth. Required for age calculation and PL legal compliance."),
+        help=_(
+            "Child's date of birth. May be empty on a draft created from a bare "
+            "registration; required before the qualification card is signed."
+        ),
     )
     age = fields.Integer(
         string=_("Age"),
@@ -248,6 +274,167 @@ class CampParticipant(models.Model):
             "Attach relevant certificates or diagnoses. Medical Officers only."
         ),
     )
+
+    # --- Karta Kwalifikacyjna wzór 2026 (Dz.U. 2026/704) — pkt 9 -----------
+    # Cards handed to parents before 2026-06-06 stay valid on wzór 2021 (§2
+    # of the rozporządzenie) — wzor_version controls PDF layout + form fields.
+    # All health flags below are RODO art. 9 → same group gate as allergies.
+
+    wzor_version = fields.Selection(
+        selection=[
+            ("2021", _("Wzór 2021 (Dz.U. 2021/1548)")),
+            ("2026", _("Wzór 2026 (Dz.U. 2026/704)")),
+        ],
+        string=_("Card template version"),
+        default="2026",
+        required=True,
+        tracking=True,
+        help=_(
+            "Legal template of the qualification card. Cards handed to parents "
+            "before 2026-06-06 remain valid on the 2021 template (transitional "
+            "provision §2, Dz.U. 2026/704); never convert a signed card."
+        ),
+    )
+    allergy_meds = fields.Boolean(
+        string=_("Allergy: medications"),
+        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        tracking=True,
+        help=_("RODO art. 9 — pkt 9 wzór 2026: uczulenie na leki. Details in Allergies."),
+    )
+    allergy_pollen = fields.Boolean(
+        string=_("Allergy: pollen"),
+        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        tracking=True,
+        help=_("RODO art. 9 — pkt 9 wzór 2026: uczulenie na pyłki."),
+    )
+    allergy_food = fields.Boolean(
+        string=_("Allergy: food"),
+        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        tracking=True,
+        help=_(
+            "RODO art. 9 — pkt 9 wzór 2026: uczulenie na pokarmy. Kitchen sees diet profile, not this flag."
+        ),
+    )
+    allergy_insect_venom = fields.Boolean(
+        string=_("Allergy: insect venom"),
+        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        tracking=True,
+        help=_(
+            "RODO art. 9 — pkt 9 wzór 2026: uczulenie na jad owadów. Critical outdoors — first-aid plan required."
+        ),
+    )
+    motion_sickness = fields.Boolean(
+        string=_("Motion sickness"),
+        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        help=_("pkt 9: choroba lokomocyjna — relevant for transport planning (§5)."),
+    )
+    orthodontic_appliance = fields.Boolean(
+        string=_("Orthodontic appliance"),
+        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        help=_("pkt 9: noszenie aparatu ortodontycznego."),
+    )
+    wears_glasses = fields.Boolean(
+        string=_("Wears glasses"),
+        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        help=_("pkt 9: noszenie okularów."),
+    )
+    wears_contact_lenses = fields.Boolean(
+        string=_("Wears contact lenses"),
+        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        help=_("pkt 9 wzór 2026 (new): noszenie soczewek kontaktowych — hygiene/water relevance."),
+    )
+    diet_low_calorie = fields.Boolean(
+        string=_("Low-calorie diet"),
+        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        help=_("pkt 9 wzór 2026 (new): dieta niskokaloryczna — feeds nutrition planning (§1)."),
+    )
+    diet_vegetarian = fields.Boolean(
+        string=_("Vegetarian diet"),
+        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        help=_("pkt 9 wzór 2026 (new): wegetarianizm — feeds nutrition planning (§1)."),
+    )
+    emotional_expression_issues = fields.Boolean(
+        string=_("Issues expressing emotions"),
+        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        tracking=True,
+        help=_("RODO art. 9 — pkt 9 wzór 2026 (new): problemy z wyrażaniem emocji."),
+    )
+    group_functioning_issues = fields.Boolean(
+        string=_("Issues functioning in a group"),
+        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        tracking=True,
+        help=_("RODO art. 9 — pkt 9 wzór 2026 (new): problemy z funkcjonowaniem w grupie."),
+    )
+    fear_of_heights = fields.Boolean(
+        string=_("Fear of heights (lęk wysokości)"),
+        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        tracking=True,
+        help=_(
+            "RODO art. 9 — pkt 9 wzór 2026 (new). HARD BLOCK: a child with this flag "
+            "cannot be assigned to heights-risk activities (sprint decision R1)."
+        ),
+    )
+    hydrophobia = fields.Boolean(
+        string=_("Hydrophobia (fear of water)"),
+        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        tracking=True,
+        help=_(
+            "RODO art. 9 — pkt 9 wzór 2026 (new). HARD BLOCK: a child with this flag "
+            "cannot be assigned to water activities (§7 + sprint decision R1)."
+        ),
+    )
+    psycho_behavioral_notes = fields.Text(
+        string=_("Psycho-behavioral notes"),
+        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        help=_("RODO art. 9 — parent's narrative for the pkt 9 psycho-behavioral flags."),
+    )
+    vacc_tetanus_year = fields.Char(
+        string=_("Vaccination: tetanus (year)"),
+        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        help=_("pkt 9: szczepienie tężec — rok (wzór field)."),
+    )
+    vacc_diphtheria_year = fields.Char(
+        string=_("Vaccination: diphtheria (year)"),
+        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        help=_("pkt 9: szczepienie błonica — rok (wzór field)."),
+    )
+    vacc_other = fields.Text(
+        string=_("Vaccination: other"),
+        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        help=_("pkt 9: inne szczepienia wraz z rokiem."),
+    )
+    health_risk_flags = fields.Char(
+        compute="_compute_health_risk_flags",
+        string=_("Risk flags"),
+        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        help=_("Kierownik red-flag summary: water/heights blocks + critical allergies."),
+    )
+
+    @api.depends(
+        "hydrophobia",
+        "fear_of_heights",
+        "allergy_insect_venom",
+        "allergy_meds",
+        "allergy_food",
+        "emotional_expression_issues",
+        "group_functioning_issues",
+    )
+    def _compute_health_risk_flags(self):
+        for rec in self:
+            flags = []
+            if rec.hydrophobia:
+                flags.append(_("WATER-BLOCK"))
+            if rec.fear_of_heights:
+                flags.append(_("HEIGHTS-BLOCK"))
+            if rec.allergy_insect_venom:
+                flags.append(_("INSECT-VENOM"))
+            if rec.allergy_meds:
+                flags.append(_("ALLERGY-MEDS"))
+            if rec.allergy_food:
+                flags.append(_("ALLERGY-FOOD"))
+            if rec.emotional_expression_issues or rec.group_functioning_issues:
+                flags.append(_("PSYCHO-SUPPORT"))
+            rec.health_risk_flags = ", ".join(flags)
 
     # --- Section III pkt 2 (special needs — PL law) ----------------------
 
@@ -1234,6 +1421,17 @@ class CampParticipant(models.Model):
                     _("Emergency contact 1 (name + phone) is required before signoff.")
                 )
 
+    @api.constrains("qualification_signed", "birth_date")
+    def _check_birth_date_before_signoff(self):
+        # LOOP-E: birth_date більше не required на create (чернетки з голих
+        # реєстрацій), але юридично картка БЕЗ дати народження не підписується.
+        for rec in self:
+            if rec.qualification_signed and not rec.birth_date:
+                raise ValidationError(
+                    _("Date of birth is required before the qualification card is signed. "
+                      "Потрібна дата народження для підпису.")
+                )
+
     # --- res.partner core-plumbing overrides -----------------------------
 
     def _commercial_sync_to_children(self):
@@ -1625,6 +1823,38 @@ class CampParticipant(models.Model):
         if lang.startswith("pl"):
             return "pl_PL"
         return "uk_UA"
+
+    attachment_count = fields.Integer(
+        compute="_compute_attachment_count",
+        string=_("Documents"),
+        help=_("Attached documents incl. the signed qualification card scan (PDF)."),
+    )
+
+    def _compute_attachment_count(self):
+        counts = dict(
+            self.env["ir.attachment"]
+            .sudo()
+            ._read_group(
+                [("res_model", "=", self._name), ("res_id", "in", self.ids)],
+                ["res_id"],
+                ["__count"],
+            )
+        )
+        for rec in self:
+            rec.attachment_count = counts.get(rec.id, 0)
+
+    def action_open_attachments(self):
+        """Smart button: відкрити скани/документи дитини (вимога user — оригінал
+        підписаної картки в 1 клік для контролі kuratorium)."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Documents — %s") % self.display_name,
+            "res_model": "ir.attachment",
+            "view_mode": "kanban,list,form",
+            "domain": [("res_model", "=", self._name), ("res_id", "=", self.id)],
+            "context": {"default_res_model": self._name, "default_res_id": self.id},
+        }
 
     def action_open_clear_auto_refusal_wizard(self):
         """Header-button entry point — opens the reason-capture wizard."""

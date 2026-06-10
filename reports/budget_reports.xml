@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- PDF report actions for camp budgets (TZ §5).
+     XLSX замінено на PDF QWeb (рішення спринту) — без report_xlsx залежності. -->
+<odoo>
+    <data>
+
+        <record id="action_report_camp_budget" model="ir.actions.report">
+            <field name="name">Zestawienie obozu (budżet)</field>
+            <field name="model">camp.budget</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">fayna_camp_portal.report_budget_zestawienie</field>
+            <field name="report_file">fayna_camp_portal.report_budget_zestawienie</field>
+            <field name="print_report_name">'Zestawienie - %s' % (object.event_id.name)</field>
+            <field name="binding_model_id" ref="model_camp_budget"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <record id="action_report_season_budgets" model="ir.actions.report">
+            <field name="name">Zestawienie obozów (sezon)</field>
+            <field name="model">fayna.camp.season</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">fayna_camp_portal.report_season_budgets</field>
+            <field name="report_file">fayna_camp_portal.report_season_budgets</field>
+            <field name="print_report_name">'Zestawienie obozow - %s' % (object.name)</field>
+            <field name="binding_model_id" ref="model_fayna_camp_season"/>
+            <field name="binding_type">report</field>
+        </record>
+
+    </data>
+</odoo>

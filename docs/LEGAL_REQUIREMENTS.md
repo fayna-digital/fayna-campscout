@@ -1,14 +1,14 @@
 # fayna_camp_portal — Wymogi prawne (PL)
 
-> Źródło: Materiały szkoleniowe ITW Polska — Niezbędnik Kierownika Wypoczynku 2024  
-> Podstawa prawna: Ustawa o systemie oświaty + rozporządzenia MEN/MZ  
+> Źródło: Materiały szkoleniowe ITW Polska — Niezbędnik Kierownika Wypoczynku 2024
+> Podstawa prawna: Ustawa o systemie oświaty + rozporządzenia MEN/MZ
 > Aktualizować przy każdej zmianie przepisów.
 
 ---
 
 ## 1. Żywienie
 
-**Podstawa:** Rozporządzenie MZ z 26.07.2016 r. (Dz.U. 2016 poz. 1154)  
+**Podstawa:** Rozporządzenie MZ z 26.07.2016 r. (Dz.U. 2016 poz. 1154)
 Ustawa z 25.08.2006 r. o bezpieczeństwie żywności i żywienia
 
 | Liczba posiłków | I śniadanie | II śniadanie | Obiad | Podwieczorek | Kolacja |
@@ -162,7 +162,7 @@ Organizator musi zapewnić dostęp do opieki medycznej poprzez:
 
 ## 9. Dziennik Zajęć (Załącznik 5 Rozp. MEN 30.03.2016)
 
-**Podstawa:** Rozporządzenie MEN z dnia 30 marca 2016 r. w sprawie wypoczynku dzieci i młodzieży (Dz.U. 2016 poz. 452)  
+**Podstawa:** Rozporządzenie MEN z dnia 30 marca 2016 r. w sprawie wypoczynku dzieci i młodzieży (Dz.U. 2016 poz. 452)
 **Forma:** Jeden dziennik na grupę + wychowawcę, prowadzony codziennie.
 
 **Struktura dokumentu (4 sekcje):**
@@ -182,15 +182,15 @@ Organizator musi zapewnić dostęp do opieki medycznej poprzez:
 - Imię i nazwisko wychowawcy/ów
 - Zajęcia rozpoczęto / zakończono (dd-mm-rrrr)
 
-**Moduł:** `models/training.py` → model `camp.dziennik.zajec` (do migracji z `fayna_camp_dziennik_zajec`).  
+**Moduł:** `models/training.py` → model `camp.dziennik.zajec` (do migracji z `fayna_camp_dziennik_zajec`).
 Pola: `date`, `hour_from`, `hour_to`, `activity_description`, `notes`, `supervisor_signature` (Many2one res.users), `week_plan_ids` (One2many), `participant_ids` (Many2many camp.participant).
 
 ---
 
 ## 10. Karta Kwalifikacyjna Uczestnika Wypoczynku (Załącznik 6)
 
-> ✅ **AKTUALNY WZÓR:** Rozporządzenie MEN z dnia **27 maja 2026 r.** (**Dz.U. 2026 poz. 704**) — nowe brzmienie Załącznika 6.  
-> Wchodzi w życie **06.06.2026** (7 dni od ogłoszenia 29.05.2026).  
+> ✅ **AKTUALNY WZÓR:** Rozporządzenie MEN z dnia **27 maja 2026 r.** (**Dz.U. 2026 poz. 704**) — nowe brzmienie Załącznika 6.
+> Wchodzi w życie **06.06.2026** (7 dni od ogłoszenia 29.05.2026).
 > **Przepis przejściowy (§2):** karty na ferie letnie 2026 przekazane rodzicom PRZED 06.06.2026 zachowują ważność (stary wzór 2021 dopuszczalny tylko dla nich).
 
 **Podstawa:** Rozp. MEN 27.05.2026 (Dz.U. 2026/704), zmieniające Rozp. MEN 30.03.2016 (Dz.U. 2016/452, zm. 2021/1548).
@@ -210,8 +210,8 @@ Pola: `date`, `hour_from`, `hour_to`, `activity_description`, `notes`, `supervis
 Stary 2021: uczulenie, choroba lokomocyjna, stałe leki+dawki, aparat ortodontyczny/okulary.
 Nowy 2026 dodaje: **uczulenie na jad owadów, pyłki, pokarmy**; **choroby przewlekłe** (wprost); **soczewki kontaktowe**; **dieta niskokaloryczna, wegetarianizm**; oraz pola psycho-behawioralne dla bezpieczeństwa: **problemy z wyrażaniem emocji, problemy z funkcjonowaniem w grupie, lęk wysokości, hydrofobia**.
 
-**Moduł:** `models/participant.py` → `camp.participant` + `camp.qualification.card`.  
-Pole `health_notes` rozbić na strukturę pkt 9: `allergy_meds/pollen/food/insect`, `chronic_diseases`, `permanent_meds` (lista+dawki), `vision_aid` (okulary/soczewki/aparat), `diet` (selection), `emotional_notes`, `group_func_notes`, `fear_heights` (bool), `hydrophobia` (bool) — ostatnie dwa KRYTYCZNE: blokada/ostrzeżenie przy zapisie na zajęcia wodne (§7) i wysokościowe.  
+**Moduł:** `models/participant.py` → `camp.participant` + `camp.qualification.card`.
+Pole `health_notes` rozbić na strukturę pkt 9: `allergy_meds/pollen/food/insect`, `chronic_diseases`, `permanent_meds` (lista+dawki), `vision_aid` (okulary/soczewki/aparat), `diet` (selection), `emotional_notes`, `group_func_notes`, `fear_heights` (bool), `hydrophobia` (bool) — ostatnie dwa KRYTYCZNE: blokada/ostrzeżenie przy zapisie na zajęcia wodne (§7) i wysokościowe.
 Sekcje I–III wypełnia organizator/system, IV–VI wychowawca/kierownik w trakcie turnusu.
 
 ---
@@ -294,9 +294,9 @@ Sekcje I–III wypełnia organizator/system, IV–VI wychowawca/kierownik w trak
 
 ---
 
-*Źródło pierwotne: ITW Polska — Niezbędnik Kierownika Wypoczynku 2024 (prawa zastrzeżone ITW)*  
-*Karta Kwalifikacyjna: Rozp. MEiN 22.07.2021 (Dz.U. 2021/1548) — oficjalny wzór MEN (wersja w materiałach; nowszy wzór 2026 NIE został dostarczony)*  
-*Dziennik Zajęć: Rozp. MEN 30.03.2016 (Dz.U. 2016/452) — Załącznik 5*  
-*Rejestr Wypadków: wzór z materiałów ITW 2024*  
-*Standardy Ochrony Małoletnich: Ustawa Kamilka (zmiana KRO z 28.07.2023, obowiązek od 15.02.2024)*  
+*Źródło pierwotne: ITW Polska — Niezbędnik Kierownika Wypoczynku 2024 (prawa zastrzeżone ITW)*
+*Karta Kwalifikacyjna: Rozp. MEiN 22.07.2021 (Dz.U. 2021/1548) — oficjalny wzór MEN (wersja w materiałach; nowszy wzór 2026 NIE został dostarczony)*
+*Dziennik Zajęć: Rozp. MEN 30.03.2016 (Dz.U. 2016/452) — Załącznik 5*
+*Rejestr Wypadków: wzór z materiałów ITW 2024*
+*Standardy Ochrony Małoletnich: Ustawa Kamilka (zmiana KRO z 28.07.2023, obowiązek od 15.02.2024)*
 *Opracowanie dla modułu: Fayna Digital 2026-06-07*

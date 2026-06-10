@@ -37,6 +37,19 @@
                         <field name="auto_refusal_state" widget="statusbar"/>
                     </header>
                     <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <!-- LOOP-E: оригінал підписаної картки (скан PDF)
+                                 у 1 клік — для контролі kuratorium. -->
+                            <button name="action_open_attachments" type="object"
+                                    class="oe_stat_button" icon="fa-file-pdf-o">
+                                <div class="o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="attachment_count"/>
+                                    </span>
+                                    <span class="o_stat_text">Skan karty (PDF)</span>
+                                </div>
+                            </button>
+                        </div>
                         <div class="oe_title">
                             <h1>
                                 <field name="display_name" readonly="1"/>
@@ -73,7 +86,41 @@
                             </group>
                         </group>
 
+                        <!-- pkt 9 wzór 2026 (Dz.U. 2026/704) — sprint 2026-06-10.
+                             Structured health declaration; field-level groups come
+                             from the model (art. 9). Visible for 2026-cards only. -->
+                        <group string="Pkt 9 — Stan zdrowia (wzór 2026)"
+                               groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik"
+                               invisible="wzor_version != '2026'">
+                            <group string="Uczulenia / zdrowie">
+                                <field name="allergy_meds"/>
+                                <field name="allergy_pollen"/>
+                                <field name="allergy_food"/>
+                                <field name="allergy_insect_venom"/>
+                                <field name="motion_sickness"/>
+                                <field name="orthodontic_appliance"/>
+                                <field name="wears_glasses"/>
+                                <field name="wears_contact_lenses"/>
+                            </group>
+                            <group string="Dieta / psycho-behawioralne">
+                                <field name="diet_low_calorie"/>
+                                <field name="diet_vegetarian"/>
+                                <field name="emotional_expression_issues"/>
+                                <field name="group_functioning_issues"/>
+                                <field name="fear_of_heights"/>
+                                <field name="hydrophobia"/>
+                                <field name="psycho_behavioral_notes"/>
+                                <field name="health_risk_flags" readonly="1"/>
+                            </group>
+                            <group string="Szczepienia (pkt 9)">
+                                <field name="vacc_tetanus_year"/>
+                                <field name="vacc_diphtheria_year"/>
+                                <field name="vacc_other"/>
+                            </group>
+                        </group>
+
                         <group string="Special Needs">
+                            <field name="has_disability"/>
                             <field name="special_needs"/>
                             <field name="swimming_ability"/>
                             <field name="stay_alone_permission"/>
@@ -94,6 +141,7 @@
 
                         <group string="Qualification Card — Sign-off">
                             <group>
+                                <field name="wzor_version" readonly="qualification_signed"/>
                                 <field name="qualification_signed"/>
                                 <field name="qualification_signed_date"/>
                                 <field name="qualification_signed_by"/>

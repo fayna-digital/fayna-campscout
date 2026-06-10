@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Teczka KO — ir.actions.report (TZ_SPRINT_2026-06-10 §4).
+     1-page checklist "Gotowość do kontroli KO". The FULL PDF pack export
+     (action_export_pdf_pack) lands in the integration phase. -->
+<odoo>
+    <data>
+
+        <record id="action_report_teczka_ko_checklist" model="ir.actions.report">
+            <field name="name">Gotowość do kontroli KO</field>
+            <field name="model">camp.teczka.ko</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">fayna_camp_portal.report_teczka_ko_checklist</field>
+            <field name="report_file">fayna_camp_portal.report_teczka_ko_checklist</field>
+            <field name="binding_model_id" ref="model_camp_teczka_ko"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="base.paperformat_euro"/>
+            <field name="print_report_name">'Teczka_KO_%s' % (object.event_id.name or '').replace(' ', '_')</field>
+        </record>
+
+    </data>
+</odoo>

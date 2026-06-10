@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Teczka KO — QWeb PDF template (1-page readiness checklist).
+     TZ_SPRINT_2026-06-10 §4: ✅/❌ per arkusz kontroli KO item. -->
+<odoo>
+    <data>
+
+        <template id="report_teczka_ko_checklist">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+
+                            <!-- Header -->
+                            <div style="text-align:center; margin-bottom:24px;">
+                                <h2 style="margin-bottom:4px;">Gotowość do kontroli Kuratorium Oświaty</h2>
+                                <h3 style="color:#555; font-weight:normal;">
+                                    <t t-esc="o.event_id.name"/>
+                                </h3>
+                                <p style="font-size:10pt; color:#777;">
+                                    Turnus:
+                                    <span t-field="o.event_id.date_begin" t-options='{"format": "dd.MM.yyyy"}'/>
+                                    —
+                                    <span t-field="o.event_id.date_end" t-options='{"format": "dd.MM.yyyy"}'/>
+                                    · Wygenerowano: <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d.%m.%Y %H:%M')"/>
+                                </p>
+                            </div>
+
+                            <!-- Overall banner -->
+                            <div t-if="o.overall_ready"
+                                 style="border:2px solid #1B4332; background:#e8f5ee; color:#1B4332;
+                                        padding:10px; text-align:center; font-size:13pt;
+                                        font-weight:bold; margin-bottom:18px;">
+                                ✓ DOKUMENTACJA KOMPLETNA — GOTOWA DO KONTROLI
+                            </div>
+                            <div t-else=""
+                                 style="border:2px solid #a4262c; background:#fdecea; color:#a4262c;
+                                        padding:10px; text-align:center; font-size:13pt;
+                                        font-weight:bold; margin-bottom:18px;">
+                                ✗ BRAKI W DOKUMENTACJI — UZUPEŁNIJ PRZED KONTROLĄ
+                            </div>
+
+                            <!-- Checklist table -->
+                            <table class="table table-sm" style="width:100%; font-size:11pt;">
+                                <thead>
+                                    <tr style="border-bottom:2px solid #1B4332;">
+                                        <th style="width:6%; text-align:center;">Lp.</th>
+                                        <th style="width:54%;">Pozycja arkusza kontroli</th>
+                                        <th style="width:28%;">Stan</th>
+                                        <th style="width:12%; text-align:center;">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="text-align:center;">1</td>
+                                        <td>Karty kwalifikacyjne uczestników — podpisy rodziców</td>
+                                        <td>
+                                            <t t-esc="o.karty_signed"/> / <t t-esc="o.karty_total"/>
+                                            (<t t-esc="'%.0f' % o.karty_percent"/>%)
+                                        </td>
+                                        <td style="text-align:center; font-size:14pt;">
+                                            <span t-if="o.karty_ready" style="color:#1B4332;">✓</span>
+                                            <span t-else="" style="color:#a4262c;">✗</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center;">2</td>
+                                        <td>Kadra — KRK / RSPTS / kursy zweryfikowane (Ustawa Kamilka)</td>
+                                        <td>
+                                            <t t-esc="o.kadra_eligible"/> / <t t-esc="o.kadra_total"/> zweryfikowanych
+                                        </td>
+                                        <td style="text-align:center; font-size:14pt;">
+                                            <span t-if="o.kadra_ready" style="color:#1B4332;">✓</span>
+                                            <span t-else="" style="color:#a4262c;">✗</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center;">3</td>
+                                        <td>Regulaminy opublikowane i podpisane przez całą kadrę</td>
+                                        <td>
+                                            <t t-esc="o.regulamin_total"/> opublikowanych,
+                                            <t t-esc="o.regulamin_unsigned"/> z brakami podpisów
+                                        </td>
+                                        <td style="text-align:center; font-size:14pt;">
+                                            <span t-if="o.regulaminy_ready" style="color:#1B4332;">✓</span>
+                                            <span t-else="" style="color:#a4262c;">✗</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center;">4</td>
+                                        <td>Dziennik zajęć (Załącznik 5 Rozp. MEN 2016)</td>
+                                        <td><t t-esc="o.dziennik_count"/> dziennik(ów)</td>
+                                        <td style="text-align:center; font-size:14pt;">
+                                            <span t-if="o.dziennik_ready" style="color:#1B4332;">✓</span>
+                                            <span t-else="" style="color:#a4262c;">✗</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center;">5</td>
+                                        <td>Rejestr wypadków</td>
+                                        <td>
+                                            <t t-if="o.wypadki_available">
+                                                <t t-esc="o.wypadki_count"/> rejestr(ów)
+                                            </t>
+                                            <t t-else="">moduł w przygotowaniu</t>
+                                        </td>
+                                        <td style="text-align:center; font-size:14pt;">
+                                            <span t-if="o.wypadki_ready" style="color:#1B4332;">✓</span>
+                                            <span t-else="" style="color:#a4262c;">✗</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center;">6</td>
+                                        <td>Program wypoczynku (Załącznik 9 Rozp. MEN 2016)</td>
+                                        <td><t t-esc="o.program_count"/> program(ów)</td>
+                                        <td style="text-align:center; font-size:14pt;">
+                                            <span t-if="o.program_ready" style="color:#1B4332;">✓</span>
+                                            <span t-else="" style="color:#a4262c;">✗</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- Signature line -->
+                            <div style="margin-top:48px; display:flex; justify-content:space-between;">
+                                <div style="width:45%; border-top:1px solid #333; padding-top:4px;
+                                            text-align:center; font-size:9pt; color:#555;">
+                                    Kierownik wypoczynku (data, podpis)
+                                </div>
+                                <div style="width:45%; border-top:1px solid #333; padding-top:4px;
+                                            text-align:center; font-size:9pt; color:#555;">
+                                    Organizator wypoczynku (data, podpis)
+                                </div>
+                            </div>
+
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</odoo>

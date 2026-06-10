@@ -52,3 +52,18 @@ from . import reports  # noqa: E402,I001
 # Vozhatyi training — migrated from fayna_camp_vozhatyi_school (TZ §16 Phase 7).
 # Standalone PL-MEN 36h/10h tracker (parallel to slide.channel-based training.py).
 from . import training_vozhatyi  # noqa: E402,I001
+
+# camp.group — grupa wychowawcza §2 art. 92c (sprint 2026-06-10).
+from . import camp_group  # noqa: E402,I001
+
+# §11 Karta Wypadku (16 pkt) + §12 Rejestr Wypadków — TZ_SPRINT_2026-06-10.
+from . import incident_card  # noqa: E402,I001
+
+# camp.budget — фінанси табору: BEP + 2 маржі (R8) — TZ_SPRINT §5.
+from . import budget  # noqa: E402,I001
+
+# Regulaminy + Teczka KO — sprint 2026-06-10 §4.
+from . import regulamin, teczka_ko  # noqa: E402,I001
+
+# Автоштат §2 + вакансії (R13) — sprint 2026-06-10 §6.
+from . import staffing  # noqa: E402,I001

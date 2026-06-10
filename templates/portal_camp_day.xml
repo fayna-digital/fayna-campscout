@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!-- ============================================================================
+     /my/camp-day/<event_id> — «Dzień w obozie» (TZ_SPRINT_2026-06-10 §7)
+     Parent-facing daily timeline: weather, activities (morning/afternoon/
+     evening), meals and photo gallery per day. Data comes from controller
+     as plain dicts (camp.daily.report whitelist) + photo URL lists —
+     NO recordsets of camp.daily.report ever reach this template.
+
+     MOBILE-FIRST: single column layout; photo grid 2 cols on mobile
+     (col-6) / 4 cols on desktop (col-md-3); day chips wrap (flex-wrap),
+     no horizontal scroll at 375px.
+     ============================================================================ -->
+
+<template id="portal_camp_day" name="Dzień w obozie">
+    <t t-call="portal.portal_layout">
+        <t t-set="additional_title">Dzień w obozie</t>
+
+        <div class="cs-page">
+            <div class="cs-page-back mb-3">
+                <a href="/my" class="cs-back-link">&#8592; До кабінету</a>
+            </div>
+
+            <!-- Header: shift name + dates -->
+            <div class="cs-page-header mb-4">
+                <h2 class="cs-page-title">Dzień w obozie</h2>
+                <p class="cs-page-subtitle">
+                    <strong t-esc="event.name"/>
+                    <t t-if="event.date_begin and event.date_end">
+                        &#160;&#8212;&#160;
+                        <t t-esc="event.date_begin.strftime('%d.%m.%Y')"/>
+                        &#8211;
+                        <t t-esc="event.date_end.strftime('%d.%m.%Y')"/>
+                    </t>
+                </p>
+            </div>
+
+            <!-- Day selector chips (?date=) — wraps on mobile, no h-scroll -->
+            <div t-if="all_dates and len(all_dates) > 1" class="d-flex flex-wrap gap-2 mb-4">
+                <a t-attf-href="/my/camp-day/#{event.id}"
+                   t-attf-class="btn btn-sm #{'btn-primary' if not selected_date else 'btn-outline-secondary'}">
+                    Wszystkie dni
+                </a>
+                <t t-foreach="all_dates" t-as="day_option">
+                    <a t-attf-href="/my/camp-day/#{event.id}?date=#{day_option.strftime('%Y-%m-%d')}"
+                       t-attf-class="btn btn-sm #{'btn-primary' if selected_date == day_option else 'btn-outline-secondary'}">
+                        <t t-esc="day_option.strftime('%d.%m')"/>
+                    </a>
+                </t>
+            </div>
+
+            <!-- Empty state -->
+            <div t-if="not days" class="cs-empty-state">
+                <div class="cs-empty-icon">&#127774;</div>
+                <h4>Jeszcze cicho</h4>
+                <p class="text-muted">
+                    Relacje z dnia pojawią się tutaj, gdy tylko kadra opublikuje
+                    pierwszy raport dnia lub zdjęcia.
+                </p>
+            </div>
+
+            <!-- Timeline: one card per day, newest first -->
+            <t t-foreach="days" t-as="day">
+                <div class="card mb-4">
+                    <div class="card-header d-flex flex-wrap align-items-center gap-2">
+                        <strong t-esc="day['date'].strftime('%d.%m.%Y')"/>
+                        <t t-if="day['report'] and day['report']['weather_condition']">
+                            <span class="ms-auto">
+                                <t t-if="day['report']['weather_condition'] == 'sunny'">&#9728;&#65039; Słonecznie</t>
+                                <t t-elif="day['report']['weather_condition'] == 'cloudy'">&#9729;&#65039; Pochmurno</t>
+                                <t t-elif="day['report']['weather_condition'] == 'rainy'">&#127783;&#65039; Deszczowo</t>
+                                <t t-elif="day['report']['weather_condition'] == 'storm'">&#9928;&#65039; Burza</t>
+                            </span>
+                        </t>
+                    </div>
+                    <div class="card-body">
+
+                        <t t-if="day['report']">
+                            <!-- Weather free text -->
+                            <p t-if="day['report']['weather']" class="text-muted mb-3">
+                                <t t-esc="day['report']['weather']"/>
+                            </p>
+
+                            <!-- Activities: one column on mobile, 3 on desktop -->
+                            <div class="row g-3 mb-3">
+                                <div t-if="day['report']['morning_activities']" class="col-12 col-md-4">
+                                    <h6 class="mb-1">&#127749; Poranek</h6>
+                                    <p class="mb-0" style="white-space: pre-line;"
+                                       t-esc="day['report']['morning_activities']"/>
+                                </div>
+                                <div t-if="day['report']['afternoon_activities']" class="col-12 col-md-4">
+                                    <h6 class="mb-1">&#9728;&#65039; Popołudnie</h6>
+                                    <p class="mb-0" style="white-space: pre-line;"
+                                       t-esc="day['report']['afternoon_activities']"/>
+                                </div>
+                                <div t-if="day['report']['evening_activities']" class="col-12 col-md-4">
+                                    <h6 class="mb-1">&#127769; Wieczór</h6>
+                                    <p class="mb-0" style="white-space: pre-line;"
+                                       t-esc="day['report']['evening_activities']"/>
+                                </div>
+                            </div>
+
+                            <!-- Meals -->
+                            <div t-if="day['report']['meals_summary']" class="mb-3">
+                                <h6 class="mb-1">&#127869;&#65039; Posiłki</h6>
+                                <p class="mb-0" style="white-space: pre-line;"
+                                   t-esc="day['report']['meals_summary']"/>
+                            </div>
+                        </t>
+
+                        <!-- Photo gallery of the day: 2 cols mobile / 4 desktop -->
+                        <t t-foreach="day['stories']" t-as="story_item">
+                            <t t-if="story_item['photos']">
+                                <h6 class="mb-2">
+                                    &#128247;
+                                    <a t-attf-href="/my/stories/#{story_item['id']}"
+                                       class="text-reset text-decoration-none">
+                                        <t t-esc="story_item['title']"/>
+                                    </a>
+                                </h6>
+                                <div class="row g-2 mb-3">
+                                    <t t-foreach="story_item['photos']" t-as="photo">
+                                        <div class="col-6 col-md-3">
+                                            <img t-att-src="photo['url']"
+                                                 t-att-alt="photo['name'] or story_item['title']"
+                                                 loading="lazy"
+                                                 class="w-100 rounded"
+                                                 style="aspect-ratio: 1 / 1; object-fit: cover;"/>
+                                        </div>
+                                    </t>
+                                </div>
+                            </t>
+                        </t>
+
+                    </div>
+                </div>
+            </t>
+        </div>
+    </t>
+</template>
+
+<!-- ============================================================================
+     Home portal entry card — «Dzień w obozie» (counter: camp_day_count).
+     Rendered only when the parent has an active or past camp registration
+     (cs_camp_day_event injected by CampscoutPortal.home()).
+     ============================================================================ -->
+
+<template id="portal_my_home_camp_day" inherit_id="portal.portal_my_home" priority="69">
+    <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+        <t t-if="cs_camp_day_event">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Dzień w obozie</t>
+                <t t-set="url" t-value="'/my/camp-day/%s' % cs_camp_day_event.id"/>
+                <t t-set="placeholder_count" t-value="'camp_day_count'"/>
+            </t>
+        </t>
+    </xpath>
+</template>
+
+</odoo>
