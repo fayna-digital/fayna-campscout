@@ -9,10 +9,39 @@
 # Картки зі старого checkout = wzór 2021 (przepis przejściowy §2 Dz.U.2026/704),
 # qualification_signed=True (підпис вже існує на PDF), PDF → ir.attachment.
 
-import base64
 import logging
+import re
+from datetime import date
 
 DRY_RUN = True
+
+
+def parse_bs_date(raw):
+    """bs_birth_date — varchar зі старого checkout: 'DD.MM.YYYY', 'DD.MM.YY',
+    або лише 'YYYY' (стара картка питала тільки rok urodzenia).
+    Рік → 31.12 (мінімальний можливий вік → суворіший ліміт §2 — безпечний бік).
+    """
+    if not raw:
+        return False
+    raw = raw.strip()
+    m = re.fullmatch(r"(\d{1,2})\.(\d{1,2})\.(\d{4})", raw)
+    if m:
+        d, mo, y = int(m[1]), int(m[2]), int(m[3])
+        try:
+            return date(y, mo, d)
+        except ValueError:
+            return False
+    m = re.fullmatch(r"(\d{1,2})\.(\d{1,2})\.(\d{2})", raw)
+    if m:
+        d, mo, y = int(m[1]), int(m[2]), 2000 + int(m[3])
+        try:
+            return date(y, mo, d)
+        except ValueError:
+            return False
+    m = re.fullmatch(r"(\d{4})", raw)
+    if m:
+        return date(int(m[1]), 12, 31)
+    return False
 
 _logger = logging.getLogger("populate_from_bs")
 
@@ -54,10 +83,11 @@ for so in orders:
         first = parts[0] if len(parts) == 2 else full
         last = parts[1] if len(parts) == 2 else "(brak nazwiska)"
 
+        birth = parse_bs_date(so.bs_birth_date)
         vals = {
             "first_name": first,
             "last_name": last,
-            "birth_date": so.bs_birth_date or False,
+            "birth_date": birth,
             "parent_partner_id": so.partner_id.id,
             "wzor_version": "2021",  # старий checkout = wzór 2021, immutable
             # bs_parents_phone → обов'язковий контакт НС (правило перед підписом)
@@ -80,16 +110,26 @@ for so in orders:
             # savepoint: SQL-помилка однієї ітерації не ламає всю транзакцію
             # (InFailedSqlTransaction — INC staging 11.06)
             with env.cr.savepoint():  # noqa: F821
+                if not birth and so.bs_birth_date:
+                    # дата не розпарсилась — зберегти сирий текст, не губити
+                    vals["special_needs"] = (
+                        (vals.get("special_needs") or "")
+                        + f"\n[migracja] data urodzenia (raw): {so.bs_birth_date}"
+                    ).strip()
                 child = Participant.create(vals)
-                # PDF підписаної картки → attachment на учаснику
-                if so.bs_qualification_form_pdf:
-                    Attachment.create(
+                # bs_qualification_form_pdf = Many2one ir.attachment (integer!)
+                # → копія attachment на учасника (оригінал лишається на SO)
+                pdf_att = (
+                    Attachment.browse(so.bs_qualification_form_pdf.id)
+                    if so.bs_qualification_form_pdf
+                    else Attachment
+                )
+                if pdf_att and pdf_att.exists():
+                    pdf_att.copy(
                         {
                             "name": f"Karta_kwalifikacyjna_2021_{first}_{last}_{so.name}.pdf",
                             "res_model": "camp.participant",
                             "res_id": child.id,
-                            "datas": so.bs_qualification_form_pdf,
-                            "mimetype": "application/pdf",
                         }
                     )
                     # підпис уже існує на папері/PDF → фіксуємо (signed ПІСЛЯ
