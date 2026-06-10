@@ -72,7 +72,7 @@
             <field name="name">Wychowawca: participants of own group</field>
             <field name="model_id" ref="model_camp_participant"/>
             <field name="groups" eval="[(4, ref('group_camp_wychowawca'))]"/>
-            <field name="domain_force">[('registration_ids.event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="domain_force">[('group_id.wychowawca_ids', 'in', [user.id])]</field>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
             <field name="perm_create" eval="False"/>
@@ -327,6 +327,31 @@
             <field name="perm_write" eval="False"/>
             <field name="perm_create" eval="False"/>
             <field name="perm_unlink" eval="False"/>
+        </record>
+
+
+        <!-- ─── camp.group (§2 art. 92c) — sprint 2026-06-10 ──────────── -->
+
+        <record id="rule_camp_group_wychowawca_own" model="ir.rule">
+            <field name="name">Wychowawca: own groups only</field>
+            <field name="model_id" ref="model_camp_group"/>
+            <field name="groups" eval="[(4, ref('group_camp_wychowawca'))]"/>
+            <field name="domain_force">[('wychowawca_ids', 'in', [user.id])]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+<record id="rule_camp_group_kierownik_own" model="ir.rule">
+            <field name="name">Kierownik: groups of own camp</field>
+            <field name="model_id" ref="model_camp_group"/>
+            <field name="groups" eval="[(4, ref('group_camp_kierownik'))]"/>
+            <field name="domain_force">['|', ('event_id.user_id', '=', user.id), ('event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
         </record>
 
     </data>

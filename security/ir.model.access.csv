@@ -169,3 +169,7 @@ access_camp_stats_snapshot_admin,camp.stats.snapshot admin,model_camp_stats_snap
 access_camp_marketing_report_organizator,camp.marketing.report organizator,model_camp_marketing_report,fayna_camp_portal.group_camp_organizator,1,1,1,1
 access_camp_marketing_report_sales,camp.marketing.report sales,model_camp_marketing_report,fayna_camp_portal.group_camp_sales,1,1,1,1
 access_camp_marketing_report_admin,camp.marketing.report admin,model_camp_marketing_report,base.group_system,1,1,1,1
+access_camp_group_admin,camp.group admin,model_camp_group,base.group_system,1,1,1,1
+access_camp_group_organizator,camp.group organizator,model_camp_group,fayna_camp_portal.group_camp_organizator,1,1,1,1
+access_camp_group_kierownik,camp.group kierownik,model_camp_group,fayna_camp_portal.group_camp_kierownik,1,1,1,1
+access_camp_group_wychowawca,camp.group wychowawca,model_camp_group,fayna_camp_portal.group_camp_wychowawca,1,0,0,0

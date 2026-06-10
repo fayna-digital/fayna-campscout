@@ -70,6 +70,7 @@ License: LGPL-3
         "views/camp_views.xml",
         "views/participant_views.xml",
         "views/operations_views.xml",
+        "views/group_views.xml",
         "views/nutrition_views.xml",
         "views/emergency_views.xml",
         "views/commercial_views.xml",
