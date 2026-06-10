@@ -222,19 +222,22 @@ class CampStaff(models.Model):
         Fires on confirmation/activation so legacy draft records migrate
         cleanly; the moment anyone confirms staff — the gate applies."""
         for staff in self:
-            if staff.state in ("confirmed", "active") and staff.event_id:
-                if not staff.is_eligible_for_camp:
-                    raise ValidationError(
-                        _(
-                            "%(name)s cannot be admitted to '%(event)s': KRK/RSPTS "
-                            "verification is missing, expired or not yet accepted "
-                            "by the administrator (Ustawa Kamilka; art. 21 ustawy "
-                            "z 16.05.2016 — admission without RSPTS verification "
-                            "is punishable by arrest or a fine of min. 1000 zł). "
-                            "Upload the documents and request admin acceptance."
-                        )
-                        % {"name": staff.name, "event": staff.event_id.name}
+            if (
+                staff.state in ("confirmed", "active")
+                and staff.event_id
+                and not staff.is_eligible_for_camp
+            ):
+                raise ValidationError(
+                    _(
+                        "%(name)s cannot be admitted to '%(event)s': KRK/RSPTS "
+                        "verification is missing, expired or not yet accepted "
+                        "by the administrator (Ustawa Kamilka; art. 21 ustawy "
+                        "z 16.05.2016 — admission without RSPTS verification "
+                        "is punishable by arrest or a fine of min. 1000 zł). "
+                        "Upload the documents and request admin acceptance."
                     )
+                    % {"name": staff.name, "event": staff.event_id.name}
+                )
 
     # ------------------------------------------------------------------
     # PL-law A6/A7 qualification attachments
