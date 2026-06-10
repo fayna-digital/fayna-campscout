@@ -77,33 +77,34 @@ for so in orders:
             continue
 
         try:
-            child = Participant.create(vals)
-            # PDF підписаної картки → attachment на учаснику
-            if so.bs_qualification_form_pdf:
-                Attachment.create(
-                    {
-                        "name": f"Karta_kwalifikacyjna_2021_{first}_{last}_{so.name}.pdf",
-                        "res_model": "camp.participant",
-                        "res_id": child.id,
-                        "datas": so.bs_qualification_form_pdf
-                        if isinstance(so.bs_qualification_form_pdf, bytes)
-                        else base64.b64encode(base64.b64decode(so.bs_qualification_form_pdf)),
-                        "mimetype": "application/pdf",
-                    }
-                )
-                # підпис уже існує на папері/PDF → фіксуємо (signed ПІСЛЯ create,
-                # бо protection діє на write ПІСЛЯ signed, а тут перший write)
-                child.write(
-                    {
-                        "qualification_signed": True,
-                        "qualification_signed_date": so.bs_qc_date or so.date_order,
-                    }
-                )
-            reg.participant_id = child.id
-            created += 1
+            # savepoint: SQL-помилка однієї ітерації не ламає всю транзакцію
+            # (InFailedSqlTransaction — INC staging 11.06)
+            with env.cr.savepoint():  # noqa: F821
+                child = Participant.create(vals)
+                # PDF підписаної картки → attachment на учаснику
+                if so.bs_qualification_form_pdf:
+                    Attachment.create(
+                        {
+                            "name": f"Karta_kwalifikacyjna_2021_{first}_{last}_{so.name}.pdf",
+                            "res_model": "camp.participant",
+                            "res_id": child.id,
+                            "datas": so.bs_qualification_form_pdf,
+                            "mimetype": "application/pdf",
+                        }
+                    )
+                    # підпис уже існує на папері/PDF → фіксуємо (signed ПІСЛЯ
+                    # create — protection блокує write лише ПІСЛЯ signed)
+                    child.write(
+                        {
+                            "qualification_signed": True,
+                            "qualification_signed_date": so.bs_qc_date or so.date_order,
+                        }
+                    )
+                reg.participant_id = child.id
+                created += 1
         except Exception as e:  # noqa: BLE001 — повний звіт важливіший за зупинку
             errors += 1
-            report.append(f"ERROR   SO {so.name}: {e}")
+            report.append(f"ERROR   SO {so.name}: {type(e).__name__}: {e}")
 
 print("\n".join(report[:60]))
 print(
