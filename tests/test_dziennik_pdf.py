@@ -35,6 +35,7 @@ class TestDziennikPdf(TransactionCase):
                 "name": "Adam Kierowniczy",
                 "role": "leader",
                 "date_from": "2026-07-01",
+                "date_to": "2026-07-14",
             }
         )
         cls.wychowawca = cls.env["camp.staff"].create(
@@ -43,6 +44,7 @@ class TestDziennikPdf(TransactionCase):
                 "name": "Maria Wychowawcza",
                 "role": "counselor",
                 "date_from": "2026-07-01",
+                "date_to": "2026-07-14",
             }
         )
         cls.dziennik = cls.env["fayna.camp.dziennik"].create(
