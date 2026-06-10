@@ -60,7 +60,8 @@ ssh $STG "sudo chown -R 101:101 /opt/campscout/odoo-data/filestore/$STG_DB"
 echo "=== [6/7] STAGING: install fayna_camp_portal на prod-копію (репетиція міграції!) ==="
 ssh $STG "
   cd /opt/campscout/custom-addons/fayna_camp_portal && git fetch origin && git checkout loop/season-sprint && git pull origin loop/season-sprint && sudo chmod -R o+rX . || true
-  docker exec campscout_web odoo -c /etc/odoo/odoo.conf -d $STG_DB -i fayna_camp_portal --stop-after-init 2>&1 | tail -30
+  # --http-port=8072: інакше Errno 98 — головний odoo тримає 8069 (INC 10.06)
+  docker exec campscout_web odoo -c /etc/odoo/odoo.conf -d $STG_DB -i fayna_camp_portal --stop-after-init --http-port=8072 2>&1 | tail -30
   docker restart campscout_web
 "
 
