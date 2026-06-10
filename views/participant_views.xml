@@ -42,8 +42,12 @@
                                  у 1 клік — для контролі kuratorium. -->
                             <button name="action_open_attachments" type="object"
                                     class="oe_stat_button" icon="fa-file-pdf-o">
-                                <field name="attachment_count" widget="statinfo"
-                                       string="Skan karty / dokumenty"/>
+                                <div class="o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="attachment_count"/>
+                                    </span>
+                                    <span class="o_stat_text">Skan karty (PDF)</span>
+                                </div>
                             </button>
                         </div>
                         <div class="oe_title">
