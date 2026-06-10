@@ -148,14 +148,13 @@ class CampGroup(models.Model):
             )
             rec.capacity_limit = GROUP_LIMIT_UNDER_10 if rec.has_under_10 else GROUP_LIMIT_DEFAULT
 
-    @api.depends("participant_ids.special_needs")
+    @api.depends("participant_ids.has_disability")
     def _compute_disabled_count(self):
-        # TODO(sprint §2): camp.participant has no dedicated boolean/selection
-        # `disability` field (verified by grep 2026-06-10) — we approximate
-        # with non-empty `special_needs` (Section III pkt 2). Replace with a
-        # dedicated `disability` flag once the karta wzór 2026 adds one.
+        # has_disability — окремий boolean (kierownik/organizator за картою).
+        # Апроксимація по special_needs хибно рахувала «не їсть гречку» як
+        # niepełnosprawność і валила auto-split на живих даних (INC 11.06).
         for rec in self:
-            rec.disabled_count = len(rec.participant_ids.filtered("special_needs"))
+            rec.disabled_count = len(rec.participant_ids.filtered("has_disability"))
 
     def _shift_start_date(self):
         """Date used as the age anchor — shift start, fallback today."""
@@ -339,8 +338,19 @@ class CampParticipant(models.Model):
             "only children of their own groups."
         ),
     )
+    has_disability = fields.Boolean(
+        string=_("Niepełnosprawność / przewlekła choroba (§2)"),
+        tracking=True,
+        help=_(
+            "Counted against the §2 art. 92c limit: max 2 such participants "
+            "per wychowawca group. Set by the organizer/kierownik based on the "
+            "qualification card — NOT derived from free-text notes (INC "
+            "11.06: old checkout notes like dietary quirks falsely tripped "
+            "the limit)."
+        ),
+    )
 
-    @api.constrains("group_id", "birth_date", "special_needs")
+    @api.constrains("group_id", "birth_date", "has_disability")
     def _check_group_composition(self):
         # Writing group_id on the participant does not fire camp.group's own
         # constrains — re-validate the affected groups here.

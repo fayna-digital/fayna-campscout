@@ -120,8 +120,8 @@ class TestCampGroup(TransactionCase):
 
     def test_disabled_limit_2(self):
         """At most 2 participants with special needs per group."""
-        two = self._make_children(2, "2012-01-01", special_needs="wheelchair")
-        third = self._make_child(60, "2012-01-01", special_needs="autism spectrum")
+        two = self._make_children(2, "2012-01-01", has_disability=True)
+        third = self._make_child(60, "2012-01-01", has_disability=True)
         group = self.Group.create(
             {
                 "name": "Grupa D",

@@ -107,6 +107,7 @@
                         </group>
 
                         <group string="Special Needs">
+                            <field name="has_disability"/>
                             <field name="special_needs"/>
                             <field name="swimming_ability"/>
                             <field name="stay_alone_permission"/>
