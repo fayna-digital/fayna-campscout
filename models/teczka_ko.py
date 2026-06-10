@@ -117,9 +117,7 @@ class CampTeczkaKO(models.Model):
 
     def _compute_kadra(self):
         for teczka in self:
-            staff = teczka.event_id.staff_ids.filtered(
-                lambda s: s.state in _STAFF_ACTIVE_STATES
-            )
+            staff = teczka.event_id.staff_ids.filtered(lambda s: s.state in _STAFF_ACTIVE_STATES)
             eligible = staff.filtered("is_eligible_for_camp")
             teczka.kadra_total = len(staff)
             teczka.kadra_eligible = len(eligible)
@@ -207,7 +205,9 @@ class CampTeczkaKO(models.Model):
     wypadki_ready = fields.Boolean(
         compute="_compute_wypadki",
         string=_("Rejestr wypadków ✓"),
-        help=_("True when a rejestr wypadków exists for this shift. False while the model is absent."),
+        help=_(
+            "True when a rejestr wypadków exists for this shift. False while the model is absent."
+        ),
     )
 
     def _compute_wypadki(self):
@@ -215,9 +215,7 @@ class CampTeczkaKO(models.Model):
         # env.get() returns None when the model is not in the registry yet —
         # NO hard dependency, integration happens after both land.
         IncidentRegister = self.env.get("camp.incident.register")
-        has_event_field = (
-            IncidentRegister is not None and "event_id" in IncidentRegister._fields
-        )
+        has_event_field = IncidentRegister is not None and "event_id" in IncidentRegister._fields
         for teczka in self:
             if not has_event_field:
                 teczka.wypadki_available = False
@@ -282,9 +280,9 @@ class CampTeczkaKO(models.Model):
     def action_print_checklist(self):
         """1-page PDF 'Gotowość do kontroli KO' (✅/❌ per checklist item)."""
         self.ensure_one()
-        return self.env.ref(
-            "fayna_camp_portal.action_report_teczka_ko_checklist"
-        ).report_action(self)
+        return self.env.ref("fayna_camp_portal.action_report_teczka_ko_checklist").report_action(
+            self
+        )
 
     def action_export_pdf_pack(self):
         """Export the FULL KO documentation pack as one PDF.

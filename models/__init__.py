@@ -61,3 +61,6 @@ from . import incident_card  # noqa: E402,I001
 
 # camp.budget — фінанси табору: BEP + 2 маржі (R8) — TZ_SPRINT §5.
 from . import budget  # noqa: E402,I001
+
+# Regulaminy + Teczka KO — sprint 2026-06-10 §4.
+from . import regulamin, teczka_ko  # noqa: E402,I001

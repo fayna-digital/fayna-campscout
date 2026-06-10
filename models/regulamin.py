@@ -329,7 +329,9 @@ class CampRegulaminAck(models.Model):
     can_sign = fields.Boolean(
         compute="_compute_can_sign",
         string=_("Can sign"),
-        help=_("True when the current user is the staff member's own user and the ack is unsigned."),
+        help=_(
+            "True when the current user is the staff member's own user and the ack is unsigned."
+        ),
     )
 
     @api.depends("regulamin_id.name", "staff_id.name")
@@ -344,11 +346,7 @@ class CampRegulaminAck(models.Model):
     def _compute_can_sign(self):
         # Per-user value — non-stored on purpose (drives the Sign button).
         for ack in self:
-            ack.can_sign = (
-                not ack.signed
-                and bool(ack.user_id)
-                and ack.user_id == self.env.user
-            )
+            ack.can_sign = not ack.signed and bool(ack.user_id) and ack.user_id == self.env.user
 
     # --- sign gate + freeze ---------------------------------------------------
 

@@ -426,5 +426,85 @@
             <field name="perm_unlink" eval="False"/>
         </record>
 
+
+        <!-- ─── regulaminy + teczka KO §4 — sprint 2026-06-10 ─────────── -->
+
+        <record id="rule_regulamin_kierownik_read" model="ir.rule">
+            <field name="name">Kierownik: read regulaminy of own camp + templates</field>
+            <field name="model_id" ref="model_camp_regulamin"/>
+            <field name="groups" eval="[(4, ref('group_camp_kierownik'))]"/>
+            <field name="domain_force">['|', ('event_id', '=', False), '|', ('event_id.user_id', '=', user.id), ('event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_regulamin_kierownik_write_own" model="ir.rule">
+            <field name="name">Kierownik: write regulaminy of own camp only</field>
+            <field name="model_id" ref="model_camp_regulamin"/>
+            <field name="groups" eval="[(4, ref('group_camp_kierownik'))]"/>
+            <field name="domain_force">['|', ('event_id.user_id', '=', user.id), ('event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_regulamin_staff_read_own_event" model="ir.rule">
+            <field name="name">Wychowawca/Instructor: read regulaminy of own event</field>
+            <field name="model_id" ref="model_camp_regulamin"/>
+            <field name="groups" eval="[(4, ref('group_camp_wychowawca')), (4, ref('group_camp_instructor'))]"/>
+            <field name="domain_force">['|', ('event_id', '=', False), ('event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_regulamin_ack_kierownik_own_camp" model="ir.rule">
+            <field name="name">Kierownik: acks of own camp</field>
+            <field name="model_id" ref="model_camp_regulamin_ack"/>
+            <field name="groups" eval="[(4, ref('group_camp_kierownik'))]"/>
+            <field name="domain_force">['|', ('event_id.user_id', '=', user.id), ('event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="rule_regulamin_ack_staff_read_own_event" model="ir.rule">
+            <field name="name">Wychowawca/Instructor: read acks of own event</field>
+            <field name="model_id" ref="model_camp_regulamin_ack"/>
+            <field name="groups" eval="[(4, ref('group_camp_wychowawca')), (4, ref('group_camp_instructor'))]"/>
+            <field name="domain_force">[('event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_regulamin_ack_staff_write_own" model="ir.rule">
+            <field name="name">Wychowawca/Instructor: sign only own ack</field>
+            <field name="model_id" ref="model_camp_regulamin_ack"/>
+            <field name="groups" eval="[(4, ref('group_camp_wychowawca')), (4, ref('group_camp_instructor'))]"/>
+            <field name="domain_force">[('staff_id.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_teczka_ko_kierownik_own_camp" model="ir.rule">
+            <field name="name">Kierownik: Teczka KO of own camp</field>
+            <field name="model_id" ref="model_camp_teczka_ko"/>
+            <field name="groups" eval="[(4, ref('group_camp_kierownik'))]"/>
+            <field name="domain_force">['|', ('event_id.user_id', '=', user.id), ('event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
     </data>
 </odoo>
