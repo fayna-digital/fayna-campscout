@@ -143,9 +143,15 @@ class CampParticipant(models.Model):
     )
     birth_date = fields.Date(
         string=_("Date of birth"),
-        required=True,
+        required=False,  # LOOP-E: чернетка може бути без дати (132 реєстрації
+        # без bs_-даних); ПІДПИС картки без дати блокує
+        # _check_birth_date_before_signoff — юридично картка
+        # неповна не підписується, але дитина в системі видима.
         tracking=True,
-        help=_("Child's date of birth. Required for age calculation and PL legal compliance."),
+        help=_(
+            "Child's date of birth. May be empty on a draft created from a bare "
+            "registration; required before the qualification card is signed."
+        ),
     )
     age = fields.Integer(
         string=_("Age"),
@@ -1415,6 +1421,16 @@ class CampParticipant(models.Model):
                     _("Emergency contact 1 (name + phone) is required before signoff.")
                 )
 
+    @api.constrains("qualification_signed", "birth_date")
+    def _check_birth_date_before_signoff(self):
+        # LOOP-E: birth_date більше не required на create (чернетки з голих
+        # реєстрацій), але юридично картка БЕЗ дати народження не підписується.
+        for rec in self:
+            if rec.qualification_signed and not rec.birth_date:
+                raise ValidationError(
+                    _("Date of birth is required before the qualification card is signed.")
+                )
+
     # --- res.partner core-plumbing overrides -----------------------------
 
     def _commercial_sync_to_children(self):
@@ -1806,6 +1822,38 @@ class CampParticipant(models.Model):
         if lang.startswith("pl"):
             return "pl_PL"
         return "uk_UA"
+
+    attachment_count = fields.Integer(
+        compute="_compute_attachment_count",
+        string=_("Documents"),
+        help=_("Attached documents incl. the signed qualification card scan (PDF)."),
+    )
+
+    def _compute_attachment_count(self):
+        counts = dict(
+            self.env["ir.attachment"]
+            .sudo()
+            ._read_group(
+                [("res_model", "=", self._name), ("res_id", "in", self.ids)],
+                ["res_id"],
+                ["__count"],
+            )
+        )
+        for rec in self:
+            rec.attachment_count = counts.get(rec.id, 0)
+
+    def action_open_attachments(self):
+        """Smart button: відкрити скани/документи дитини (вимога user — оригінал
+        підписаної картки в 1 клік для контролі kuratorium)."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Documents — %s") % self.display_name,
+            "res_model": "ir.attachment",
+            "view_mode": "kanban,list,form",
+            "domain": [("res_model", "=", self._name), ("res_id", "=", self.id)],
+            "context": {"default_res_model": self._name, "default_res_id": self.id},
+        }
 
     def action_open_clear_auto_refusal_wizard(self):
         """Header-button entry point — opens the reason-capture wizard."""

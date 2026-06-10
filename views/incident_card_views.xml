@@ -12,16 +12,18 @@
             <field name="arch" type="xml">
                 <tree decoration-muted="state == 'draft'"
                       decoration-success="state == 'confirmed'">
-                    <field name="incident_datetime"/>
-                    <field name="participant_id"/>
-                    <field name="group_class" optional="show"/>
-                    <field name="event_id"/>
-                    <field name="miejsce"/>
-                    <field name="uraz_rodzaj" optional="show"/>
-                    <field name="uraz_umiejscowienie" optional="hide"/>
-                    <field name="osoba_nadzoru" optional="show"/>
-                    <field name="incident_report_id" optional="hide"/>
-                    <field name="state"/>
+                    <!-- LOOP-E D3: у списку — чисті заголовки без pkt-номерів
+                         wzoru (номери лишаються у form і PDF). -->
+                    <field name="incident_datetime" string="Data i czas"/>
+                    <field name="participant_id" string="Poszkodowany"/>
+                    <field name="group_class" string="Grupa / klasa" optional="show"/>
+                    <field name="event_id" string="Turnus"/>
+                    <field name="miejsce" string="Miejsce"/>
+                    <field name="uraz_rodzaj" string="Rodzaj urazu" optional="show"/>
+                    <field name="uraz_umiejscowienie" string="Umiejscowienie" optional="hide"/>
+                    <field name="osoba_nadzoru" string="Osoba nadzoru" optional="show"/>
+                    <field name="incident_report_id" string="Protokół" optional="hide"/>
+                    <field name="state" string="Status"/>
                 </tree>
             </field>
         </record>

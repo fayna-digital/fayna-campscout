@@ -37,6 +37,15 @@
                         <field name="auto_refusal_state" widget="statusbar"/>
                     </header>
                     <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <!-- LOOP-E: оригінал підписаної картки (скан PDF)
+                                 у 1 клік — для контролі kuratorium. -->
+                            <button name="action_open_attachments" type="object"
+                                    class="oe_stat_button" icon="fa-file-pdf-o">
+                                <field name="attachment_count" widget="statinfo"
+                                       string="Skan karty / dokumenty"/>
+                            </button>
+                        </div>
                         <div class="oe_title">
                             <h1>
                                 <field name="display_name" readonly="1"/>
