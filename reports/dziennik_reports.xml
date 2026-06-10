@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ================================================================ -->
+        <!-- Paper format — Dziennik Zajęć (Załącznik 5, urzędowy formularz)  -->
+        <!-- ================================================================ -->
+
+        <record id="paperformat_dziennik" model="report.paperformat">
+            <field name="name">Dziennik Zajęć A4</field>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">12</field>
+            <field name="margin_bottom">12</field>
+            <field name="margin_left">12</field>
+            <field name="margin_right">12</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">8</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- Report action — id referenced from models/operations.py          -->
+        <!-- (FaynaCampDziennik.action_submit → env.ref(...))                 -->
+        <!-- ================================================================ -->
+
+        <record id="action_report_dziennik" model="ir.actions.report">
+            <field name="name">Dziennik Zajęć (PDF)</field>
+            <field name="model">fayna.camp.dziennik</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">fayna_camp_portal.report_dziennik</field>
+            <field name="report_file">fayna_camp_portal.report_dziennik</field>
+            <field name="binding_model_id" ref="model_fayna_camp_dziennik"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="paperformat_dziennik"/>
+            <field name="print_report_name">'Dziennik_Zajec_%s' % (object.display_name or '').replace(' ', '_')</field>
+        </record>
+
+    </data>
+</odoo>

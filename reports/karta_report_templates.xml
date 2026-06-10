@@ -1,0 +1,536 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ==================================================================
+             Karta Kwalifikacyjna Uczestnika Wypoczynku — §10 TZ_SPRINT.
+             Renders 1:1 the official wzór; layout depends on o.wzor_version:
+               '2026' — Dz.U. 2026 poz. 704, Załącznik 6 (structured pkt 9)
+               '2021' — Dz.U. 2021 poz. 1548 (legacy free-text pkt 9)
+             Event data comes from the first open/done registration; every
+             value is rendered gracefully (dotted line stays empty when no
+             data — PL law allows handwritten completion, §6 Rozp. MEN 2016).
+             Medical fields are RODO art. 9 group-gated → read via o.sudo()
+             (same pattern as _compute_fn_child); printing access is gated
+             at the ir.actions.report level.
+        ================================================================== -->
+
+        <template id="report_karta_kwalifikacyjna">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="fayna_camp_portal.report_karta_kwalifikacyjna_document"/>
+                </t>
+            </t>
+        </template>
+
+        <template id="report_karta_kwalifikacyjna_document">
+            <t t-call="web.basic_layout">
+                <!-- shared context for all sub-templates -->
+                <t t-set="med" t-value="o.sudo()"/>
+                <t t-set="reg" t-value="o.sudo().registration_ids.filtered(lambda r: r.state in ('open', 'done'))[:1]"/>
+                <t t-set="ev" t-value="reg.event_id if reg else False"/>
+                <t t-set="camp" t-value="ev.camp_program_id if ev else False"/>
+                <t t-set="country_name"
+                   t-value="dict(camp._fields['camp_location_country'].selection).get(camp.camp_location_country, '') if camp and camp.camp_location_country else ''"/>
+                <t t-set="evl" t-value="(ev.name or '').lower() if ev else ''"/>
+                <t t-set="f_polkolonia" t-value="'półkolonia' in evl or 'polkolonia' in evl"/>
+                <t t-set="f_kolonia" t-value="'kolonia' in evl and not f_polkolonia"/>
+                <t t-set="f_zimowisko" t-value="'zimowisko' in evl"/>
+                <t t-set="f_oboz" t-value="'obóz' in evl or 'oboz' in evl"/>
+                <t t-set="f_biwak" t-value="'biwak' in evl"/>
+                <t t-set="f_inna" t-value="bool(ev) and not (f_polkolonia or f_kolonia or f_zimowisko or f_oboz or f_biwak)"/>
+                <!-- migration scan: manually attached PDF (res_field is auto-filtered
+                     to NULL by ir.attachment, so signature binaries are excluded) -->
+                <t t-set="has_migration_scan"
+                   t-value="bool(o.env['ir.attachment'].sudo().search_count([('res_model', '=', 'camp.participant'), ('res_id', '=', o.id), ('mimetype', '=', 'application/pdf')]))"/>
+
+                <div class="page" style="font-size:9.5pt; font-family:'DejaVu Sans', sans-serif;">
+
+                    <t t-if="o.wzor_version == '2026'">
+                        <t t-call="fayna_camp_portal.karta_kw_2026"/>
+                    </t>
+                    <t t-else="">
+                        <t t-call="fayna_camp_portal.karta_kw_2021"/>
+                    </t>
+
+                    <!-- footnotes (common to both wzory) -->
+                    <div style="margin-top:10px; font-size:7.5pt; border-top:1px solid #000; padding-top:3px;">
+                        <div><sup>1)</sup> Właściwe zaznaczyć znakiem „X”.</div>
+                        <div><sup>2)</sup> W przypadku wypoczynku o charakterze wędrownym.</div>
+                        <div><sup>3)</sup> W przypadku uczestnika niepełnoletniego.</div>
+                    </div>
+
+                    <p style="page-break-after:always;"/>
+                </div>
+            </t>
+        </template>
+
+        <!-- ============================ WZÓR 2026 ========================= -->
+
+        <template id="karta_kw_2026">
+            <div style="text-align:center; margin-bottom:10px;">
+                <h2 style="margin:0; font-size:14pt;">KARTA KWALIFIKACYJNA UCZESTNIKA WYPOCZYNKU</h2>
+                <div style="font-size:8pt;">Wzór — załącznik nr 6 do rozporządzenia (Dz.U. 2026 poz. 704)</div>
+            </div>
+
+            <t t-call="fayna_camp_portal.karta_kw_section_i"/>
+
+            <!-- ============== II. INFORMACJE DOTYCZĄCE UCZESTNIKA ========= -->
+            <div style="border:1px solid #000; padding:8px; margin-bottom:10px;">
+                <h4 style="margin:0 0 6px 0; font-size:10pt;">II. INFORMACJE DOTYCZĄCE UCZESTNIKA WYPOCZYNKU</h4>
+
+                <t t-call="fayna_camp_portal.karta_kw_section_ii_head"/>
+
+                <!-- pkt 9 — wzór 2026: structured fields (Dz.U. 2026/704) -->
+                <div style="margin-top:6px; page-break-inside:avoid;">
+                    <div>
+                        9. Istotne dane o stanie zdrowia uczestnika wypoczynku, rozwoju psychofizycznym
+                        i stosowanej diecie (np. uczulenie na leki, pyłki, pokarmy lub jad owadów,
+                        choroba lokomocyjna, lista przyjmowanych na stałe leków i ich dawek, choroby
+                        przewlekłe, noszenie aparatu ortodontycznego, okularów lub soczewek, dieta
+                        niskokaloryczna, wegetarianizm, problemy z wyrażaniem emocji, problemy
+                        z funkcjonowaniem w grupie, lęk wysokości, hydrofobia)<sup>1)</sup>
+                    </div>
+
+                    <table style="width:100%; border-collapse:collapse; margin-top:4px; font-size:9pt;">
+                        <tr>
+                            <td style="border:1px solid #000; padding:4px; width:50%; vertical-align:top;">
+                                <strong>Uczulenia:</strong><br/>
+                                <span t-out="'☒' if med.allergy_meds else '☐'"/> na leki&#160;&#160;
+                                <span t-out="'☒' if med.allergy_pollen else '☐'"/> na pyłki<br/>
+                                <span t-out="'☒' if med.allergy_food else '☐'"/> na pokarmy&#160;&#160;
+                                <span t-out="'☒' if med.allergy_insect_venom else '☐'"/> na jad owadów
+                                <t t-if="med.allergies">
+                                    <div style="white-space:pre-wrap; border-top:1px dotted #000; margin-top:3px;"><t t-out="med.allergies"/></div>
+                                </t>
+                            </td>
+                            <td style="border:1px solid #000; padding:4px; width:50%; vertical-align:top;">
+                                <span t-out="'☒' if med.motion_sickness else '☐'"/> choroba lokomocyjna<br/>
+                                <span t-out="'☒' if med.orthodontic_appliance else '☐'"/> noszenie aparatu ortodontycznego<br/>
+                                <span t-out="'☒' if med.wears_glasses else '☐'"/> noszenie okularów&#160;&#160;
+                                <span t-out="'☒' if med.wears_contact_lenses else '☐'"/> noszenie soczewek<br/>
+                                <span t-out="'☒' if med.diet_low_calorie else '☐'"/> dieta niskokaloryczna&#160;&#160;
+                                <span t-out="'☒' if med.diet_vegetarian else '☐'"/> wegetarianizm
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid #000; padding:4px; vertical-align:top;">
+                                <strong>Lista przyjmowanych na stałe leków i ich dawek:</strong>
+                                <div style="white-space:pre-wrap; min-height:24px;"><t t-out="med.medications or ''"/></div>
+                            </td>
+                            <td style="border:1px solid #000; padding:4px; vertical-align:top;">
+                                <strong>Choroby przewlekłe:</strong>
+                                <div style="white-space:pre-wrap; min-height:24px;"><t t-out="med.chronic_conditions or ''"/></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid #000; padding:4px; vertical-align:top;" colspan="2">
+                                <span t-out="'☒' if med.emotional_expression_issues else '☐'"/> problemy z wyrażaniem emocji&#160;&#160;
+                                <span t-out="'☒' if med.group_functioning_issues else '☐'"/> problemy z funkcjonowaniem w grupie&#160;&#160;
+                                <span t-out="'☒' if med.fear_of_heights else '☐'"/> lęk wysokości&#160;&#160;
+                                <span t-out="'☒' if med.hydrophobia else '☐'"/> hydrofobia
+                                <t t-if="med.psycho_behavioral_notes">
+                                    <div style="white-space:pre-wrap; border-top:1px dotted #000; margin-top:3px;"><t t-out="med.psycho_behavioral_notes"/></div>
+                                </t>
+                            </td>
+                        </tr>
+                        <tr t-if="med.doctor_notes">
+                            <td style="border:1px solid #000; padding:4px; vertical-align:top;" colspan="2">
+                                <strong>Inne istotne informacje:</strong>
+                                <div t-out="med.doctor_notes"/>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div style="margin-top:6px;">
+                        oraz o szczepieniach ochronnych (wraz z podaniem roku lub przedstawienie
+                        książeczki zdrowia z aktualnym wpisem szczepień):
+                        tężec <span style="border-bottom:1px dotted #000; padding:0 14px;"><strong t-out="med.vacc_tetanus_year or ''"/></span>
+                        błonica <span style="border-bottom:1px dotted #000; padding:0 14px;"><strong t-out="med.vacc_diphtheria_year or ''"/></span>
+                        inne <span style="border-bottom:1px dotted #000; padding:0 14px;"><strong t-out="med.vacc_other or ''"/></span>
+                    </div>
+
+                    <t t-call="fayna_camp_portal.karta_kw_parent_signature"/>
+                </div>
+            </div>
+
+            <t t-call="fayna_camp_portal.karta_kw_sections_iii_vi"/>
+        </template>
+
+        <!-- ============================ WZÓR 2021 ========================= -->
+
+        <template id="karta_kw_2021">
+            <div style="text-align:center; margin-bottom:10px;">
+                <h2 style="margin:0; font-size:14pt;">KARTA KWALIFIKACYJNA UCZESTNIKA WYPOCZYNKU</h2>
+                <div style="font-size:8pt;">Wzór — załącznik nr 6 do rozporządzenia (Dz.U. 2021 poz. 1548)</div>
+                <div t-if="has_migration_scan"
+                     style="font-size:8.5pt; font-style:italic; border:1px solid #000; padding:3px; margin-top:4px;">
+                    Oryginał karty (skan) w załączniku
+                </div>
+            </div>
+
+            <t t-call="fayna_camp_portal.karta_kw_section_i"/>
+
+            <!-- ============== II. INFORMACJE DOTYCZĄCE UCZESTNIKA ========= -->
+            <div style="border:1px solid #000; padding:8px; margin-bottom:10px;">
+                <h4 style="margin:0 0 6px 0; font-size:10pt;">II. INFORMACJE DOTYCZĄCE UCZESTNIKA WYPOCZYNKU</h4>
+
+                <t t-call="fayna_camp_portal.karta_kw_section_ii_head"/>
+
+                <!-- pkt 9 — wzór 2021: legacy free-text -->
+                <div style="margin-top:6px; page-break-inside:avoid;">
+                    <div>
+                        9. Istotne dane o stanie zdrowia uczestnika wypoczynku, rozwoju psychofizycznym
+                        i stosowanej diecie (np. na co uczestnik jest uczulony, jak znosi jazdę samochodem,
+                        czy przyjmuje stale leki i w jakich dawkach, czy nosi aparat ortodontyczny lub okulary)
+                    </div>
+                    <div style="border-bottom:1px dotted #000; min-height:48px; white-space:pre-wrap; padding:2px 4px;">
+                        <t t-if="med.allergies"><strong t-out="med.allergies"/><br/></t>
+                        <t t-if="med.medications"><strong t-out="med.medications"/><br/></t>
+                        <t t-if="med.chronic_conditions"><strong t-out="med.chronic_conditions"/><br/></t>
+                        <t t-if="med.diet_restrictions">
+                            <strong t-out="dict(med._fields['diet_restrictions'].selection).get(med.diet_restrictions, '')"/><br/>
+                        </t>
+                        <div t-if="med.doctor_notes" t-out="med.doctor_notes"/>
+                    </div>
+
+                    <div style="margin-top:6px;">
+                        o szczepieniach ochronnych (wraz z podaniem roku lub przedstawienia
+                        książeczki zdrowia z aktualnym wpisem szczepień):
+                        tężec <span style="border-bottom:1px dotted #000; padding:0 14px;"><strong t-out="med.vacc_tetanus_year or ''"/></span>
+                        błonica <span style="border-bottom:1px dotted #000; padding:0 14px;"><strong t-out="med.vacc_diphtheria_year or ''"/></span>
+                        dur <span style="border-bottom:1px dotted #000; padding:0 14px;"> </span>
+                        inne <span style="border-bottom:1px dotted #000; padding:0 14px;"><strong t-out="med.vacc_other or ''"/></span>
+                    </div>
+
+                    <t t-call="fayna_camp_portal.karta_kw_parent_signature"/>
+                </div>
+            </div>
+
+            <t t-call="fayna_camp_portal.karta_kw_sections_iii_vi"/>
+        </template>
+
+        <!-- ============== shared: I. INFORMACJE DOTYCZĄCE WYPOCZYNKU ====== -->
+
+        <template id="karta_kw_section_i">
+            <div style="border:1px solid #000; padding:8px; margin-bottom:10px; page-break-inside:avoid;">
+                <h4 style="margin:0 0 6px 0; font-size:10pt;">I. INFORMACJE DOTYCZĄCE WYPOCZYNKU</h4>
+
+                <div>
+                    1. Forma wypoczynku<sup>1)</sup><br/>
+                    <span t-out="'☒' if f_kolonia else '☐'"/> kolonia&#160;&#160;
+                    <span t-out="'☒' if f_zimowisko else '☐'"/> zimowisko&#160;&#160;
+                    <span t-out="'☒' if f_oboz else '☐'"/> obóz&#160;&#160;
+                    <span t-out="'☒' if f_biwak else '☐'"/> biwak&#160;&#160;
+                    <span t-out="'☒' if f_polkolonia else '☐'"/> półkolonia&#160;&#160;
+                    <span t-out="'☒' if f_inna else '☐'"/> inna forma wypoczynku
+                    <span style="border-bottom:1px dotted #000; padding:0 14px;">
+                        <strong t-out="(ev.name or '') if f_inna and ev else ''"/>
+                    </span>
+                    <span style="font-size:8pt;">(proszę podać formę)</span>
+                </div>
+
+                <div style="margin-top:5px;">
+                    2. Termin wypoczynku
+                    <span style="border-bottom:1px dotted #000; padding:0 14px;">
+                        <strong t-out="ev.date_begin.strftime('%d.%m.%Y') if ev and ev.date_begin else ''"/>
+                    </span>
+                    –
+                    <span style="border-bottom:1px dotted #000; padding:0 14px;">
+                        <strong t-out="ev.date_end.strftime('%d.%m.%Y') if ev and ev.date_end else ''"/>
+                    </span>
+                </div>
+
+                <div style="margin-top:5px;">
+                    3. Adres wypoczynku, miejsce lokalizacji wypoczynku
+                    <div style="border-bottom:1px dotted #000; min-height:16px; padding:0 4px;">
+                        <strong t-out="(camp.camp_location or '') if camp else ''"/>
+                    </div>
+                </div>
+
+                <div style="margin-top:5px;">
+                    Trasa wypoczynku o charakterze wędrownym<sup>2)</sup>
+                    <div style="border-bottom:1px dotted #000; min-height:16px; padding:0 4px;">
+                        <strong t-out="(camp.camp_hiking_route or '') if camp else ''"/>
+                    </div>
+                </div>
+
+                <div style="margin-top:5px;">
+                    Nazwa kraju w przypadku wypoczynku organizowanego za granicą
+                    <div style="border-bottom:1px dotted #000; min-height:16px; padding:0 4px;">
+                        <strong t-out="country_name or ''"/>
+                    </div>
+                </div>
+
+                <table style="width:100%; margin-top:18px; font-size:8pt;">
+                    <tr>
+                        <td style="width:45%; text-align:center;">
+                            <div style="border-top:1px dotted #000; width:90%; margin:0 auto;">
+                                (miejscowość, data)
+                            </div>
+                        </td>
+                        <td style="width:10%;"/>
+                        <td style="width:45%; text-align:center;">
+                            <div style="border-top:1px dotted #000; width:90%; margin:0 auto;">
+                                (podpis organizatora wypoczynku)
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </template>
+
+        <!-- ===== shared: II pkt 1-8 (identyczne w obu wzorach) ============ -->
+
+        <template id="karta_kw_section_ii_head">
+            <div>
+                1. Imię (imiona) i nazwisko
+                <div style="border-bottom:1px dotted #000; min-height:16px; padding:0 4px;">
+                    <strong t-out="o.fn_child_name or ''"/>
+                </div>
+            </div>
+            <div style="margin-top:5px;">
+                2. Imiona i nazwiska rodziców
+                <div style="border-bottom:1px dotted #000; min-height:16px; padding:0 4px;">
+                    <strong t-out="o.fn_parents_names or ''"/>
+                </div>
+            </div>
+            <div style="margin-top:5px;">
+                3. Rok urodzenia
+                <span style="border-bottom:1px dotted #000; padding:0 20px;">
+                    <strong t-out="o.birth_date.year if o.birth_date else ''"/>
+                </span>
+            </div>
+            <div style="margin-top:5px;">
+                4. Numer PESEL uczestnika wypoczynku<br/>
+                <t t-foreach="[(o.pesel or '')[i:i+1] for i in range(11)]" t-as="pesel_digit">
+                    <span style="display:inline-block; width:18px; height:20px; border:1px solid #000; text-align:center; margin-right:2px; font-weight:bold;">
+                        <t t-out="pesel_digit"/>
+                    </span>
+                </t>
+                <div t-if="not o.pesel and o.fn_passport_number" style="font-size:8pt; font-style:italic;">
+                    (brak numeru PESEL — dokument tożsamości: <strong t-out="o.fn_passport_number"/>)
+                </div>
+            </div>
+            <div style="margin-top:5px;">
+                5. Adres zamieszkania
+                <div style="border-bottom:1px dotted #000; min-height:16px; padding:0 4px;">
+                    <strong t-out="o.fn_child_address or ''"/>
+                </div>
+            </div>
+            <div style="margin-top:5px;">
+                6. Adres zamieszkania lub pobytu rodziców<sup>3)</sup>
+                <div style="border-bottom:1px dotted #000; min-height:16px; padding:0 4px;">
+                    <strong t-out="o.fn_parents_address or ''"/>
+                </div>
+            </div>
+            <div style="margin-top:5px;">
+                7. Numer telefonu rodziców lub numer telefonu osoby wskazanej przez pełnoletniego
+                uczestnika wypoczynku, w czasie trwania wypoczynku
+                <div style="border-bottom:1px dotted #000; min-height:16px; padding:0 4px;">
+                    <strong t-out="o.fn_parents_phone or ''"/>
+                    <t t-if="o.emergency_contact_1_name and o.emergency_contact_1_phone">
+                        — <t t-out="o.emergency_contact_1_name"/> <t t-out="o.emergency_contact_1_phone"/><t t-if="o.emergency_contact_1_relation"> (<t t-out="o.emergency_contact_1_relation"/>)</t>
+                    </t>
+                    <t t-if="o.emergency_contact_2_name and o.emergency_contact_2_phone">
+                        ; <t t-out="o.emergency_contact_2_name"/> <t t-out="o.emergency_contact_2_phone"/><t t-if="o.emergency_contact_2_relation"> (<t t-out="o.emergency_contact_2_relation"/>)</t>
+                    </t>
+                </div>
+            </div>
+            <div style="margin-top:5px;">
+                8. Informacja o specjalnych potrzebach edukacyjnych uczestnika wypoczynku,
+                w szczególności o potrzebach wynikających z niepełnosprawności, niedostosowania
+                społecznego lub zagrożenia niedostosowaniem społecznym
+                <div style="border-bottom:1px dotted #000; min-height:32px; white-space:pre-wrap; padding:0 4px;">
+                    <strong t-out="o.fn_child_needs or ''"/>
+                </div>
+            </div>
+        </template>
+
+        <!-- ===== shared: podpis rodziców pod pkt 9 ======================== -->
+
+        <template id="karta_kw_parent_signature">
+            <table style="width:100%; margin-top:16px; font-size:8pt;">
+                <tr>
+                    <td style="width:35%; text-align:center; vertical-align:bottom;">
+                        <strong t-out="o.qualification_signed_date.strftime('%d.%m.%Y') if o.qualification_signed_date else ''"/>
+                        <div style="border-top:1px dotted #000; width:90%; margin:0 auto;">(data)</div>
+                    </td>
+                    <td style="width:10%;"/>
+                    <td style="width:55%; text-align:center; vertical-align:bottom;">
+                        <img t-if="o.qualification_signature"
+                             t-att-src="image_data_uri(o.qualification_signature)"
+                             style="max-height:36px;"/>
+                        <t t-if="o.qualification_signed_by_name">
+                            <br t-if="o.qualification_signature"/>
+                            <strong t-out="o.qualification_signed_by_name"/>
+                        </t>
+                        <div style="border-top:1px dotted #000; width:90%; margin:0 auto;">
+                            (podpis rodziców/pełnoletniego uczestnika wypoczynku)
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </template>
+
+        <!-- ===== shared: III–VI (identyczne w obu wzorach) ================ -->
+
+        <template id="karta_kw_sections_iii_vi">
+
+            <!-- III. Decyzja organizatora — wypełniana ręcznie / przy
+                 potwierdzonej rejestracji „zakwalifikować” zaznaczone -->
+            <div style="border:1px solid #000; padding:8px; margin-bottom:10px; page-break-inside:avoid;">
+                <h4 style="margin:0 0 6px 0; font-size:10pt;">
+                    III. DECYZJA ORGANIZATORA WYPOCZYNKU O ZAKWALIFIKOWANIU UCZESTNIKA
+                    WYPOCZYNKU DO UDZIAŁU W WYPOCZYNKU
+                </h4>
+                <div>Postanawia się<sup>1)</sup>:</div>
+                <div style="margin-top:3px;">
+                    <span t-out="'☒' if reg else '☐'"/> zakwalifikować i skierować uczestnika na wypoczynek
+                </div>
+                <div style="margin-top:3px;">
+                    <span>☐</span> odmówić ze względu na
+                    <div style="border-bottom:1px dotted #000; min-height:16px; padding:0 4px;"> </div>
+                </div>
+                <table style="width:100%; margin-top:16px; font-size:8pt;">
+                    <tr>
+                        <td style="width:35%; text-align:center;">
+                            <div style="border-top:1px dotted #000; width:90%; margin:0 auto;">(data)</div>
+                        </td>
+                        <td style="width:10%;"/>
+                        <td style="width:55%; text-align:center;">
+                            <div style="border-top:1px dotted #000; width:90%; margin:0 auto;">
+                                (podpis organizatora wypoczynku)
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- IV. Potwierdzenie kierownika -->
+            <div style="border:1px solid #000; padding:8px; margin-bottom:10px; page-break-inside:avoid;">
+                <h4 style="margin:0 0 6px 0; font-size:10pt;">
+                    IV. POTWIERDZENIE PRZEZ KIEROWNIKA WYPOCZYNKU POBYTU UCZESTNIKA
+                    WYPOCZYNKU W MIEJSCU WYPOCZYNKU
+                </h4>
+                <div>
+                    Uczestnik przebywał
+                    <div style="border-bottom:1px dotted #000; min-height:16px; padding:0 4px;">
+                        <strong t-out="(camp.camp_location or '') if camp else ''"/>
+                    </div>
+                    <div style="font-size:8pt; text-align:center;">(adres miejsca wypoczynku)</div>
+                </div>
+                <t t-set="iv_main" t-value="o.iv_presence_interval_ids[:1]"/>
+                <div style="margin-top:5px;">
+                    od dnia (dzień, miesiąc, rok)
+                    <span style="border-bottom:1px dotted #000; padding:0 14px;">
+                        <strong t-out="iv_main.from_date.strftime('%d.%m.%Y') if iv_main and iv_main.from_date else ''"/>
+                    </span>
+                    do dnia
+                    <span style="border-bottom:1px dotted #000; padding:0 14px;">
+                        <strong t-out="iv_main.to_date.strftime('%d.%m.%Y') if iv_main and iv_main.to_date else ''"/>
+                    </span>
+                </div>
+                <t t-if="len(o.iv_presence_interval_ids) &gt; 1">
+                    <div style="font-size:8.5pt; margin-top:3px;">
+                        <t t-foreach="o.iv_presence_interval_ids[1:]" t-as="itv">
+                            <div>
+                                od dnia <strong t-out="itv.from_date.strftime('%d.%m.%Y') if itv.from_date else '—'"/>
+                                do dnia <strong t-out="itv.to_date.strftime('%d.%m.%Y') if itv.to_date else '—'"/>
+                                <t t-if="itv.interval_type == 'temporary_pickup'"> (tymczasowy odbiór)</t>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+                <table style="width:100%; margin-top:16px; font-size:8pt;">
+                    <tr>
+                        <td style="width:35%; text-align:center; vertical-align:bottom;">
+                            <strong t-out="o.iv_signed_date.strftime('%d.%m.%Y') if o.iv_signed_date else ''"/>
+                            <div style="border-top:1px dotted #000; width:90%; margin:0 auto;">(data)</div>
+                        </td>
+                        <td style="width:10%;"/>
+                        <td style="width:55%; text-align:center; vertical-align:bottom;">
+                            <img t-if="o.iv_kierownik_signature"
+                                 t-att-src="image_data_uri(o.iv_kierownik_signature)"
+                                 style="max-height:36px;"/>
+                            <div style="border-top:1px dotted #000; width:90%; margin:0 auto;">
+                                (podpis kierownika wypoczynku)
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- V. Informacja kierownika o stanie zdrowia -->
+            <div style="border:1px solid #000; padding:8px; margin-bottom:10px; page-break-inside:avoid;">
+                <h4 style="margin:0 0 6px 0; font-size:10pt;">
+                    V. INFORMACJA KIEROWNIKA WYPOCZYNKU O STANIE ZDROWIA UCZESTNIKA
+                    WYPOCZYNKU W CZASIE TRWANIA WYPOCZYNKU ORAZ O CHOROBACH PRZEBYTYCH
+                    W JEGO TRAKCIE
+                </h4>
+                <div style="border-bottom:1px dotted #000; min-height:60px; white-space:pre-wrap; padding:2px 4px;">
+                    <t t-if="med.v_health_notes"><strong t-out="med.v_health_notes"/><br/></t>
+                    <t t-if="med.iii_health_events"><strong t-out="med.iii_health_events"/><br/></t>
+                    <t t-if="med.iii_medication_given">Podane leki: <strong t-out="med.iii_medication_given"/><br/></t>
+                    <t t-if="o.v_recommendations">Zalecenia: <strong t-out="o.v_recommendations"/></t>
+                </div>
+                <table style="width:100%; margin-top:16px; font-size:8pt;">
+                    <tr>
+                        <td style="width:35%; text-align:center; vertical-align:bottom;">
+                            <strong t-out="o.v_signed_place or ''"/>
+                            <t t-if="o.v_signed_date">
+                                <t t-if="o.v_signed_place">, </t>
+                                <strong t-out="o.v_signed_date.strftime('%d.%m.%Y')"/>
+                            </t>
+                            <div style="border-top:1px dotted #000; width:90%; margin:0 auto;">(miejscowość, data)</div>
+                        </td>
+                        <td style="width:10%;"/>
+                        <td style="width:55%; text-align:center; vertical-align:bottom;">
+                            <img t-if="o.v_kierownik_signature"
+                                 t-att-src="image_data_uri(o.v_kierownik_signature)"
+                                 style="max-height:36px;"/>
+                            <div style="border-top:1px dotted #000; width:90%; margin:0 auto;">
+                                (podpis kierownika wypoczynku)
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- VI. Informacje i spostrzeżenia wychowawcy -->
+            <div style="border:1px solid #000; padding:8px; margin-bottom:10px; page-break-inside:avoid;">
+                <h4 style="margin:0 0 6px 0; font-size:10pt;">
+                    VI. INFORMACJE I SPOSTRZEŻENIA WYCHOWAWCY WYPOCZYNKU DOTYCZĄCE
+                    UCZESTNIKA WYPOCZYNKU
+                </h4>
+                <div style="border-bottom:1px dotted #000; min-height:60px; white-space:pre-wrap; padding:2px 4px;">
+                    <t t-if="o.vi_observations"><strong t-out="o.vi_observations"/><br/></t>
+                    <t t-if="o.vi_recommendations">Zalecenia: <strong t-out="o.vi_recommendations"/></t>
+                </div>
+                <table style="width:100%; margin-top:16px; font-size:8pt;">
+                    <tr>
+                        <td style="width:35%; text-align:center; vertical-align:bottom;">
+                            <strong t-out="o.vi_signed_place or ''"/>
+                            <t t-if="o.vi_signed_date">
+                                <t t-if="o.vi_signed_place">, </t>
+                                <strong t-out="o.vi_signed_date.strftime('%d.%m.%Y')"/>
+                            </t>
+                            <div style="border-top:1px dotted #000; width:90%; margin:0 auto;">(miejscowość, data)</div>
+                        </td>
+                        <td style="width:10%;"/>
+                        <td style="width:55%; text-align:center; vertical-align:bottom;">
+                            <img t-if="o.vi_wychowawca_signature"
+                                 t-att-src="image_data_uri(o.vi_wychowawca_signature)"
+                                 style="max-height:36px;"/>
+                            <div style="border-top:1px dotted #000; width:90%; margin:0 auto;">
+                                (podpis wychowawcy wypoczynku)
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+        </template>
+
+    </data>
+</odoo>
