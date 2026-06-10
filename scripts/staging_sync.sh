@@ -34,7 +34,8 @@ ssh $STG "
 "
 
 echo "=== [4/7] STAGING: НЕЙТРАЛІЗАЦІЯ (пошта/SMS/crons OFF — ОБОВ'ЯЗКОВО до старту Odoo) ==="
-ssh $STG "docker exec campscout_db psql -U odoo -d $STG_DB" << 'SQL'
+# docker exec -i обов'язковий — без нього psql не читає heredoc (INC спринту 10.06)
+ssh $STG "docker exec -i campscout_db psql -U odoo -d $STG_DB" << 'SQL'
 UPDATE ir_mail_server SET active = false;
 UPDATE ir_cron SET active = false;
 UPDATE ir_config_parameter SET value='http://staging.campscout.eu' WHERE key='web.base.url';
@@ -43,13 +44,18 @@ INSERT INTO ir_config_parameter (key, value)
   WHERE NOT EXISTS (SELECT 1 FROM ir_config_parameter WHERE key='web.base.url.freeze');
 -- SMS: занулити токен провайдера, щоб жодне SMS не пішло
 UPDATE ir_config_parameter SET value='DISABLED_ON_STAGING' WHERE key ILIKE '%turbosms%token%' OR key ILIKE '%sms%api%key%';
+-- застрахуватись від черги: скасувати вихідні листи з prod-копії
+UPDATE mail_mail SET state='cancel' WHERE state='outgoing';
 SQL
+# верифікація нейтралізації — фейл скрипта якщо не 0
+ssh $STG "docker exec campscout_db psql -U odoo -d $STG_DB -tc \"SELECT count(*) FROM ir_mail_server WHERE active;\"" | grep -q '^ *0$' || { echo "🔴 НЕЙТРАЛІЗАЦІЯ НЕ ПРОЙШЛА — СТОП"; exit 1; }
 
 echo "=== [5/7] STAGING: filestore rsync (інкрементний; перший раз ~6.1G) ==="
 # через Mac-relay (між серверами прямого ключа нема); -z компресія
 rsync -az --delete -e ssh $PROD:/opt/campscout/odoo-data/filestore/$DB/ /tmp/fs_relay_$DB/
-rsync -az --delete -e ssh /tmp/fs_relay_$DB/ $STG:/opt/campscout/odoo-data/filestore/$STG_DB/
-ssh $STG "docker exec campscout_web bash -c 'chown -R odoo:odoo /var/lib/odoo/filestore 2>/dev/null' || true"
+# sudo rsync на приймачі — deploy не має прав писати у filestore (власник uid 101; INC спринту 10.06)
+rsync -az --delete --rsync-path="sudo rsync" -e ssh /tmp/fs_relay_$DB/ $STG:/opt/campscout/odoo-data/filestore/$STG_DB/
+ssh $STG "sudo chown -R 101:101 /opt/campscout/odoo-data/filestore/$STG_DB"
 
 echo "=== [6/7] STAGING: install fayna_camp_portal на prod-копію (репетиція міграції!) ==="
 ssh $STG "
