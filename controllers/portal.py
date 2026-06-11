@@ -464,7 +464,7 @@ class CampscoutPortal(CustomerPortal):
                     photos.append(
                         {
                             "name": att.name or "",
-                            "url": "/web/image/%s?access_token=%s" % (att.id, token),
+                            "url": f"/web/image/{att.id}?access_token={token}",
                         }
                     )
             stories_by_date.setdefault(story.date, []).append(

@@ -1543,7 +1543,6 @@ msgstr "Тип адреси"
 
 #. module: fayna_camp_portal
 #: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_admin_access_log
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_admin_access_log
 msgid "Admin Access Log (RODO)"
 msgstr "Лог доступу адміна (RODO)"
 
@@ -15032,16 +15031,6 @@ msgid "SMS до дитини — згода батька"
 msgstr "SMS до дитини — згода батька"
 
 #. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_sms_routing
-msgid "SMS маршрути"
-msgstr "SMS маршрути"
-
-#. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_sms_templates
-msgid "SMS шаблони"
-msgstr "SMS шаблони"
-
-#. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_product_product__camp_safety_description
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_product_template__camp_safety_description
 msgid "Safety"
@@ -19790,7 +19779,6 @@ msgstr ""
 "Історії з'являться тут одразу як вожаті опублікують перший щоденний звіт."
 
 #. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_activities
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.admin_as_instructor
 msgid "Активності"
 msgstr "Активності"
@@ -19814,11 +19802,6 @@ msgstr "Активні табори"
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_documents
 msgid "Актуальні версії документів"
 msgstr "Актуальні версії документів"
-
-#. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_allergens
-msgid "Алергени"
-msgstr "Алергени"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__omni_preferred_period
@@ -19869,11 +19852,6 @@ msgstr "Ви ще не у програмі"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__sendpulse_channel_ids
 msgid "Всі соціальні канали через які клієнт писав у SendPulse"
 msgstr "Всі соціальні канали через які клієнт писав у SendPulse"
-
-#. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_reviews
-msgid "Відгуки"
-msgstr "Відгуки"
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.admin_dashboard
@@ -19956,11 +19934,6 @@ msgid "Дітей не зареєстровано."
 msgstr "Дітей не зареєстровано."
 
 #. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_diet_profiles
-msgid "Дієтичні профілі"
-msgstr "Дієтичні профілі"
-
-#. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.admin_dashboard
 msgid "Дії"
 msgstr "Дії"
@@ -19975,11 +19948,6 @@ msgstr "Етап продажу (чат)"
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.admin_dashboard
 msgid "Жодного view-as ще не записано."
 msgstr "Жодного view-as ще не записано."
-
-#. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_journal
-msgid "Журнал дня"
-msgstr "Журнал дня"
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_my_home_campscout_hero
@@ -20005,19 +19973,9 @@ msgid "Закрити"
 msgstr "Закрити"
 
 #. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_training_records
-msgid "Записи навчання"
-msgstr "Записи навчання"
-
-#. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_support_request__request_type__question
 msgid "Запитання"
 msgstr "Запитання"
-
-#. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_support_requests
-msgid "Запити батьків"
-msgstr "Запити батьків"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -20030,11 +19988,6 @@ msgstr "Заплановано"
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_transport
 msgid "Заплановані та виконані трансфери для ваших дітей."
 msgstr "Заплановані та виконані трансфери для ваших дітей."
-
-#. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_events
-msgid "Заїзди (Events)"
-msgstr "Заїзди"
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_loyalty
@@ -20098,19 +20051,9 @@ msgid "Картка підписана"
 msgstr "Картка підписана"
 
 #. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_categories
-msgid "Категорії"
-msgstr "Категорії"
-
-#. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_participants_detail
 msgid "Кваліфікаційна картка"
 msgstr "Кваліфікаційна картка"
-
-#. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_participant_list
-msgid "Кваліфікаційні картки"
-msgstr "Кваліфікаційні картки"
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_participants
@@ -20123,19 +20066,9 @@ msgid "Коментар батьків"
 msgstr "Коментар батьків"
 
 #. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_commercial
-msgid "Комерція"
-msgstr "Комерція"
-
-#. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.admin_dashboard
 msgid "Кураторіум — у роботі"
 msgstr "Кураторіум — у роботі"
-
-#. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_training_courses
-msgid "Курси (eLearning)"
-msgstr "Курси"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__sendpulse_channel_count
@@ -20169,24 +20102,9 @@ msgid "Місто виїзду"
 msgstr "Місто виїзду"
 
 #. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_training
-msgid "Навчання"
-msgstr "Навчання"
-
-#. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_emergency
-msgid "Надзвичайні ситуації"
-msgstr "Надзвичайні ситуації"
-
-#. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_support_request__state__submitted
 msgid "Надіслано"
 msgstr "Надіслано"
-
-#. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_config
-msgid "Налаштування"
-msgstr "Налаштування"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__omni_addressing_vocative
@@ -20247,11 +20165,6 @@ msgstr "Обробка персональних даних"
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_participants
 msgid "Окрема картка + документи"
 msgstr "Окрема картка + документи"
-
-#. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_operations
-msgid "Операції"
-msgstr "Операції"
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.admin_dashboard
@@ -20349,11 +20262,6 @@ msgid "Персонал не призначено."
 msgstr "Персонал не призначено."
 
 #. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_meal_plans
-msgid "Плани харчування"
-msgstr "Плани харчування"
-
-#. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_support_request__state__refund_processing
 msgid "Повернення в обробці"
 msgstr "Повернення в обробці"
@@ -20399,30 +20307,14 @@ msgid "Політика захисту малолітніх і стандарт�
 msgstr "Політика захисту малолітніх і стандарти обслуговування в таборі"
 
 #. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_campscout_root
-msgid "Портал CampScout"
-msgstr "Портал CampScout"
-
-#. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_documents
 msgid "Правила користування батьківським особистим кабінетом"
 msgstr "Правила користування батьківським особистим кабінетом"
 
 #. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_loyalty
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_loyalty
 msgid "Програма лояльності"
 msgstr "Програма лояльності"
-
-#. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_products
-msgid "Програми (Products)"
-msgstr "Програми"
-
-#. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_incidents
-msgid "Протоколи НС"
-msgstr "Протоколи НС"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__omni_social_profile_url
@@ -20474,11 +20366,6 @@ msgid "Розглядається"
 msgstr "Розглядається"
 
 #. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_schedule
-msgid "Розклад"
-msgstr "Розклад"
-
-#. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__sendpulse_connect_count
 msgid "Розмов"
 msgstr "Розмов"
@@ -20487,11 +20374,6 @@ msgstr "Розмов"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__sendpulse_connect_ids
 msgid "Розмови SendPulse"
 msgstr "Розмови SendPulse"
-
-#. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_installment_plans
-msgid "Розстрочки"
-msgstr "Розстрочки"
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_my_home_campscout_hero
@@ -20531,11 +20413,6 @@ msgstr "Стиль звернення"
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_support_request__state__approved
 msgid "Схвалено"
 msgstr "Схвалено"
-
-#. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_management
-msgid "Табори"
-msgstr "Табори"
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.admin_dashboard
@@ -20615,7 +20492,6 @@ msgid "Усі сертифікати дійсні мінімум 30 днів."
 msgstr "Усі сертифікати дійсні мінімум 30 днів."
 
 #. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_participants
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.admin_as_kierownik
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.admin_as_parent
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_my_home_campscout_hero
@@ -20637,11 +20513,6 @@ msgstr "Форс-мажор"
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_my_home_campscout_hero
 msgid "Фінансові документи"
 msgstr "Фінансові документи"
-
-#. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_nutrition
-msgid "Харчування"
-msgstr "Харчування"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_support_request__reason__illness_parent

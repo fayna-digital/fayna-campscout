@@ -49,6 +49,7 @@ def parse_bs_date(raw):
         return date(int(m[1]), 12, 31)
     return False
 
+
 _logger = logging.getLogger("populate_from_bs")
 
 SO = env["sale.order"].sudo()  # noqa: F821 (env інжектиться odoo shell)
@@ -70,9 +71,7 @@ report = []
 
 for so in orders:
     # реєстрація цього замовлення (event_sale зв'язує через sale_order_id)
-    regs = Reg.search(
-        [("sale_order_id", "=", so.id), ("state", "in", ("open", "done"))]
-    )
+    regs = Reg.search([("sale_order_id", "=", so.id), ("state", "in", ("open", "done"))])
     if not regs:
         no_reg += 1
         report.append(f"NO-REG  SO {so.name}: '{so.bs_child_name}' — реєстрації нема")

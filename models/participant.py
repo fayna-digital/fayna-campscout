@@ -1428,8 +1428,10 @@ class CampParticipant(models.Model):
         for rec in self:
             if rec.qualification_signed and not rec.birth_date:
                 raise ValidationError(
-                    _("Date of birth is required before the qualification card is signed. "
-                      "Потрібна дата народження для підпису.")
+                    _(
+                        "Date of birth is required before the qualification card is signed. "
+                        "Потрібна дата народження для підпису."
+                    )
                 )
 
     # --- res.partner core-plumbing overrides -----------------------------

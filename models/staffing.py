@@ -135,7 +135,9 @@ class CampStaffVacancy(models.Model):
     )
     created_reason = fields.Char(
         string=_("Created because"),
-        help=_("Why the engine opened this vacancy (e.g. 'registrations crossed art. 92c threshold')."),
+        help=_(
+            "Why the engine opened this vacancy (e.g. 'registrations crossed art. 92c threshold')."
+        ),
     )
     staff_id = fields.Many2one(
         "camp.staff",
@@ -144,7 +146,9 @@ class CampStaffVacancy(models.Model):
         index=True,
         ondelete="set null",
         string=_("Hired staff"),
-        help=_("camp.staff record created by Hire (draft — RSPTS gate applies before confirmation)."),
+        help=_(
+            "camp.staff record created by Hire (draft — RSPTS gate applies before confirmation)."
+        ),
     )
 
     @api.model
