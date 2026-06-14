@@ -29,20 +29,26 @@ for ev in events:
                 ).mapped("sale_order_id")
                 inv_lines = sos.invoice_ids.filtered(
                     lambda m: m.move_type == "out_invoice" and m.state == "posted"
-                ).invoice_line_ids.filtered(lambda l: not l.analytic_distribution)
+                ).invoice_line_ids.filtered(lambda line: not line.analytic_distribution)
                 if not DRY_RUN and inv_lines:
-                    inv_lines.write(
-                        {"analytic_distribution": {str(analytic.id): 100}}
-                    )
+                    inv_lines.write({"analytic_distribution": {str(analytic.id): 100}})
                 inv_lines_tagged += len(inv_lines)
             # --- (2) вакансії §2 -----------------------------------------
-            before = env["camp.staff.vacancy"].sudo().search_count(  # noqa: F821
-                [("event_id", "=", ev.id)]
+            before = (
+                env["camp.staff.vacancy"]
+                .sudo()
+                .search_count(  # noqa: F821
+                    [("event_id", "=", ev.id)]
+                )
             )
             if not DRY_RUN:
                 ev._sync_staff_vacancies()
-            after = env["camp.staff.vacancy"].sudo().search_count(  # noqa: F821
-                [("event_id", "=", ev.id)]
+            after = (
+                env["camp.staff.vacancy"]
+                .sudo()
+                .search_count(  # noqa: F821
+                    [("event_id", "=", ev.id)]
+                )
             )
             vac_created += after - before
             # --- (3) програма-скелет -------------------------------------

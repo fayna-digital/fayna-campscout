@@ -98,7 +98,7 @@ class TestPortalCampDay(HttpCase):
     def test_parent_sees_own_event_camp_day(self):
         """Parent with a registration: 200 + event name + report content."""
         self.authenticate("campday_parent@campscout.test", "TestCampDay1234!")
-        resp = self.url_open("/my/camp-day/%s" % self.event_own.id)
+        resp = self.url_open(f"/my/camp-day/{self.event_own.id}")
         self.assertEqual(resp.status_code, 200)
         self.assertIn("Oboz CampDay Wlasny", resp.text)
         self.assertIn("Poranna gimnastyka nad jeziorem", resp.text)
@@ -108,20 +108,18 @@ class TestPortalCampDay(HttpCase):
     def test_foreign_event_redirects_to_my(self):
         """Event without the parent's registration → redirect to /my."""
         self.authenticate("campday_parent@campscout.test", "TestCampDay1234!")
-        resp = self.url_open(
-            "/my/camp-day/%s" % self.event_other.id, allow_redirects=False
-        )
+        resp = self.url_open(f"/my/camp-day/{self.event_other.id}", allow_redirects=False)
         self.assertIn(resp.status_code, (301, 302, 303, 307, 308))
         location = resp.headers.get("Location", "")
         self.assertTrue(
             location.rstrip("/").endswith("/my"),
-            "Expected redirect to /my, got %r" % location,
+            f"Expected redirect to /my, got {location!r}",
         )
 
     def test_staff_only_fields_not_leaked(self):
         """health_incidents / kierownik_notes never reach the parent page."""
         self.authenticate("campday_parent@campscout.test", "TestCampDay1234!")
-        resp = self.url_open("/my/camp-day/%s" % self.event_own.id)
+        resp = self.url_open(f"/my/camp-day/{self.event_own.id}")
         self.assertEqual(resp.status_code, 200)
         self.assertNotIn(HEALTH_SENTINEL, resp.text)
         self.assertNotIn(KIEROWNIK_SENTINEL, resp.text)
@@ -138,6 +136,6 @@ class TestPortalCampDay(HttpCase):
             }
         )
         self.authenticate("campday_parent@campscout.test", "TestCampDay1234!")
-        resp = self.url_open("/my/camp-day/%s" % self.event_own.id)
+        resp = self.url_open(f"/my/camp-day/{self.event_own.id}")
         self.assertEqual(resp.status_code, 200)
         self.assertNotIn(draft_sentinel, resp.text)

@@ -290,9 +290,11 @@ class TestRegulaminTeczka(TransactionCase):
 
     def test_teczka_unique_per_event(self):
         self.env["camp.teczka.ko"].create({"event_id": self.event.id})
-        with self.assertRaises(Exception):  # psycopg2 IntegrityError wrapped
-            with self.env.cr.savepoint():
-                self.env["camp.teczka.ko"].create({"event_id": self.event.id})
+        with (  # psycopg2 IntegrityError wrapped
+            self.assertRaises(Exception),
+            self.env.cr.savepoint(),
+        ):
+            self.env["camp.teczka.ko"].create({"event_id": self.event.id})
 
     def test_teczka_wypadki_graceful_without_model(self):
         """camp.incident.register is built by a parallel agent — until it is

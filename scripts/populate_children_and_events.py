@@ -72,17 +72,13 @@ def populate_children_and_events():
         # --- Phase 1: Populate children without group_id ---
 
         _logger.info("=== Phase 1: Populating children (group_id assignment) ===")
-        report["details"].append(
-            ("children_start", "Finding children without group_id...", "")
-        )
+        report["details"].append(("children_start", "Finding children without group_id...", ""))
 
         participants = env["camp.participant"].search(
             [("group_id", "=", False), ("birth_date", "!=", False)]
         )
         _logger.info(f"Found {len(participants)} children without group_id")
-        report["details"].append(
-            ("children_search", f"Found {len(participants)} children", "")
-        )
+        report["details"].append(("children_search", f"Found {len(participants)} children", ""))
 
         for participant in participants:
             report["children_processed"] += 1
@@ -144,12 +140,8 @@ def populate_children_and_events():
 
             except Exception as exc:
                 report["children_failed"] += 1
-                _logger.exception(
-                    f"Error processing child {participant.display_name}: {exc}"
-                )
-                report["details"].append(
-                    ("child_error", participant.display_name, str(exc))
-                )
+                _logger.exception(f"Error processing child {participant.display_name}: {exc}")
+                report["details"].append(("child_error", participant.display_name, str(exc)))
 
             # Commit in batches.
             if report["children_processed"] % BATCH_SIZE == 0:
@@ -189,18 +181,14 @@ def populate_children_and_events():
                         )
                     except Exception as exc:
                         _logger.exception(f"Failed to create budget for {event.name}: {exc}")
-                        report["details"].append(
-                            ("event_budget_failed", event.name, str(exc))
-                        )
+                        report["details"].append(("event_budget_failed", event.name, str(exc)))
                 else:
                     report["details"].append(
                         ("event_budget_exists", event.name, f"budget_id={budget.id}")
                     )
 
                 # --- Teczka KO ---
-                teczka = env["camp.teczka.ko"].search(
-                    [("event_id", "=", event.id)], limit=1
-                )
+                teczka = env["camp.teczka.ko"].search([("event_id", "=", event.id)], limit=1)
                 if not teczka:
                     try:
                         teczka = env["camp.teczka.ko"].create({"event_id": event.id})
@@ -210,12 +198,8 @@ def populate_children_and_events():
                             ("event_teczka_created", event.name, f"teczka_id={teczka.id}")
                         )
                     except Exception as exc:
-                        _logger.exception(
-                            f"Failed to create teczka.ko for {event.name}: {exc}"
-                        )
-                        report["details"].append(
-                            ("event_teczka_failed", event.name, str(exc))
-                        )
+                        _logger.exception(f"Failed to create teczka.ko for {event.name}: {exc}")
+                        report["details"].append(("event_teczka_failed", event.name, str(exc)))
                 else:
                     report["details"].append(
                         ("event_teczka_exists", event.name, f"teczka_id={teczka.id}")
@@ -245,12 +229,8 @@ def populate_children_and_events():
                             )
                         )
                     except Exception as exc:
-                        _logger.exception(
-                            f"Failed to create program for {event.name}: {exc}"
-                        )
-                        report["details"].append(
-                            ("event_program_failed", event.name, str(exc))
-                        )
+                        _logger.exception(f"Failed to create program for {event.name}: {exc}")
+                        report["details"].append(("event_program_failed", event.name, str(exc)))
                 else:
                     report["details"].append(
                         (

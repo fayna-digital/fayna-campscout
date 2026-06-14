@@ -209,9 +209,12 @@ class TestIncidentCard(TransactionCase):
 
     def test_register_unique_per_event(self):
         self.env["camp.incident.register"].create({"event_id": self.event.id})
-        with mute_logger("odoo.sql_db"), self.assertRaises(IntegrityError):
-            with self.env.cr.savepoint():
-                self.env["camp.incident.register"].create({"event_id": self.event.id})
+        with (
+            mute_logger("odoo.sql_db"),
+            self.assertRaises(IntegrityError),
+            self.env.cr.savepoint(),
+        ):
+            self.env["camp.incident.register"].create({"event_id": self.event.id})
 
     # ------------------------------------------------------------------
     # Register — lock after turnus closing

@@ -155,9 +155,7 @@ class CampCreateWizard(models.TransientModel):
         if product and product.exists():
             return product
         product_model = self.env["product.product"]
-        type_field = (
-            "detailed_type" if "detailed_type" in product_model._fields else "type"
-        )
+        type_field = "detailed_type" if "detailed_type" in product_model._fields else "type"
         event_supported = type_field == "detailed_type" and any(
             key == "event" for key, _label in product_model._fields[type_field].selection
         )
