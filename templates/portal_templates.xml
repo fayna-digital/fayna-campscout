@@ -6,13 +6,13 @@
      Replaces the 3 separate docs_entry cards with one structured block.
      ============================================================================ -->
 
-<!-- Rename "My account" → "Panel Klienta" / "Кабінет клієнта" per legal
+<!-- Rename "My account" → "Panel Klienta" / "Кабінет батьків" per legal
      documents (regulamin-panelu-klienta.html). Match by structure, not
      text — the 'My account' string is already translated at render
      time in some locales, so text() XPath would fail. -->
 <template id="portal_layout_title_campscout" inherit_id="portal.portal_layout" priority="25">
     <xpath expr="//div[hasclass('wrapper')]/h3[hasclass('my-3')]" position="replace">
-        <h3 class="my-3">Кабінет клієнта</h3>
+        <h3 class="my-3">Кабінет батьків</h3>
     </xpath>
 </template>
 
@@ -299,13 +299,13 @@
      ============================================================================ -->
 
 <template id="portal_breadcrumbs_campscout" inherit_id="portal.portal_breadcrumbs" priority="20">
-    <!-- Replace the icon-only home link with an explicit «Кабінет клієнта»
+    <!-- Replace the icon-only home link with an explicit «Кабінет батьків»
          text so parents always see the way back, even on stock Odoo pages
          (/my/invoices, /my/orders) where we don't render our own back link. -->
     <xpath expr="//li[hasclass('breadcrumb-item') and hasclass('ms-1')]" position="replace">
         <li class="breadcrumb-item ms-1">
             <a href="/my/home" class="cs-crumb-home">
-                <i class="fa fa-home me-1"/>Кабінет клієнта
+                <i class="fa fa-home me-1"/>Кабінет батьків
             </a>
         </li>
     </xpath>

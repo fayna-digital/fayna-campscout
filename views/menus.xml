@@ -95,7 +95,7 @@
             sequence="30"/>
 
         <menuitem id="menu_camp_program_wypoczynku"
-            name="Program Wypoczynku (Załącznik 9)"
+            name="Program wypoczynku"
             parent="menu_operations"
             action="action_camp_program_wypoczynku"
             sequence="40"/>
@@ -109,7 +109,7 @@
         <!-- ── sprint 2026-06-10: §2/§4/§11/§12 ─────────────────────── -->
 
         <menuitem id="menu_camp_groups"
-            name="Grupy wychowawcze (§2)"
+            name="Grupy wychowawcze"
             parent="menu_operations"
             action="action_camp_group"
             sequence="15"/>

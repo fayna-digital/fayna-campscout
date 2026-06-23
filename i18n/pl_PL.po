@@ -729,8 +729,8 @@ msgstr ""
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_breadcrumbs_campscout
-msgid "<i class=\"fa fa-home me-1\"/>Кабінет клієнта"
-msgstr "<i class=\"fa fa-home me-1\"/>Kabinet klienta"
+msgid "<i class=\"fa fa-home me-1\"/>Кабінет батьків"
+msgstr "<i class=\"fa fa-home me-1\"/>Panel Rodzica"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -20143,8 +20143,8 @@ msgstr "Кабінет батька:"
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_layout_title_campscout
-msgid "Кабінет клієнта"
-msgstr "Кабінет клієнта"
+msgid "Кабінет батьків"
+msgstr "Panel Rodzica"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__sendpulse_channel_ids
