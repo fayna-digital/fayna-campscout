@@ -59,7 +59,7 @@
         <field name="name">camp.escort.list</field>
         <field name="model">camp.escort</field>
         <field name="arch" type="xml">
-            <list string="Asysta / Konwój">
+            <tree string="Asysta / Konwój">
                 <field name="name"/>
                 <field name="participant_id"/>
                 <field name="direction"/>
@@ -67,14 +67,14 @@
                 <field name="pkp_station"/>
                 <field name="departure_datetime"/>
                 <field name="state"/>
-            </list>
+            </tree>
         </field>
     </record>
 
     <record id="action_camp_escort" model="ir.actions.act_window">
         <field name="name">Asysta / Konwój</field>
         <field name="res_model">camp.escort</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form</field>
     </record>
 
     <menuitem id="menu_camp_escort"
