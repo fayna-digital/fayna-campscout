@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Кабінет батьків: Indywidualna asysta / konwój (camp.escort).
 
 auth=user (на відміну від старого public bs-флоу). Доступ обмежує record-rule
@@ -104,7 +103,7 @@ class EscortPortal(CustomerPortal):
                 "fayna_camp_portal.portal_escort_form",
                 {"escort": escort, "page_name": "escort", "error": str(e)},
             )
-        return request.redirect("/my/escort/%s" % escort.id)
+        return request.redirect(f"/my/escort/{escort.id}")
 
     # ── Підпис (canvas → base64 PNG) ─────────────────────────────────────
     @http.route(

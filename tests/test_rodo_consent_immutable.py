@@ -7,9 +7,10 @@
 #
 # Source: fayna_rodo_compliance/models/fayna_rodo_consent_log.py write()/unlink().
 # This module's signoff flow relies on that immutability for legal proof.
+from unittest import skip
+
 from odoo.exceptions import UserError
 from odoo.tests.common import TransactionCase, tagged
-from unittest import skip
 
 
 @tagged("post_install", "-at_install", "fayna_camp_portal")

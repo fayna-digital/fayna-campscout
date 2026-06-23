@@ -293,7 +293,7 @@ class CampscoutPortal(CustomerPortal):
                     "error": str(e),
                 },
             )
-        return http.request.redirect("/my/participants/%s" % participant.id)
+        return http.request.redirect(f"/my/participants/{participant.id}")
 
     @http.route(
         ["/my/participants/<int:participant_id>/sign"],

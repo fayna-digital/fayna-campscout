@@ -11,8 +11,9 @@
 # NB: this exercises native event_sale linkage (product.service_tracking='event'
 # + event.event.ticket). If a future Odoo version renames those, the SETUP — not
 # the assertion — is what to adjust; the assertions encode the requirement.
-from odoo.tests.common import TransactionCase, tagged
 from unittest import skip
+
+from odoo.tests.common import TransactionCase, tagged
 
 _PARAM_SALES_ACTIVE = "fayna_camp_portal.sales_active"
 

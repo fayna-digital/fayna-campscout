@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """camp.escort — Indywidualna asysta / konwój uczestnika.
 
 Збір даних супроводу дитини на конкретний заїзд (одна дитина може їхати на
@@ -118,7 +117,7 @@ class CampEscort(models.Model):
         dir_labels = dict(self._fields["direction"].selection)
         for rec in self:
             who = rec.participant_id.display_name or _("Asysta")
-            rec.name = "%s — %s" % (who, dir_labels.get(rec.direction, ""))
+            rec.name = "{} — {}".format(who, dir_labels.get(rec.direction, ""))
 
     # NB: строгий constraint participant.partner == registration.partner ПРИБРАНО
     # (виявлено на staging-даних 2026-06-23): у кампі registration.partner=батько,

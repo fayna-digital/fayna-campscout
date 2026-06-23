@@ -148,7 +148,7 @@ class TestEscortSignoff(TransactionCase):
             ("direction", "powrot"),
         ):
             with self.assertRaises(
-                UserError, msg="escort field %s must freeze after signed" % field
+                UserError, msg=f"escort field {field} must freeze after signed"
             ):
                 escort.with_user(staff).write({field: value})
 

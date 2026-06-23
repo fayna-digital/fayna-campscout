@@ -256,7 +256,7 @@ class TestSignoffRodo(TransactionCase):
             ("allergies", "changed"),
         ):
             with self.assertRaises(
-                UserError, msg="protected field %s must be frozen after signoff" % field
+                UserError, msg=f"protected field {field} must be frozen after signoff"
             ):
                 child.with_user(staff).write({field: value})
 
