@@ -18,8 +18,8 @@ from odoo.tests.common import TransactionCase, new_test_user, tagged
 
 _PNG_1x1 = base64.b64encode(
     base64.b64decode(
-        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk"
-        "+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+        "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAECAIAAAA8r+mnAAAAFElEQVR4nGMU"
+        "ERFhwAaYsIqSJQEAGOwARMaxOEQAAAAASUVORK5CYII="
     )
 ).decode()
 

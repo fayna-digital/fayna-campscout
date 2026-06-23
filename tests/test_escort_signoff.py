@@ -16,8 +16,8 @@ from odoo.tests.common import TransactionCase, new_test_user, tagged
 
 _PNG_1x1 = base64.b64encode(
     base64.b64decode(
-        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk"
-        "+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+        "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAECAIAAAA8r+mnAAAAFElEQVR4nGMU"
+        "ERFhwAaYsIqSJQEAGOwARMaxOEQAAAAASUVORK5CYII="
     )
 ).decode()
 
@@ -68,7 +68,7 @@ class TestEscortSignoff(TransactionCase):
         return cls.env["camp.escort"].create(
             {
                 "participant_id": child.id,
-                "direction": "to_camp",
+                "direction": "oba",
                 "home_city": "Wrocław",
                 "pkp_station": "Wrocław Główny",
             }
@@ -133,7 +133,7 @@ class TestEscortSignoff(TransactionCase):
         for field, value in (
             ("pkp_station", "Kraków Główny"),
             ("escort_person_name", "Ktoś Inny"),
-            ("direction", "from_camp"),
+            ("direction", "powrot"),
         ):
             with self.assertRaises(
                 UserError, msg="escort field %s must freeze after signed" % field

@@ -43,7 +43,6 @@ class TestRegistrationSeats(TransactionCase):
             {
                 "name": "Obóz 2026 — Turnus 1",
                 "type": "service",
-                "service_tracking": "event",
                 "list_price": 2000.0,
             }
         )
