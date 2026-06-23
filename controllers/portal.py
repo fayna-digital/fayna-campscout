@@ -616,3 +616,58 @@ class CampscoutPortal(CustomerPortal):
                 "page_name": "camp_day",
             },
         )
+
+    # ──────────────────────────────────────────────────────────────────────
+    # /my/support — Звернення (camp.support.request)
+    #
+    # The model already inherits portal.mixin with access_url
+    # `/my/support/<id>` (models/portal_mixin_extensions.py) and the home
+    # hero links here, but the matching HTTP routes were missing — every
+    # «Звернення» link 404'd. These two read-only routes close that gap.
+    # Records are scoped to the current partner via portal.mixin's own
+    # access-token check (_document_check_access) on the detail page and an
+    # explicit partner_id domain on the list.
+    # ──────────────────────────────────────────────────────────────────────
+
+    @http.route("/my/support", type="http", auth="user", website=True)
+    def portal_my_support(self, **kw):
+        """List support requests (question / cancel / transfer) of this parent."""
+        partner = http.request.env.user.partner_id
+        env_sudo = http.request.env(su=True)
+        try:
+            supports = env_sudo["camp.support.request"].search(
+                [("partner_id", "=", partner.id)],
+                order="submission_date desc, id desc",
+            )
+        except (AccessError, MissingError) as e:
+            _logger.exception("[CS] support list load failed: %s", e)
+            supports = env_sudo["camp.support.request"]
+        return http.request.render(
+            "fayna_camp_portal.portal_support",
+            {
+                "supports": supports,
+                "page_name": "support",
+            },
+        )
+
+    @http.route(["/my/support/<int:support_id>"], type="http", auth="user", website=True)
+    def portal_my_support_detail(self, support_id, access_token=None, **kw):
+        """Single support request detail with chatter — token-aware via portal.mixin."""
+        try:
+            support_sudo = self._document_check_access(
+                "camp.support.request", support_id, access_token
+            )
+        except (AccessError, MissingError):
+            return http.request.redirect("/my/support")
+        values = self._prepare_portal_layout_values()
+        values.update(
+            {
+                "support": support_sudo,
+                "page_name": "support",
+                "user_id": http.request.env.user,
+                "token": access_token,
+            }
+        )
+        return http.request.render(
+            "fayna_camp_portal.portal_support_detail", values
+        )

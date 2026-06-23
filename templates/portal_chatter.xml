@@ -35,15 +35,17 @@
                     <h2 class="cs-page-title" t-esc="participant.display_name"/>
                     <p class="cs-page-subtitle">
                         <t t-if="participant.qualification_signed">
-                            <span class="badge bg-success">Картка підписана</span>
+                            <span class="cs-reg-badge cs-badge-success">Картка підписана</span>
                         </t>
                         <t t-else="">
-                            <span class="badge bg-warning text-dark">Картка не заповнена</span>
+                            <span class="cs-reg-badge cs-badge-warning">Картка не заповнена</span>
                         </t>
                     </p>
                 </div>
 
-                <!-- Тіло картки kwalifikacyjnej — секція I (read-only) + editable kontakty/special_needs + підпис -->
+                <!-- Тіло картки kwalifikacyjnej — секція I (read-only) + editable kontakty/special_needs + підпис.
+                     Візуально вирівняно з рештою кабінету: cs-participant-section / cs-section-* / cs-dl /
+                     cs-btn-* / cs-reg-badge / cs-alert-signed (див. static/src/scss/portal_hero.scss). -->
                 <div class="cs-participant-card mb-4">
 
                     <!-- Помилка валідації з /submit (UserError/ValidationError) -->
@@ -52,24 +54,21 @@
                     </t>
 
                     <!-- Секція I — дані з реєстрації (READ-ONLY, не редагуються батьком) -->
-                    <div class="card mb-3 shadow-sm">
-                        <div class="card-header"><strong>I. Dane uczestnika</strong></div>
-                        <div class="card-body">
-                            <div class="row g-2">
-                                <div class="col-12 col-md-6">
-                                    <small class="text-muted d-block">Imię</small>
-                                    <span t-esc="participant.first_name or '—'"/>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <small class="text-muted d-block">Nazwisko</small>
-                                    <span t-esc="participant.last_name or '—'"/>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <small class="text-muted d-block">Data urodzenia</small>
-                                    <span t-esc="participant.birth_date and participant.birth_date.strftime('%d.%m.%Y') or '—'"/>
-                                </div>
-                            </div>
-                            <p class="text-muted small mb-0 mt-2">
+                    <div class="cs-participant-section mb-4">
+                        <div class="cs-section-head">
+                            <h5>I. Dane uczestnika</h5>
+                            <span class="cs-reg-badge cs-badge-muted">Z rejestracji</span>
+                        </div>
+                        <div class="cs-section-body">
+                            <dl class="cs-dl">
+                                <dt>Imię</dt>
+                                <dd t-esc="participant.first_name or '—'"/>
+                                <dt>Nazwisko</dt>
+                                <dd t-esc="participant.last_name or '—'"/>
+                                <dt>Data urodzenia</dt>
+                                <dd t-esc="participant.birth_date and participant.birth_date.strftime('%d.%m.%Y') or '—'"/>
+                            </dl>
+                            <p class="text-muted small mb-0 mt-3">
                                 Te dane pochodzą z rejestracji. Aby je poprawić — skontaktuj się z koordynatorem.
                             </p>
                         </div>
@@ -80,14 +79,16 @@
 
                         <!-- Editable-поля: kontakty alarmowe + potrzeby specjalne (POST → /submit) -->
                         <form t-attf-action="/my/participants/#{participant.id}/submit" method="post"
-                              class="card mb-3 shadow-sm">
+                              class="cs-participant-section mb-4">
                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                            <div class="card-header"><strong>Kontakty alarmowe i potrzeby specjalne</strong></div>
-                            <div class="card-body">
-                                <div class="row g-3">
-                                    <!-- Kontakt alarmowy 1 (wymagany do podpisu) -->
+                            <div class="cs-section-head">
+                                <h5>II. Kontakty alarmowe i potrzeby</h5>
+                            </div>
+                            <div class="cs-section-body">
+                                <div class="cs-subsection-title">Kontakt alarmowy 1 (wymagany)</div>
+                                <div class="row g-3 mb-3">
                                     <div class="col-12 col-md-4">
-                                        <label class="form-label">Kontakt alarmowy 1 — imię i nazwisko *</label>
+                                        <label class="form-label">Imię i nazwisko *</label>
                                         <input type="text" name="emergency_contact_1_name" class="form-control"
                                                t-att-value="participant.emergency_contact_1_name or ''"/>
                                     </div>
@@ -101,9 +102,11 @@
                                         <input type="text" name="emergency_contact_1_relation" class="form-control"
                                                t-att-value="participant.emergency_contact_1_relation or ''"/>
                                     </div>
-                                    <!-- Kontakt alarmowy 2 (opcjonalny) -->
+                                </div>
+                                <div class="cs-subsection-title">Kontakt alarmowy 2 (opcjonalny)</div>
+                                <div class="row g-3 mb-3">
                                     <div class="col-12 col-md-4">
-                                        <label class="form-label">Kontakt alarmowy 2 — imię i nazwisko</label>
+                                        <label class="form-label">Imię i nazwisko</label>
                                         <input type="text" name="emergency_contact_2_name" class="form-control"
                                                t-att-value="participant.emergency_contact_2_name or ''"/>
                                     </div>
@@ -117,41 +120,49 @@
                                         <input type="text" name="emergency_contact_2_relation" class="form-control"
                                                t-att-value="participant.emergency_contact_2_relation or ''"/>
                                     </div>
-                                    <!-- Potrzeby specjalne -->
+                                </div>
+                                <div class="cs-subsection-title">Potrzeby specjalne</div>
+                                <div class="row g-3">
                                     <div class="col-12">
-                                        <label class="form-label">Potrzeby specjalne dziecka</label>
+                                        <label class="form-label">Potrzeby specjalne dziecka (dieta, alergie, leki, …)</label>
                                         <textarea name="special_needs" class="form-control" rows="3"
                                                   t-esc="participant.special_needs or ''"/>
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-footer">
-                                <button type="submit" class="btn btn-primary">Zapisz</button>
+                            <div class="cs-section-footer">
+                                <button type="submit" class="cs-btn-primary">Zapisz dane</button>
                             </div>
                         </form>
 
-                        <!-- Signature pad (mobile-first canvas) — копія escort 1:1 -->
-                        <div class="card mb-3 shadow-sm">
-                            <div class="card-header"><strong>Podpis rodzica / opiekuna</strong></div>
-                            <div class="card-body">
-                                <p class="text-muted small">
-                                    Podpisując kartę potwierdzasz poprawność danych. Po podpisie pól nie da się już zmienić.
+                        <!-- Signature pad (mobile-first canvas) — патерн escort, стилізований cs-sign-pad -->
+                        <div class="cs-participant-section mb-4">
+                            <div class="cs-section-head">
+                                <h5>III. Podpis rodzica / opiekuna</h5>
+                            </div>
+                            <div class="cs-section-body">
+                                <p class="text-muted small mb-3">
+                                    Podpisując kartę potwierdzasz poprawność danych.
+                                    Po podpisie pól nie da się już zmienić.
                                 </p>
-                                <canvas id="participant_sign_pad" width="320" height="140"
-                                        style="border:1px solid #ccc; touch-action:none; max-width:100%;"></canvas>
-                                <div class="mt-2">
-                                    <button type="button" class="btn btn-outline-secondary btn-sm" id="participant_sign_clear">Wyczyść</button>
-                                    <button type="button" class="btn btn-success btn-sm" id="participant_sign_save"
-                                            t-attf-data-participant-id="#{participant.id}">Podpisz kartę</button>
+                                <div class="cs-sign-pad-wrap">
+                                    <canvas id="participant_sign_pad" width="320" height="140"
+                                            class="cs-sign-pad"></canvas>
+                                    <span class="cs-sign-pad-label">Podpis</span>
                                 </div>
+                            </div>
+                            <div class="cs-section-footer d-flex flex-wrap gap-2">
+                                <button type="button" class="cs-btn-secondary" id="participant_sign_clear">Wyczyść</button>
+                                <button type="button" class="cs-btn-primary" id="participant_sign_save"
+                                        t-attf-data-participant-id="#{participant.id}">Podpisz kartę</button>
                             </div>
                         </div>
                     </t>
 
                     <!-- ===== STAN 2: картка ПІДПИСАНА → read-only зведення + PDF ===== -->
                     <t t-if="participant.qualification_signed">
-                        <div class="alert alert-success">
-                            Karta podpisana
+                        <div class="alert alert-success cs-alert-signed">
+                            <strong>Karta podpisana</strong>
                             <t t-if="participant.qualification_signed_date">
                                 — <t t-esc="participant.qualification_signed_date.strftime('%d.%m.%Y %H:%M')"/>
                             </t>
@@ -160,33 +171,38 @@
                             </t>
                         </div>
 
-                        <div class="card mb-3 shadow-sm">
-                            <div class="card-header"><strong>Kontakty alarmowe</strong></div>
-                            <div class="card-body">
-                                <div class="row g-2">
-                                    <div class="col-12 col-md-6">
-                                        <small class="text-muted d-block">Kontakt 1</small>
-                                        <span t-esc="participant.emergency_contact_1_name or '—'"/>
-                                        <span t-if="participant.emergency_contact_1_phone">, <t t-esc="participant.emergency_contact_1_phone"/></span>
-                                    </div>
-                                    <div class="col-12 col-md-6" t-if="participant.emergency_contact_2_name">
-                                        <small class="text-muted d-block">Kontakt 2</small>
-                                        <span t-esc="participant.emergency_contact_2_name"/>
-                                        <span t-if="participant.emergency_contact_2_phone">, <t t-esc="participant.emergency_contact_2_phone"/></span>
-                                    </div>
-                                    <div class="col-12" t-if="participant.special_needs">
-                                        <small class="text-muted d-block">Potrzeby specjalne</small>
-                                        <span t-esc="participant.special_needs"/>
-                                    </div>
-                                </div>
+                        <div class="cs-participant-section mb-4">
+                            <div class="cs-section-head">
+                                <h5>Kontakty alarmowe i potrzeby</h5>
+                            </div>
+                            <div class="cs-section-body">
+                                <dl class="cs-dl">
+                                    <dt>Kontakt 1</dt>
+                                    <dd>
+                                        <t t-esc="participant.emergency_contact_1_name or '—'"/>
+                                        <t t-if="participant.emergency_contact_1_phone">, <t t-esc="participant.emergency_contact_1_phone"/></t>
+                                    </dd>
+                                    <t t-if="participant.emergency_contact_2_name">
+                                        <dt>Kontakt 2</dt>
+                                        <dd>
+                                            <t t-esc="participant.emergency_contact_2_name"/>
+                                            <t t-if="participant.emergency_contact_2_phone">, <t t-esc="participant.emergency_contact_2_phone"/></t>
+                                        </dd>
+                                    </t>
+                                    <t t-if="participant.special_needs">
+                                        <dt>Potrzeby</dt>
+                                        <dd t-esc="participant.special_needs"/>
+                                    </t>
+                                </dl>
+                            </div>
+                            <div class="cs-section-footer">
+                                <a class="cs-btn-secondary"
+                                   t-attf-href="/report/pdf/fayna_camp_portal.report_karta_kwalifikacyjna/#{participant.id}"
+                                   target="_blank">
+                                    &#128196; Pobierz kartę (PDF)
+                                </a>
                             </div>
                         </div>
-
-                        <a class="btn btn-outline-primary"
-                           t-attf-href="/report/pdf/fayna_camp_portal.report_karta_kwalifikacyjna/#{participant.id}"
-                           target="_blank">
-                            Pobierz kartę (PDF)
-                        </a>
                     </t>
                 </div>
 
@@ -299,6 +315,67 @@
 
 
 <!-- ============================================================================
+     /my/support — list of this parent's support requests
+     ============================================================================ -->
+
+<template id="portal_support" name="My Support Requests">
+    <t t-call="portal.portal_layout">
+        <t t-set="additional_title">Звернення</t>
+
+        <div class="cs-page">
+            <div class="cs-page-back mb-3">
+                <a href="/my" class="cs-back-link">&#8592; До кабінету</a>
+            </div>
+
+            <div class="cs-page-header mb-4">
+                <h2 class="cs-page-title">Звернення</h2>
+                <p class="cs-page-subtitle">Ваші запитання, заявки на скасування та перенос</p>
+            </div>
+
+            <t t-if="not supports">
+                <div class="cs-empty-state">
+                    <div class="cs-empty-icon">&#128172;</div>
+                    <h4>Звернень ще немає</h4>
+                    <p class="text-muted">
+                        Тут зʼявляться ваші звернення до координатора табору.
+                        Щоб надіслати нове — звʼяжіться з нами зручним способом.
+                    </p>
+                </div>
+            </t>
+
+            <div t-if="supports" class="row g-3">
+                <t t-foreach="supports" t-as="support">
+                    <div class="col-12 col-md-6">
+                        <a t-attf-href="/my/support/#{support.id}"
+                           class="cs-doc-card text-decoration-none">
+                            <span class="cs-doc-icon">
+                                <t t-if="support.request_type == 'cancel'">&#128683;</t>
+                                <t t-elif="support.request_type == 'transfer'">&#128260;</t>
+                                <t t-else="">&#10067;</t>
+                            </span>
+                            <div class="cs-doc-body">
+                                <h5 class="cs-doc-title" t-esc="support.name or support.subject or 'Звернення'"/>
+                                <p class="cs-doc-desc">
+                                    <span class="cs-reg-badge cs-badge-info">
+                                        <t t-esc="dict(support._fields['request_type'].selection).get(support.request_type, support.request_type or '')"/>
+                                    </span>
+                                    <t t-if="support.submission_date">
+                                        <span class="text-muted ms-2">
+                                            <t t-esc="support.submission_date.strftime('%d.%m.%Y')"/>
+                                        </span>
+                                    </t>
+                                </p>
+                                <span class="cs-doc-cta">Переглянути &#8594;</span>
+                            </div>
+                        </a>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+</template>
+
+<!-- ============================================================================
      /my/support/<id> — support request detail + chatter
      ============================================================================ -->
 
@@ -317,7 +394,7 @@
                         <t t-esc="support.name or 'Звернення'"/>
                     </h2>
                     <p class="cs-page-subtitle">
-                        <span t-attf-class="badge bg-secondary">
+                        <span class="cs-reg-badge cs-badge-info">
                             <t t-esc="dict(support._fields['request_type'].selection).get(support.request_type, support.request_type or '')"/>
                         </span>
                         <span class="ms-2 text-muted" t-if="support.submission_date">
