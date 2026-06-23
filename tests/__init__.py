@@ -4,11 +4,15 @@ from . import (
     test_campscout,
     test_campscout_extended,
     test_dziennik_pdf,  # noqa: E402,F401
+    test_escort_signoff,  # noqa: E402,F401
     test_incident_card,  # noqa: E402,F401
     test_karta_2026,
     test_karta_pdf,  # noqa: E402,F401
     test_portal_camp_day,  # noqa: E402,F401
+    test_registration_seats,  # noqa: E402,F401
     test_regulamin_teczka,  # noqa: E402,F401
+    test_rodo_consent_immutable,  # noqa: E402,F401
     test_scaffold,
+    test_signoff_rodo,  # noqa: E402,F401
     test_staffing,  # noqa: E402,F401
 )
