@@ -417,8 +417,10 @@ class CampscoutPortal(CustomerPortal):
                 [("is_active", "=", True)],
                 order="version_date desc",
             )
-        except (AccessError, MissingError) as e:
-            _logger.exception("[CS] documents load failed: %s", e)
+        except (AccessError, MissingError, KeyError) as e:
+            # KeyError: модель legal.document.version (fayna_legal_versioning)
+            # може бути не встановлена (Strangler) — graceful degradation.
+            _logger.warning("[CS] documents load skipped: %s", e)
             documents = False
 
         return http.request.render(
