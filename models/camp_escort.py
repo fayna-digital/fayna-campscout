@@ -142,12 +142,13 @@ class CampEscort(models.Model):
                 continue
             if not (rec.home_city and rec.pkp_station and rec.direction):
                 raise UserError(_("Wypełnij: miasto, stacja PKP, kierunek."))
-            # sudo лише на запис: portal-user має ACL write=0; власність уже
-            # перевірена в контролері (_get_own_escort). Метод під реальним юзером.
-            rec.sudo().write({"state": "collected"})
+            rec.state = "collected"
         return True
 
-    def action_sign(self, ip_address=None, signature=None):
+    # NB: портал-флоу зве ці методи через .sudo() ПІСЛЯ ownership-check у контролері
+    # (portal ACL read-only + portal не має read на res.partner дитини). Особу
+    # підписанта передаємо явно signed_by_id, щоб юр-доказ = справжній батько.
+    def action_sign(self, ip_address=None, signature=None, signed_by_id=None):
         """Атомарно: позначає signed + лінкує RODO consent (патерн sign_qualification)."""
         self.ensure_one()
         if self.state == "signed":
@@ -176,7 +177,7 @@ class CampEscort(models.Model):
             "state": "signed",
             "signed_date": fields.Datetime.now(),
             "signed_ip": ip_address or "",
-            "signed_by": self.env.user.id,
+            "signed_by": signed_by_id or self.env.user.id,
             "rodo_consent_id": consent.id,
         }
         if signature:
@@ -185,9 +186,7 @@ class CampEscort(models.Model):
         if self.medical_help_consent:
             vals["medical_help_consent_date"] = fields.Datetime.now()
             vals["medical_help_consent_ip"] = ip_address or ""
-        # signed_by вже = реальний portal-user (метод НЕ під sudo); sudo лише на
-        # фінальний write через ACL write=0 для portal. Власність перевірена в контролері.
-        self.sudo().write(vals)
+        self.write(vals)
         _logger.info(
             "fayna_camp_portal.escort.sign: escort=%s participant=%s ip=%s consent=%s",
             self.id,

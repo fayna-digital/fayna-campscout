@@ -96,9 +96,9 @@ class EscortPortal(CustomerPortal):
         }
         vals["medical_help_consent"] = bool(post.get("medical_help_consent"))
         try:
-            # sudo на запис: portal ACL write=0; власність перевірена в _get_own_escort.
+            # sudo після ownership-check (_get_own_escort): portal ACL read-only
             escort.sudo().write(vals)
-            escort.action_collect()
+            escort.sudo().action_collect()
         except (UserError, ValidationError) as e:
             return request.render(
                 "fayna_camp_portal.portal_escort_form",
@@ -121,8 +121,11 @@ class EscortPortal(CustomerPortal):
         if "," in signature:
             signature = signature.split(",", 1)[1]
         try:
-            escort.action_sign(
-                ip_address=request.httprequest.remote_addr, signature=signature
+            # sudo після ownership-check; signed_by_id=справжній батько (юр-доказ)
+            escort.sudo().action_sign(
+                ip_address=request.httprequest.remote_addr,
+                signature=signature,
+                signed_by_id=request.env.user.id,
             )
         except (UserError, ValidationError) as e:
             return {"error": str(e)}
