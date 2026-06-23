@@ -538,12 +538,67 @@
             <field name="model">camp.program.wypoczynku</field>
             <field name="arch" type="xml">
                 <form>
+                    <header>
+                        <button name="action_approve" string="Zatwierdź" type="object"
+                                class="btn-primary" invisible="state != 'draft'"/>
+                        <button name="action_submit" string="Złóż do kuratorium" type="object"
+                                class="btn-primary" invisible="state != 'approved'"/>
+                        <button name="action_reset_draft" string="Wróć do roboczej" type="object"
+                                invisible="state != 'approved'"/>
+                        <button name="action_new_version" string="Nowa wersja" type="object"
+                                invisible="state != 'submitted'"/>
+                        <button name="action_print_program" string="Drukuj program" type="object"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,approved,submitted"/>
+                    </header>
                     <sheet>
+                        <div class="oe_title">
+                            <h1><field name="name"/></h1>
+                        </div>
                         <group>
-                            <field name="name"/>
-                            <field name="event_id"/>
+                            <group>
+                                <field name="event_id"/>
+                                <field name="version" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="kierownik_id"/>
+                                <field name="staff_ids" widget="many2many_tags"/>
+                            </group>
                         </group>
+                        <notebook>
+                            <page string="Cel wypoczynku">
+                                <field name="section_cel"/>
+                            </page>
+                            <page string="Tematyka">
+                                <field name="section_tematyka"/>
+                            </page>
+                            <page string="Zagadnienia wychowawcze">
+                                <field name="section_wychowawcze"/>
+                            </page>
+                            <page string="Formy i metody realizacji">
+                                <field name="section_formy"/>
+                            </page>
+                            <page string="Harmonogram (ogólny)">
+                                <field name="section_harmonogram"/>
+                            </page>
+                            <page string="Zapewnienie bezpieczeństwa">
+                                <field name="section_bezpieczenstwo"/>
+                            </page>
+                            <page string="Metryka">
+                                <group>
+                                    <field name="approved_by_id" readonly="1"/>
+                                    <field name="approved_date" readonly="1"/>
+                                    <field name="submitted_date" readonly="1"/>
+                                    <field name="retention_until" readonly="1"/>
+                                </group>
+                            </page>
+                        </notebook>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
                 </form>
             </field>
         </record>
@@ -573,11 +628,60 @@
             <field name="model">camp.program</field>
             <field name="arch" type="xml">
                 <form>
+                    <header>
+                        <button name="action_approve" string="Zatwierdź" type="object"
+                                class="btn-primary" invisible="state != 'draft'"/>
+                        <button name="action_schedule" string="Zaplanuj" type="object"
+                                invisible="state not in ('draft', 'approved')"/>
+                        <button name="action_start" string="Rozpocznij" type="object"
+                                invisible="state not in ('approved', 'scheduled')"/>
+                        <button name="action_complete" string="Zakończ" type="object"
+                                class="btn-primary" invisible="state != 'ongoing'"/>
+                        <button name="action_cancel" string="Anuluj" type="object"
+                                invisible="state in ('completed', 'cancelled')"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,approved,scheduled,ongoing,completed"/>
+                    </header>
                     <sheet>
+                        <div class="oe_title">
+                            <h1><field name="name" required="1"/></h1>
+                        </div>
                         <group>
-                            <field name="name"/>
+                            <group>
+                                <field name="event_id" required="1"/>
+                                <field name="date" required="1"/>
+                                <field name="start_time"/>
+                                <field name="end_time"/>
+                                <field name="plan_variant"/>
+                            </group>
+                            <group>
+                                <field name="theme"/>
+                                <field name="participant_count"/>
+                                <field name="staff_ids" widget="many2many_tags"/>
+                                <field name="is_published"/>
+                            </group>
+                        </group>
+                        <group string="Opis programu">
+                            <field name="description" nolabel="1"/>
+                        </group>
+                        <group string="Aktywności">
+                            <field name="program_activity_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="time_start"/>
+                                    <field name="time_end"/>
+                                    <field name="activity_name"/>
+                                    <field name="activity_type"/>
+                                    <field name="location"/>
+                                    <field name="responsible_id"/>
+                                </tree>
+                            </field>
                         </group>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
                 </form>
             </field>
         </record>
@@ -607,11 +711,65 @@
             <field name="model">camp.program.structured</field>
             <field name="arch" type="xml">
                 <form>
+                    <header>
+                        <button name="action_publish" string="Opublikuj" type="object"
+                                class="btn-primary" invisible="state != 'draft'"/>
+                        <button name="action_back_to_draft" string="Wróć do roboczej" type="object"
+                                invisible="state != 'published'"/>
+                        <button name="action_print_program" string="Drukuj" type="object"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,published"/>
+                    </header>
                     <sheet>
+                        <div class="oe_title">
+                            <h1><field name="name" readonly="1"/></h1>
+                        </div>
                         <group>
-                            <field name="name"/>
+                            <group>
+                                <field name="event_id" required="1"/>
+                                <field name="is_rain_plan"/>
+                            </group>
+                            <group>
+                                <field name="day_count" readonly="1"/>
+                            </group>
+                        </group>
+                        <group string="Dni programu">
+                            <field name="day_ids" nolabel="1">
+                                <tree>
+                                    <field name="day_number"/>
+                                    <field name="date"/>
+                                    <field name="display_name"/>
+                                    <field name="notes"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="date"/>
+                                        <field name="notes"/>
+                                    </group>
+                                    <group string="Plan dnia">
+                                        <field name="activity_line_ids" nolabel="1">
+                                            <tree editable="bottom">
+                                                <field name="time_from"/>
+                                                <field name="time_to"/>
+                                                <field name="activity_template_id"/>
+                                                <field name="title"/>
+                                                <field name="location"/>
+                                                <field name="responsible_id"/>
+                                            </tree>
+                                        </field>
+                                    </group>
+                                </form>
+                            </field>
+                        </group>
+                        <group string="Notatki ogólne">
+                            <field name="notes" nolabel="1"/>
                         </group>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
                 </form>
             </field>
         </record>
@@ -676,27 +834,131 @@
             <field name="model">camp.kuratorium.notification</field>
             <field name="arch" type="xml">
                 <form>
+                    <header>
+                        <button name="action_mark_ready" string="Oznacz jako gotowe" type="object"
+                                class="btn-primary" invisible="state != 'draft'"/>
+                        <button name="action_submit" string="Złóż zgłoszenie" type="object"
+                                class="btn-primary"
+                                invisible="state not in ('draft', 'ready')"/>
+                        <button name="action_approve" string="Zarejestrowano" type="object"
+                                class="btn-primary" invisible="state != 'submitted'"/>
+                        <button name="action_cancel" string="Anuluj" type="object"
+                                invisible="state in ('cancelled', 'registered')"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,ready,submitted,registered"/>
+                    </header>
                     <sheet>
-                        <group>
-                            <field name="name"/>
-                            <field name="event_id"/>
-                        </group>
-                        <group string="Staff">
-                            <field name="staff_ids" nolabel="1">
-                                <tree editable="bottom">
-                                    <field name="partner_id"/>
-                                    <field name="role"/>
-                                </tree>
-                            </field>
-                        </group>
-                        <group string="Checklist">
-                            <field name="checklist_ids" nolabel="1">
-                                <tree editable="bottom">
-                                    <field name="name"/>
-                                </tree>
-                            </field>
-                        </group>
+                        <div class="oe_title">
+                            <h1><field name="name" readonly="1"/></h1>
+                        </div>
+                        <notebook>
+                            <page string="A — Organizator">
+                                <group>
+                                    <group>
+                                        <field name="organizer_type"/>
+                                        <field name="organizer_id" required="1"/>
+                                        <field name="regon"/>
+                                        <field name="krs"/>
+                                    </group>
+                                    <group>
+                                        <field name="is_profit"/>
+                                        <field name="tourism_registry_decl"/>
+                                    </group>
+                                </group>
+                                <group string="Cel działania organizatora">
+                                    <field name="organizer_purpose" nolabel="1"/>
+                                </group>
+                            </page>
+                            <page string="B — Wypoczynek">
+                                <group>
+                                    <group>
+                                        <field name="notification_type"/>
+                                        <field name="camp_type"/>
+                                        <field name="vacation_form"/>
+                                        <field name="accommodation_type"/>
+                                        <field name="event_id"/>
+                                    </group>
+                                    <group>
+                                        <field name="location" required="1"/>
+                                        <field name="transport_method"/>
+                                        <field name="date_from" readonly="1"/>
+                                        <field name="date_to" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Uczestnicy / Kadra">
+                                <group>
+                                    <group>
+                                        <field name="participant_count" required="1"/>
+                                        <field name="participant_count_under10"/>
+                                        <field name="participant_count_special"/>
+                                    </group>
+                                    <group>
+                                        <field name="kierownik_id"/>
+                                        <field name="kadra_count"/>
+                                    </group>
+                                </group>
+                                <group string="Kadra wypoczynku">
+                                    <field name="staff_ids" nolabel="1">
+                                        <tree editable="bottom">
+                                            <field name="partner_id"/>
+                                            <field name="role"/>
+                                            <field name="qualification_basis"/>
+                                            <field name="course_cert_number"/>
+                                            <field name="krk_valid_until"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                            </page>
+                            <page string="Program / Opieka">
+                                <group string="Program wypoczynku">
+                                    <field name="program_description" nolabel="1"/>
+                                </group>
+                                <group string="Zapewnienie opieki medycznej">
+                                    <field name="medical_care_desc" nolabel="1"/>
+                                </group>
+                            </page>
+                            <page string="Terminy">
+                                <group>
+                                    <group>
+                                        <field name="deadline_date" readonly="1"/>
+                                        <field name="submission_date"/>
+                                    </group>
+                                    <group>
+                                        <field name="notification_number"/>
+                                        <field name="registration_number"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Checklista">
+                                <group>
+                                    <field name="checklist_done_count"/>
+                                    <field name="checklist_total_count"/>
+                                </group>
+                                <field name="checklist_ids" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="name"/>
+                                        <field name="is_done"/>
+                                        <field name="notes"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Załączniki">
+                                <group string="Opinia PSP">
+                                    <field name="attach_fire_opinion_ids" widget="many2many_binary" nolabel="1"/>
+                                </group>
+                                <group string="Szkic obiektu">
+                                    <field name="attach_sketch_ids" widget="many2many_binary" nolabel="1"/>
+                                </group>
+                            </page>
+                        </notebook>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
                 </form>
             </field>
         </record>

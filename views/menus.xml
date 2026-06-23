@@ -29,7 +29,7 @@
             sequence="10"/>
 
         <menuitem id="menu_camp_products"
-            name="Programy (Products)"
+            name="Oferta / Produkty"
             parent="menu_camp_management"
             action="product.product_template_action_all"
             sequence="20"/>
@@ -83,13 +83,13 @@
             sequence="10"/>
 
         <menuitem id="menu_camp_journal"
-            name="Dziennik dnia"
+            name="Dziennik wydarzeń / Log dnia"
             parent="menu_operations"
             action="action_camp_journal"
             sequence="20"/>
 
         <menuitem id="menu_camp_dziennik"
-            name="Dziennik zajęć"
+            name="Dziennik Zajęć (Załącznik 5)"
             parent="menu_operations"
             action="action_fayna_camp_dziennik"
             sequence="30"/>
@@ -99,6 +99,18 @@
             parent="menu_operations"
             action="action_camp_program_wypoczynku"
             sequence="40"/>
+
+        <menuitem id="menu_camp_program_structured"
+            name="Program strukturalny (dzień po dniu)"
+            parent="menu_operations"
+            action="action_camp_program_structured"
+            sequence="41"/>
+
+        <menuitem id="menu_camp_daily_report"
+            name="Raport dzienny (§2.11)"
+            parent="menu_operations"
+            action="action_camp_daily_report"
+            sequence="22"/>
 
         <menuitem id="menu_camp_kuratorium"
             name="Kuratorium"
