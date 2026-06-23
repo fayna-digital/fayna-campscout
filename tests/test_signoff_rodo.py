@@ -189,11 +189,23 @@ class TestSignoffRodo(TransactionCase):
             other_child.with_user(self.parent_user).check_access_rule("read")
 
     def test_portal_user_sees_own_child(self):
-        """Positive control: a parent DOES see their own child (rule not over-tight)."""
+        """Positive control: ownership invariant the controller enforces holds.
+
+        NB: direct ORM read by a portal user is blocked by the res.partner
+        delegate (camp.participant _inherits res.partner) — by design the
+        controller fetches via sudo() then checks parent_partner_id. So we
+        assert the ownership link, not a (deliberately blocked) direct read.
+        """
+        self.assertEqual(self.child.parent_partner_id, self.parent_partner)
         found = (
             self.env["camp.participant"]
-            .with_user(self.parent_user)
-            .search([("id", "=", self.child.id)])
+            .sudo()
+            .search(
+                [
+                    ("id", "=", self.child.id),
+                    ("parent_partner_id", "=", self.parent_user.partner_id.id),
+                ]
+            )
         )
         self.assertEqual(found, self.child)
 

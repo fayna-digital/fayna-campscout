@@ -64,10 +64,22 @@ class TestEscortSignoff(TransactionCase):
 
     @classmethod
     def _make_escort(cls, child):
+        # camp.escort вимагає registration_id (required) — створюємо event+registration.
+        event = cls.env["event.event"].create(
+            {
+                "name": "Escort Test Camp 2026",
+                "date_begin": "2026-07-01 08:00:00",
+                "date_end": "2026-07-14 18:00:00",
+            }
+        )
+        reg = cls.env["event.registration"].create(
+            {"event_id": event.id, "partner_id": child.parent_partner_id.id}
+        )
         # action_collect requires home_city + pkp_station + direction.
         return cls.env["camp.escort"].create(
             {
                 "participant_id": child.id,
+                "registration_id": reg.id,
                 "direction": "oba",
                 "home_city": "Wrocław",
                 "pkp_station": "Wrocław Główny",
