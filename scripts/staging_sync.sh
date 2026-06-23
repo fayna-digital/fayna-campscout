@@ -14,6 +14,8 @@ STG=staging-campscout
 DB=campscout                  # робоча БД на prod
 STG_DB=campscout              # цільова назва на staging (заміняється)
 DUMP=/tmp/campscout_prod_${TS}.dump
+BRANCH="${1:-loop/season-sprint}"   # гілка для тесту на staging (arg 1)
+echo "Гілка для install: $BRANCH"
 
 echo "=== [1/7] PROD: pg_dump (read-only) ==="
 ssh $PROD "docker exec campscout_db pg_dump -U odoo -Fc $DB" > "$DUMP"
@@ -59,7 +61,7 @@ ssh $STG "sudo chown -R 101:101 /opt/campscout/odoo-data/filestore/$STG_DB"
 
 echo "=== [6/7] STAGING: install fayna_camp_portal на prod-копію (репетиція міграції!) ==="
 ssh $STG "
-  cd /opt/campscout/custom-addons/fayna_camp_portal && git fetch origin && git checkout loop/season-sprint && git pull origin loop/season-sprint && sudo chmod -R o+rX . || true
+  cd /opt/campscout/custom-addons/fayna_camp_portal && git fetch origin && git checkout $BRANCH && git pull origin $BRANCH && sudo chmod -R o+rX . || true
   # --no-http: головний odoo тримає 8069 І 8072 (gevent) — init-прогін без http взагалі (INC 10.06 ×2)
   docker exec campscout_web odoo -c /etc/odoo/odoo.conf -d $STG_DB -i fayna_camp_portal --stop-after-init --no-http 2>&1 | tail -30
   docker restart campscout_web

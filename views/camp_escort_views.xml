@@ -8,9 +8,9 @@
             <form string="Asysta / Konwój">
                 <header>
                     <button name="action_collect" type="object" string="Zebrano dane"
-                            states="draft" class="oe_highlight"/>
+                            invisible="state != 'draft'" class="oe_highlight"/>
                     <button name="action_sign" type="object" string="Podpisz"
-                            states="collected"/>
+                            invisible="state != 'collected'"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,collected,signed"/>
                 </header>
                 <sheet>
