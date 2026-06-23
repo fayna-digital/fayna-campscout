@@ -96,7 +96,8 @@ class EscortPortal(CustomerPortal):
         }
         vals["medical_help_consent"] = bool(post.get("medical_help_consent"))
         try:
-            escort.write(vals)
+            # sudo на запис: portal ACL write=0; власність перевірена в _get_own_escort.
+            escort.sudo().write(vals)
             escort.action_collect()
         except (UserError, ValidationError) as e:
             return request.render(

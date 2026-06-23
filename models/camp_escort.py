@@ -142,7 +142,9 @@ class CampEscort(models.Model):
                 continue
             if not (rec.home_city and rec.pkp_station and rec.direction):
                 raise UserError(_("Wypełnij: miasto, stacja PKP, kierunek."))
-            rec.state = "collected"
+            # sudo лише на запис: portal-user має ACL write=0; власність уже
+            # перевірена в контролері (_get_own_escort). Метод під реальним юзером.
+            rec.sudo().write({"state": "collected"})
         return True
 
     def action_sign(self, ip_address=None, signature=None):
@@ -183,7 +185,9 @@ class CampEscort(models.Model):
         if self.medical_help_consent:
             vals["medical_help_consent_date"] = fields.Datetime.now()
             vals["medical_help_consent_ip"] = ip_address or ""
-        self.write(vals)
+        # signed_by вже = реальний portal-user (метод НЕ під sudo); sudo лише на
+        # фінальний write через ACL write=0 для portal. Власність перевірена в контролері.
+        self.sudo().write(vals)
         _logger.info(
             "fayna_camp_portal.escort.sign: escort=%s participant=%s ip=%s consent=%s",
             self.id,
