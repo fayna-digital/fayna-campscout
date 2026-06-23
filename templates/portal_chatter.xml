@@ -43,8 +43,152 @@
                     </p>
                 </div>
 
-                <!-- Card body slot — host module appends qualification sections here -->
-                <div class="cs-participant-card mb-4"/>
+                <!-- Тіло картки kwalifikacyjnej — секція I (read-only) + editable kontakty/special_needs + підпис -->
+                <div class="cs-participant-card mb-4">
+
+                    <!-- Помилка валідації з /submit (UserError/ValidationError) -->
+                    <t t-if="error">
+                        <div class="alert alert-danger" t-esc="error"/>
+                    </t>
+
+                    <!-- Секція I — дані з реєстрації (READ-ONLY, не редагуються батьком) -->
+                    <div class="card mb-3 shadow-sm">
+                        <div class="card-header"><strong>I. Dane uczestnika</strong></div>
+                        <div class="card-body">
+                            <div class="row g-2">
+                                <div class="col-12 col-md-6">
+                                    <small class="text-muted d-block">Imię</small>
+                                    <span t-esc="participant.first_name or '—'"/>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <small class="text-muted d-block">Nazwisko</small>
+                                    <span t-esc="participant.last_name or '—'"/>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <small class="text-muted d-block">Data urodzenia</small>
+                                    <span t-esc="participant.birth_date and participant.birth_date.strftime('%d.%m.%Y') or '—'"/>
+                                </div>
+                            </div>
+                            <p class="text-muted small mb-0 mt-2">
+                                Te dane pochodzą z rejestracji. Aby je poprawić — skontaktuj się z koordynatorem.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- ===== STAN 1: картка ще НЕ підписана → форма + canvas ===== -->
+                    <t t-if="not participant.qualification_signed">
+
+                        <!-- Editable-поля: kontakty alarmowe + potrzeby specjalne (POST → /submit) -->
+                        <form t-attf-action="/my/participants/#{participant.id}/submit" method="post"
+                              class="card mb-3 shadow-sm">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <div class="card-header"><strong>Kontakty alarmowe i potrzeby specjalne</strong></div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <!-- Kontakt alarmowy 1 (wymagany do podpisu) -->
+                                    <div class="col-12 col-md-4">
+                                        <label class="form-label">Kontakt alarmowy 1 — imię i nazwisko *</label>
+                                        <input type="text" name="emergency_contact_1_name" class="form-control"
+                                               t-att-value="participant.emergency_contact_1_name or ''"/>
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <label class="form-label">Telefon *</label>
+                                        <input type="text" name="emergency_contact_1_phone" class="form-control"
+                                               t-att-value="participant.emergency_contact_1_phone or ''"/>
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <label class="form-label">Pokrewieństwo</label>
+                                        <input type="text" name="emergency_contact_1_relation" class="form-control"
+                                               t-att-value="participant.emergency_contact_1_relation or ''"/>
+                                    </div>
+                                    <!-- Kontakt alarmowy 2 (opcjonalny) -->
+                                    <div class="col-12 col-md-4">
+                                        <label class="form-label">Kontakt alarmowy 2 — imię i nazwisko</label>
+                                        <input type="text" name="emergency_contact_2_name" class="form-control"
+                                               t-att-value="participant.emergency_contact_2_name or ''"/>
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <label class="form-label">Telefon</label>
+                                        <input type="text" name="emergency_contact_2_phone" class="form-control"
+                                               t-att-value="participant.emergency_contact_2_phone or ''"/>
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <label class="form-label">Pokrewieństwo</label>
+                                        <input type="text" name="emergency_contact_2_relation" class="form-control"
+                                               t-att-value="participant.emergency_contact_2_relation or ''"/>
+                                    </div>
+                                    <!-- Potrzeby specjalne -->
+                                    <div class="col-12">
+                                        <label class="form-label">Potrzeby specjalne dziecka</label>
+                                        <textarea name="special_needs" class="form-control" rows="3"
+                                                  t-esc="participant.special_needs or ''"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Zapisz</button>
+                            </div>
+                        </form>
+
+                        <!-- Signature pad (mobile-first canvas) — копія escort 1:1 -->
+                        <div class="card mb-3 shadow-sm">
+                            <div class="card-header"><strong>Podpis rodzica / opiekuna</strong></div>
+                            <div class="card-body">
+                                <p class="text-muted small">
+                                    Podpisując kartę potwierdzasz poprawność danych. Po podpisie pól nie da się już zmienić.
+                                </p>
+                                <canvas id="participant_sign_pad" width="320" height="140"
+                                        style="border:1px solid #ccc; touch-action:none; max-width:100%;"></canvas>
+                                <div class="mt-2">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" id="participant_sign_clear">Wyczyść</button>
+                                    <button type="button" class="btn btn-success btn-sm" id="participant_sign_save"
+                                            t-attf-data-participant-id="#{participant.id}">Podpisz kartę</button>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+
+                    <!-- ===== STAN 2: картка ПІДПИСАНА → read-only зведення + PDF ===== -->
+                    <t t-if="participant.qualification_signed">
+                        <div class="alert alert-success">
+                            Karta podpisana
+                            <t t-if="participant.qualification_signed_date">
+                                — <t t-esc="participant.qualification_signed_date.strftime('%d.%m.%Y %H:%M')"/>
+                            </t>
+                            <t t-if="participant.qualification_signed_by_name">
+                                przez <t t-esc="participant.qualification_signed_by_name"/>
+                            </t>
+                        </div>
+
+                        <div class="card mb-3 shadow-sm">
+                            <div class="card-header"><strong>Kontakty alarmowe</strong></div>
+                            <div class="card-body">
+                                <div class="row g-2">
+                                    <div class="col-12 col-md-6">
+                                        <small class="text-muted d-block">Kontakt 1</small>
+                                        <span t-esc="participant.emergency_contact_1_name or '—'"/>
+                                        <span t-if="participant.emergency_contact_1_phone">, <t t-esc="participant.emergency_contact_1_phone"/></span>
+                                    </div>
+                                    <div class="col-12 col-md-6" t-if="participant.emergency_contact_2_name">
+                                        <small class="text-muted d-block">Kontakt 2</small>
+                                        <span t-esc="participant.emergency_contact_2_name"/>
+                                        <span t-if="participant.emergency_contact_2_phone">, <t t-esc="participant.emergency_contact_2_phone"/></span>
+                                    </div>
+                                    <div class="col-12" t-if="participant.special_needs">
+                                        <small class="text-muted d-block">Potrzeby specjalne</small>
+                                        <span t-esc="participant.special_needs"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a class="btn btn-outline-primary"
+                           t-attf-href="/report/pdf/fayna_camp_portal.report_karta_kwalifikacyjna/#{participant.id}"
+                           target="_blank">
+                            Pobierz kartę (PDF)
+                        </a>
+                    </t>
+                </div>
 
                 <!-- Historia komunikacji -->
                 <div class="cs-participant-chatter mt-4">
@@ -58,6 +202,44 @@
                 </div>
             </t>
         </div>
+
+        <!-- Canvas signature pad JS — копія escort 1:1 (touch+mouse, clear, toDataURL→JSON-RPC POST на /sign, reload на success) -->
+        <script type="text/javascript">
+            <![CDATA[
+            (function () {
+                var c = document.getElementById('participant_sign_pad');
+                if (!c) { return; }
+                var ctx = c.getContext('2d'), drawing = false;
+                function pos(e) {
+                    var r = c.getBoundingClientRect();
+                    var t = (e.touches && e.touches[0]) || e;
+                    return { x: t.clientX - r.left, y: t.clientY - r.top };
+                }
+                function start(e) { drawing = true; var p = pos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); e.preventDefault(); }
+                function move(e) { if (!drawing) { return; } var p = pos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); e.preventDefault(); }
+                function end() { drawing = false; }
+                c.addEventListener('mousedown', start); c.addEventListener('mousemove', move);
+                c.addEventListener('mouseup', end); c.addEventListener('mouseleave', end);
+                c.addEventListener('touchstart', start); c.addEventListener('touchmove', move);
+                c.addEventListener('touchend', end);
+                document.getElementById('participant_sign_clear').addEventListener('click', function () {
+                    ctx.clearRect(0, 0, c.width, c.height);
+                });
+                document.getElementById('participant_sign_save').addEventListener('click', function () {
+                    var id = this.getAttribute('data-participant-id');
+                    var data = c.toDataURL('image/png');
+                    fetch('/my/participants/' + id + '/sign', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ jsonrpc: '2.0', method: 'call', params: { signature: data } })
+                    }).then(function (r) { return r.json(); }).then(function (res) {
+                        if (res.result && res.result.success) { location.reload(); }
+                        else { alert('Błąd: ' + ((res.result && res.result.error) || 'podpis')); }
+                    });
+                });
+            })();
+            ]]>
+        </script>
     </t>
 </template>
 
