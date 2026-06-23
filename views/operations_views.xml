@@ -547,7 +547,7 @@
                                 invisible="state != 'approved'"/>
                         <button name="action_new_version" string="Nowa wersja" type="object"
                                 invisible="state != 'submitted'"/>
-                        <button name="action_print_program" string="Drukuj program" type="object"/>
+                        <!-- Drukuj: QWeb-PDF Załącznik 9 — Тир 2 (report-запис ще не створено) -->
                         <field name="state" widget="statusbar"
                                statusbar_visible="draft,approved,submitted"/>
                     </header>
@@ -716,7 +716,7 @@
                                 class="btn-primary" invisible="state != 'draft'"/>
                         <button name="action_back_to_draft" string="Wróć do roboczej" type="object"
                                 invisible="state != 'published'"/>
-                        <button name="action_print_program" string="Drukuj" type="object"/>
+                        <!-- Drukuj: QWeb-PDF planu — Тир 2 (report-запис ще не створено) -->
                         <field name="state" widget="statusbar"
                                statusbar_visible="draft,published"/>
                     </header>
