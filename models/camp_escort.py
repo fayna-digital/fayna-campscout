@@ -120,18 +120,10 @@ class CampEscort(models.Model):
             who = rec.participant_id.display_name or _("Asysta")
             rec.name = "%s — %s" % (who, dir_labels.get(rec.direction, ""))
 
-    @api.constrains("participant_id", "registration_id")
-    def _check_participant_matches_registration(self):
-        """Учасник має відповідати дитині на цьому заїзді (захист від плутанини)."""
-        for rec in self:
-            reg_partner = rec.registration_id.partner_id
-            part_partner = rec.participant_id.partner_id
-            if reg_partner and part_partner and reg_partner != part_partner:
-                # м'яка перевірка: лише якщо обидва задані й різні партнери
-                raise ValidationError(
-                    _("Uczestnik %(p)s nie pasuje do zapisu %(r)s.")
-                    % {"p": rec.participant_id.display_name, "r": rec.registration_id.display_name}
-                )
+    # NB: строгий constraint participant.partner == registration.partner ПРИБРАНО
+    # (виявлено на staging-даних 2026-06-23): у кампі registration.partner=батько,
+    # participant.partner=дитина → вони РІЗНІ, constraint хибно блокував би створення.
+    # Контроль власності забезпечує record-rule rule_portal_escort_own_children.
 
     # ── Конфіг обов'язковості (Q9 — дефолт опційний, СТО-рішення) ────────
     @api.model
