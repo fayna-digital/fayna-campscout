@@ -4,9 +4,23 @@ from datetime import datetime
 from odoo import fields as odoo_fields
 from odoo import http
 from odoo.addons.portal.controllers.portal import CustomerPortal
-from odoo.exceptions import AccessError, MissingError
+from odoo.exceptions import AccessError, MissingError, UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
+
+# Поля картки, які батько РЕДАГУЄ в кабінеті (секції I/II + kontakty).
+# Секції III-VI заповнює персонал (kierownik/wychowawca) — їх сюди НЕ кладемо.
+# Цей whitelist — єдиний бар'єр: submit пише через sudo() (portal ACL read-only),
+# тож будь-яке поле поза списком не може потрапити у write з порталу.
+PARTICIPANT_PORTAL_EDITABLE_FIELDS = (
+    "special_needs",
+    "emergency_contact_1_name",
+    "emergency_contact_1_phone",
+    "emergency_contact_1_relation",
+    "emergency_contact_2_name",
+    "emergency_contact_2_phone",
+    "emergency_contact_2_relation",
+)
 
 # Strict whitelist of camp.daily.report fields exposed to parents on
 # /my/camp-day. Service fields (health_incidents, discipline_notes,
@@ -208,6 +222,106 @@ class CampscoutPortal(CustomerPortal):
                 "page_name": "participants",
             },
         )
+
+    # ──────────────────────────────────────────────────────────────────────
+    # Нативний підпис картки kwalifikacyjnej (TZ §5, патерн escort_portal)
+    # ──────────────────────────────────────────────────────────────────────
+
+    def _get_own_participant(self, participant_id):
+        """Повертає participant лише якщо дитина належить поточному батьку.
+
+        Копія _get_own_escort: portal user не має read на res.partner дитини,
+        тож browse/exists/перевірку власності робимо під sudo (env(su=True)),
+        але саме лінкування «дитина→батько» лишається жорстким бар'єром.
+        """
+        env_sudo = http.request.env(su=True)
+        participant = env_sudo["camp.participant"].browse(int(participant_id))
+        if not participant.exists():
+            raise MissingError("Participant not found")
+        if participant.parent_partner_id != http.request.env.user.partner_id:
+            raise AccessError("Not your child")
+        return participant
+
+    @http.route(
+        ["/my/participants/<int:participant_id>"],
+        type="http",
+        auth="user",
+        website=True,
+    )
+    def portal_my_participant_detail(self, participant_id, **kw):
+        """Картка дитини з формою картки kwalifikacyjnej + canvas-підписом."""
+        try:
+            participant = self._get_own_participant(participant_id)
+        except (AccessError, MissingError):
+            return http.request.redirect("/my/participants")
+        return http.request.render(
+            "fayna_camp_portal.portal_participants_detail",
+            {
+                "participant": participant,
+                "page_name": "participants",
+            },
+        )
+
+    @http.route(
+        ["/my/participants/<int:participant_id>/submit"],
+        type="http",
+        auth="user",
+        website=True,
+        methods=["POST"],
+    )
+    def portal_my_participant_submit(self, participant_id, **post):
+        """Збереження полів картки (секції I/II + kontakty). Лишається draft."""
+        try:
+            participant = self._get_own_participant(participant_id)
+        except (AccessError, MissingError):
+            return http.request.redirect("/my/participants")
+        vals = {
+            k: post.get(k)
+            for k in PARTICIPANT_PORTAL_EDITABLE_FIELDS
+            if k in post
+        }
+        try:
+            # sudo після ownership-check: portal ACL read-only; whitelist вище
+            # гарантує, що секції III-VI (персонал) сюди не потраплять.
+            participant.sudo().write(vals)
+        except (UserError, ValidationError) as e:
+            return http.request.render(
+                "fayna_camp_portal.portal_participants_detail",
+                {
+                    "participant": participant,
+                    "page_name": "participants",
+                    "error": str(e),
+                },
+            )
+        return http.request.redirect("/my/participants/%s" % participant.id)
+
+    @http.route(
+        ["/my/participants/<int:participant_id>/sign"],
+        type="json",
+        auth="user",
+        website=True,
+    )
+    def portal_my_participant_sign(self, participant_id, signature=None, **kw):
+        """Підпис картки (canvas dataURL → base64 PNG → sign_qualification)."""
+        try:
+            participant = self._get_own_participant(participant_id)
+        except (AccessError, MissingError):
+            return {"error": "access"}
+        if not signature:
+            return {"error": "no_signature"}
+        # canvas dataURL: "data:image/png;base64,XXXX" → лишаємо raw base64
+        if "," in signature:
+            signature = signature.split(",", 1)[1]
+        try:
+            # sudo після ownership-check; signed_by_id=справжній батько (юр-доказ)
+            participant.sudo().sign_qualification(
+                ip_address=http.request.httprequest.remote_addr,
+                signature=signature,
+                signed_by_id=http.request.env.user.id,
+            )
+        except (UserError, ValidationError) as e:
+            return {"error": str(e)}
+        return {"success": True}
 
     @http.route("/my/loyalty", type="http", auth="user", website=True)
     def portal_my_loyalty(self, **kw):

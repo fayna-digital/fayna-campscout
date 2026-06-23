@@ -1514,10 +1514,17 @@ class CampParticipant(models.Model):
         rodo_purpose="transactional",
         signature=None,
         signer_name=None,
+        signed_by_id=None,
     ):
         """Atomically marks participant as signed + links RODO consent.
 
         Raises UserError if already signed; ValidationError if prerequisites unmet.
+
+        NB: портал-флоу зве цей метод через .sudo() ПІСЛЯ ownership-check у
+        контролері (portal ACL read-only + portal не має read на res.partner
+        дитини). Особу підписанта передаємо явно signed_by_id, щоб юр-доказ
+        у qualification_signed_by = справжній батько, а не SUPERUSER/sudo-user.
+        Дефолт None зберігає сумісність з наявними backend-викликами.
         """
         self.ensure_one()
         if self.qualification_signed:
@@ -1546,7 +1553,7 @@ class CampParticipant(models.Model):
             "qualification_signed": True,
             "qualification_signed_date": fields.Datetime.now(),
             "qualification_signed_ip": ip_address or "",
-            "qualification_signed_by": self.env.user.id,
+            "qualification_signed_by": signed_by_id or self.env.user.id,
             "rodo_consent_id": consent.id,
         }
         if signature:
