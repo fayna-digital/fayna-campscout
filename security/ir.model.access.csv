@@ -1,4 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_camp_escort_kierownik,camp.escort kierownik,model_camp_escort,fayna_camp_portal.group_camp_kierownik,1,1,1,1
+access_camp_escort_wychowawca,camp.escort wychowawca,model_camp_escort,fayna_camp_portal.group_medical_officer,1,1,0,0
+access_camp_escort_portal,camp.escort portal,model_camp_escort,base.group_portal,1,0,0,0
 access_campscout_portal_session_admin,campscout.portal.session admin,model_campscout_portal_session,base.group_system,1,1,1,1
 access_campscout_portal_session_portal,campscout.portal.session portal,model_campscout_portal_session,base.group_portal,1,0,0,0
 access_campscout_portal_session_user,campscout.portal.session user,model_campscout_portal_session,base.group_user,1,0,0,0

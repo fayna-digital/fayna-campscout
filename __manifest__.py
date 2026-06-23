@@ -1,6 +1,6 @@
 {
     "name": "Портал CampScout",
-    "version": "17.0.2.0.0",
+    "version": "17.0.3.0.0",
     "category": "Tools/Camp Management",
     "summary": "Complete children's summer camp management portal (Polish law compliance)",
     "description": """
@@ -86,6 +86,7 @@ License: LGPL-3
         "views/admin_views.xml",
         "views/menus.xml",
         "views/transport_views.xml",
+        "views/camp_escort_views.xml",
         "views/staff_sms_views.xml",
         "views/reports_views.xml",
         "views/training_vozhatyi_views.xml",
@@ -99,9 +100,12 @@ License: LGPL-3
         "reports/karta_reports.xml",
         "reports/dziennik_report_templates.xml",
         "reports/dziennik_reports.xml",
+        "reports/escort_report_templates.xml",
+        "reports/escort_reports.xml",
         "templates/portal_templates.xml",
         "templates/portal_camp_day.xml",
         "templates/portal_chatter.xml",
+        "templates/portal_escort.xml",
         "templates/website_templates.xml",
         "templates/admin_dashboard.xml",
     ],

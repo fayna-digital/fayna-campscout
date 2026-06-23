@@ -13,6 +13,16 @@
         </record>
 
         <!--
+          Q9 (СТО-рішення 2026-06-23): обов'язковість супроводу.
+          Default False = опційний (ніколи не блокує старт заїзду). Бізнес-власник
+          вмикає гейт за рішенням. Див. camp.escort._escort_required().
+        -->
+        <record id="cfg_escort_required" model="ir.config_parameter">
+            <field name="key">fayna_camp_portal.escort_required</field>
+            <field name="value">False</field>
+        </record>
+
+        <!--
           Wychowawca / kierownik staff-broadcast SMS — cost guard parameters.
           Defaults align with PL market pricing 2026 (TurboSMS PL ≈ 0.05 PLN/segment).
         -->

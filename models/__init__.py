@@ -67,3 +67,6 @@ from . import regulamin, teczka_ko  # noqa: E402,I001
 
 # Автоштат §2 + вакансії (R13) — sprint 2026-06-10 §6.
 from . import staffing  # noqa: E402,I001
+
+# camp.escort — Indywidualna asysta/konwój, міграція супроводу (TZ 2026-06-23 §5).
+from . import camp_escort  # noqa: E402,I001

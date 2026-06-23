@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_camp_escort_form" model="ir.ui.view">
+        <field name="name">camp.escort.form</field>
+        <field name="model">camp.escort</field>
+        <field name="arch" type="xml">
+            <form string="Asysta / Konwój">
+                <header>
+                    <button name="action_collect" type="object" string="Zebrano dane"
+                            states="draft" class="oe_highlight"/>
+                    <button name="action_sign" type="object" string="Podpisz"
+                            states="collected"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,collected,signed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Uczestnik i turnus">
+                            <field name="participant_id"/>
+                            <field name="registration_id"/>
+                            <field name="direction"/>
+                        </group>
+                        <group string="Trasa">
+                            <field name="home_city"/>
+                            <field name="pkp_station"/>
+                            <field name="transport_mode"/>
+                            <field name="departure_datetime"/>
+                            <field name="arrival_datetime"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Osoba odbierająca / konwojent">
+                            <field name="escort_person_name"/>
+                            <field name="escort_person_phone"/>
+                            <field name="escort_person_doc"/>
+                        </group>
+                        <group string="Zgody i podpis">
+                            <field name="medical_help_consent"/>
+                            <field name="medical_help_consent_date" readonly="1"/>
+                            <field name="parent_signature" widget="signature"/>
+                            <field name="signed_date" readonly="1"/>
+                            <field name="signed_by" readonly="1"/>
+                            <field name="rodo_consent_id" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_camp_escort_list" model="ir.ui.view">
+        <field name="name">camp.escort.list</field>
+        <field name="model">camp.escort</field>
+        <field name="arch" type="xml">
+            <list string="Asysta / Konwój">
+                <field name="name"/>
+                <field name="participant_id"/>
+                <field name="direction"/>
+                <field name="home_city"/>
+                <field name="pkp_station"/>
+                <field name="departure_datetime"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_camp_escort" model="ir.actions.act_window">
+        <field name="name">Asysta / Konwój</field>
+        <field name="res_model">camp.escort</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_camp_escort"
+              name="Asysta / Konwój"
+              parent="fayna_camp_portal.menu_camp_transport"
+              action="action_camp_escort"
+              sequence="20"/>
+
+</odoo>

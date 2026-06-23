@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Список супроводів батька -->
+    <template id="portal_escort_list" name="My Escort">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <div class="o_portal_my_doc_table">
+                <h3 class="mb-3">Asysta / Konwój</h3>
+                <t t-if="not escorts">
+                    <div class="alert alert-info">Brak rekordów asysty.</div>
+                </t>
+                <table t-if="escorts" class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th>Uczestnik</th>
+                            <th>Kierunek</th>
+                            <th>Stacja</th>
+                            <th>Wyjazd</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="escorts" t-as="e">
+                            <td><a t-attf-href="/my/escort/#{e.id}"><t t-esc="e.participant_id.display_name"/></a></td>
+                            <td><t t-esc="dict(e._fields['direction'].selection).get(e.direction)"/></td>
+                            <td><t t-esc="e.pkp_station"/></td>
+                            <td><t t-esc="e.departure_datetime"/></td>
+                            <td><span class="badge bg-secondary"><t t-esc="dict(e._fields['state'].selection).get(e.state)"/></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+
+    <!-- Форма збору даних + підпис -->
+    <template id="portal_escort_form" name="Escort Form">
+        <t t-call="portal.portal_layout">
+            <div class="o_portal_my_doc">
+                <h3 class="mb-3">Asysta / Konwój — <t t-esc="escort.participant_id.display_name"/></h3>
+                <t t-if="error">
+                    <div class="alert alert-danger"><t t-esc="error"/></div>
+                </t>
+
+                <t t-if="escort.state == 'signed'">
+                    <div class="alert alert-success">
+                        Podpisano <t t-esc="escort.signed_date"/>.
+                    </div>
+                </t>
+
+                <form t-attf-action="/my/escort/#{escort.id}/submit" method="post"
+                      t-if="escort.state != 'signed'">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <div class="row">
+                        <div class="col-12 col-md-6 mb-2">
+                            <label class="form-label">Miasto zamieszkania</label>
+                            <input type="text" name="home_city" class="form-control" t-att-value="escort.home_city or ''"/>
+                        </div>
+                        <div class="col-12 col-md-6 mb-2">
+                            <label class="form-label">Stacja PKP</label>
+                            <input type="text" name="pkp_station" class="form-control" t-att-value="escort.pkp_station or ''"/>
+                        </div>
+                        <div class="col-12 col-md-6 mb-2">
+                            <label class="form-label">Kierunek</label>
+                            <select name="direction" class="form-select">
+                                <t t-foreach="escort._fields['direction'].selection" t-as="opt">
+                                    <option t-att-value="opt[0]" t-att-selected="opt[0] == escort.direction"><t t-esc="opt[1]"/></option>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-6 mb-2">
+                            <label class="form-label">Środek transportu</label>
+                            <select name="transport_mode" class="form-select">
+                                <t t-foreach="escort._fields['transport_mode'].selection" t-as="opt">
+                                    <option t-att-value="opt[0]" t-att-selected="opt[0] == escort.transport_mode"><t t-esc="opt[1]"/></option>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-6 mb-2">
+                            <label class="form-label">Osoba odbierająca / konwojent</label>
+                            <input type="text" name="escort_person_name" class="form-control" t-att-value="escort.escort_person_name or ''"/>
+                        </div>
+                        <div class="col-12 col-md-6 mb-2">
+                            <label class="form-label">Telefon osoby</label>
+                            <input type="text" name="escort_person_phone" class="form-control" t-att-value="escort.escort_person_phone or ''"/>
+                        </div>
+                        <div class="col-12 col-md-6 mb-2">
+                            <label class="form-label">Dokument osoby (do odbioru)</label>
+                            <input type="text" name="escort_person_doc" class="form-control" t-att-value="escort.escort_person_doc or ''"/>
+                        </div>
+                        <div class="col-12 mb-2">
+                            <div class="form-check">
+                                <input type="checkbox" name="medical_help_consent" class="form-check-input"
+                                       id="med_consent" t-att-checked="escort.medical_help_consent"/>
+                                <label class="form-check-label" for="med_consent">
+                                    Wyrażam zgodę na udzielenie dziecku pomocy medycznej i wezwanie pogotowia w razie potrzeby.
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Zapisz dane</button>
+                </form>
+
+                <!-- Signature pad (mobile-first canvas) -->
+                <div t-if="escort.state == 'collected'" class="mt-4">
+                    <h5>Podpis rodzica</h5>
+                    <canvas id="escort_sign_pad" width="320" height="140"
+                            style="border:1px solid #ccc; touch-action:none; max-width:100%;"></canvas>
+                    <div class="mt-2">
+                        <button type="button" class="btn btn-outline-secondary btn-sm" id="escort_sign_clear">Wyczyść</button>
+                        <button type="button" class="btn btn-success btn-sm" id="escort_sign_save"
+                                t-attf-data-escort-id="#{escort.id}">Podpisz</button>
+                    </div>
+                </div>
+            </div>
+
+            <script type="text/javascript">
+                <![CDATA[
+                (function () {
+                    var c = document.getElementById('escort_sign_pad');
+                    if (!c) { return; }
+                    var ctx = c.getContext('2d'), drawing = false;
+                    function pos(e) {
+                        var r = c.getBoundingClientRect();
+                        var t = (e.touches && e.touches[0]) || e;
+                        return { x: t.clientX - r.left, y: t.clientY - r.top };
+                    }
+                    function start(e) { drawing = true; var p = pos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); e.preventDefault(); }
+                    function move(e) { if (!drawing) { return; } var p = pos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); e.preventDefault(); }
+                    function end() { drawing = false; }
+                    c.addEventListener('mousedown', start); c.addEventListener('mousemove', move);
+                    c.addEventListener('mouseup', end); c.addEventListener('mouseleave', end);
+                    c.addEventListener('touchstart', start); c.addEventListener('touchmove', move);
+                    c.addEventListener('touchend', end);
+                    document.getElementById('escort_sign_clear').addEventListener('click', function () {
+                        ctx.clearRect(0, 0, c.width, c.height);
+                    });
+                    document.getElementById('escort_sign_save').addEventListener('click', function () {
+                        var id = this.getAttribute('data-escort-id');
+                        var data = c.toDataURL('image/png');
+                        fetch('/my/escort/' + id + '/sign', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ jsonrpc: '2.0', method: 'call', params: { signature: data } })
+                        }).then(function (r) { return r.json(); }).then(function (res) {
+                            if (res.result && res.result.success) { location.reload(); }
+                            else { alert('Błąd: ' + ((res.result && res.result.error) || 'podpis')); }
+                        });
+                    });
+                })();
+                ]]>
+            </script>
+        </t>
+    </template>
+
+</odoo>

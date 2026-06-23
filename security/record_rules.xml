@@ -25,6 +25,19 @@
             <field name="perm_unlink" eval="False"/>
         </record>
 
+        <!-- Portal parent sees only escort records of their own children (RODO).
+             Виявлено рев'ю-панеллю (glm) 2026-06-23, верифіковано СТО. -->
+        <record id="rule_portal_escort_own_children" model="ir.rule">
+            <field name="name">Portal: own children escort only</field>
+            <field name="model_id" ref="model_camp_escort"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">[('participant_id.parent_partner_id', '=', user.partner_id.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
         <!-- Portal users see only published reviews -->
         <record id="rule_portal_review_published" model="ir.rule">
             <field name="name">Portal: published reviews only</field>
