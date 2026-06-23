@@ -1,6 +1,5 @@
 from . import (  # noqa: I001 — preserve historical order; new imports appended below
     camp,
-    campscout_portal,
     commercial,
     operations,
     emergency,

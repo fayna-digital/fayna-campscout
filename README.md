@@ -62,8 +62,7 @@ fayna_camp_portal/
 │   ├── admin_access_log.py               # camp.admin.access.log — RODO art.30 register
 │   ├── participant_sms_extension.py      # SMS consent + reachable mobile resolution
 │   ├── staff_sms_extension.py            # wychowawca-side SMS broadcast hooks
-│   ├── staff_sms_log.py                  # camp.staff.sms.log — append-only audit
-│   └── campscout_portal.py               # portal route helpers
+│   └── staff_sms_log.py                  # camp.staff.sms.log — append-only audit
 ├── controllers/
 │   ├── portal.py                         # /my home override (Odoo 17 _prepare_home_portal_values is AJAX-only)
 │   ├── admin.py                          # /admin/dashboard + /admin/as-{role} view-as endpoints

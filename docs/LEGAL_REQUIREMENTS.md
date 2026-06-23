@@ -182,7 +182,7 @@ Organizator musi zapewnić dostęp do opieki medycznej poprzez:
 - Imię i nazwisko wychowawcy/ów
 - Zajęcia rozpoczęto / zakończono (dd-mm-rrrr)
 
-**Moduł:** `models/training.py` → model `camp.dziennik.zajec` (do migracji z `fayna_camp_dziennik_zajec`).
+**Moduł:** `models/operations.py` → model `fayna.camp.dziennik`.
 Pola: `date`, `hour_from`, `hour_to`, `activity_description`, `notes`, `supervisor_signature` (Many2one res.users), `week_plan_ids` (One2many), `participant_ids` (Many2many camp.participant).
 
 ---
@@ -280,7 +280,7 @@ Sekcje I–III wypełnia organizator/system, IV–VI wychowawca/kierownik w trak
 | `camp.camp` | medical_contact (§4), water_supervisor (§7) |
 | `camp.participant` | karta kwalifikacyjna §10 (sekcje I–VI), disability (§2) |
 | `camp.qualification.card` | §10 — sekcje I–VI jako osobny rekord |
-| `camp.dziennik.zajec` | §9 — dzienny zapis zajęć (migracja z fayna_camp_dziennik_zajec) |
+| `fayna.camp.dziennik` | §9 — dzienny zapis zajęć (models/operations.py) |
 | `camp.week.plan` | §9 sekcja 2 — tygodniowy plan pracy |
 | `camp.incident.card` | §11 karta wypadku |
 | `camp.incident.register` | §12 rejestr wypadków (chronologiczny) |

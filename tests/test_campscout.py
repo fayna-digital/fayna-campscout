@@ -1,12 +1,6 @@
 from odoo.tests.common import HttpCase, TransactionCase, tagged
 
 
-class TestCampscout(TransactionCase):
-    def test_portal_menu_create(self):
-        menu = self.env["campscout.portal.menu"].create({"region": "PL", "show_shop": True})
-        self.assertTrue(menu.show_shop)
-
-
 @tagged("post_install", "-at_install", "fayna_camp_portal")
 class TestCampscoutPortalValues(TransactionCase):
     @classmethod
@@ -67,51 +61,6 @@ class TestCampscoutPortalValues(TransactionCase):
         )
         self.assertTrue(bool(regs))
         reg.unlink()
-
-    def test_portal_menu_all_flags(self):
-        """campscout.portal.menu stores all display-flag booleans correctly."""
-        menu = self.env["campscout.portal.menu"].create(
-            {
-                "region": "UA",
-                "show_shop": True,
-                "show_stories": True,
-                "show_loyalty": True,
-                "show_reviews": True,
-            }
-        )
-        self.assertTrue(menu.show_stories)
-        self.assertTrue(menu.show_loyalty)
-        self.assertTrue(menu.show_reviews)
-        self.assertTrue(menu.show_shop)
-
-    def test_portal_menu_defaults(self):
-        """All show_* flags default to True."""
-        menu = self.env["campscout.portal.menu"].create({"region": "PL"})
-        self.assertTrue(menu.show_shop)
-        self.assertTrue(menu.show_stories)
-        self.assertTrue(menu.show_loyalty)
-        self.assertTrue(menu.show_reviews)
-        self.assertTrue(menu.show_blog)
-
-    def test_portal_session_active_camps_default_zero(self):
-        """_compute_active_camps returns 0 (scaffold placeholder)."""
-        session = self.env["campscout.portal.session"].create(
-            {
-                "partner_id": self.parent_partner.id,
-                "children_count": 1,
-            }
-        )
-        self.assertEqual(session.active_camps, 0)
-
-    def test_portal_session_children_count_stored(self):
-        """children_count integer field is persisted correctly."""
-        session = self.env["campscout.portal.session"].create(
-            {
-                "partner_id": self.parent_partner.id,
-                "children_count": 3,
-            }
-        )
-        self.assertEqual(session.children_count, 3)
 
 
 @tagged("post_install", "-at_install", "fayna_camp_portal")
