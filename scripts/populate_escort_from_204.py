@@ -35,22 +35,17 @@ def run(env):
 
     created = skipped = no_match = 0
     for order in orders:
-        partner = order.partner_id
-        # реєстрації цього замовлення (event_sale: registration.sale_order_id)
-        regs = env["event.registration"].search([("sale_order_id", "=", order.id)])
+        # реєстрації цього замовлення з ПРЯМИМ звʼязком на дитину
+        # (populate_from_bs ставить registration.participant_id — правильний лінк,
+        #  на відміну від partner-евристики, що для 2+ дітей обирала б не ту).
+        regs = env["event.registration"].search(
+            [("sale_order_id", "=", order.id), ("participant_id", "!=", False)]
+        )
         if not regs:
             no_match += 1
             continue
         for reg in regs:
-            # [ПРИПУЩЕННЯ] звʼязок дитини: participant із тим самим partner, що й реєстрація
-            participant = env["camp.participant"].search(
-                [("partner_id", "=", reg.partner_id.id)], limit=1
-            ) or env["camp.participant"].search(
-                [("parent_partner_id", "=", partner.id)], limit=1
-            )
-            if not participant:
-                no_match += 1
-                continue
+            participant = reg.participant_id
             # ідемпотентність: вже є escort на (participant, registration)?
             exists = Escort.search_count(
                 [("participant_id", "=", participant.id), ("registration_id", "=", reg.id)]
