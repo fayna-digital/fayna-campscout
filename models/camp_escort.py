@@ -119,6 +119,24 @@ class CampEscort(models.Model):
             who = rec.participant_id.display_name or _("Asysta")
             rec.name = "{} — {}".format(who, dir_labels.get(rec.direction, ""))
 
+    # ── Constraints (патерн camp.transport._check_datetimes) ─────────────
+    @api.constrains("departure_datetime", "arrival_datetime")
+    def _check_datetimes(self):
+        for rec in self:
+            if (
+                rec.arrival_datetime
+                and rec.departure_datetime
+                and rec.arrival_datetime < rec.departure_datetime
+            ):
+                raise ValidationError(
+                    _(
+                        "Przyjazd (%(arrival)s) nie może być wcześniejszy "
+                        "niż wyjazd (%(dep)s).",
+                        arrival=rec.arrival_datetime,
+                        dep=rec.departure_datetime,
+                    )
+                )
+
     # NB: строгий constraint participant.partner == registration.partner ПРИБРАНО
     # (виявлено на staging-даних 2026-06-23): у кампі registration.partner=батько,
     # participant.partner=дитина → вони РІЗНІ, constraint хибно блокував би створення.

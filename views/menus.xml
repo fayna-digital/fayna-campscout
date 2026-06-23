@@ -40,6 +40,12 @@
             action="action_camp_category"
             sequence="30"/>
 
+        <menuitem id="menu_camp_seasons"
+            name="Sezony (Lato/Zima)"
+            parent="menu_camp_management"
+            action="action_fayna_camp_season"
+            sequence="25"/>
+
         <menuitem id="menu_camp_activities"
             name="Aktywności"
             parent="menu_camp_management"
@@ -156,6 +162,12 @@
             action="camp_teczka_ko_action"
             sequence="80"/>
 
+        <menuitem id="menu_camp_stories"
+            name="Stories / Kronika obozu"
+            parent="menu_operations"
+            action="camp_story_action"
+            sequence="90"/>
+
         <!-- ── Фінанси (кабінет №7, sprint 2026-06-10) ──────────────── -->
 
         <menuitem id="menu_finance"
@@ -246,6 +258,12 @@
             parent="menu_commercial"
             action="action_fayna_payment_installment_plan"
             sequence="30"/>
+
+        <menuitem id="menu_installment_monitor"
+            name="Raty — monitoring (zaległe)"
+            parent="menu_commercial"
+            action="action_fayna_payment_installment"
+            sequence="35"/>
 
         <menuitem id="menu_reviews"
             name="Opinie"

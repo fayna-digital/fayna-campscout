@@ -9,6 +9,7 @@
 import logging
 
 from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -295,9 +296,8 @@ class CampTeczkaKO(models.Model):
         (PyPDF2 vs single QWeb bundle) to be decided at integration.
         """
         self.ensure_one()
-        raise NotImplementedError(
-            "Pełny pakiet PDF Teczki KO będzie dostępny po integracji "
-            "wszystkich raportów (zob. TODO w action_export_pdf_pack)."
+        raise UserError(
+            _("Eksport pakietu PDF — w przygotowaniu (Тир 3).")
         )
 
     def action_check_regulamin_acks(self):

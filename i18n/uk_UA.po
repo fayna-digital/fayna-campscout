@@ -19379,7 +19379,7 @@ msgstr "Закордонний (Załącznik 3)"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_camp_dziennik__date_start
 #, python-format
 msgid "Zajęcia rozpoczęto"
-msgstr "Zajęcirozpoczęдо"
+msgstr "Заняття розпочато"
 
 #. module: fayna_camp_portal
 #. odoo-python

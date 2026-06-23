@@ -71,6 +71,28 @@
         </field>
     </record>
 
+    <record id="view_camp_escort_search" model="ir.ui.view">
+        <field name="name">camp.escort.search</field>
+        <field name="model">camp.escort</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="participant_id"/>
+                <field name="registration_id"/>
+                <field name="home_city"/>
+                <filter name="draft" string="Szkic" domain="[('state','=','draft')]"/>
+                <filter name="collected" string="Dane zebrane" domain="[('state','=','collected')]"/>
+                <filter name="signed" string="Podpisano" domain="[('state','=','signed')]"/>
+                <filter name="unsigned" string="Niepodpisane" domain="[('state','!=','signed')]"/>
+                <group expand="0" string="Grupuj wg">
+                    <filter name="by_participant" string="Uczestnik" context="{'group_by':'participant_id'}"/>
+                    <filter name="by_registration" string="Turnus (zapis)" context="{'group_by':'registration_id'}"/>
+                    <filter name="by_direction" string="Kierunek" context="{'group_by':'direction'}"/>
+                    <filter name="by_state" string="Status" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
     <record id="action_camp_escort" model="ir.actions.act_window">
         <field name="name">Asysta / Konwój</field>
         <field name="res_model">camp.escort</field>

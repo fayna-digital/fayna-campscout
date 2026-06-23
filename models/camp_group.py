@@ -338,6 +338,21 @@ class CampParticipant(models.Model):
             "only children of their own groups."
         ),
     )
+    # Stored related — дозволяє group-by по заїзду в search-в'юсі учасників
+    # (registration_ids = One2many, computed current_registration_id = store=False
+    #  → жодне з них не лягає у group_by). Джерело правди = group_id.event_id;
+    # дитина без групи → порожній заїзд (видно в "Brak grupy/turnusu").
+    group_event_id = fields.Many2one(
+        "event.event",
+        string=_("Turnus (grupa)"),
+        related="group_id.event_id",
+        store=True,
+        index=True,
+        help=_(
+            "Camp shift the child's wychowawca group belongs to — projection of "
+            "group_id.event_id so participants can be grouped by shift in the list."
+        ),
+    )
     has_disability = fields.Boolean(
         string=_("Niepełnosprawność / przewlekła choroba (§2)"),
         tracking=True,

@@ -245,12 +245,18 @@
                     <field name="display_name"/>
                     <field name="parent_partner_id"/>
                     <field name="pesel"/>
+                    <field name="group_event_id" string="Turnus"/>
+                    <field name="group_id" string="Grupa wychowawcza"/>
                     <filter name="signed" string="Qualification Signed" domain="[('qualification_signed','=',True)]"/>
                     <filter name="unsigned" string="Unsigned" domain="[('qualification_signed','=',False)]"/>
                     <filter name="pending_refusal" string="Auto-Refusal Pending" domain="[('auto_refusal_state','=','pending')]"/>
                     <filter name="refused" string="Auto-Refused" domain="[('auto_refusal_state','=','refused')]"/>
                     <filter name="needs_review" string="Needs Migration Review" domain="[('migration_needs_review','=',True)]"/>
+                    <separator/>
+                    <filter name="no_group" string="Bez grupy / turnusu" domain="[('group_id','=',False)]"/>
                     <group expand="0" string="Group By">
+                        <filter name="by_event" string="Turnus / zmiana" context="{'group_by':'group_event_id'}"/>
+                        <filter name="by_group" string="Grupa wychowawcza" context="{'group_by':'group_id'}"/>
                         <filter name="by_gender" string="Gender" context="{'group_by':'gender'}"/>
                         <filter name="by_refusal_state" string="Auto-Refusal State" context="{'group_by':'auto_refusal_state'}"/>
                     </group>

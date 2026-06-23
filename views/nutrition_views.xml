@@ -243,6 +243,10 @@
                 <search>
                     <field name="event_id"/>
                     <field name="menu_date"/>
+                    <group expand="0" string="Group By">
+                        <filter name="by_event" string="Turnus" context="{'group_by':'event_id'}"/>
+                        <filter name="by_date" string="Data" context="{'group_by':'menu_date'}"/>
+                    </group>
                 </search>
             </field>
         </record>
@@ -313,6 +317,25 @@
                         <field name="message_ids"/>
                     </div>
                 </form>
+            </field>
+        </record>
+
+        <record id="view_camp_nutrition_search" model="ir.ui.view">
+            <field name="name">camp.nutrition.search</field>
+            <field name="model">camp.nutrition</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="event_id"/>
+                    <field name="menu_date"/>
+                    <field name="prepared_by"/>
+                    <filter name="draft" string="Szkic" domain="[('state','=','draft')]"/>
+                    <filter name="confirmed" string="Zatwierdzone" domain="[('state','=','confirmed')]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="by_event" string="Turnus" context="{'group_by':'event_id'}"/>
+                        <filter name="by_date" string="Data" context="{'group_by':'menu_date'}"/>
+                        <filter name="by_state" string="Status" context="{'group_by':'state'}"/>
+                    </group>
+                </search>
             </field>
         </record>
 
