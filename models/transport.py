@@ -156,6 +156,7 @@ class CampTransport(models.Model):
     is_overdue = fields.Boolean(
         string="Overdue",
         compute="_compute_is_overdue",
+        search="_search_is_overdue",
         help="Arrival datetime passed but trip is still in planned state",
     )
 
@@ -166,6 +167,13 @@ class CampTransport(models.Model):
             rec.is_overdue = bool(
                 rec.arrival_datetime and rec.arrival_datetime < now and rec.state == "planned"
             )
+
+    def _search_is_overdue(self, operator, value):
+        """Make the computed flag searchable (для фільтра «Spóźnione»)."""
+        now = fields.Datetime.now()
+        overdue = ["&", ("arrival_datetime", "<", now), ("state", "=", "planned")]
+        positive = (operator == "=" and value) or (operator == "!=" and not value)
+        return overdue if positive else ["!"] + overdue
 
     # ── Portal mixin: signed access URL for /my/transport/<id> ─────────────
     def _compute_access_url(self):
