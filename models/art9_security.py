@@ -39,15 +39,28 @@ class CampParticipantArt9(models.Model):
     _inherit = "camp.participant"
 
     def read(self, fields=None, load="_classic_read"):
+        # Mask in the public read() path (RPC / explicit .read([...])).
         res = super().read(fields=fields, load=load)
         if _art9_visible(self.env):
             return res
-        # Mask art.9 values for users without medical access (e.g. Finance).
         mask = set(_ART9_FIELDS)
         for rec in res:
             for fname in mask.intersection(rec):
                 rec[fname] = False
         return res
+
+    def _read(self, fields):
+        # Mask attribute access (record.allergies) too — that path goes through
+        # _read → ORM cache, bypassing the public read(). We overwrite the cache
+        # for art.9 fields with False for non-medical users. Cache is per-env, so
+        # a medical user's env (separate) still sees the real values.
+        super()._read(fields)
+        if _art9_visible(self.env):
+            return
+        for fname in set(fields) & set(_ART9_FIELDS):
+            field = self._fields.get(fname)
+            if field is not None:
+                self.env.cache.update(self, field, [False] * len(self))
 
 
 class IrAttachmentArt9(models.Model):
