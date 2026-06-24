@@ -1,0 +1,264 @@
+// =============================================================================
+// CampScout Kiosk — mobile-first styles
+// Component: .o_camp_kiosk_app / .o_camp_kiosk_grid / .o_camp_kiosk_tile
+// Wychowawcy & kierownicy use phones in the field → base styles = phone.
+// Grows with @media min-width for tablet and desktop.
+//
+// Brand tokens imported from portal_hero.scss context (re-declared here so
+// this file compiles standalone; values must stay in sync with portal_hero.scss).
+// =============================================================================
+
+// ── Brand tokens (CampScout BRANDBOOK — camp/brandbook, авторитетне) ─────────
+$cs-ink:         #2B2A29;  // основний текст / темний
+$cs-gold:        #F39C10;  // основний теплий акцент
+$cs-teal:        #005869;  // вторинний глибокий teal (скаут/outdoor)
+$cs-teal-light:  #10898B;
+$cs-sand:        #E2C690;  // тепла кремова
+$cs-rust:        #CE4C21;  // акцент orange-red
+$cs-red:         #952426;  // глибокий червоний акцент
+$cs-sky:         #BCE3F9;  // світло-блакитна
+$cs-white:       #FEFEFE;
+$cs-muted:       #797648;  // олива-приглушений
+$cs-border:      #E2C690;  // sand-облямівка
+$cs-bg:          #FEFEFE;
+// сумісність зі старими назвами
+$cs-orange:      $cs-gold;
+$cs-orange-dark: $cs-rust;
+$cs-orange-soft: $cs-sand;
+
+// ── Kiosk-specific tokens ───────────────────────────────────────────────────
+$kiosk-tile-min-h-phone:  96px;   // WCAG touch target minimum
+$kiosk-tile-min-h-tablet: 110px;
+$kiosk-tile-min-h-desktop:120px;
+$kiosk-icon-size:          2rem;   // 32px — minimum; 2.5rem on tablet+
+$kiosk-label-size:         1.125rem; // 18px minimum on phone
+$kiosk-gap-phone:          0.75rem;
+$kiosk-gap-tablet:         1rem;
+$kiosk-gap-desktop:        1.25rem;
+$kiosk-radius:             16px;
+$kiosk-toggle-min:         44px;   // Apple HIG minimum touch target
+
+// ── Kiosk shell ─────────────────────────────────────────────────────────────
+// Full-screen, no horizontal overflow, safe-area-aware for notch phones.
+.o_camp_kiosk_app {
+    // Stretch to full viewport including safe areas (notch / home indicator)
+    min-height: 100dvh; // dynamic viewport height (avoids iOS toolbar jitter)
+    min-height: calc(100vh + env(safe-area-inset-top, 0px) + env(safe-area-inset-bottom, 0px));
+    width: 100%;
+    overflow-x: hidden;
+
+    // Safe-area padding so content never hides behind notch / home bar
+    padding-top:    max(1rem, env(safe-area-inset-top, 1rem));
+    padding-bottom: max(1.5rem, env(safe-area-inset-bottom, 1.5rem));
+    padding-left:   max(0.75rem, env(safe-area-inset-left, 0.75rem));
+    padding-right:  max(0.75rem, env(safe-area-inset-right, 0.75rem));
+
+    box-sizing: border-box;
+
+    // Phone: tighten header spacing
+    .display-5 {
+        font-size: 1.5rem; // shrink Bootstrap display-5 (3rem) on phone
+        line-height: 1.2;
+    }
+}
+
+// ── Tile grid ───────────────────────────────────────────────────────────────
+// Mobile-first: 1 column. Bootstrap row-cols-* handle 2/3 columns via
+// template classes — we override gap and ensure full-width on phone.
+.o_camp_kiosk_grid {
+    gap: $kiosk-gap-phone !important; // bootstrap g-* class needs override
+    width: 100% !important;
+    max-width: 100% !important; // override inline max-width: 960px on phone
+
+    // Tablet ≥576px: allow the inline max-width: 960px to kick back in
+    @media (min-width: 576px) {
+        max-width: 960px !important;
+        gap: $kiosk-gap-tablet !important;
+    }
+
+    @media (min-width: 992px) {
+        gap: $kiosk-gap-desktop !important;
+    }
+}
+
+// ── Tile button ─────────────────────────────────────────────────────────────
+.o_camp_kiosk_tile {
+    // Enforce minimum touch target height
+    min-height: $kiosk-tile-min-h-phone;
+
+    // Comfortable internal padding on phone
+    padding: 1rem 0.75rem !important;
+
+    // Rounded corners — bigger radius feels native on mobile
+    border-radius: $kiosk-radius !important;
+
+    // Kill Bootstrap's hover-based box-shadow (no hover on touch)
+    &:hover {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12) !important;
+    }
+
+    // Touch active state — visible feedback with scale + brightness
+    &:active {
+        transform: scale(0.96);
+        filter: brightness(0.92);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18) !important;
+        transition: transform 0.08s ease, filter 0.08s ease;
+    }
+
+    // Smooth release
+    transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+
+    cursor: pointer;
+
+    // Icon — minimum 32px (2rem), centered
+    .fa {
+        font-size: $kiosk-icon-size;
+        line-height: 1;
+        // Override Bootstrap fa-2x (which may be 1.5rem in some Odoo bundles)
+        &.fa-2x {
+            font-size: $kiosk-icon-size !important;
+        }
+    }
+
+    // Tile label — minimum 18px, readable on phone
+    .fw-bold {
+        font-size: $kiosk-label-size !important;
+        line-height: 1.25;
+    }
+
+    // Optional description — not too small
+    small {
+        font-size: 0.85rem !important;
+        line-height: 1.35;
+    }
+
+    // Tablet ≥576px: grow icon + label
+    @media (min-width: 576px) {
+        min-height: $kiosk-tile-min-h-tablet;
+        padding: 1.25rem 1rem !important;
+
+        .fa.fa-2x {
+            font-size: $kiosk-icon-size * 1.25 !important; // 2.5rem
+        }
+
+        .fw-bold {
+            font-size: 1.2rem !important;
+        }
+    }
+
+    // Desktop ≥992px
+    @media (min-width: 992px) {
+        min-height: $kiosk-tile-min-h-desktop;
+        padding: 1.5rem 1.25rem !important;
+
+        .fa.fa-2x {
+            font-size: $kiosk-icon-size * 1.5 !important; // 3rem
+        }
+
+        .fw-bold {
+            font-size: 1.25rem !important;
+        }
+    }
+}
+
+// ── Systray toggle button ────────────────────────────────────────────────────
+// "↔ Odoo" button — finger-friendly even when the text label is hidden on phone.
+.o_camp_kiosk_toggle {
+    button {
+        min-width:  $kiosk-toggle-min;
+        min-height: $kiosk-toggle-min;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        gap: 0.35rem;
+        padding: 0 0.65rem;
+        font-size: 0.95rem;
+        border-radius: 8px;
+        cursor: pointer;
+
+        // Active state for touch
+        &:active {
+            transform: scale(0.94);
+            transition: transform 0.08s ease;
+        }
+
+        // Icon always visible
+        .fa {
+            font-size: 1.1rem;
+        }
+
+        // Text label: hidden on phone (icon is enough), visible ≥768px
+        // The template already uses d-none d-md-inline — this is a safety net.
+        .d-none.d-md-inline {
+            display: none !important;
+        }
+
+        @media (min-width: 768px) {
+            .d-none.d-md-inline {
+                display: inline !important;
+            }
+        }
+    }
+}
+
+// ── Loading spinner — larger on phone ───────────────────────────────────────
+.o_camp_kiosk_app .spinner-border {
+    width: 3rem !important;
+    height: 3rem !important;
+}
+
+// ── Error / empty state ──────────────────────────────────────────────────────
+.o_camp_kiosk_app .alert {
+    font-size: 1rem;
+    border-radius: $kiosk-radius;
+    padding: 1.25rem 1rem;
+    max-width: 100%; // full-width on phone; template has max-width:500px inline
+
+    @media (min-width: 576px) {
+        max-width: 500px;
+        font-size: 1.1rem;
+    }
+}
+
+// ── Kiosk header — adaptive sizing ──────────────────────────────────────────
+.o_camp_kiosk_app .text-center {
+    // Tighten vertical spacing on small phones
+    &.mb-4 {
+        margin-bottom: 1rem !important;
+    }
+
+    @media (min-width: 576px) {
+        &.mb-4 {
+            margin-bottom: 1.5rem !important;
+        }
+    }
+}
+
+// Subtitle
+.o_camp_kiosk_app .fs-5 {
+    font-size: 1rem !important; // 1.25rem Bootstrap fs-5 is big on phone
+
+    @media (min-width: 576px) {
+        font-size: 1.1rem !important;
+    }
+}
+
+// ── БРЕНД-МАПІНГ Bootstrap btn-* → CampScout брендбук (scoped до кіоска) ──────
+.o_camp_kiosk_app {
+    .text-primary { color: $cs-teal !important; }   // заголовок/spinner → teal
+    .spinner-border.text-primary { color: $cs-gold !important; }
+
+    .o_camp_kiosk_tile {
+        border: none;
+        color: $cs-white;
+        // Bootstrap-suffix із controllers/kiosk.py → бренд-кольори
+        &.btn-primary  { background: $cs-teal       !important; color: $cs-white !important; }
+        &.btn-success  { background: $cs-teal-light  !important; color: $cs-white !important; }
+        &.btn-warning  { background: $cs-gold        !important; color: $cs-ink   !important; }
+        &.btn-danger   { background: $cs-red         !important; color: $cs-white !important; }
+        &.btn-info     { background: $cs-sky         !important; color: $cs-ink   !important; }
+        &:active { transform: scale(0.96); filter: brightness(0.92); }
+    }
+    // toggle systray — бренд-акцент
+    .o_camp_kiosk_toggle button { background: $cs-gold; color: $cs-ink; border: none; }
+}

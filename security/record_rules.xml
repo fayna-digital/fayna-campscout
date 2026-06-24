@@ -929,5 +929,64 @@
             <field name="perm_unlink" eval="False"/>
         </record>
 
+        <!-- ═══════════════════════════════════════════════════════════════
+             Art.9 Attachment-level ACL — §6j (PDF ≠ field-security bypass)
+             TZ §5 §6j: "PDF ≠ field-security, attachment-level" — a signed
+             karta-PDF stored as ir.attachment on camp.participant must be
+             protected independently from field-level groups=.  Without this
+             rule anyone with basic read on ir.attachment can download the PDF
+             and read art.9 data even though the live form fields are hidden.
+
+             Two rules:
+             1. group_medical_access — internal users who may read any karta
+                attachment on camp.participant (full camp/group/event scope is
+                still enforced by the companion camp.participant record rule).
+             2. base.group_portal — portal parents see only their own child's
+                attachments (res_id must be a participant whose
+                parent_partner_id == current user's partner).
+
+             Both rules are read-only — attachment creation/deletion is
+             handled by the PDF-generation flow (sudo) and immutability
+             enforcement in camp.participant.write().
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <!-- Internal medical-access users: read any camp.participant attachment.
+             Scope (which participants) is already enforced by the companion
+             camp.participant record rules (own camp / own group / own clients). -->
+        <record id="rule_attachment_participant_medical_access" model="ir.rule">
+            <field name="name">Medical Access: read camp.participant attachments</field>
+            <field name="model_id" ref="base.model_ir_attachment"/>
+            <field name="groups" eval="[(4, ref('fayna_camp_portal.group_medical_access'))]"/>
+            <field name="domain_force">['|',
+                ('res_model', '!=', 'camp.participant'),
+                ('res_model', '=', 'camp.participant')
+            ]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Portal parent: read attachments of their own children only.
+             Avoids cross-family leakage: res_id must map to a camp.participant
+             whose parent_partner_id == user.partner_id. -->
+        <record id="rule_attachment_participant_portal_own" model="ir.rule">
+            <field name="name">Portal parent: own children camp.participant attachments</field>
+            <field name="model_id" ref="base.model_ir_attachment"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">['|',
+                ('res_model', '!=', 'camp.participant'),
+                '&amp;',
+                    ('res_model', '=', 'camp.participant'),
+                    ('res_id', 'in', [p.id for p in env['camp.participant'].search(
+                        [('parent_partner_id', '=', user.partner_id.id)]
+                    )])
+            ]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
     </data>
 </odoo>

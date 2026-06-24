@@ -126,6 +126,7 @@ License: LGPL-3
             "fayna_camp_portal/static/src/js/impersonation_systray.js",
             "fayna_camp_portal/static/src/xml/impersonation_systray.xml",
             # Kiosk shell (TZ §4)
+            "fayna_camp_portal/static/src/scss/kiosk.scss",
             "fayna_camp_portal/static/src/js/kiosk_app.js",
             "fayna_camp_portal/static/src/xml/kiosk_template.xml",
             "fayna_camp_portal/static/src/js/kiosk_odoo_toggle_systray.js",
