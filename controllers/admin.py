@@ -134,7 +134,71 @@ class CampscoutAdmin(http.Controller):
             [], order="accessed_at desc", limit=10
         )
 
+        # 8) Impersonation — users the Organizator may log in as (login-as)
+        values["impersonable_users"] = self._build_impersonable_users(env_sudo)
+
         return request.render("fayna_camp_portal.admin_dashboard", values)
+
+    def _build_impersonable_users(self, env_sudo):
+        """Return camp-role/parent users that login-as may target, grouped by role.
+
+        Mirrors the backend guard in /admin/login-as: never list admins or
+        organizators (no privilege escalation). Internal camp roles
+        (kierownik/wychowawca/instructor) plus portal parents are eligible.
+        Returns a list of dicts ordered by role for a grouped QWeb render.
+        """
+        groups = {
+            "kierownik": "fayna_camp_portal.group_camp_kierownik",
+            "wychowawca": "fayna_camp_portal.group_camp_wychowawca",
+            "instructor": "fayna_camp_portal.group_camp_instructor",
+            "parent": "base.group_portal",
+        }
+        # Labels shown in the UI (Ukrainian, per CLAUDE.md).
+        labels = {
+            "kierownik": _("Kierownik"),
+            "wychowawca": _("Wychowawca"),
+            "instructor": _("Instruktor"),
+            "parent": _("Батьки"),
+        }
+        try:
+            system_group = env_sudo.ref("base.group_system")
+            organizator_group = env_sudo.ref(ORGANIZATOR_GROUP)
+        except (ValueError, KeyError):
+            return []
+
+        sections = []
+        seen_ids = set()
+        for role, xmlid in groups.items():
+            try:
+                group = env_sudo.ref(xmlid)
+            except (ValueError, KeyError):
+                continue
+            try:
+                users = env_sudo["res.users"].search(
+                    [
+                        ("active", "=", True),
+                        ("groups_id", "in", group.id),
+                        ("groups_id", "not in", system_group.id),
+                        ("groups_id", "not in", organizator_group.id),
+                    ],
+                    order="name asc",
+                    limit=100,
+                )
+            except (AccessError, MissingError, KeyError):
+                continue
+            rows = []
+            for user in users:
+                # A user may hold several role groups — show them once, under
+                # the first (most privileged) role we encounter.
+                if user.id in seen_ids:
+                    continue
+                seen_ids.add(user.id)
+                rows.append({"id": user.id, "name": user.name})
+            if rows:
+                sections.append(
+                    {"role": role, "label": labels.get(role, role), "users": rows}
+                )
+        return sections
 
     # --- KPI helpers -------------------------------------------------
 

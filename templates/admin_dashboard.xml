@@ -214,6 +214,42 @@
                     </div>
                 </section>
 
+                <!-- 6b. Увійти як (impersonation / login-as) -->
+                <section class="mb-4">
+                    <h3 class="mb-3">🔑 Увійти як (impersonation)</h3>
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <p class="text-muted small mb-3">
+                                Перемикає вашу сесію на реальний кабінет користувача.
+                                Кожен вхід записується у camp.admin.access.log (RODO art.30).
+                                Повернутися можна будь-коли через індикатор угорі або
+                                <a href="/admin/stop-impersonation">/admin/stop-impersonation</a>.
+                            </p>
+                            <t t-if="not impersonable_users">
+                                <p class="text-muted mb-0">
+                                    Немає користувачів, доступних для входу.
+                                </p>
+                            </t>
+                            <t t-else="">
+                                <t t-foreach="impersonable_users" t-as="section">
+                                    <h6 class="text-uppercase text-muted mt-3 mb-2"
+                                        t-esc="section['label']"/>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <t t-foreach="section['users']" t-as="u">
+                                            <a t-attf-href="/admin/login-as?user_id=#{u['id']}&amp;reason=Podgląd przez organizatora"
+                                               class="btn btn-sm btn-outline-primary">
+                                                Увійти як
+                                                <t t-esc="u['name']"/>
+                                                (<t t-esc="section['label']"/>)
+                                            </a>
+                                        </t>
+                                    </div>
+                                </t>
+                            </t>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- 7. Audit -->
                 <section class="mb-4">
                     <h3 class="mb-3">🔐 Audit (RODO art.30)</h3>

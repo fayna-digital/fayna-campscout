@@ -117,6 +117,8 @@ License: LGPL-3
         ],
         "web.assets_backend": [
             "fayna_camp_portal/static/src/js/chat_window_close_fix.js",
+            "fayna_camp_portal/static/src/js/impersonation_systray.js",
+            "fayna_camp_portal/static/src/xml/impersonation_systray.xml",
         ],
     },
     "post_init_hook": "post_init_hook",

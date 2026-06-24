@@ -10,6 +10,52 @@
      documents (regulamin-panelu-klienta.html). Match by structure, not
      text — the 'My account' string is already translated at render
      time in some locales, so text() XPath would fail. -->
+<!-- ============================================================================
+     Impersonation banner on the /my portal.
+     [ПРИПУЩЕННЯ] request.session in the website/portal QWeb context is not a
+     reliable way to read impersonator_uid across Odoo 17 render paths, so we
+     fetch the existing JSON route (/admin/impersonation-status) from a tiny
+     inline script and reveal the banner only when impersonating. Minimal,
+     no model/session coupling. The banner links to /admin/stop-impersonation.
+     Injected into portal.frontend_layout so it shows on every /my page.
+     ============================================================================ -->
+<template id="portal_impersonation_banner_campscout" inherit_id="portal.frontend_layout" priority="25">
+    <xpath expr="//div[@id='wrapwrap']" position="inside">
+        <div id="cs_impersonation_banner" class="alert alert-danger text-center mb-0 d-none"
+             role="alert" style="border-radius:0;position:sticky;top:0;z-index:1080;">
+            <i class="fa fa-user-secret me-1"/>
+            <span id="cs_impersonation_text">Ви переглядаєте кабінет в режимі імперсонації.</span>
+            <a href="/admin/stop-impersonation" class="alert-link ms-2 fw-bold">
+                Повернутися до адміністратора →
+            </a>
+        </div>
+        <script type="text/javascript">
+            (function () {
+                fetch("/admin/impersonation-status", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ jsonrpc: "2.0", method: "call", params: {} }),
+                })
+                    .then(function (r) { return r.json(); })
+                    .then(function (data) {
+                        var res = data &amp;&amp; data.result;
+                        if (res &amp;&amp; res.impersonating) {
+                            var box = document.getElementById("cs_impersonation_banner");
+                            var txt = document.getElementById("cs_impersonation_text");
+                            if (txt) {
+                                txt.textContent =
+                                    "Ви переглядаєте кабінет як " + (res.current_name || "") +
+                                    " (адмін: " + (res.admin_name || "") + ").";
+                            }
+                            if (box) { box.classList.remove("d-none"); }
+                        }
+                    })
+                    .catch(function () { /* best-effort; stay hidden on error */ });
+            })();
+        </script>
+    </xpath>
+</template>
+
 <template id="portal_layout_title_campscout" inherit_id="portal.portal_layout" priority="25">
     <xpath expr="//div[hasclass('wrapper')]/h3[hasclass('my-3')]" position="replace">
         <h3 class="my-3">Кабінет батьків</h3>
