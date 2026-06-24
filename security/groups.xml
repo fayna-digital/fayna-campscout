@@ -47,19 +47,9 @@
             </field>
         </record>
 
-        <!-- Camp Leader — alias for kierownik used in qualification card ACL.
-             Grants ability to sign/approve the qualification card (Section V). -->
-
-        <record id="group_camp_leader" model="res.groups">
-            <field name="name">Camp Leader</field>
-            <field name="category_id" ref="module_category_fayna_camp_portal"/>
-            <field name="implied_ids" eval="[(4, ref('group_camp_kierownik'))]"/>
-            <field name="comment">
-                Camp leader — extends Kierownik with sign-off rights:
-                can invoke sign_qualification() and complete_section_iii()
-                on camp.participant. Required by PL law (Rozp. MEN 2016 §5).
-            </field>
-        </record>
+        <!-- Camp Leader ЗЛИТО в Kierownik (рішення власника 2026-06-24): дубль
+             однакової назви. Право sign/clear-auto-refusal перенесено в
+             group_camp_kierownik. Leader-група прибрана (0 користувачів). -->
 
         <!-- ═══════════════════════════════════════════════════════════════
              Camp HR Manager — certification record management.

@@ -1883,11 +1883,11 @@ class CampParticipant(models.Model):
         audit trail in mail.thread and populates cleared_by/cleared_reason
         so the reason is preserved even if the user is deleted later.
 
-        Security: requires group_camp_leader (checked in view via groups=).
+        Security: requires group_camp_kierownik (checked in view via groups=).
         """
         self.ensure_one()
-        if not self.env.user.has_group("fayna_camp_portal.group_camp_leader"):
-            raise UserError(_("Only camp leaders can clear auto-refusal holds."))
+        if not self.env.user.has_group("fayna_camp_portal.group_camp_kierownik"):
+            raise UserError(_("Only camp directors (kierownik) can clear auto-refusal holds."))
         if self.auto_refusal_state == "refused":
             raise UserError(
                 _(

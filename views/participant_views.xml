@@ -32,7 +32,7 @@
                         <button name="action_open_clear_auto_refusal_wizard"
                                 string="Clear Auto-Refusal"
                                 type="object"
-                                groups="fayna_camp_portal.group_camp_leader"
+                                groups="fayna_camp_portal.group_camp_kierownik"
                                 invisible="auto_refusal_state != 'pending'"/>
                         <field name="auto_refusal_state" widget="statusbar"/>
                     </header>
