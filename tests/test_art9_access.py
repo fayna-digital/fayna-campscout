@@ -197,21 +197,17 @@ class TestArt9Access(TransactionCase):
         those groups rather than raising AccessError when accessed via ORM
         (field is silently masked). We verify the value is falsy.
         """
-        participant_as_finance = self.participant.with_user(self.user_finance)
-        # The participant record should be readable by finance (model-level ACL
-        # grants base.group_user read; finance has group_user via implied).
-        # The art.9 FIELD VALUES however must be masked (groups= enforcement).
+        # ACL scopes camp.participant read to group_medical_access + portal.
+        # Finance (group_camp_finance → only base.group_user) is in NEITHER, so it
+        # has NO access to the participant at all — nothing to mask. Assert via
+        # search (DB-level access check; an attribute read could hit the shared
+        # cursor cache filled by the admin setUp, masking the real ACL result).
+        Participant = self.env["camp.participant"].with_user(self.user_finance)
+        found = Participant.search([("id", "=", self.participant.id)])
         self.assertFalse(
-            participant_as_finance.allergies,
-            "Finance user must not read allergies (RODO art.9 field masked by groups=)",
-        )
-        self.assertFalse(
-            participant_as_finance.medications,
-            "Finance user must not read medications (RODO art.9 field masked by groups=)",
-        )
-        self.assertFalse(
-            participant_as_finance.chronic_conditions,
-            "Finance user must not read chronic_conditions (RODO art.9 field masked)",
+            found,
+            "Finance (bookkeeper) must NOT access camp.participant — scoped out by "
+            "ACL (group_medical_access required); children's data is outside finance scope.",
         )
 
     # ─── 2. Wychowawca sees art.9 of their own group ──────────────────────────
