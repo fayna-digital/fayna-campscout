@@ -274,13 +274,42 @@
                         <group string="Miejsca">
                             <field name="seats"/>
                         </group>
-                        <group string="Finanse (plan)">
+                        <group string="Koszty bazowe (plan)">
                             <field name="currency_id" invisible="1"/>
-                            <field name="price_per_child" widget="monetary"/>
                             <field name="cost_lodging_per_day" widget="monetary"/>
                             <field name="cost_food_per_child_day" widget="monetary"/>
                             <field name="salary_wychowawca_per_turnus" widget="monetary"/>
                             <field name="salary_kierownik_per_turnus" widget="monetary"/>
+                        </group>
+                    </group>
+
+                    <!-- Krok 8b: Kalkulacja ceny (§7 kalkulator) -->
+                    <group string="Kalkulacja ceny (§7)" invisible="step != 'capacity'">
+                        <group string="Kadra i pozostałe koszty">
+                            <field name="salary_instructor_per_turnus"/>
+                            <field name="cost_insurance_per_child_day"/>
+                            <field name="cost_merch_per_child"/>
+                            <field name="cost_stationery_per_child"/>
+                            <field name="cost_operational_per_child"/>
+                            <field name="cost_advertising_total"/>
+                        </group>
+                        <group string="VAT i marża">
+                            <field name="vat_mode" widget="radio"/>
+                            <field name="markup_percent"/>
+                        </group>
+                        <group string="Wynik kalkulatora" colspan="2">
+                            <field name="computed_price_per_child" widget="monetary"
+                                   readonly="1"
+                                   class="o_field_highlight fw-bold text-success"/>
+                            <field name="vat_note" readonly="1"/>
+                            <button name="action_apply_computed_price"
+                                    type="object"
+                                    string="Zastosuj jako cenę biletu →"
+                                    class="btn-secondary mt-2"
+                                    title="Kopiuje obliczoną cenę do pola 'Cena za dziecko'"/>
+                        </group>
+                        <group string="Cena biletu (do zapisu)">
+                            <field name="price_per_child" widget="monetary"/>
                         </group>
                     </group>
 
