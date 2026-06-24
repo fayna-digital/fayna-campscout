@@ -210,3 +210,5 @@ access_camp_staff_vacancy_kierownik,camp.staff.vacancy kierownik,model_camp_staf
 access_camp_staff_vacancy_organizator,camp.staff.vacancy organizator,model_camp_staff_vacancy,fayna_camp_portal.group_camp_organizator,1,1,1,1
 access_camp_staff_vacancy_admin,camp.staff.vacancy admin,model_camp_staff_vacancy,fayna_camp_portal.group_camp_admin,1,1,1,1
 access_camp_staff_vacancy_hr,camp.staff.vacancy hr,model_camp_staff_vacancy,fayna_camp_portal.group_camp_hr,1,1,1,0
+access_event_stage_camp_read,event.stage camp read,event.model_event_stage,base.group_user,1,0,0,0
+access_event_type_camp_read,event.type camp read,event.model_event_type,base.group_user,1,0,0,0
