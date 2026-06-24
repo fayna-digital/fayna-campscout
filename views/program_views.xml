@@ -159,5 +159,135 @@
             <field name="view_mode">tree,form</field>
         </record>
 
+        <!-- ============================================================
+             Phase C — Wychowawca: view_camp_program_structured_form_wychowawca
+             Primary form restricted to own published programs.
+             Locked / kierownik lines: readonly. Free lines: editable.
+        ============================================================ -->
+
+        <record id="view_camp_program_structured_form_wychowawca" model="ir.ui.view">
+            <field name="name">camp.program.structured.form.wychowawca</field>
+            <field name="model">camp.program.structured</field>
+            <field name="priority">20</field>
+            <field name="arch" type="xml">
+                <form string="Mój program" create="false" delete="false">
+                    <header>
+                        <button name="action_wychowawca_submit" type="object"
+                                string="Gotowe — przekaż"
+                                class="btn-primary"
+                                invisible="wychowawca_done"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,published"/>
+                    </header>
+                    <sheet>
+                        <!-- progress bar -->
+                        <widget name="web_progress_bar"
+                                attrs="{'value': [['fill_progress']], 'max': 100}"/>
+                        <div class="oe_title">
+                            <h1><field name="name" readonly="1"/></h1>
+                        </div>
+                        <group>
+                            <group string="Obóz">
+                                <field name="event_id" readonly="1"/>
+                                <field name="is_rain_plan" readonly="1"/>
+                                <field name="state" readonly="1"/>
+                                <field name="wychowawca_done" readonly="1"/>
+                            </group>
+                            <group string="Postęp wypełnienia">
+                                <field name="fill_progress" widget="progressbar"
+                                       options="{'editable': false}"/>
+                                <field name="free_filled" readonly="1"/>
+                                <field name="free_total" readonly="1"/>
+                            </group>
+                            <group string="Ramowy plan dnia">
+                                <field name="wake_time" readonly="1"/>
+                                <field name="breakfast" readonly="1"/>
+                                <field name="lunch" readonly="1"/>
+                                <field name="afternoon_rest" readonly="1"/>
+                                <field name="snack" readonly="1"/>
+                                <field name="dinner" readonly="1"/>
+                                <field name="lights_out" readonly="1"/>
+                                <field name="meal_duration" readonly="1"/>
+                                <field name="rest_duration" readonly="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Dni" name="days">
+                                <field name="day_ids" readonly="1">
+                                    <tree string="Dni programu" create="false" delete="false">
+                                        <field name="date"/>
+                                        <field name="day_number"/>
+                                        <field name="display_name"/>
+                                        <field name="activity_line_ids" widget="many2many_tags"
+                                               readonly="1"/>
+                                    </tree>
+                                    <form string="Dzień programu" create="false" delete="false">
+                                        <sheet>
+                                            <group>
+                                                <field name="date" readonly="1"/>
+                                                <field name="day_number" readonly="1"/>
+                                                <field name="display_name" readonly="1"/>
+                                            </group>
+                                            <field name="activity_line_ids" create="false"
+                                                   delete="false">
+                                                <tree string="Zajęcia" editable="bottom"
+                                                      create="false" delete="false"
+                                                      decoration-muted="is_locked"
+                                                      decoration-success="category == 'free'">
+                                                    <field name="time_from" readonly="1"/>
+                                                    <field name="time_to" readonly="1"/>
+                                                    <field name="skeleton_label" readonly="1"
+                                                           optional="show"/>
+                                                    <field name="category" widget="badge"
+                                                           readonly="1"/>
+                                                    <field name="owner_role" readonly="1"
+                                                           optional="hide"/>
+                                                    <field name="is_locked" readonly="1"
+                                                           widget="boolean_toggle" optional="hide"/>
+                                                    <field name="title"
+                                                           readonly="is_locked or owner_role == 'kierownik'"/>
+                                                    <field name="location"
+                                                           readonly="is_locked or owner_role == 'kierownik'"
+                                                           optional="show"/>
+                                                    <field name="activity_template_id"
+                                                           readonly="is_locked or owner_role == 'kierownik'"
+                                                           optional="show"/>
+                                                    <field name="responsible_id"
+                                                           readonly="is_locked or owner_role == 'kierownik'"
+                                                           optional="show"/>
+                                                    <field name="notes"
+                                                           readonly="is_locked or owner_role == 'kierownik'"
+                                                           optional="hide"/>
+                                                </tree>
+                                            </field>
+                                        </sheet>
+                                    </form>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action for wychowawca: own published programs -->
+        <record id="action_camp_program_structured_wychowawca" model="ir.actions.act_window">
+            <field name="name">Mój program</field>
+            <field name="res_model">camp.program.structured</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state', '=', 'published')]</field>
+            <field name="context">{'default_state': 'published'}</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'form',
+                        'view_id': ref('view_camp_program_structured_form_wychowawca')}),
+                (0, 0, {'view_mode': 'tree',
+                        'view_id': ref('view_camp_program_structured_tree')})]"/>
+        </record>
+
     </data>
 </odoo>

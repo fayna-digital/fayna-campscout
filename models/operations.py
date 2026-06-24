@@ -1956,6 +1956,78 @@ class CampProgramStructured(models.Model):
         self.ensure_one()
         return self.env.ref("fayna_camp_portal.camp_program_report_action").report_action(self)
 
+    # ── ADR Фаза C — прогрес наповнення та гейт виховника ────────────────
+
+    _FREE_MARKER = "Czas wolny — do wypełnienia"
+
+    def _get_free_lines(self):
+        """Return activity lines that are considered unfilled free slots."""
+        return self.day_ids.mapped("activity_line_ids").filtered(
+            lambda l: l.category == "free" or l.title == self._FREE_MARKER
+        )
+
+    def _get_filled_lines(self):
+        """Return free-owned lines that have been concretely filled by wychowawca."""
+        return self.day_ids.mapped("activity_line_ids").filtered(
+            lambda l: l.owner_role == "wychowawca"
+            and l.category != "free"
+            and l.title != self._FREE_MARKER
+        )
+
+    @api.depends("day_ids.activity_line_ids.category", "day_ids.activity_line_ids.title",
+                 "day_ids.activity_line_ids.owner_role")
+    def _compute_fill_progress(self):
+        for rec in self:
+            all_wychowawca = rec.day_ids.mapped("activity_line_ids").filtered(
+                lambda l: l.owner_role == "wychowawca"
+            )
+            total = len(all_wychowawca)
+            if total == 0:
+                rec.free_total = 0
+                rec.free_filled = 0
+                rec.fill_progress = 100.0
+            else:
+                filled = len(all_wychowawca.filtered(
+                    lambda l: l.category != "free" and l.title != rec._FREE_MARKER
+                ))
+                rec.free_total = total
+                rec.free_filled = filled
+                rec.fill_progress = round(100.0 * filled / total, 1)
+
+    free_total = fields.Integer(
+        compute="_compute_fill_progress",
+        string=_("Free slots total"),
+        help=_("Total wychowawca-owned slots (free + filled)."),
+    )
+    free_filled = fields.Integer(
+        compute="_compute_fill_progress",
+        string=_("Free slots filled"),
+        help=_("Wychowawca-owned slots already filled in."),
+    )
+    fill_progress = fields.Float(
+        compute="_compute_fill_progress",
+        string=_("Fill progress (%)"),
+        help=_("Percentage of wychowawca slots filled. 100 % unlocks submission."),
+    )
+    wychowawca_done = fields.Boolean(
+        default=False,
+        string=_("Wychowawca done"),
+        tracking=True,
+        help=_("Set to True by action_wychowawca_submit when all free slots are filled."),
+    )
+
+    def action_wychowawca_submit(self):
+        """Gate: all wychowawca slots must be filled before submission."""
+        self.ensure_one()
+        unfilled = self._get_free_lines()
+        if unfilled:
+            titles = ", ".join(unfilled.mapped("title")[:5])
+            raise UserError(
+                _("Uzupełnij wszystkie wolne sloty przed wysłaniem. Brakuje: %s") % titles
+            )
+        self.wychowawca_done = True
+        return True
+
     # ── ADR Фаза A §2 — генератор скелету ────────────────────────────────
 
     @api.model
@@ -2295,11 +2367,30 @@ class CampProgramActivityLine(models.Model):
         help=_("Role that owns this line. Wychowawca can only edit owner_role=wychowawca lines."),
     )
 
-    @api.constrains("is_locked", "owner_role")
+    # ── Фаза C — skeleton label (readonly, inherited from skeleton generator) ──
+    skeleton_label = fields.Char(
+        string=_("Skeleton label"),
+        readonly=True,
+        help=_("General activity name from the skeleton. Wychowawca fills in the concrete title."),
+    )
+
+    @api.constrains(
+        "is_locked", "owner_role", "title", "time_from", "time_to",
+        "activity_template_id", "location", "responsible_id", "notes", "category",
+    )
     def _check_locked_write(self):
-        """Phase C ENFORCE: non-kierownik cannot write is_locked/owner_role=kierownik lines.
-        Stub for Phase A — enforcement logic will be added in Phase C."""
-        pass
+        """Phase C ENFORCE: wychowawca cannot write locked or kierownik-owned lines."""
+        if self.env.su:
+            return
+        if self.env.user.has_group("fayna_camp_portal.group_camp_kierownik"):
+            return
+        if self.env.user.has_group("fayna_camp_portal.group_camp_organizator"):
+            return
+        for line in self:
+            if line.is_locked or line.owner_role == "kierownik":
+                raise ValidationError(
+                    _("Slot zablokowany przez kierownika — wychowawca nie edytuje: %s") % line.title
+                )
 
     @api.onchange("activity_template_id")
     def _onchange_activity_template(self):

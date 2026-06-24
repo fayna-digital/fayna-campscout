@@ -839,14 +839,27 @@
             <field name="perm_create" eval="True"/>
             <field name="perm_unlink" eval="False"/>
         </record>
+        <!-- Phase C: wychowawca sees ALL lines of own published program (read-only) -->
         <record id="rule_activity_line_wychowawca_own_published" model="ir.rule">
-            <field name="name">Wychowawca: R+W+C on activity lines of own published programs</field>
+            <field name="name">Wychowawca: read-only on activity lines of own published programs</field>
             <field name="model_id" ref="model_camp_program_activity_line"/>
             <field name="groups" eval="[(4, ref('group_camp_wychowawca'))]"/>
             <field name="domain_force">['&amp;', ('day_id.program_id.state', '=', 'published'), '|', ('day_id.program_id.event_id.staff_ids.user_id', '=', user.id), ('day_id.program_id.event_id.camp_group_ids.wychowawca_ids', 'in', [user.id])]</field>
             <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Phase C: wychowawca may write only free (owner_role=wychowawca, unlocked) lines -->
+        <record id="rule_activity_line_wychowawca_write_free" model="ir.rule">
+            <field name="name">Wychowawca: write free unlocked lines of own published programs</field>
+            <field name="model_id" ref="model_camp_program_activity_line"/>
+            <field name="groups" eval="[(4, ref('group_camp_wychowawca'))]"/>
+            <field name="domain_force">['&amp;', ('owner_role', '=', 'wychowawca'), '&amp;', ('is_locked', '=', False), '&amp;', ('day_id.program_id.state', '=', 'published'), '|', ('day_id.program_id.event_id.staff_ids.user_id', '=', user.id), ('day_id.program_id.event_id.camp_group_ids.wychowawca_ids', 'in', [user.id])]</field>
+            <field name="perm_read" eval="False"/>
             <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
+            <field name="perm_create" eval="False"/>
             <field name="perm_unlink" eval="False"/>
         </record>
 

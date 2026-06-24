@@ -125,6 +125,14 @@
             action="action_camp_program_structured"
             sequence="41"/>
 
+        <!-- Phase C: wychowawca entry point — own published programs only -->
+        <menuitem id="menu_camp_program_wychowawca"
+            name="Mój program"
+            parent="menu_operations"
+            action="action_camp_program_structured_wychowawca"
+            sequence="42"
+            groups="fayna_camp_portal.group_camp_wychowawca"/>
+
         <menuitem id="menu_camp_daily_report"
             name="Raport dzienny (§2.11)"
             parent="menu_operations"
