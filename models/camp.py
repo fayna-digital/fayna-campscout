@@ -303,7 +303,7 @@ class CampEvent(models.Model):
                 _("Тільки чернетку можна надіслати на погодження (поточний стан: %s).")
                 % self.camp_approval_state
             )
-        self.write({"camp_approval_state": "pending_approval"})
+        self.sudo().write({"camp_approval_state": "pending_approval"})
         self.message_post(
             body=_("Табір надіслано на погодження організатора."),
             message_type="notification",
@@ -322,7 +322,7 @@ class CampEvent(models.Model):
                 _("Погодити можна лише табір зі статусом «На погодженні» (поточний: %s).")
                 % self.camp_approval_state
             )
-        self.write(
+        self.sudo().write(
             {
                 "camp_approval_state": "approved",
                 "approved_by_id": self.env.uid,
@@ -599,7 +599,7 @@ class CampEvent(models.Model):
             )
         if not self.rejection_reason:
             raise UserError(_("Вкажіть причину відхилення перед збереженням."))
-        self.write(
+        self.sudo().write(
             {
                 "camp_approval_state": "rejected",
                 "website_published": False,
