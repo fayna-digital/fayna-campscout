@@ -61,10 +61,14 @@ msgid ""
 "edits).\n"
 "            "
 msgstr ""
-"\\n                Camp manager — full access to camp.program (Program "
-"Wypoczynku,\\n                Załącznik 9) including approve/submit "
-"workflow. Can override\\n                immutability where PL law permits "
-"(incident post-closure edits).\\n            "
+"\n"
+"                Menedżer wypoczynku — pełny dostęp do camp.program (Program "
+"Wypoczynku,\n"
+"                Załącznik 9), w tym workflow zatwierdzania/składania. Może "
+"nadpisać\n"
+"                niezmienność tam, gdzie zezwala prawo PL (edycje incydentu "
+"po zamknięciu).\n"
+"            "
 
 #. module: fayna_camp_portal
 #: model:res.groups,comment:fayna_camp_portal.group_camp_admin

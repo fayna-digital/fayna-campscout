@@ -43,10 +43,11 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"                Лідер табору — extends Kierownik з sign-off rights:\n"
-"                може invoke sign_qualification() and complete_section_iii()\n"
-"                on camp.participant. Вимагається PL закон (Rozp. MEN 2016 "
-"§5).\n"
+"                Керівник табору — розширює Kierownik правом підпису:\n"
+"                може викликати sign_qualification() і "
+"complete_section_iii()\n"
+"                на camp.participant. Вимагається польським законом (Rozp. "
+"MEN 2016 §5).\n"
 "            "
 
 #. module: fayna_camp_portal
@@ -64,9 +65,10 @@ msgstr ""
 "\n"
 "                Менеджер табору — повний доступ до camp.program (Program "
 "Wypoczynku,\n"
-"                Załącznik 9) including approve/submit workflow. Coverride\n"
-"                immutability where PL закон permits (incident post-closure "
-"edits).\n"
+"                Załącznik 9), включно з процесом затвердження/подання. Може "
+"обходити\n"
+"                незмінність там, де це дозволяє польський закон (правки "
+"інцидентів після закриття).\n"
 "            "
 
 #. module: fayna_camp_portal
@@ -80,9 +82,9 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"                Адмін операцій табору — повний доступ до camp.report "
-"including\n"
-"                revert-до-draft on submitted reports. Implied by "
+"                Адміністратор операцій табору — повний доступ до "
+"camp.report, включно з\n"
+"                поверненням у чернетку поданих звітів. Випливає з "
 "camp_manager.\n"
 "            "
 
@@ -98,10 +100,11 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"                Менеджер НС — повний доступ до цикл інциденту including\n"
-"                close, reopen, and override state. Immutable ledger "
-"enдляcement\n"
-"                applies post-close (BP-006, UstawKamilk2024).\n"
+"                Менеджер надзвичайних ситуацій — повний доступ до життєвого "
+"циклу інциденту, включно із\n"
+"                закриттям, повторним відкриттям і зміною стану. Незмінність "
+"журналу\n"
+"                діє після закриття (BP-006, Ustawa Kamilka 2024).\n"
 "            "
 
 #. module: fayna_camp_portal
@@ -136,13 +139,13 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"                Instrucдоr — specialist для one or more activities "
-"(swimming,\n"
-"                climbing, archery). Бачить власні activities через record "
-"rule\n"
-"                camp.activity.responsible_id == self. Sees тільки attendees "
-"з\n"
-"                релевантні медичні info (e.g., asthmдля running).\n"
+"                Інструктор — спеціаліст з однієї або кількох активностей "
+"(плавання,\n"
+"                скелелазіння, стрільба з лука). Бачить власні активності "
+"через правило запису\n"
+"                camp.activity.responsible_id == self. Бачить лише учасників "
+"із\n"
+"                релевантною медичною інформацією (напр., астма для бігу).\n"
 "            "
 
 #. module: fayna_camp_portal
@@ -157,11 +160,11 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"                Kierownik (camp shift direcдоr) — може створювати/редагувати "
-"camp.journal,\n"
-"                camp.daily.report, camp.staff entries. Cannot approve "
+"                Kierownik (керівник заїзду) — може створювати/редагувати "
+"записи camp.journal,\n"
+"                camp.daily.report, camp.staff. Не може затверджувати "
 "Załącznik 9\n"
-"                (that requires group_fayna_camp_manager).\n"
+"                (для цього потрібен group_fayna_camp_manager).\n"
 "            "
 
 #. module: fayna_camp_portal
@@ -176,11 +179,11 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"                Medical officer — доступ читання/запису до RODO ст.9 special-"
-"category\n"
-"                health fields: allergies, medications, chronic_conditions, "
-"docдоr_notes\n"
-"                on camp.participant. Requires signed DPз organizer.\n"
+"                Медичний працівник — доступ на читання/запис до полів "
+"здоров'я особливої категорії RODO ст.9:\n"
+"                allergies, medications, chronic_conditions, doctor_notes\n"
+"                на camp.participant. Вимагає підписаної DPA з "
+"організатором.\n"
 "            "
 
 #. module: fayna_camp_portal
@@ -195,10 +198,11 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"                Nutrition officer — доступ читання/запису до dietary and "
-"allergen data\n"
-"                on camp.participant.diet (RODO ст.9 special-category data).\n"
-"                EU Regulation 1169/2011 (14 major allergens).\n"
+"                Відповідальний за харчування — доступ на читання/запис до "
+"даних про дієту та алергени\n"
+"                на camp.participant.diet (дані особливої категорії RODO "
+"ст.9).\n"
+"                Регламент ЄС 1169/2011 (14 основних алергенів).\n"
 "            "
 
 #. module: fayna_camp_portal
@@ -217,16 +221,17 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"                Організатор Wypoczynku per PL закон (Rozp. MEN 30.03.2016 "
-"§2.1).\n"
-"                Legal person/entity (foundation, scout org, compбудь-який) "
-"registered\n"
-"                з Kuraдоrium Oświaty. Обходить всі record rules (via\n"
-"                base.group_system), переходить на /admin/dashboard, може\n"
-"                /admin/as-{role} impersonate будь-яка роль. Кожне "
-"переключення ролі\n"
-"                залоговано в camp.admin.access.log (RODO ст.30, 7-year "
-"збереження).\n"
+"                Організатор відпочинку згідно з польським законом (Rozp. MEN "
+"30.03.2016 §2.1).\n"
+"                Юридична особа (фундація, скаутська організація, компанія), "
+"зареєстрована\n"
+"                в Kuratorium. Обходить усі правила запису (через\n"
+"                base.group_system), потрапляє на /admin/dashboard, може "
+"через\n"
+"                /admin/as-{role} видавати себе за будь-яку роль. Кожне "
+"видавання себе за іншу роль\n"
+"                логується в camp.admin.access.log (RODO art.30, зберігання 7 "
+"років).\n"
 "            "
 
 #. module: fayna_camp_portal
@@ -241,11 +246,11 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"                Sales/marketing manager — catalog, prices, sale.order, "
-"support\n"
-"                requests, marketing reports, public sдоries. NO access до "
-"medical\n"
-"                data, kuraдоrium, dziennik, daily reports, incidents.\n"
+"                Менеджер продажів/маркетингу — каталог, ціни, sale.order, "
+"запити\n"
+"                підтримки, маркетингові звіти, публічні історії. БЕЗ доступу "
+"до медичних\n"
+"                даних, kuratorium, dziennik, щоденних звітів, інцидентів.\n"
 "            "
 
 #. module: fayna_camp_portal
@@ -262,13 +267,13 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"                Wychowawc— runs activities для own group of children. Бачить "
-"власні\n"
-"                group тільки через record rule camp.staff.event_id == self. "
-"Sees\n"
-"                allergies + emergency_contact (children) but NOT "
-"medications/\n"
-"                docдоr_notes. Załącznik 5 MEN права підпису dziennik.\n"
+"                Вожатий — проводить активності для власної групи дітей. "
+"Бачить лише власну\n"
+"                групу через правило запису camp.staff.event_id == self. "
+"Бачить\n"
+"                allergies + emergency_contact (дітей), але НЕ medications/\n"
+"                doctor_notes. Право підпису dziennik згідно із Załącznik 5 "
+"MEN.\n"
 "            "
 
 #. module: fayna_camp_portal
@@ -436,8 +441,8 @@ msgid ""
 "%(name)s redeemed your BANDA code! You received a −50 PLN coupon for your "
 "next order. It will be applied automatically at checkout."
 msgstr ""
-"%(name)s redeemed your BANDcode! You received −50 PLN coupon для your next "
-"order. It will be applied auдоmatically at checkout."
+"%(name)s скористався вашим кодом BANDA! Ви отримали купон −50 PLN на "
+"наступне замовлення. Його буде застосовано автоматично під час оформлення."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -492,13 +497,15 @@ msgid ""
 "default when you deliver an order that belongs to this company.\n"
 "- Other: Other address for the company (e.g. subsidiary, ...)"
 msgstr ""
-"- Contact: Use this до organize contact details of employees of given "
-"compбудь-який (e.g. CEO, CFO, ...).\n"
-"- Invoice Address: Preferred address для all invoices. Selected by за "
-"замовчуванням when you invoice order that belongs до this compбудь-який.\n"
-"- Delivery Address: Preferred address для all deliveries. Selected by за "
-"замовчуванням when you deliver order that belongs до this compбудь-який.\n"
-"- Other: Other address для compбудь-який (e.g. subsidiary, ...)"
+"- Контакт: Використовуйте це для впорядкування контактних даних працівників "
+"певної компанії (напр., CEO, CFO, ...).\n"
+"- Адреса для рахунків: Бажана адреса для всіх рахунків. Вибирається за "
+"замовчуванням, коли ви виставляєте рахунок за замовленням, що належить цій "
+"компанії.\n"
+"- Адреса доставки: Бажана адреса для всіх доставок. Вибирається за "
+"замовчуванням, коли ви здійснюєте доставку за замовленням, що належить цій "
+"компанії.\n"
+"- Інше: Інша адреса компанії (напр., філія, ...)"
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_my_home_campscout_hero
@@ -517,8 +524,9 @@ msgid ""
 "'rpd_notified' triggers the Ustawa Kamilka 2024 computed overlay on the "
 "parent report."
 msgstr ""
-"18 action types covering full BP-006 emergency response proдоcol. "
-"'rpd_notified' triggers UstawKamilk2024 computed overlay on parent report."
+"18 типів дій, що покривають повний протокол реагування на надзвичайні "
+"ситуації BP-006. 'rpd_notified' запускає обчислюваний шар Ustawa Kamilka "
+"2024 у звіті для батьків."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -527,7 +535,8 @@ msgstr ""
 #, python-format
 msgid "7-year retention deadline per Polish law (event end date + 7 years)."
 msgstr ""
-"7-year збереження deadline per польський закон (event end date + 7 years)."
+"Кінцевий термін зберігання 7 років згідно з польським законом (дата "
+"завершення заходу + 7 років)."
 
 #. module: fayna_camp_portal
 #: model:mail.template,body_html:fayna_camp_portal.email_qualification_reminder_3d
@@ -558,25 +567,27 @@ msgid ""
 "            "
 msgstr ""
 "<div style=\"color:#c00;\">\n"
-"                    <p>Dear <t t-out=\"object.parent_partner_id.display_name "
-"or object.parent_partner_id.name or 'parent'\"></t>,</p>\n"
+"                    <p>Шановний(а) <t "
+"t-out=\"object.parent_partner_id.display_name or "
+"object.parent_partner_id.name or 'parent'\"></t>,</p>\n"
 "                    <p>\n"
-"                        <strong>This is final reminder.</strong>\n"
-"                        qualification card для <strong><t t-"
-"out=\"object.display_name\"></t></strong>\n"
-"                        is still unsigned and deadline is in three days.\n"
+"                        <strong>Це останнє нагадування.</strong>\n"
+"                        Кваліфікаційна картка для <strong><t "
+"t-out=\"object.display_name\"></t></strong>\n"
+"                        досі не підписана, а кінцевий термін — за три дні.\n"
 "                    </p>\n"
 "                    <p>\n"
-"                        If it remains unsigned on <strong><t t-"
-"out=\"object.auдо_refusal_date\"></t></strong>,\n"
-"                        registration is можеcelled auдоmatically and refund "
-"is issued\n"
-"                        according до contract.\n"
+"                        Якщо вона залишиться непідписаною <strong><t "
+"t-out=\"object.auto_refusal_date\"></t></strong>,\n"
+"                        реєстрацію буде скасовано автоматично, а кошти "
+"повернуто\n"
+"                        згідно з договором.\n"
 "                    </p>\n"
 "                    <p>\n"
-"                        Please sign now in cusдоmer portal до keep spot.\n"
+"                        Будь ласка, підпишіть зараз у клієнтському порталі, "
+"щоб зберегти місце.\n"
 "                    </p>\n"
-"                    <p>Kind regards,<br>CampScout team</p>\n"
+"                    <p>З повагою,<br>команда CampScout</p>\n"
 "                </div>\n"
 "            "
 
@@ -610,28 +621,29 @@ msgid ""
 "            "
 msgstr ""
 "<div>\n"
-"                    <p>Dear <t t-out=\"object.parent_partner_id.display_name "
-"or object.parent_partner_id.name or 'parent'\"></t>,</p>\n"
+"                    <p>Шановний(а) <t "
+"t-out=\"object.parent_partner_id.display_name or "
+"object.parent_partner_id.name or 'parent'\"></t>,</p>\n"
 "                    <p>\n"
-"                        registration для <strong><t t-"
-"out=\"object.display_name\"></t></strong>\n"
-"                        has been можеcelled auдоmatically because "
-"qualification card\n"
-"                        was not signed користувачем deadline.\n"
+"                        Реєстрацію для <strong><t "
+"t-out=\"object.display_name\"></t></strong>\n"
+"                        було скасовано автоматично, оскільки кваліфікаційну "
+"картку\n"
+"                        не підписали до кінцевого терміну.\n"
 "                    </p>\n"
 "                    <p>\n"
-"                        refund will be processed according до contract terms "
-"(Umow§6).\n"
-"                        Our finance team will contact you з exact amount and "
-"timing.\n"
+"                        Повернення коштів буде здійснено згідно з умовами "
+"договору (Umowa §6).\n"
+"                        Наш фінансовий відділ зв'яжеться з вами щодо точної "
+"суми та строків.\n"
 "                    </p>\n"
 "                    <p>\n"
-"                        If this was mistake, please reply до this email зin "
-"48 hours —\n"
-"                        we may be able до reinstate registration if seats "
-"are still available.\n"
+"                        Якщо це сталося помилково, будь ласка, відповідайте "
+"на цей лист протягом 48 годин —\n"
+"                        ми, можливо, зможемо відновити реєстрацію, якщо "
+"місця ще доступні.\n"
 "                    </p>\n"
-"                    <p>Kind regards,<br>CampScout team</p>\n"
+"                    <p>З повагою,<br>команда CampScout</p>\n"
 "                </div>\n"
 "            "
 
@@ -664,27 +676,28 @@ msgid ""
 "            "
 msgstr ""
 "<div>\n"
-"                    <p>Dear <t t-out=\"object.parent_partner_id.display_name "
-"or object.parent_partner_id.name or 'parent'\"></t>,</p>\n"
+"                    <p>Шановний(а) <t "
+"t-out=\"object.parent_partner_id.display_name or "
+"object.parent_partner_id.name or 'parent'\"></t>,</p>\n"
 "                    <p>\n"
-"                        There is one week left до sign qualification card "
-"для\n"
-"                        <strong><t t-out=\"object.display_name\"></t></"
-"strong>.\n"
+"                        Залишився один тиждень, щоб підписати кваліфікаційну "
+"картку для\n"
+"                        <strong><t "
+"t-out=\"object.display_name\"></t></strong>.\n"
 "                    </p>\n"
 "                    <p>\n"
-"                        Without signed card we можеnot legally accept child "
-"at camp\n"
-"                        (Polish Ustawo wypoczynku + RODO art. 9).\n"
+"                        Без підписаної картки ми не можемо законно прийняти "
+"дитину до табору\n"
+"                        (польська Ustawa o wypoczynku + RODO art. 9).\n"
 "                    </p>\n"
 "                    <p>\n"
-"                        Please sign beдляe <strong><t t-"
-"out=\"object.auдо_refusal_date\"></t></strong>.\n"
-"                        After that date registration is можеcelled "
-"auдоmatically and the\n"
-"                        spot is released.\n"
+"                        Будь ласка, підпишіть до <strong><t "
+"t-out=\"object.auto_refusal_date\"></t></strong>.\n"
+"                        Після цієї дати реєстрацію буде скасовано "
+"автоматично, а\n"
+"                        місце звільнено.\n"
 "                    </p>\n"
-"                    <p>Kind regards,<br>CampScout team</p>\n"
+"                    <p>З повагою,<br>команда CampScout</p>\n"
 "                </div>\n"
 "            "
 
@@ -714,24 +727,24 @@ msgid ""
 "            "
 msgstr ""
 "<div>\n"
-"                    <p>Dear <t t-out=\"object.parent_partner_id.display_name "
-"or object.parent_partner_id.name or 'parent'\"></t>,</p>\n"
+"                    <p>Шановний(а) <t "
+"t-out=\"object.parent_partner_id.display_name or "
+"object.parent_partner_id.name or 'parent'\"></t>,</p>\n"
 "                    <p>\n"
-"                        This is friendly reminder that qualification card "
-"для\n"
-"                        <strong><t t-out=\"object.display_name\"></t></"
-"strong> is still unsigned.\n"
+"                        Це дружнє нагадування, що кваліфікаційна картка для\n"
+"                        <strong><t "
+"t-out=\"object.display_name\"></t></strong> досі не підписана.\n"
 "                    </p>\n"
 "                    <p>\n"
-"                        camp starts soon — please sign card in your cusдоmer "
-"portal\n"
-"                        at your earliest convenience.\n"
+"                        Табір скоро починається — будь ласка, підпишіть "
+"картку у вашому клієнтському порталі\n"
+"                        за найближчої нагоди.\n"
 "                    </p>\n"
 "                    <p>\n"
-"                        Deadline: <strong><t t-"
-"out=\"object.auдо_refusal_date\"></t></strong>.\n"
+"                        Кінцевий термін: <strong><t "
+"t-out=\"object.auto_refusal_date\"></t></strong>.\n"
 "                    </p>\n"
-"                    <p>Kind regards,<br>CampScout team</p>\n"
+"                    <p>З повагою,<br>команда CampScout</p>\n"
 "                </div>\n"
 "            "
 
@@ -749,9 +762,9 @@ msgid ""
 "<strong>%(ref)s</strong>. Our team will get back to you shortly.</"
 "p><p>CampScout Team</p>"
 msgstr ""
-"<p>Dear %(name)s,</p><p>We have received your support request "
-"<strong>%(ref)s</strong>. Our team will get back до you shortly.</"
-"p><p>CampScout Team</p>"
+"<p>Шановний(а) %(name)s,</p><p>Ми отримали ваш запит до підтримки "
+"<strong>%(ref)s</strong>. Наша команда невдовзі зв'яжеться з "
+"вами.</p><p>Команда CampScout</p>"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -781,7 +794,7 @@ msgid ""
 "                        </small>"
 msgstr ""
 "<small class=\"text-muted\">\n"
-"                            Організатор Wypoczynku · Rozp. MEN 30.03.2016 "
+"                            Організатор відпочинку · Rozp. MEN 30.03.2016 "
 "§2.1\n"
 "                        </small>"
 
@@ -906,13 +919,13 @@ msgid ""
 "                            (immutable, 7-year retention)."
 msgstr ""
 "<strong>RODO:</strong>\n"
-"                            Тільки participants з <code>sms_consent = True</"
-"code>\n"
-"                            and reachable mobile (own or parent's) appear "
-"above.\n"
-"                            All sends are logged до <em>SMS Broadcast Log</"
-"em>\n"
-"                            (незмінний, 7-year збереження)."
+"                            Вище відображаються лише учасники з "
+"<code>sms_consent = True</code>\n"
+"                            та доступним мобільним (власним або "
+"батьківським).\n"
+"                            Усі відправлення логуються в <em>SMS Broadcast "
+"Log</em>\n"
+"                            (незмінний, зберігання 7 років)."
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.admin_view_as_banner
@@ -1018,8 +1031,8 @@ msgid ""
 "A program with this version already exists for this event. Use 'New Version' "
 "to create a new revision."
 msgstr ""
-"program з this version already exists для this event. Use 'New Version' до "
-"create new revision."
+"Програма з цією версією вже існує для цього заходу. Скористайтеся 'New "
+"Version', щоб створити нову редакцію."
 
 #. module: fayna_camp_portal
 #: model:ir.model.constraint,message:fayna_camp_portal.constraint_fayna_camp_season_unique_year_type
@@ -1483,8 +1496,8 @@ msgid ""
 "Additional context for the kitchen team: severity of reactions, cross-"
 "contamination risk, alternative substitutions."
 msgstr ""
-"Additional context для kitchen team: severity of reactions, cross-"
-"contamination risk, alternative substitutions."
+"Додатковий контекст для кухонної команди: тяжкість реакцій, ризик "
+"перехресного забруднення, альтернативні заміни."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -1517,8 +1530,9 @@ msgid ""
 "or physical. Not RODO art. 9 category unless they indicate a health "
 "condition."
 msgstr ""
-"Additional needs camp staff повинен know about — behavioural, learning, or "
-"physical. Not RODO art. 9 category unless they indicate health condition."
+"Додаткові потреби, про які має знати персонал табору — поведінкові, "
+"навчальні або фізичні. Не категорія RODO art. 9, якщо вони не вказують на "
+"стан здоров'я."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -1773,7 +1787,7 @@ msgstr "Алергії"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_staff__medical_notes
 #, python-format
 msgid "Allergies, medical conditions, emergency contacts (staff internal)."
-msgstr "Алергії, стан здоров'я, контакти при НС (внутрішнє для персоналу)."
+msgstr "Алергії, стан здоров'я, контакти при надзвичайних ситуаціях (внутрішнє для персоналу)."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_product_product__camp_is_almost_full
@@ -1942,8 +1956,8 @@ msgid ""
 "Approved daily reports are locked. An admin must revert to draft first "
 "(blocked fields: %s)."
 msgstr ""
-"Approved daily reports are locked. An admin має revert до draft first "
-"(blocked fields: %s)."
+"Затверджені щоденні звіти заблоковано. Адміністратор має спершу повернути у "
+"чернетку (заблоковані поля: %s)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -2148,7 +2162,7 @@ msgstr "Згенеровано з назви заїзду та варіанту 
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_daily_report__name
 #, python-format
 msgid "Auto-generated: 'Raport {event} {date}'."
-msgstr "Згенеровано: 'Raport {event} {date}'."
+msgstr "Згенеровано автоматично: 'Raport {event} {date}'."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -2156,7 +2170,7 @@ msgstr "Згенеровано: 'Raport {event} {date}'."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_kuratorium_notification__name
 #, python-format
 msgid "Auto-generated: 'Zgłoszenie: {event}'."
-msgstr "Згенеровано: 'Zgłoszenie: {event}'."
+msgstr "Згенеровано автоматично: 'Zgłoszenie: {event}'."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -2164,7 +2178,7 @@ msgstr "Згенеровано: 'Zgłoszenie: {event}'."
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_camp_dziennik__display_name
 #, python-format
 msgid "Auto-generated: '{event} — grupa {group}'."
-msgstr "Згенеровано: '{event} — grupa {group}'."
+msgstr "Згенеровано автоматично: '{event} — grupa {group}'."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_discuss_channel__camp_event_id
@@ -2659,17 +2673,17 @@ msgstr "Дієтичний профіль табору"
 #. module: fayna_camp_portal
 #: model:res.groups,name:fayna_camp_portal.group_emergency_manager
 msgid "Camp Emergency Manager"
-msgstr "Менеджер НС табору"
+msgstr "Менеджер надзвичайних ситуацій табору"
 
 #. module: fayna_camp_portal
 #: model:res.groups,name:fayna_camp_portal.group_emergency_responder
 msgid "Camp Emergency Responder"
-msgstr "Відповідач на НС табору"
+msgstr "Відповідач на надзвичайні ситуації табору"
 
 #. module: fayna_camp_portal
 #: model:ir.actions.server,name:fayna_camp_portal.ir_cron_remind_stale_incidents_ir_actions_server
 msgid "Camp Emergency: Remind stale incidents (> 30 days)"
-msgstr "НС табору: нагадування про застарілі інциденти (> 30 днів)"
+msgstr "Надзвичайні ситуації табору: нагадування про застарілі інциденти (> 30 днів)"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_analytics_snapshot__event_id
@@ -2816,7 +2830,7 @@ msgstr "Шаблон SMS-сповіщення табору"
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__fayna_vozhatyi_training_module__module_type__safety
 msgid "Camp Safety & Emergency Protocol"
-msgstr "Безпека табору та протокол НС"
+msgstr "Безпека табору та протокол надзвичайних ситуацій"
 
 #. module: fayna_camp_portal
 #: model:res.groups,name:fayna_camp_portal.group_camp_sales
@@ -2985,7 +2999,7 @@ msgstr ""
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_camp_dziennik__location
 #, python-format
 msgid "Camp location address — auto-derived from event.event.address."
-msgstr "Адреса табору — автоматично з event.event.address."
+msgstr "Адреса локації табору — автоматично виводиться з event.event.address."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -4133,9 +4147,10 @@ msgid ""
 "             List available at https://docs.peppol.eu/poacc/billing/3.0/"
 "codelist/eas/"
 msgstr ""
-"Code used до identify Endpoint для BIS Billing 3.0 and its derivatives.\n"
-"             List available at https://docs.peppol.eu/poacc/billing/3.0/"
-"codelist/eas/"
+"Код, що використовується для ідентифікації Endpoint для BIS Billing 3.0 та "
+"його похідних.\n"
+"             Список доступний за адресою "
+"https://docs.peppol.eu/poacc/billing/3.0/codelist/eas/"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_camp_season__color
@@ -4459,8 +4474,8 @@ msgid ""
 "Contact hours accumulated by this staff member for this course.\n"
 "Update manually after each session or via automated cron."
 msgstr ""
-"Contact hours accumulated by this staff member для this course.\n"
-"Update manually after each session or viauдоmated cron."
+"Контактні години, накопичені цим співробітником за цей курс.\n"
+"Оновлюйте вручну після кожного заняття або через автоматичний cron."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -4759,7 +4774,7 @@ msgstr "Витяг про несудимість (KRK) — вимога поль
 msgid ""
 "Critical info for emergency responders (blood type, known contraindications)."
 msgstr ""
-"Критична інформація для відповідачів на НС (група крові, протипоказання)."
+"Критична інформація для відповідачів на надзвичайні ситуації (група крові, протипоказання)."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__fayna_vozhatyi_training_module__module_type__cultural
@@ -4976,7 +4991,7 @@ msgstr "Щоденний журнал"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_product_product__camp_daily_routine
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_product_template__camp_daily_routine
 msgid "Daily routine (legacy HTML)"
-msgstr "Розпорядок дня (legacy HTML)"
+msgstr "Розпорядок дня (застарілий HTML)"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_product_product__schedule_ids
@@ -5665,10 +5680,11 @@ msgid ""
 "CampScout can run wychowawca and improvement courses only — the official "
 "kierownik 10h course requires a separate institution license."
 msgstr ""
-"Determines required hours and certificate type.\n"
-"Legal base: Rozp. MEN 2016 §3 (wychowawc36h), §4 (kierownik improvement).\n"
-"CampScout може run wychowawcand improvement courses тільки — official "
-"kierownik 10h course requires separate institution license."
+"Визначає потрібну кількість годин і тип сертифіката.\n"
+"Правова база: Rozp. MEN 2016 §3 (wychowawca 36 год), §4 (вдосконалення "
+"kierownik).\n"
+"CampScout може проводити лише курси wychowawca та курси вдосконалення — "
+"офіційний 10-годинний курс kierownik вимагає окремої ліцензії установи."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -6080,7 +6096,8 @@ msgstr "Dziennik zajęć (записи занять)"
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_fayna_camp_dziennik
 msgid "Dziennik zajęć — Załącznik 5 Rozp. MEN 2016 (per group)"
-msgstr "Dziennik zajęć — Załącznik 5 Rozp. MEN 2016 (на групу)"
+msgstr ""
+"Dziennik zajęć (Щоденник занять) — Załącznik 5 Rozp. MEN 2016 (на групу)"
 
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_fayna_camp_dziennik_activity
@@ -6110,8 +6127,9 @@ msgid ""
 "E.164 prefix to match (e.g. '+38' for Ukraine, '+48' for Poland).\n"
 "Leave empty to use this rule as the catch-all fallback."
 msgstr ""
-"E.164 prefix до match (e.g. '+38' для Ukraine, '+48' для Poland).\n"
-"Leave empty до use this rule as catch-all fallback."
+"Префікс E.164 для зіставлення (напр., '+38' для України, '+48' для Польщі).\n"
+"Залиште порожнім, щоб використовувати це правило як резервне для всіх "
+"випадків."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -6148,10 +6166,10 @@ msgid ""
 "                    is recorded here. Records are immutable (RODO + PL law,\n"
 "                    7-year retention)."
 msgstr ""
-"Each broadcast wychowawc/ kierownik sends до their group\n"
-"                    is recorded here. Records are незмінний (RODO + PL "
+"Кожна розсилка, яку Вожатий / Керівник табору надсилає своїй групі,\n"
+"                    фіксується тут. Записи незмінні (RODO + польський "
 "закон,\n"
-"                    7-year збереження)."
+"                    зберігання 7 років)."
 
 #. module: fayna_camp_portal
 #: model:ir.model.constraint,message:fayna_camp_portal.constraint_camp_loyalty_participant_unique_partner
@@ -6271,26 +6289,26 @@ msgstr "Email-тред"
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_form
 msgid "Emergency Contact"
-msgstr "Контакт при НС"
+msgstr "Контакт при надзвичайних ситуаціях"
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
 msgid "Emergency Contacts"
-msgstr "Контакти при НС"
+msgstr "Контакти при надзвичайних ситуаціях"
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/participant.py:0
 #, python-format
 msgid "Emergency contact 1 (name + phone) is required before signoff."
-msgstr "Контакт при НС 1 (ім'я + телефон) обов'язковий перед підписанням."
+msgstr "Контакт при надзвичайних ситуаціях 1 (ім'я + телефон) обов'язковий перед підписанням."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/participant.py:0
 #, python-format
 msgid "Emergency contact 1 (name + phone) is required."
-msgstr "Контакт при НС 1 (ім'я + телефон) обов'язковий."
+msgstr "Контакт при надзвичайних ситуаціях 1 (ім'я + телефон) обов'язковий."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -6298,7 +6316,7 @@ msgstr "Контакт при НС 1 (ім'я + телефон) обов'язк�
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__emergency_contact_1_name
 #, python-format
 msgid "Emergency contact 1 — name"
-msgstr "Контакт при НС 1 — ім'я"
+msgstr "Контакт при надзвичайних ситуаціях 1 — ім'я"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -6306,7 +6324,7 @@ msgstr "Контакт при НС 1 — ім'я"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__emergency_contact_1_phone
 #, python-format
 msgid "Emergency contact 1 — phone"
-msgstr "Контакт при НС 1 — телефон"
+msgstr "Контакт при надзвичайних ситуаціях 1 — телефон"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -6314,7 +6332,7 @@ msgstr "Контакт при НС 1 — телефон"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__emergency_contact_1_relation
 #, python-format
 msgid "Emergency contact 1 — relation"
-msgstr "Контакт при НС 1 — стосунок"
+msgstr "Контакт при надзвичайних ситуаціях 1 — стосунок"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -6322,7 +6340,7 @@ msgstr "Контакт при НС 1 — стосунок"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__emergency_contact_2_name
 #, python-format
 msgid "Emergency contact 2 — name"
-msgstr "Контакт при НС 2 — ім'я"
+msgstr "Контакт при надзвичайних ситуаціях 2 — ім'я"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -6330,7 +6348,7 @@ msgstr "Контакт при НС 2 — ім'я"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__emergency_contact_2_phone
 #, python-format
 msgid "Emergency contact 2 — phone"
-msgstr "Контакт при НС 2 — телефон"
+msgstr "Контакт при надзвичайних ситуаціях 2 — телефон"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -6338,7 +6356,7 @@ msgstr "Контакт при НС 2 — телефон"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__emergency_contact_2_relation
 #, python-format
 msgid "Emergency contact 2 — relation"
-msgstr "Контакт при НС 2 — стосунок"
+msgstr "Контакт при надзвичайних ситуаціях 2 — стосунок"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -6346,7 +6364,7 @@ msgstr "Контакт при НС 2 — стосунок"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff__emergency_contact
 #, python-format
 msgid "Emergency contact name"
-msgstr "Ім'я контакту при НС"
+msgstr "Ім'я контакту при надзвичайних ситуаціях"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -6354,7 +6372,7 @@ msgstr "Ім'я контакту при НС"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff__emergency_phone
 #, python-format
 msgid "Emergency contact phone"
-msgstr "Телефон контакту при НС"
+msgstr "Телефон контакту при надзвичайних ситуаціях"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -6362,12 +6380,12 @@ msgstr "Телефон контакту при НС"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff_medical__emergency_medical_notes
 #, python-format
 msgid "Emergency medical notes"
-msgstr "Медичні нотатки при НС"
+msgstr "Медичні нотатки при надзвичайних ситуаціях"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_sms_template__template_type__emergency_parent
 msgid "Emergency — parent notification"
-msgstr "НС — сповіщення батьків"
+msgstr "Надзвичайні ситуації — сповіщення батьків"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__employee
@@ -6760,7 +6778,8 @@ msgstr "Зовнішні візити / перевірки"
 #, python-format
 msgid ""
 "Extra photos for the camp gallery — in addition to the main product images."
-msgstr "Extrphoдоs для camp gallery — in addition до main product images."
+msgstr ""
+"Додаткові фото для галереї табору — на додачу до основних зображень товару."
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_review_form
@@ -6781,7 +6800,7 @@ msgstr "FAQ"
 #, python-format
 msgid ""
 "Factual description of the circumstances. Used verbatim in the Protokół PDF."
-msgstr "Factual description of circumstances. Used verbatim in Proдоkół PDF."
+msgstr "Фактичний опис обставин. Використовується дослівно у Protokół PDF."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -6792,8 +6811,8 @@ msgid ""
 "Fallback link to a res.partner when camp.participant is not available. Use "
 "participant_id when possible."
 msgstr ""
-"Fallback link до res.partner when camp.participant is not available. Use "
-"participant_id when possible."
+"Резервне посилання на res.partner, коли camp.participant недоступний. За "
+"можливості використовуйте participant_id."
 
 #. module: fayna_camp_portal
 #: model:ir.actions.server,name:fayna_camp_portal.ir_cron_auto_refusal_reminders_ir_actions_server
@@ -6842,8 +6861,8 @@ msgid ""
 "Field used to store sanitized phone number. Helps speeding up searches and "
 "comparisons."
 msgstr ""
-"Field used до sдоre sanitized phone number. Helps speeding up searches and "
-"comparisons."
+"Поле для зберігання очищеного номера телефону. Допомагає пришвидшити пошук і "
+"порівняння."
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_marketing_report_form
@@ -6870,7 +6889,8 @@ msgstr "Остаточний текст SMS, який було надіслан�
 #, python-format
 msgid "Final SMS text. Keep under 70 cyrillic characters to stay in 1 segment."
 msgstr ""
-"Final SMS text. Keep under 70 cyrillic characters до stay in 1 segment."
+"Фінальний текст SMS. Тримайте менше ніж 70 кириличних символів, щоб "
+"залишитися в межах 1 сегмента."
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_analytics_snapshot_form
@@ -7013,7 +7033,7 @@ msgstr "Підписники (партнери)"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_transport__activity_type_icon
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_vozhatyi_training__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
-msgstr "Іконка Font-Awesome, напр. fa-tasks"
+msgstr "Іконка Font Awesome, напр. fa-tasks"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -7022,7 +7042,9 @@ msgstr "Іконка Font-Awesome, напр. fa-tasks"
 #, python-format
 msgid ""
 "FontAwesome class shown next to the activity (e.g. 'fa-volleyball-ball')."
-msgstr "FontAwesome class shown next до activity (e.g. 'fa-volleyball-ball')."
+msgstr ""
+"Клас FontAwesome, що відображається поруч з активністю (напр., "
+"'fa-volleyball-ball')."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -7076,7 +7098,7 @@ msgstr "Відформатований email"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_program_wypoczynku__section_formy
 #, python-format
 msgid "Formy i metody realizacji"
-msgstr "Formy i meдоdy realizacji"
+msgstr "Formy i metody realizacji"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -7110,9 +7132,9 @@ msgid ""
 "gluten-free, etc. Use allergen_ids for the structured EU-14 list; this field "
 "captures qualitative rules."
 msgstr ""
-"Free-text description of dietary rules: halal, vegan, no pork, lacдоse-free, "
-"gluten-free, etc. Use allergen_ids для structured EU-14 list; this field "
-"captures qualitative rules."
+"Довільний опис дієтичних правил: halal, веган, без свинини, без лактози, без "
+"глютену тощо. Використовуйте allergen_ids для структурованого списку EU-14; "
+"це поле фіксує якісні правила."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -7132,8 +7154,8 @@ msgid ""
 "Free-text notes for kitchen: severity of reactions, cross-contamination "
 "risk, accepted substitutions. Supplement the structured allergen list."
 msgstr ""
-"Free-text notes для kitchen: severity of reactions, cross-contamination "
-"risk, accepted substitutions. Supplement structured allergen list."
+"Довільні нотатки для кухні: тяжкість реакцій, ризик перехресного "
+"забруднення, прийнятні заміни. Доповнюють структурований список алергенів."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -7144,8 +7166,8 @@ msgid ""
 "Free-text — who received the notification: parent name, kurator office name, "
 "paramedic dispatcher ID, etc."
 msgstr ""
-"Free-text — who received notification: parent name, kuraдоr office name, "
-"paramedic dispatcher ID, etc."
+"Довільний текст — хто отримав сповіщення: ім'я батьків, назва офісу kurator, "
+"ID диспетчера медиків тощо."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -7179,7 +7201,8 @@ msgstr "Заморожений PDF-знімок, створений у моме�
 msgid ""
 "Frozen PDF snapshot stored at submission time for 7-year legal archival."
 msgstr ""
-"Frozen PDF snapshot sдоred at submission time для 7-year legal archival."
+"Заморожений PDF-знімок, збережений на момент подання для юридичного "
+"архівування протягом 7 років."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -7239,9 +7262,9 @@ msgid ""
 "sign-off, not at child creation. Constraint _check_emergency_before_signoff "
 "enforces presence before signed=True."
 msgstr ""
-"Full name of primary emergency contact. Required at qualification card sign-"
-"off, not at child creation. Constraint _check_emergency_beдляe_signoff "
-"enдляces presence beдляe signed=True."
+"Повне ім'я основного контакту для надзвичайних ситуацій. Обов'язкове при "
+"підписанні кваліфікаційної картки, не при створенні запису дитини. Обмеження "
+"_check_emergency_before_signoff вимагає наявності перед signed=True."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -7301,8 +7324,8 @@ msgid ""
 "Gender as declared by the parent — used for accommodation group planning. "
 "Not shared externally; RODO art. 6(1)(b) contract performance."
 msgstr ""
-"Gender as declared користувачем parent — used для accommodation group "
-"planning. Not shared externally; RODO art. 6(1)(b) contract perдляmance."
+"Стать, як зазначено батьками — використовується для планування груп "
+"розселення. Не передається назовні; RODO art. 6(1)(b) виконання договору."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -7313,7 +7336,9 @@ msgstr ""
 msgid ""
 "General idea and theme of the camp — shown in the top section of the camp "
 "page."
-msgstr "General ideand theme of camp — shown in доp section of camp page."
+msgstr ""
+"Загальна ідея та тема табору — відображається у верхній частині сторінки "
+"табору."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_journal__category__note
@@ -7422,7 +7447,7 @@ msgstr "Гірчиця та похідні продукти"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_kuratorium_notification__checklist_done_count
 #, python-format
 msgid "Gotowe pozycje"
-msgstr "Goдоwe pozycje"
+msgstr "Gotowe pozycje"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -7605,8 +7630,8 @@ msgid ""
 "Health-related incidents today (non-RODO; for RODO art.9 detail use "
 "medical_notes field)."
 msgstr ""
-"Health-related incidents доday (non-RODO; для RODO art.9 detail use "
-"medical_notes field)."
+"Інциденти, пов'язані зі здоров'ям, за сьогодні (не RODO; для деталей RODO "
+"art.9 використовуйте поле medical_notes)."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_review__helpful_count
@@ -7625,7 +7650,7 @@ msgstr "Hex-колір для крапок таймлайну та акцент�
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_story_search
 msgid "Hidden from parents"
-msgstr "Hidden з parents"
+msgstr "Приховано від батьків"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__hide_peppol_fields
@@ -7743,8 +7768,8 @@ msgid ""
 "How the notification was made. Relevant for parent / authority actions. "
 "Immutable after creation."
 msgstr ""
-"How notification was made. Relevant для parent / authority actions. "
-"Immutable after creation."
+"Як було здійснено сповіщення. Актуально для дій батьків / органів влади. "
+"Незмінне після створення."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -8034,8 +8059,8 @@ msgid ""
 "If set, this Sales Team will be used for sales and assignments related to "
 "this partner"
 msgstr ""
-"If set, this Sales Team will be used для sales and assignments related до "
-"this partner"
+"Якщо встановлено, цю команду продажів буде використано для продажів і "
+"призначень, пов'язаних з цим партнером."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__is_blacklisted
@@ -8043,8 +8068,8 @@ msgid ""
 "If the email address is on the blacklist, the contact won't receive mass "
 "mailing anymore, from any list"
 msgstr ""
-"If email address is on blacklist, contact won't receive mass mailing будь-"
-"якийmore, з будь-який list"
+"Якщо email-адреса в чорному списку, контакт більше не отримуватиме масові "
+"розсилки з жодного списку."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__phone_sanitized_blacklisted
@@ -8052,8 +8077,8 @@ msgid ""
 "If the sanitized phone number is on the blacklist, the contact won't receive "
 "mass mailing sms anymore, from any list"
 msgstr ""
-"If sanitized phone number is on blacklist, contact won't receive mass "
-"mailing sms будь-якийmore, з будь-який list"
+"Якщо очищений номер телефону в чорному списку, контакт більше не "
+"отримуватиме масові SMS-розсилки з жодного списку."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__image_1920
@@ -8252,8 +8277,8 @@ msgid ""
 "Incident lifecycle state. Records become immutable (frozen) after reaching "
 "'delivered', 'disputed', or 'closed'."
 msgstr ""
-"Incident lifecycle state. Records become незмінний (frozen) after reaching "
-"'delivered', 'disputed', or 'closed'."
+"Стан життєвого циклу інциденту. Записи стають незмінними (замороженими) "
+"після досягнення стану 'delivered', 'disputed' або 'closed'."
 
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_camp_incident_notification_log
@@ -8285,8 +8310,8 @@ msgid ""
 "Incident severity per MEN classification. Determines which authorities must "
 "be notified and within what time window (BP-006)."
 msgstr ""
-"Incident severity per MEN classification. Determines which authorities має "
-"be notified and зin what time window (BP-006)."
+"Тяжкість інциденту за класифікацією MEN. Визначає, які органи влади мають "
+"бути сповіщені та в які часові межі (BP-006)."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_journal__category__incident
@@ -8317,8 +8342,8 @@ msgid ""
 "Incidents in states: draft, active_response, under_investigation, "
 "protocol_ready."
 msgstr ""
-"Incidents in states: draft, active_response, under_investigation, "
-"proдоcol_ready."
+"Інциденти у станах: draft, active_response, under_investigation, "
+"protocol_ready."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -8476,17 +8501,17 @@ msgstr "Інструктор"
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.fayna_vozhatyi_certificate_report_template
 msgid "Instructor Signature"
-msgstr "Instrucдоr Signature"
+msgstr "Підпис інструктора"
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.fayna_vozhatyi_certificate_report_template
 msgid "Instructor:"
-msgstr "Instrucдоr:"
+msgstr "Інструктор:"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_kuratorium_staff__qualification_basis__zhr
 msgid "Instruktor ZHP/ZHR"
-msgstr "Instrukдоr ZHP/ZHR"
+msgstr "Instruktor ZHP/ZHR"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -8685,7 +8710,7 @@ msgstr "Опубліковано"
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__is_company
 msgid "Is a Company"
-msgstr "Is Compбудь-який"
+msgstr "Є компанією"
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_training_record_form
@@ -8836,7 +8861,7 @@ msgstr "Кадра табору"
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_camp_kuratorium_staff
 msgid "Kadra wypoczynku (kuratorium)"
-msgstr "Kadrwypoczynku (kuraдоrium)"
+msgstr "Kadra wypoczynku (kuratorium)"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -8847,8 +8872,9 @@ msgid ""
 "Kanban/badge colour index (0–11). Used in list views to visually distinguish "
 "high-risk allergens (e.g. red=1 for peanuts)."
 msgstr ""
-"Kanban/badge colour index (0–11). Used in list views до visually distinguish "
-"high-risk allergens (e.g. red=1 для peanuts)."
+"Індекс кольору kanban/бейджа (0–11). Використовується у списках для "
+"візуального розрізнення алергенів високого ризику (напр., червоний=1 для "
+"арахісу)."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__kdr_number
@@ -8915,8 +8941,8 @@ msgid ""
 "Kierownik ocenia stopień realizacji celów wychowawczych dla uczestnika w "
 "kontekście programu zmiany. Wypełniany po zakończeniu turnusu."
 msgstr ""
-"Kierownik ocenisдоpień realizacji celów wychowawczych dluczestnikw "
-"kontekście programu zmiбудь-який. Wypełniбудь-який po zakończeniu turnusu."
+"Kierownik ocenia stopień realizacji celów wychowawczych dla uczestnika w "
+"kontekście programu zmiany. Wypełniany po zakończeniu turnusu."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -9000,9 +9026,8 @@ msgid ""
 "what was done, what to change going forward. Embedded verbatim in the "
 "Protokół PDF Section 6."
 msgstr ""
-"Kierownik's conclusions of dochodzenie powypadkowe: what happened, why, what "
-"was done, what до change going дляward. Embedded verbatim in Proдоkół PDF "
-"Section 6."
+"Висновки kierownik щодо dochodzenie powypadkowe: що сталося, чому, що було "
+"зроблено, що змінити надалі. Вбудовуються дослівно у Protokół PDF, Розділ 6."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -9032,7 +9057,7 @@ msgstr "Відомі алергії та реакції (RODO art.9 — дані
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_kuratorium_notification__location_zip
 #, python-format
 msgid "Kod pocztowy"
-msgstr "Kod poczдоwy"
+msgstr "Kod pocztowy"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_kuratorium_notification__vacation_form__kolonia
@@ -9050,7 +9075,7 @@ msgstr "Колонійний (kolonijny)"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__iv_signed_by
 #, python-format
 msgid "Konto użytkownika kierownika który podpisał Sekcję IV."
-msgstr "Konдо użytkownikkierownikktóry podpisał Sekcję IV."
+msgstr "Konto użytkownika kierownika który podpisał Sekcję IV."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -9058,7 +9083,7 @@ msgstr "Konдо użytkownikkierownikktóry podpisał Sekcję IV."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__v_signed_by
 #, python-format
 msgid "Konto użytkownika kierownika który podpisał Sekcję V."
-msgstr "Konдо użytkownikkierownikktóry podpisał Sekcję V."
+msgstr "Konto użytkownika kierownika który podpisał Sekcję V."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -9066,7 +9091,7 @@ msgstr "Konдо użytkownikkierownikktóry podpisał Sekcję V."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__vi_signed_by
 #, python-format
 msgid "Konto użytkownika wychowawcy który podpisał Sekcję VI."
-msgstr "Konдо użytkownikwychowawcy który podpisał Sekcję VI."
+msgstr "Konto użytkownika wychowawcy który podpisał Sekcję VI."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -9196,7 +9221,7 @@ msgstr "Мітка"
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_participant__diet_restrictions__lactose_free
 #, python-format
 msgid "Lactose-free"
-msgstr "Lacдоse-free"
+msgstr "Без лактози"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -9440,9 +9465,9 @@ msgid ""
 "It is set either if there's not at least an unreconciled debit and an "
 "unreconciled credit or if you click the \"Done\" button."
 msgstr ""
-"Last time invoices & payments matching was perдляmed для this partner. It is "
-"set either if there's not at least unreconciled debit and unreconciled "
-"credit or if you click \"Done\" butдоn."
+"Останній раз, коли для цього партнера виконувалося зіставлення рахунків і "
+"платежів. Встановлюється, якщо немає принаймні одного неузгодженого дебету "
+"та неузгодженого кредиту, або якщо ви натиснете кнопку \"Done\"."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__latest_followup_date
@@ -9472,7 +9497,8 @@ msgstr "Дата останнього звірення рахунків і пл�
 msgid ""
 "Latest active registration (preferring future events). Computed, not stored."
 msgstr ""
-"Latest active registration (preferring future events). Computed, not sдоred."
+"Остання активна реєстрація (з пріоритетом майбутніх заходів). Обчислюється, "
+"не зберігається."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__latest_followup_date
@@ -9504,8 +9530,8 @@ msgid ""
 "Legacy approver field — kept for backward compat; use approved_by_id for new "
 "records."
 msgstr ""
-"Legacy approver field — kept для backward compat; use approved_by_id для new "
-"records."
+"Застаріле поле затверджувача — збережене для зворотної сумісності; для нових "
+"записів використовуйте approved_by_id."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__fayna_vozhatyi_training_module__module_type__law_basics
@@ -9607,8 +9633,8 @@ msgid ""
 "Link to the RODO consent log entry created at signing. Evidence that art. "
 "9(2)(c) consent was obtained."
 msgstr ""
-"Link до RODO consent log entry created at signing. Evidence that art. 9(2)"
-"(c) consent was obtained."
+"Посилання на запис у журналі згод RODO, створений під час підписання. Доказ "
+"того, що згоду за art. 9(2)(c) було отримано."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -9619,8 +9645,8 @@ msgid ""
 "Link to the camp participant record. Required when fayna_camp_qualification "
 "is installed."
 msgstr ""
-"Link до camp participant record. Required when fayna_camp_qualification is "
-"installed."
+"Посилання на запис учасника табору. Обов'язкове, коли встановлено "
+"fayna_camp_qualification."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -9631,7 +9657,8 @@ msgid ""
 "Link to the master schedule (if this program is a variant of master "
 "schedule)."
 msgstr ""
-"Link до master schedule (if this program is variant of master schedule)."
+"Посилання на головний розклад (якщо ця програма є варіантом головного "
+"розкладу)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -9699,8 +9726,8 @@ msgid ""
 "Logical season bucket — used by the «Подвійна порція» loyalty rule (second "
 "paid booking within the same season grants −100 PLN)."
 msgstr ""
-"Logical season bucket — used by the «Подвійна порція» loyalty rule (second "
-"paid booking within the same season grants −100 PLN)."
+"Логічний кошик сезону — використовується правилом лояльності «Подвійна порція» "
+"(друге оплачене бронювання в межах того самого сезону дає −100 PLN)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -9711,8 +9738,9 @@ msgid ""
 "Login account this staff member uses. Required for record-rule scoping in "
 "incident reports (responder sees own events only)."
 msgstr ""
-"Login account this staff member uses. Required для record-rule scoping in "
-"звіти про інциденти (responder sees own events тільки)."
+"Обліковий запис для входу, який використовує цей співробітник. Потрібен для "
+"обмеження записів правилами у звітах про інциденти (відповідач бачить лише "
+"власні заходи)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -9723,9 +9751,9 @@ msgid ""
 "wychowawca sees only their own dzienniki; kierownik sees all groups in own "
 "camp."
 msgstr ""
-"Login account this staff member uses. Required для record-rule scoping — "
-"wychowawcsees тільки their own dzienniki; kierownik sees all groups in own "
-"camp."
+"Обліковий запис для входу, який використовує цей співробітник. Потрібен для "
+"обмеження записів правилами — Вожатий бачить лише власні dzienniki; Керівник "
+"табору бачить усі групи у власному таборі."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_staff__role__logistics
@@ -9768,7 +9796,7 @@ msgstr "Знижка лояльності (%)"
 #. module: fayna_camp_portal
 #: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_loyalty_history
 msgid "Loyalty History"
-msgstr "Loyalty Hisдоry"
+msgstr "Історія лояльності"
 
 #. module: fayna_camp_portal
 #: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_loyalty_participant
@@ -9973,8 +10001,8 @@ msgid ""
 "Marketing label for the shift (Orange / Yellow / …) — shown to parents "
 "instead of 'Shift I'."
 msgstr ""
-"Marketing label для shift (Orange / Yellow / …) — shown до parents instead "
-"of 'Shift I'."
+"Маркетингова мітка для заїзду (Orange / Yellow / …) — відображається батькам "
+"замість 'Shift I'."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -10357,7 +10385,7 @@ msgstr "Текст повідомлення не може бути порожн�
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__invoice_warn_msg
 msgid "Message for Invoice"
-msgstr "Message для Invoice"
+msgstr "Повідомлення для рахунка"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__purchase_warn_msg
@@ -10372,7 +10400,7 @@ msgstr "Повідомлення для замовлення на продаж"
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__picking_warn_msg
 msgid "Message for Stock Picking"
-msgstr "Message для Sдоck Picking"
+msgstr "Повідомлення для складського переміщення"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_daily_report__message_ids
@@ -10515,8 +10543,8 @@ msgid ""
 "Minimum contact hours to pass the course and receive a certificate.\n"
 "MEN standard: wychowawca = 36h, doskonalenie = 10h."
 msgstr ""
-"Minimum contact hours до pass course and receive certificate.\n"
-"MEN standard: wychowawc= 36h, doskonalenie = 10h."
+"Мінімум контактних годин, щоб скласти курс і отримати сертифікат.\n"
+"Стандарт MEN: wychowawca = 36 год, doskonalenie = 10 год."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -10625,11 +10653,11 @@ msgid ""
 "Monthly cap (role=%(role)s): %(limit)s\n"
 "Ask camp organizator if a higher cap is required."
 msgstr ""
-"Monthly SMS limit exceeded для this staff member.\n"
-"Already sent this month: %(already)s\n"
-"About до send: %(planned)s\n"
-"Monthly cap (role=%(role)s): %(limit)s\n"
-"Ask camp organizaдоr if higher cap is required."
+"Перевищено місячний ліміт SMS для цього члена персоналу.\n"
+"Уже надіслано цього місяця: %(already)s\n"
+"Буде надіслано: %(planned)s\n"
+"Місячний ліміт (роль=%(role)s): %(limit)s\n"
+"Зверніться до організатора табору, якщо потрібен вищий ліміт."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -10662,7 +10690,7 @@ msgstr "Дедлайн моєї дії"
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_story_search
 msgid "My stories"
-msgstr "My sдоries"
+msgstr "Мої історії"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -10747,7 +10775,9 @@ msgstr "Назва або опис активності."
 #, python-format
 msgid ""
 "Name or description of the activity. Auto-filled from template if selected."
-msgstr "Name or description of activity. Auдо-filled з template if selected."
+msgstr ""
+"Назва або опис активності. Заповнюється автоматично з шаблону, якщо його "
+"обрано."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -10756,7 +10786,7 @@ msgstr "Name or description of activity. Auдо-filled з template if selected."
 #, python-format
 msgid "Name typed by the parent next to their drawn signature at sign-off."
 msgstr ""
-"Name typed користувачем parent next до their drawn signature at sign-off."
+"Ім'я, введене батьками поруч із намальованим підписом під час підписання."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_story__featured_participants
@@ -11047,8 +11077,8 @@ msgid ""
 "Notification log cannot be deleted (7-year retention — PL camp law / RODO "
 "art. 30)."
 msgstr ""
-"Notification log можеnot be deleted (7-year збереження — PL camp law / RODO "
-"art. 30)."
+"Журнал сповіщень не можна видалити (зберігання 7 років — польське "
+"законодавство про відпочинок / RODO art. 30)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -11058,8 +11088,8 @@ msgid ""
 "Notification log is immutable except for delivery status (delivered_at, "
 "read_at). Forbidden fields: %s"
 msgstr ""
-"Notification log is незмінний except для delivery status (delivered_at, "
-"read_at). Forbidden fields: %s"
+"Журнал сповіщень незмінний, окрім статусу доставки (delivered_at, read_at). "
+"Заборонені поля: %s"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -11166,8 +11196,8 @@ msgid ""
 "Number of confirmed/open registrations for the linked camp event. Used by "
 "the kitchen to plan portions."
 msgstr ""
-"Number of confirmed/open registrations для linked camp event. Used "
-"користувачем kitchen до plportions."
+"Кількість підтверджених/відкритих реєстрацій для пов'язаного заїзду. "
+"Використовується кухнею для планування порцій."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -11227,7 +11257,7 @@ msgstr "Кількість помилок"
 msgid ""
 "Number of individual shifts (event.event records) linked to this program."
 msgstr ""
-"Number of individual shifts (event.event records) linked до this program."
+"Кількість окремих заїздів (записи event.event), пов'язаних із цією програмою."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -11560,7 +11590,8 @@ msgid ""
 "Odoo user account used to submit the signing — usually the parent's portal "
 "user."
 msgstr ""
-"Odoo user account used до submit signing — usually parent's portal user."
+"Обліковий запис користувача Odoo, з якого подано підписання — зазвичай "
+"портальний користувач батьків."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_activity_template__category__rest
@@ -11884,8 +11915,8 @@ msgid ""
 "Optional canvas signature for high-stakes actions (parent notifications, "
 "protocol delivery, etc.)."
 msgstr ""
-"Опціонально можеvas signature для high-stakes actions (parent notifications, "
-"proдоcol delivery, etc.)."
+"Необов'язковий мальований підпис для відповідальних дій (сповіщення батьків, "
+"вручення протоколу тощо)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -11893,7 +11924,7 @@ msgstr ""
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_schedule_entry__description_a
 #, python-format
 msgid "Optional details / notes for Plan A activity."
-msgstr "Опціонально details / notes для Plactivity."
+msgstr "Необов'язкові деталі / нотатки для активності за Планом A."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -11925,8 +11956,8 @@ msgid ""
 "Optional notes about this presence interval (reason for temporary absence, "
 "etc.)."
 msgstr ""
-"Опціонально notes about this presence interval (reason для temporary "
-"absence, etc.)."
+"Необов'язкові нотатки про цей інтервал присутності (причина тимчасової "
+"відсутності тощо)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -11942,8 +11973,8 @@ msgid ""
 "Optionally you can assign a user to this field, which will make him "
 "responsible for the action."
 msgstr ""
-"Опціональноly you може assign user до this field, which will make him "
-"responsible для action."
+"За бажанням ви можете призначити користувача в це поле, що зробить його "
+"відповідальним за дію."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__event_event__camp_shift_color__orange
@@ -12141,9 +12172,9 @@ msgid ""
 "number of ordered products.x is either the System Parameter "
 "purchase_stock.on_time_delivery_days or the default 365"
 msgstr ""
-"Over past x days; number of products received on time divided користувачем "
-"number of ordered products.x is either System Parameter "
-"purchase_sдоck.on_time_delivery_days or за замовчуванням 365"
+"За останні x днів; кількість товарів, отриманих вчасно, поділена на "
+"кількість замовлених товарів. x — це або системний параметр "
+"purchase_stock.on_time_delivery_days, або значення за замовчуванням 365"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12154,7 +12185,8 @@ msgid ""
 "Overall assessment of the camp shift — free-form text per PL law "
 "sprawozdanie."
 msgstr ""
-"Overall assessment of camp shift — free-дляm text per PL закон sprawozdanie."
+"Загальна оцінка заїзду — довільний текст для Sprawozdanie (звіт) за "
+"польським законодавством."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12190,7 +12222,7 @@ msgstr "Прострочено"
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_participant__avatar_type__photo
 #, python-format
 msgid "Own photo"
-msgstr "Own phoдо"
+msgstr "Власне фото"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12240,8 +12272,8 @@ msgid ""
 "PDF snapshot generation failed — submit succeeded; use Print menu to re-"
 "render."
 msgstr ""
-"PDF snapshot generation failed — submit succeeded; use Print menu до re-"
-"render."
+"Не вдалося згенерувати PDF-знімок — подання пройшло успішно; скористайтеся "
+"меню «Друк», щоб перегенерувати."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__pesel
@@ -12360,7 +12392,7 @@ msgstr "Ім'я батьків (сумісність зі старою форм�
 #: code:addons/fayna_camp_portal/models/commercial.py:0
 #, python-format
 msgid "Parent of %(child)s, %(year)s"
-msgstr "Батько/мати %(child)s, %(year)s"
+msgstr "Батьки %(child)s, %(year)s"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12434,8 +12466,9 @@ msgid ""
 "Parent's signature drawn on the signing page — stored as PNG binary. "
 "Retained as legal evidence of consent per PL Ustawa o wypoczynku."
 msgstr ""
-"Parent's signature drawn on signing page — sдоred as PNG binary. Retained as "
-"legal evidence of consent per PL Ustawo wypoczynku."
+"Підпис батьків, намальований на сторінці підписання — зберігається як "
+"двійковий PNG. Утримується як юридичний доказ згоди за польською Ustawa o "
+"wypoczynku."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12454,8 +12487,9 @@ msgid ""
 "Parental permission for short solo outings (e.g. to a shop) while at camp. "
 "Per PL Ustawa o wypoczynku — must be explicitly granted."
 msgstr ""
-"Parental permission для short solo outings (e.g. до shop) while at camp. Per "
-"PL Ustawo wypoczynku — має be explicitly granted."
+"Дозвіл батьків на короткі самостійні виходи (напр., до магазину) під час "
+"перебування в таборі. За польською Ustawa o wypoczynku — має бути наданий "
+"явно."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12488,8 +12522,8 @@ msgid ""
 "Participant %(name)s is signed off — cannot modify %(fields)s. Use the "
 "amendment flow (copy + new signature + archive the old)."
 msgstr ""
-"Participant %(name)s is signed off — можеnot modify %(fields)s. Use "
-"amendment flow (copy + new signature + archive old)."
+"Учасника %(name)s підписано — неможливо змінити %(fields)s. Скористайтеся "
+"процедурою внесення змін (копія + новий підпис + архівування старого)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12592,7 +12626,7 @@ msgstr "Учасники, чий мобільний (власний або ба�
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_kuratorium_notification__participant_count_special
 #, python-format
 msgid "Participants with disabilities."
-msgstr "Participants з disabilities."
+msgstr "Учасники з інвалідністю."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12643,7 +12677,7 @@ msgstr "Партнер, якому надіслано сповіщення."
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__same_company_registry_partner_id
 msgid "Partner with same Company Registry"
-msgstr "Partner з same Compбудь-який Registry"
+msgstr "Контрагент із тим самим реєстраційним номером компанії"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__same_vat_partner_id
@@ -12807,7 +12841,7 @@ msgid ""
 "Percentage of total as first payment. Only used when "
 "plan_type='deposit_plus_equal'."
 msgstr ""
-"Percentage of доtal as first payment. Тільки used when "
+"Відсоток від загальної суми як перший платіж. Використовується лише коли "
 "plan_type='deposit_plus_equal'."
 
 #. module: fayna_camp_portal
@@ -12821,7 +12855,7 @@ msgstr "Виконати перевірку VIES"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_action__performed_at
 #, python-format
 msgid "Performed at"
-msgstr "Perдляmed at"
+msgstr "Виконано о"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12848,8 +12882,8 @@ msgid ""
 "Personal mobile of the child (older children). If empty, SMS routes to "
 "parent_partner_id.mobile."
 msgstr ""
-"Personal mobile of child (older children). If empty, SMS routes до "
-"parent_partner_id.mobile."
+"Особистий мобільний дитини (для старших дітей). Якщо порожнє, SMS "
+"надсилається на parent_partner_id.mobile."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__banda_code
@@ -12869,8 +12903,8 @@ msgid ""
 "Pełna treść Dodatku 4a (Zgoda na wizerunek). Wyświetlana w panelu klienta "
 "nad checkboxami TAK / NIE oraz w wygenerowanym PDF."
 msgstr ""
-"Pełntreść Dodatku 4(Zgodnwizerunek). Wyświetlanw panelu klientnad "
-"checkboxami TAK / NIE oraz w wygenerowбудь-якийm PDF."
+"Pełna treść Dodatku 4a (Zgoda na wizerunek). Wyświetlana w panelu klienta "
+"nad checkboxami TAK / NIE oraz w wygenerowanym PDF."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12915,8 +12949,9 @@ msgid ""
 "Phone number of the primary emergency contact — must be reachable 24/7 "
 "during the camp. Required at sign-off alongside the name."
 msgstr ""
-"Номер телефону of primary emergency contact — має be reachable 24/7 during "
-"camp. Required at sign-off alongside name."
+"Номер телефону основного контакту для надзвичайних ситуацій — має бути "
+"доступним цілодобово під час табору. Обов'язковий при підписанні разом з "
+"ім'ям."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12952,7 +12987,7 @@ msgstr "Фото"
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_story__photo_ids
 msgid "Photos from the story/event"
-msgstr "Phoдоs з sдоry/event"
+msgstr "Фото з історії/події"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12976,7 +13011,7 @@ msgstr "Фотографії або підтвердні документи."
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_report__attachment_ids
 #, python-format
 msgid "Photos/documents"
-msgstr "Phoдоs/documents"
+msgstr "Фото/документи"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -12984,7 +13019,7 @@ msgstr "Phoдоs/documents"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_journal__attachment_ids
 #, python-format
 msgid "Photos/files"
-msgstr "Phoдоs/files"
+msgstr "Фото/файли"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -13123,7 +13158,7 @@ msgstr "Назва плану"
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__vozhatyi_training_record__training_type__online_platform
 msgid "Platform training (§2.15)"
-msgstr "Platдляm training (§2.15)"
+msgstr "Платформне навчання (§2.15)"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_loyalty_participant__tier__platinum
@@ -13278,7 +13313,7 @@ msgstr "Підстава кваліфікації"
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_incident_action__action_type__paramedic_arrived
 msgid "Pogotowie na miejscu"
-msgstr "Pogoдоwie nmiejscu"
+msgstr "Pogotowie na miejscu (швидка на місці)"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_loyalty_participant__points
@@ -13323,7 +13358,7 @@ msgstr "Польща"
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_kuratorium_notification__accommodation_type__tent
 msgid "Pole namiotowe"
-msgstr "Pole namioдоwe"
+msgstr "Pole namiotowe (наметове поле)"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_sms_template__lang__pl_pl
@@ -13339,8 +13374,9 @@ msgid ""
 "Polish 11-digit national ID number. Leave empty for non-PL nationals. "
 "Checksum is validated on save (Luhn-style PL algorithm)."
 msgstr ""
-"Polish 11-digit national ID number. Leave empty для non-PL nationals. "
-"Checksum is validated on save (Luhn-style PL algorithm)."
+"Польський 11-значний національний ідентифікаційний номер (PESEL). Для "
+"негромадян Польщі залиште порожнім. Контрольна сума перевіряється при "
+"збереженні (польський алгоритм у стилі Луна)."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_loyalty_participant__access_url
@@ -13421,17 +13457,17 @@ msgstr "Повідомлення керівника"
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_incident_action__action_type__kurator_notified
 msgid "Powiadomienie kuratora oświaty"
-msgstr "Powiadomienie kuraдоroświaty"
+msgstr "Powiadomienie kuratora oświaty (повідомлення kuratora oświaty)"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_incident_action__action_type__organizer_notified
 msgid "Powiadomienie organizatora"
-msgstr "Powiadomienie organizaдоra"
+msgstr "Повідомлення організатора відпочинку"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_incident_action__action_type__prokurator_notified
 msgid "Powiadomienie prokuratora"
-msgstr "Powiadomienie prokuraдоra"
+msgstr "Повідомлення прокурора"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_incident_action__action_type__parent_notified
@@ -13501,7 +13537,7 @@ msgstr "Інтервал присутності: «to_date» не може бу�
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_report__present_count
 #, python-format
 msgid "Present today"
-msgstr "Present доday"
+msgstr "Присутній сьогодні"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -13513,7 +13549,8 @@ msgid ""
 "Preview of the main content block of the camp page — auto-built from the "
 "fields above."
 msgstr ""
-"Preview of main content block of camp page — auдо-built з fields above."
+"Попередній перегляд основного блоку контенту сторінки табору — будується "
+"автоматично з полів вище."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -13524,7 +13561,9 @@ msgstr ""
 msgid ""
 "Preview of the top banner of the camp page — auto-built from the fields "
 "above."
-msgstr "Preview of доp banner of camp page — auдо-built з fields above."
+msgstr ""
+"Попередній перегляд верхнього банера сторінки табору — будується автоматично "
+"з полів вище."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_product_product__camp_price_excludes
@@ -13560,8 +13599,8 @@ msgid ""
 "Primary dietary requirement for the kitchen. Use 'Other (see notes)' and "
 "fill doctor_notes for complex combinations."
 msgstr ""
-"Primary dietary requirement для kitchen. Use 'Other (see notes)' and fill "
-"docдоr_notes для complex combinations."
+"Основна дієтична вимога для кухні. Для складних поєднань оберіть «Інше (див. "
+"нотатки)» і заповніть doctor_notes."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -13590,8 +13629,8 @@ msgstr "Пріоритет"
 msgid ""
 "Private operational notes by the kierownik — not shown on printed report."
 msgstr ""
-"Private operational notes користувачем kierownik — not shown on printed "
-"report."
+"Приватні операційні нотатки Керівника табору — не відображаються у "
+"друкованому звіті."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -13752,12 +13791,12 @@ msgstr "Перед передаванням протокол має бути г�
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_report__protocol_pdf
 #, python-format
 msgid "Protokół powypadkowy (PDF)"
-msgstr "Proдоkół powypadkowy (PDF)"
+msgstr "Protokół powypadkowy (PDF)"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_incident_report__state__protocol_ready
 msgid "Protokół sporządzony"
-msgstr "Proдоkół sporządzony"
+msgstr "Protokół sporządzony (протокол складено)"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -13790,7 +13829,7 @@ msgstr "Приїзд (przyjazd)"
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_story__public
 msgid "Public (parents can read)"
-msgstr "Public (parents може read)"
+msgstr "Публічно (батьки можуть читати)"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_review__author_display_name
@@ -13810,7 +13849,7 @@ msgstr "Опублікувати"
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_story_form
 msgid "Publish to parents"
-msgstr "Publish до parents"
+msgstr "Опублікувати для батьків"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -13949,8 +13988,9 @@ msgid ""
 "RODO art. 9 — chronic health conditions the camp staff should know about "
 "(e.g. asthma, diabetes, epilepsy). Visible only to Medical Officers."
 msgstr ""
-"RODO art. 9 — chronic health conditions camp staff повинен know about (e.g. "
-"asthma, diabetes, epilepsy). Видимий тільки для Medical Officers."
+"RODO art. 9 — хронічні захворювання, про які має знати персонал табору "
+"(напр., астма, діабет, епілепсія). Видимо лише медичним працівникам (Medical "
+"Officers)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -13961,8 +14001,9 @@ msgid ""
 "RODO art. 9 — free-form medical notes from the child's physician. Attach "
 "relevant certificates or diagnoses. Medical Officers only."
 msgstr ""
-"RODO art. 9 — free-дляm medical notes з child's physician. Attach relevant "
-"certificates or diagnoses. Medical Officers тільки."
+"RODO art. 9 — довільні медичні нотатки від лікаря дитини. Долучіть "
+"відповідні довідки або діагнози. Лише для медичних працівників (Medical "
+"Officers)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -13973,8 +14014,9 @@ msgid ""
 "RODO art. 9 — list of known allergies (food, medication, environmental). "
 "Visible only to users with the Medical Officer role."
 msgstr ""
-"RODO art. 9 — list of known allergies (food, medication, environmental). "
-"Видимий тільки для users з Medical Officer role."
+"RODO art. 9 — перелік відомих алергій (харчові, медикаментозні, на "
+"довкілля). Видимо лише користувачам з роллю медичного працівника (Medical "
+"Officer)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -13985,8 +14027,9 @@ msgid ""
 "RODO art. 9 — list of medications the child takes regularly during the camp. "
 "Include dosage and schedule. Visible only to Medical Officers."
 msgstr ""
-"RODO art. 9 — list of medications child takes regularly during camp. Include "
-"dosage and schedule. Видимий тільки для Medical Officers."
+"RODO art. 9 — перелік ліків, які дитина регулярно приймає під час табору. "
+"Зазначте дозування та графік. Видимо лише медичним працівникам (Medical "
+"Officers)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -13998,9 +14041,9 @@ msgid ""
 "dawką i datą podania. Uzupełniane przez pielęgniarkę/kierownika. Widoczne "
 "tylko dla Medical Officer."
 msgstr ""
-"RODO art. 9 — listleków podбудь-якийch uczestnikowi podczas wypoczynku wraz "
-"z dawką i datą podania. Uzupełniane przez pielęgniarkę/kierownika. Widoczne "
-"tylko dlMedical Officer."
+"RODO art. 9 — lista leków podanych uczestnikowi podczas wypoczynku wraz z "
+"dawką i datą podania. Uzupełniane przez pielęgniarkę/kierownika. Widoczne "
+"tylko dla Medical Officer."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -14033,8 +14076,8 @@ msgid ""
 "RODO art.7 explicit consent. Collected during qualification card signing. "
 "Required for staff broadcast SMS."
 msgstr ""
-"RODO art.7 explicit consent. Collected during qualification card signing. "
-"Required для staff broadcast SMS."
+"RODO art.7 — явна згода. Збирається під час підписання Кваліфікаційної "
+"картки. Обов'язкова для масової SMS-розсилки персоналу."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -14053,8 +14096,8 @@ msgid ""
 "RODO art.9 health data — visible only to medical officers. Document "
 "medications administered, health events, first aid."
 msgstr ""
-"RODO art.9 health dat— visible тільки до medical officers. Document "
-"medications administered, health events, first aid."
+"RODO art.9 — медичні дані, видимі лише медичним працівникам. Фіксуйте "
+"введені ліки, події зі здоров'ям, надану першу допомогу."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_sale_order__rodo_consent_id
@@ -14069,7 +14112,8 @@ msgstr "Згода RODO (оформлення)"
 msgid ""
 "RODO consent log entry for image consent. Created by sign_image_consent()."
 msgstr ""
-"RODO consent log entry для image consent. Created by sign_image_consent()."
+"Запис у журналі згоди RODO щодо згоди на зображення. Створюється методом "
+"sign_image_consent()."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -14080,7 +14124,7 @@ msgid ""
 "RODO consent log entry for marketing consent. Created by "
 "update_marketing_consent()."
 msgstr ""
-"RODO consent log entry для marketing consent. Created by "
+"Запис у журналі згоди RODO щодо маркетингової згоди. Створюється методом "
 "update_marketing_consent()."
 
 #. module: fayna_camp_portal
@@ -14107,7 +14151,7 @@ msgstr "Журнал згод RODO/GDPR/PKE (лише додавання)"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_incident_report__rpd_notified
 #, python-format
 msgid "RPD powiadomiony (Ustawa Kamilka)"
-msgstr "RPD повідомлено (Ustawa Kamilka)"
+msgstr "RPD powiadomiony (Ustawa Kamilka)"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -14205,7 +14249,7 @@ msgstr "Час прочитання"
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_kuratorium_notification__state__ready
 msgid "Ready to Submit"
-msgstr "Ready до Submit"
+msgstr "Готово до подання"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_incident_report__injury_type__allergy
@@ -14238,9 +14282,9 @@ msgid ""
 "overdue). Can be overridden by legal basis (Ustawa Kamilka, vital interest "
 "of the child)."
 msgstr ""
-"Receive SMS для critical events (incidents, unsigned cards, payment "
-"overdue). Cbe overridden by legal basis (UstawKamilka, vital interest of "
-"child)."
+"Отримувати SMS про критичні події (інциденти, непідписані картки, "
+"прострочена оплата). Може бути перевизначено правовою підставою (Ustawa "
+"Kamilka, життєво важливі інтереси дитини)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -14310,7 +14354,7 @@ msgstr "Рекомендації на наступний сезон"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_report__section_recommendations
 #, python-format
 msgid "Recommendations for organizer"
-msgstr "Recommendations для organizer"
+msgstr "Рекомендації для організатора відпочинку"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -14318,7 +14362,7 @@ msgstr "Recommendations для organizer"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_report__section_recommendations
 #, python-format
 msgid "Recommendations for the organizer — free-form text."
-msgstr "Recommendations для organizer — free-дляm text."
+msgstr "Рекомендації для організатора відпочинку — довільний текст."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -14337,9 +14381,9 @@ msgid ""
 "review dates and medical info in the customer portal before the "
 "qualification card can be signed."
 msgstr ""
-"Record was imported auдоmatically з bs_campscout_addon. parent має review "
-"dates and medical info in cusдоmer portal beдляe qualification card може be "
-"signed."
+"Запис імпортовано автоматично з bs_campscout_addon. Батьки мають перевірити "
+"дати та медичну інформацію в клієнтському порталі, перш ніж можна буде "
+"підписати Кваліфікаційну картку."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__event_event__camp_shift_color__red
@@ -14357,7 +14401,7 @@ msgstr "Референс"
 #: code:addons/fayna_camp_portal/models/commercial.py:0
 #, python-format
 msgid "Referral from %(name)s"
-msgstr "Referral з %(name)s"
+msgstr "Рекомендація від %(name)s"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_support_request__refund_pct
@@ -14377,8 +14421,8 @@ msgid ""
 "Refund scheduled (placeholder — fayna_camp_sales not yet installed). Finance "
 "should process manually per Umowa §6.x until Phase 3 lands."
 msgstr ""
-"Refund scheduled (placeholder — fayna_camp_sales not yet installed). Finance "
-"повинен process manually per Umow§6.x until Phase 3 lands."
+"Повернення заплановано (заглушка — fayna_camp_sales ще не встановлено). "
+"Фінансовий відділ має обробити вручну за Umowa §6.x, доки не вийде Фаза 3."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -14410,7 +14454,7 @@ msgstr "Реєстрація"
 #. module: fayna_camp_portal
 #: model:mail.template,subject:fayna_camp_portal.email_auto_refusal
 msgid "Registration cancelled for {{ object.display_name }}"
-msgstr "Registration можеcelled для {{ object.display_name }}"
+msgstr "Реєстрацію скасовано для {{ object.display_name }}"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_sms_template__template_type__registration_confirm
@@ -14445,7 +14489,7 @@ msgstr "Відхилено"
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__parent_id
 msgid "Related Company"
-msgstr "Related Compбудь-який"
+msgstr "Пов'язана компанія"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_loyalty_history__sale_order_id
@@ -14471,7 +14515,7 @@ msgstr "Пов'язані працівники за їхньою приватн�
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__emergency_contact_1_relation
 #, python-format
 msgid "Relationship to child (e.g. mother, father, grandparent)."
-msgstr "Relationship до child (e.g. mother, father, grandparent)."
+msgstr "Стосунок до дитини (напр., мати, батько, бабуся/дідусь)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -14484,18 +14528,20 @@ msgstr "Ким доводиться дитині додатковий екстр
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_sms_template__template_type__reminder_3d
 msgid "Reminder — 3 days before camp"
-msgstr "Reminder — 3 days beдляe camp"
+msgstr "Нагадування — за 3 дні до табору"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_sms_template__template_type__reminder_7d
 msgid "Reminder — 7 days before camp"
-msgstr "Reminder — 7 days beдляe camp"
+msgstr "Нагадування — за 7 днів до табору"
 
 #. module: fayna_camp_portal
 #: model:mail.template,subject:fayna_camp_portal.email_qualification_reminder_14d
 msgid ""
 "Reminder: please sign the qualification card for {{ object.display_name }}"
-msgstr "Reminder: please sign qualification card для {{ object.display_name }}"
+msgstr ""
+"Нагадування: будь ласка, підпишіть Кваліфікаційну картку для {{ "
+"object.display_name }}"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -14624,8 +14670,8 @@ msgid ""
 "Required by the camp to plan water activities safely. Declared by the parent "
 "at qualification card signing."
 msgstr ""
-"Вимагається camp до plwater activities safely. Declared користувачем parent "
-"at qualification card signing."
+"Потрібно табору, щоб безпечно планувати водні активності. Декларується "
+"батьками під час підписання Кваліфікаційної картки."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_support_request__registration_id
@@ -14812,7 +14858,9 @@ msgstr "Роль"
 #, python-format
 msgid ""
 "Role of the author within the group — computed from dziennik assignments."
-msgstr "Role of author зin group — computed з dziennik assignments."
+msgstr ""
+"Роль автора в межах групи — обчислюється з призначень у Dzienniku zajęć "
+"(щоденнику занять)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -14835,7 +14883,8 @@ msgstr "Роль, у якій цей партнер отримав повідо�
 msgid ""
 "Roles for camp management: medical, kierownik, emergency, nutrition, admin."
 msgstr ""
-"Roles для camp management: medical, kierownik, emergency, nutrition, admin."
+"Ролі для управління табором: медичний працівник, Керівник табору, "
+"надзвичайні ситуації, харчування, адміністратор."
 
 #. module: fayna_camp_portal
 #: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_room_type
@@ -14863,8 +14912,8 @@ msgid ""
 "Route description if this is a hiking / travelling camp. Required on the "
 "qualification card by Polish law."
 msgstr ""
-"Route description if this is hiking / travelling camp. Required on "
-"qualification card by польський закон."
+"Опис маршруту, якщо це похідний / мандрівний табір. Обов'язковий у "
+"Кваліфікаційній картці за польським законодавством."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -14894,9 +14943,9 @@ msgid ""
 "automatically when an action of type 'rpd_notified' is logged in the action "
 "ledger. Required when injury_type == 'abuse_suspected'."
 msgstr ""
-"Rzecznik Praw Dziecknotified per UstawKamilk2024. Computed auдоmatically "
-"when action of type 'rpd_notified' is залоговано в action ledger. Required "
-"when injury_type == 'abuse_suspected'."
+"Rzecznik Praw Dziecka повідомлений згідно з Ustawa Kamilka 2024. "
+"Обчислюється автоматично, коли в реєстрі дій зафіксовано дію типу "
+"'rpd_notified'. Обов'язково, коли injury_type == 'abuse_suspected'."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__is_seo_optimized
@@ -15115,7 +15164,7 @@ msgstr "Скан-копія сертифіката (зберігається я�
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff_cert__attachment_id
 #, python-format
 msgid "Scanned document"
-msgstr "Sможеned document"
+msgstr "Сканований документ"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_transport__waybill_attachment_id
@@ -15169,7 +15218,7 @@ msgstr "Пошук статистичних знімків"
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_story_search
 msgid "Search Stories"
-msgstr "Search Sдоries"
+msgstr "Пошук історій"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_product_product__camp_season
@@ -15190,7 +15239,7 @@ msgstr "Тип сезону"
 #: code:addons/fayna_camp_portal/models/commercial.py:0
 #, python-format
 msgid "Season date_from must be ≤ date_to."
-msgstr "Season date_з має be ≤ date_до."
+msgstr "date_from сезону має бути ≤ date_to."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -15264,8 +15313,8 @@ msgid ""
 "Section IV is already signed for participant %(name)s — presence intervals "
 "are immutable."
 msgstr ""
-"Section IV is already signed для participant %(name)s — presence intervals "
-"are незмінний."
+"Секцію IV уже підписано для учасника %(name)s — інтервали присутності "
+"незмінні."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -15275,8 +15324,8 @@ msgid ""
 "Section IV is already signed for participant %(name)s — presence intervals "
 "are immutable. Use the amendment flow."
 msgstr ""
-"Section IV is already signed для participant %(name)s — presence intervals "
-"are незмінний. Use amendment flow."
+"Секцію IV уже підписано для учасника %(name)s — інтервали присутності "
+"незмінні. Скористайтеся процедурою внесення змін."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -15286,8 +15335,8 @@ msgid ""
 "Section IV is already signed for participant %(name)s — presence intervals "
 "cannot be deleted."
 msgstr ""
-"Section IV is already signed для participant %(name)s — presence intervals "
-"можеnot be deleted."
+"Секцію IV уже підписано для учасника %(name)s — інтервали присутності "
+"неможливо видалити."
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_participant_form
@@ -15341,7 +15390,9 @@ msgstr "Токен безпеки"
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_vozhatyi_training_module__module_type
 msgid ""
 "Select a standard PL-law-defined module, or leave blank for a custom one."
-msgstr "Select standard PL-law-defined module, or leave blank для cusдоm one."
+msgstr ""
+"Оберіть стандартний модуль, визначений польським законодавством, або залиште "
+"порожнім для власного."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__invoice_warn
@@ -15353,9 +15404,9 @@ msgid ""
 "Selecting \"Blocking Message\" will throw an exception with the message and "
 "block the flow. The Message has to be written in the next field."
 msgstr ""
-"Selecting \"Warning\" option will notify user з message, Selecting "
-"\"Blocking Message\" will throw exception з message and block flow. Message "
-"has до be written in next field."
+"Вибір опції «Попередження» сповістить користувача повідомленням; вибір "
+"«Блокувальне повідомлення» викличе виняток із повідомленням і заблокує "
+"процес. Текст повідомлення треба ввести в наступному полі."
 
 #. module: fayna_camp_portal
 #: model:camp.allergen,name:fayna_camp_portal.allergen_celery
@@ -15478,9 +15529,9 @@ msgid ""
 "True, most identity and medical fields become immutable (amendment flow "
 "required for any corrections)."
 msgstr ""
-"Set до True when parent completes and signs qualification card. Once True, "
-"most identity and medical fields become незмінний (amendment flow required "
-"для будь-який corrections)."
+"Встановлюється в True, коли батьки заповнюють і підписують Кваліфікаційну "
+"картку. Після True більшість полів особистих даних і медичних даних стають "
+"незмінними (для будь-яких виправлень потрібна процедура внесення змін)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -15533,8 +15584,8 @@ msgid ""
 "Short bullet points shown at the top of the camp page — main selling points "
 "(5-10 lines)."
 msgstr ""
-"Short bullet points shown at доp of camp page — main selling points (5-10 "
-"lines)."
+"Короткі пункти, показані вгорі сторінки табору — основні переваги (5-10 "
+"рядків)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -15553,8 +15604,9 @@ msgid ""
 "Short identifier used in kitchen reports (e.g. 'gluten', 'milk'). EU-14 "
 "codes are pre-seeded; custom allergens use a camp-specific code."
 msgstr ""
-"Short identifier used in kitchen reports (e.g. 'gluten', 'milk'). EU-14 "
-"codes are pre-seeded; cusдоm allergens use camp-specific code."
+"Короткий ідентифікатор, що використовується у звітах кухні (напр., 'gluten', "
+"'milk'). Коди EU-14 попередньо заповнені; для власних алергенів "
+"використовується код, специфічний для табору."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -15652,8 +15704,9 @@ msgid ""
 "Signature of the organizer — appears pre-filled on every qualification card "
 "PDF. Uploaded once in Settings → Companies → your company."
 msgstr ""
-"Signature of organizer — appears pre-filled on every qualification card PDF. "
-"Uploaded once in Settings → Companies → your compбудь-який."
+"Підпис організатора відпочинку — заздалегідь з'являється на кожному PDF "
+"Кваліфікаційної картки. Завантажується один раз у Налаштування → Компанії → "
+"ваша компанія."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -15663,7 +15716,8 @@ msgstr ""
 msgid ""
 "Signed PDF of the final accident protocol. Attached after action_deliver()."
 msgstr ""
-"Signed PDF of final accident proдоcol. Attached after action_deliver()."
+"Підписаний PDF фінального протоколу нещасного випадку. Додається після "
+"action_deliver()."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -15705,7 +15759,7 @@ msgstr "Підписав (користувач)"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__qualification_signed_ip
 #, python-format
 msgid "Signed from IP"
-msgstr "Signed з IP"
+msgstr "Підписано з IP"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -15896,7 +15950,7 @@ msgstr "Спорт"
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_incident_action__action_type__protocol_drafted
 msgid "Sporządzenie protokołu"
-msgstr "Sporządzenie proдоkołu"
+msgstr "Sporządzenie protokołu"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -15921,8 +15975,8 @@ msgid ""
 "Stable camp product — review stays on this product's page forever, visible "
 "across yearly events and tickets."
 msgstr ""
-"Stable camp product — review stays on this product's page дляever, visible "
-"across yearly events and tickets."
+"Стабільний продукт табору — відгук назавжди лишається на сторінці цього "
+"продукту, видимий у щорічних заїздах і квитках."
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_kuratorium_notification_form
@@ -15998,8 +16052,8 @@ msgid ""
 "Staff member has only %(done)s of %(req)s required hours. Cannot issue "
 "certificate."
 msgstr ""
-"Staff member has тільки %(done)s of %(req)s required hours. Cannot issue "
-"certificate."
+"Працівник має лише %(done)s з %(req)s необхідних годин. Неможливо видати "
+"свідоцтво."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -16076,7 +16130,8 @@ msgstr "Член кадри, який написав історію"
 #, python-format
 msgid ""
 "Staff members listed in this Program Wypoczynku (Załącznik 9 kadra section)."
-msgstr "Персонал, вказаний у цьому Program Wypoczynku (Załącznik 9, розділ kadra)."
+msgstr ""
+"Працівники, вказані в цьому Program Wypoczynku (Załącznik 9, розділ kadra)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -16123,9 +16178,9 @@ msgid ""
 "(detected: %(date)s, state: %(state)s). Please review and take action or "
 "close the report."
 msgstr ""
-"Stale incident alert: this report has been open для more th30 days "
-"(detected: %(date)s, state: %(state)s). Please review and take action or "
-"close report."
+"Застаріле сповіщення про інцидент: цей звіт відкритий понад 30 днів "
+"(виявлено: %(date)s, стан: %(state)s). Перегляньте та вживіть заходів або "
+"закрийте звіт."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -16309,7 +16364,7 @@ msgstr "URL статичної мапи дійсний"
 #: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_stats_snapshot
 #: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_stats_history
 msgid "Stats History"
-msgstr "Stats Hisдоry"
+msgstr "Історія статистики"
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_stats_snapshot_form
@@ -16375,15 +16430,15 @@ msgid ""
 "Today: Activity date is today\n"
 "Planned: Future activities."
 msgstr ""
-"Status based on activities\n"
-"Overdue: Due date is already passed\n"
-"Today: Activity date is доday\n"
-"Planned: Future activities."
+"Статус на основі дій\n"
+"Прострочено: термін уже минув\n"
+"Сьогодні: дата дії — сьогодні\n"
+"Заплановано: майбутні дії."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__picking_warn
 msgid "Stock Picking"
-msgstr "Sдоck Picking"
+msgstr "Складське комплектування"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -16391,22 +16446,22 @@ msgstr "Sдоck Picking"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__iv_objectives_achieved
 #, python-format
 msgid "Stopień realizacji celów wychowawczych"
-msgstr "Sдоpień realizacji celów wychowawczych"
+msgstr "Stopień realizacji celów wychowawczych"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_daily_report__weather_condition__storm
 msgid "Storm"
-msgstr "Sдоrm"
+msgstr "Гроза"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_story__content
 msgid "Story content"
-msgstr "Sдоry content"
+msgstr "Зміст історії"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_story__title
 msgid "Story headline"
-msgstr "Sдоry headline"
+msgstr "Заголовок історії"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -16419,7 +16474,7 @@ msgstr "Історію вже заархівовано."
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_story__story_type
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_story_search
 msgid "Story type"
-msgstr "Sдоry type"
+msgstr "Тип історії"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__street
@@ -16566,13 +16621,13 @@ msgid ""
 "Submitted dzienniki cannot be deleted (legal retention). Archive workflow "
 "handles long-term storage."
 msgstr ""
-"Submitted dzienniki можеnot be deleted (legal збереження). Archive workflow "
-"handles long-term sдоrage."
+"Подані dzienniki (Щоденники занять) не можна видалити (юридичне зберігання). "
+"Тривале зберігання забезпечує процес архівації."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_review__state__submitted
 msgid "Submitted for review"
-msgstr "Submitted для review"
+msgstr "Подано на перевірку"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -16590,8 +16645,8 @@ msgid ""
 "Submitted reports are frozen. To edit, an admin must first revert to draft "
 "(fields blocked: %s)."
 msgstr ""
-"Submitted reports are frozen. To edit, admin має first revert до draft "
-"(fields blocked: %s)."
+"Подані звіти заморожені. Щоб редагувати, адміністратор має спершу повернути "
+"до чернетки (заблоковані поля: %s)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -16603,12 +16658,12 @@ msgstr "Подані звіти повинні мати підпис керів�
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_program_wypoczynku__state__submitted
 msgid "Submitted to kuratoria"
-msgstr "Submitted до kuraдоria"
+msgstr "Подано до kuratoria"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__fayna_camp_dziennik__state__submitted
 msgid "Submitted to organizer"
-msgstr "Submitted до organizer"
+msgstr "Подано Організатору відпочинку"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -16619,8 +16674,8 @@ msgid ""
 "Substitutions, allergen warnings, or portion notes from the nutritionist. "
 "Visible to kitchen staff and camp leaders."
 msgstr ""
-"Substitutions, allergen warnings, or portion notes з nutritionist. Visible "
-"до kitchen staff and camp leaders."
+"Заміни, попередження про алергени чи нотатки щодо порцій від дієтолога. "
+"Видимі кухонному персоналу та керівникам табору."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_vozhatyi_training__total_hours
@@ -16634,8 +16689,8 @@ msgid ""
 "Sum of event.event.seats_available across upcoming (date_begin > now) events "
 "linked to this camp program."
 msgstr ""
-"Sum of event.event.seats_available across upcoming (date_begin > now) events "
-"linked до this camp program."
+"Сума event.event.seats_available по майбутніх (date_begin > now) заїздах, "
+"пов'язаних із цією програмою табору."
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_daily_report_form
@@ -16732,7 +16787,7 @@ msgstr "Запит підтримки вирішено: %s"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_report__attachment_ids
 #, python-format
 msgid "Supporting photos, documents, evidence."
-msgstr "Supporting phoдоs, documents, evidence."
+msgstr "Допоміжні фото, документи, докази."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -16859,7 +16914,7 @@ msgstr "Згенеровано TOP"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__l10n_pl_links_with_customer
 msgid ""
 "TP: Existing connection or influence between the customer and the supplier"
-msgstr "TP: Existing connection or influence between cusдоmer and supplier"
+msgstr "TP: Наявний зв'язок або вплив між клієнтом і постачальником"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_product_product__camp_tagline
@@ -17007,12 +17062,12 @@ msgid ""
 "  {{ url }}              — link to portal or document\n"
 "Keep under 160 chars to avoid multi-part SMS charges."
 msgstr ""
-"Template text. Available variables:\n"
-"  {{ participant_name }} — child's first name\n"
-"  {{ camp_name }}        — camp / event name\n"
-"  {{ date }}             — relevant date (camp start or deadline)\n"
-"  {{ url }}              — link до portal or document\n"
-"Keep under 160 chars до avoid multi-part SMS charges."
+"Текст шаблону. Доступні змінні:\n"
+"  {{ participant_name }} — ім'я дитини\n"
+"  {{ camp_name }}        — назва табору / заїзду\n"
+"  {{ date }}             — відповідна дата (старт табору або дедлайн)\n"
+"  {{ url }}              — посилання на портал або документ\n"
+"Тримайте до 160 символів, щоб уникнути плати за багаточастинні SMS."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17044,8 +17099,8 @@ msgid ""
 "The ISO country code in two chars. \n"
 "You can use this field for quick search."
 msgstr ""
-"ISO country code in two chars. \n"
-"You може use this field для quick search."
+"ISO-код країни з двох символів. \n"
+"Це поле можна використати для швидкого пошуку."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__vat
@@ -17054,8 +17109,9 @@ msgid ""
 "country format. You can use '/' to indicate that the partner is not subject "
 "to tax."
 msgstr ""
-"Tax Identification Number. Values here will be validated based on country "
-"дляmat. You може use '/' до indicate that partner is not subject до tax."
+"Податковий ідентифікаційний номер. Значення тут перевірятимуться відповідно "
+"до формату країни. Можна вказати '/', щоб позначити, що партнер не підлягає "
+"оподаткуванню."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17115,8 +17171,8 @@ msgid ""
 "The child (camp.participant) this registration belongs to. Required for camp "
 "events once fully migrated."
 msgstr ""
-"child (camp.participant) this registration belongs до. Required для camp "
-"events once fully migrated."
+"Дитина (camp.participant), до якої належить ця реєстрація. Обов'язково для "
+"заїздів табору після повної міграції."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17162,7 +17218,9 @@ msgstr "Канал eLearning, з яким пов'язано цей запис."
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__property_account_position_id
 msgid ""
 "The fiscal position determines the taxes/accounts used for this contact."
-msgstr "fiscal position determines taxes/accounts used для this contact."
+msgstr ""
+"Фіскальна позиція визначає податки/рахунки, що використовуються для цього "
+"контакту."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__website_url
@@ -17185,8 +17243,8 @@ msgid ""
 "The maximum follow-up level without taking into account the account move "
 "lines with litigation"
 msgstr ""
-"maximum follow-up level без taking inдо account account move lines з "
-"litigation"
+"Максимальний рівень нагадування без урахування рядків бухгалтерських "
+"проводок зі спорами"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17228,8 +17286,8 @@ msgid ""
 "The parent or legal guardian who registered this child. Receives "
 "notification emails and signs the qualification card."
 msgstr ""
-"parent or законний опікун who registered this child. Receives notification "
-"emails and signs qualification card."
+"Батьки чи законний опікун, який зареєстрував цю дитину. Отримує сповіщення "
+"на email і підписує Кваліфікаційну картку."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__has_unreconciled_entries
@@ -17237,8 +17295,8 @@ msgid ""
 "The partner has at least one unreconciled debit and credit since last time "
 "the invoices & payments matching was performed."
 msgstr ""
-"partner has at least one unreconciled debit and credit since last time "
-"invoices & payments matching was perдляmed."
+"Партнер має щонайменше один неузгоджений дебет і кредит з останнього "
+"звіряння фактур і платежів."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17275,8 +17333,8 @@ msgid ""
 "The registry number of the company. Use it if it is different from the Tax "
 "ID. It must be unique across all partners of a same country"
 msgstr ""
-"registry number of compбудь-який. Use it if it is different з Tax ID. It має "
-"be unique across all partners of same country"
+"Реєстраційний номер компанії. Використовуйте його, якщо він відрізняється "
+"від податкового ID. Має бути унікальним серед усіх партнерів однієї країни"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_loyalty_history__sale_order_id
@@ -17334,20 +17392,24 @@ msgid ""
 "The staff member has given explicit written consent for processing this "
 "special-category data under RODO art.9 §2(a)."
 msgstr ""
-"staff member has given explicit written consent для processing this special-"
-"category datunder RODO art.9 §2(a)."
+"Працівник надав явну письмову згоду на обробку цих даних особливої категорії "
+"згідно з RODO art.9 §2(a)."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__property_stock_customer
 msgid ""
 "The stock location used as destination when sending goods to this contact."
-msgstr "sдоck location used as destination when sending goods до this contact."
+msgstr ""
+"Складська локація, що використовується як призначення при відправленні "
+"товарів цьому контакту."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__property_stock_supplier
 msgid ""
 "The stock location used as source when receiving goods from this contact."
-msgstr "sдоck location used as source when receiving goods з this contact."
+msgstr ""
+"Складська локація, що використовується як джерело при отриманні товарів від "
+"цього контакту."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17385,8 +17447,8 @@ msgid ""
 "This account will be used instead of the default one as the payable account "
 "for the current partner"
 msgstr ""
-"This account will be used instead of за замовчуванням one as payable account "
-"для current partner"
+"Цей рахунок використовуватиметься замість стандартного як рахунок "
+"кредиторської заборгованості для поточного партнера"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__property_account_receivable_id
@@ -17394,8 +17456,8 @@ msgid ""
 "This account will be used instead of the default one as the receivable "
 "account for the current partner"
 msgstr ""
-"This account will be used instead of за замовчуванням one as receivable "
-"account для current partner"
+"Цей рахунок використовуватиметься замість стандартного як рахунок "
+"дебіторської заборгованості для поточного партнера"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17424,8 +17486,8 @@ msgid ""
 "This currency will be used, instead of the default one, for purchases from "
 "the current partner"
 msgstr ""
-"This currency will be used, instead of за замовчуванням one, для purchases з "
-"current partner"
+"Ця валюта використовуватиметься замість стандартної для закупівель у "
+"поточного партнера"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__email_normalized
@@ -17433,8 +17495,8 @@ msgid ""
 "This field is used to search on email address as the primary email field can "
 "contain more than strictly an email address."
 msgstr ""
-"Це поле is used до search on email address as primary email field може "
-"contain more thstrictly email address."
+"Це поле використовується для пошуку за email-адресою, оскільки основне поле "
+"email може містити більше, ніж лише email-адресу."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__payment_next_action
@@ -17442,8 +17504,8 @@ msgid ""
 "This is the next action to be taken.  It will automatically be set when the "
 "partner gets a follow-up level that requires a manual action. "
 msgstr ""
-"This is next action до be taken.  It will auдоmatically be set when partner "
-"gets follow-up level that requires manual action. "
+"Це наступна дія, яку слід виконати. Вона встановлюється автоматично, коли "
+"партнер отримує рівень нагадування, що потребує ручної дії. "
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__payment_next_action_date
@@ -17453,9 +17515,9 @@ msgid ""
 "action. Can be practical to set manually e.g. to see if he keeps his "
 "promises."
 msgstr ""
-"This is when manual follow-up is needed. date will be set до current date "
-"when partner gets follow-up level that requires manual action. Cbe practical "
-"до set manually e.g. до see if he keeps his promises."
+"Це момент, коли потрібне ручне нагадування. Дата встановлюється на поточну, "
+"коли партнер отримує рівень нагадування, що потребує ручної дії. Можна "
+"задати вручну, наприклад, щоб бачити, чи дотримується він обіцянок."
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_sms_log_search
@@ -17468,8 +17530,8 @@ msgid ""
 "This payment term will be used instead of the default one for purchase "
 "orders and vendor bills"
 msgstr ""
-"This payment term will be used instead of за замовчуванням one для purchase "
-"orders and vendor bills"
+"Цей термін оплати використовуватиметься замість стандартного для замовлень "
+"на закупівлю та рахунків постачальників"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__property_payment_term_id
@@ -17477,8 +17539,8 @@ msgid ""
 "This payment term will be used instead of the default one for sales orders "
 "and customer invoices"
 msgstr ""
-"This payment term will be used instead of за замовчуванням one для sales "
-"orders and cusдоmer invoices"
+"Цей термін оплати використовуватиметься замість стандартного для замовлень "
+"на продаж та фактур клієнтів"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__property_product_pricelist
@@ -17486,8 +17548,8 @@ msgid ""
 "This pricelist will be used, instead of the default one, for sales to the "
 "current partner"
 msgstr ""
-"This pricelist will be used, instead of за замовчуванням one, для sales до "
-"current partner"
+"Цей прайс-лист використовуватиметься замість стандартного для продажів "
+"поточному партнеру"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17566,8 +17628,8 @@ msgid ""
 "Timestamp when Kuratorium Oświaty was officially notified about this "
 "incident (Ustawa Kamilka audit)."
 msgstr ""
-"Timestamp when Kuraдоrium Oświaty was officially notified about this "
-"incident (UstawKamilkaudit)."
+"Мітка часу, коли Kuratorium Oświaty було офіційно повідомлено про цей "
+"інцидент (аудит Ustawa Kamilka)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17579,9 +17641,9 @@ msgid ""
 "organizator) because the primary kierownik did not acknowledge the alert "
 "within 5 minutes."
 msgstr ""
-"Timestamp when SMS was escalated до backup contact (deputy kierownik / "
-"organizaдоr) because primary kierownik did not acknowledge alert зin 5 "
-"minutes."
+"Мітка часу, коли SMS було ескальовано до резервного контакту (заступник "
+"kierownik / organizator), оскільки основний kierownik не підтвердив "
+"сповіщення протягом 5 хвилин."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17630,7 +17692,8 @@ msgstr "Час, коли батьки подали рішення щодо зг�
 #, python-format
 msgid ""
 "Timestamp when the protocol was formally delivered to authorised parties."
-msgstr "Timestamp when proдоcol was дляmally delivered до authorised parties."
+msgstr ""
+"Мітка часу, коли протокол було офіційно доставлено вповноваженим сторонам."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17807,7 +17870,8 @@ msgstr "Загальна кількість платежів (2, 3 або 4). Н
 msgid ""
 "Total number of participants (legacy field; prefer participant_count_total)."
 msgstr ""
-"Total number of participants (legacy field; prefer participant_count_доtal)."
+"Загальна кількість учасників (застаріле поле; надавайте перевагу "
+"participant_count_total)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17860,9 +17924,9 @@ msgid ""
 "auto-cancelled by the system (refused), or is no longer at risk — either "
 "because the card is signed or a coordinator overrode."
 msgstr ""
-"Tracks whether participant is still expected до sign (pending), has been "
-"auдо-можеcelled користувачем system (refused), or is no longer at risk — "
-"either because card is signed or coordinaдоr overrode."
+"Відстежує, чи від учасника досі очікується підпис (pending), чи його "
+"автоматично скасовано системою (refused), чи він більше не в зоні ризику — "
+"або тому, що картку підписано, або координатор скасував."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17969,7 +18033,7 @@ msgstr "Трансфер"
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_transport__transport_company
 msgid "Transport company"
-msgstr "Transport compбудь-який"
+msgstr "Транспортна компанія"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_transport__vehicle_type__own_transport
@@ -18004,9 +18068,9 @@ msgid ""
 "potwierdza checkboxem na kroku «Dodaj dziecko» (przed umową). Wyświetlana w "
 "panelu klienta nad obowiązkowym checkboxem."
 msgstr ""
-"Treść klauzuli inдляmacyjnej art. 13 RODO + treść zgody, którą rodzic "
-"potwierdzcheckboxem nkroku «Dodaj dziecko» (przed umową). Wyświetlanw panelu "
-"klientnad obowiązkowym checkboxem."
+"Treść klauzuli informacyjnej art. 13 RODO + treść zgody, którą rodzic "
+"potwierdza checkboxem na kroku «Dodaj dziecko» (przed umową). Wyświetlana w "
+"panelu klienta nad obowiązkowym checkboxem."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -18055,8 +18119,8 @@ msgstr "True, коли є будь-що з: вказано KDR / ручна по
 msgid ""
 "True when KRK + RPS + course certificate are all valid (PL law Rozp. MEN §4)."
 msgstr ""
-"True when KRK + RPS + course certificate are all valid (PL закон Rozp. MEN "
-"§4)."
+"True, коли KRK + RPS + свідоцтво про курс усі дійсні (польський закон Rozp. "
+"MEN §4)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -18067,8 +18131,8 @@ msgid ""
 "True when a 'first_aid' action was logged within 2 minutes of detected_at. "
 "AHA BLS 2025 standard (BP-006)."
 msgstr ""
-"True when 'first_aid' action was logged зin 2 minutes of detected_at. AHBLS "
-"2025 standard (BP-006)."
+"True, коли дію 'first_aid' зафіксовано протягом 2 хвилин від detected_at. "
+"Стандарт AHA BLS 2025 (BP-006)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -18080,9 +18144,9 @@ msgid ""
 "food_poisoning; prokurator for severe/fatal/mass; RPD for abuse_suspected) "
 "were logged within 24h. Art. 92n (BP-006)."
 msgstr ""
-"True when all required authority notifications (kuraдоr always; sanepid для "
-"food_poisoning; prokuraдоr для severe/fatal/mass; RPD для abuse_suspected) "
-"were logged зin 24h. Art. 92n (BP-006)."
+"True, коли всі необхідні повідомлення органам (kurator завжди; sanepid для "
+"food_poisoning; prokurator для severe/fatal/mass; RPD для abuse_suspected) "
+"зафіксовано протягом 24 год. Art. 92n (BP-006)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -18139,8 +18203,8 @@ msgid ""
 "True when first_aid + safe_location (+ paramedic_call for moderate+) were "
 "all logged within 15 minutes. Rozp. MEN §6.5 (BP-006)."
 msgstr ""
-"True when first_aid + safe_location (+ paramedic_call для moderate+) were "
-"all logged зin 15 minutes. Rozp. MEN §6.5 (BP-006)."
+"True, коли first_aid + safe_location (+ paramedic_call для moderate+) усі "
+"зафіксовано протягом 15 хвилин. Rozp. MEN §6.5 (BP-006)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -18149,7 +18213,9 @@ msgstr ""
 #, python-format
 msgid ""
 "True when parent_notified action logged within 30 minutes of detected_at."
-msgstr "True when parent_notified action logged зin 30 minutes of detected_at."
+msgstr ""
+"True, коли дію parent_notified зафіксовано протягом 30 хвилин від "
+"detected_at."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -18160,7 +18226,8 @@ msgid ""
 "True when the certificate has no expiry date or expiry is today or in the "
 "future."
 msgstr ""
-"True when certificate has no expiry date or expiry is доday or in future."
+"True, коли свідоцтво не має дати завершення або термін дії — сьогодні чи в "
+"майбутньому."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_vozhatyi_certificate__is_expired
@@ -18247,8 +18314,8 @@ msgid ""
 "Type of injury or incident. 'abuse_suspected' triggers the Ustawa Kamilka "
 "2024 overlay: RPD must be notified within 24h."
 msgstr ""
-"Type of injury or incident. 'abuse_suspected' triggers UstawKamilk2024 "
-"overlay: RPD має be notified зin 24h."
+"Тип травми чи інциденту. 'abuse_suspected' активує накладку Ustawa Kamilka "
+"2024: RPD має бути повідомлено протягом 24 год."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -18313,8 +18380,8 @@ msgid ""
 "URGENT: qualification card deadline for {{ object.display_name }} is in 3 "
 "days"
 msgstr ""
-"URGENT: qualification card deadline для {{ object.display_name }} is in 3 "
-"days"
+"ТЕРМІНОВО: дедлайн Кваліфікаційної картки для {{ object.display_name }} — за "
+"3 дні"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__sendpulse_contact_id
@@ -18355,7 +18422,7 @@ msgstr "Вулиця і номер"
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_incident_report__severity__moderate
 msgid "Umiarkowany (głębsze rany, zwichnięcia)"
-msgstr "Umiarkowбудь-який (głębsze rбудь-який, zwichnięcia)"
+msgstr "Umiarkowany (głębsze rany, zwichnięcia)"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -18381,8 +18448,9 @@ msgid ""
 "Unique identifier assigned on certification. Format: CAMP-WYC-XXXXXXXX.\n"
 "Required for KRK / RPS presentation in Kuratorium notifications."
 msgstr ""
-"Unique identifier assigned on certification. Format: CAMP-WYC-XXXXXXXX.\n"
-"Required для KRK / RPS presentation in Kuraдоrium notifications."
+"Унікальний ідентифікатор, що присвоюється при сертифікації. Формат: "
+"CAMP-WYC-XXXXXXXX.\n"
+"Необхідний для подання KRK / RPS у повідомленнях до Kuratorium."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__peppol_endpoint
@@ -18390,8 +18458,8 @@ msgid ""
 "Unique identifier used by the BIS Billing 3.0 and its derivatives, also "
 "known as 'Endpoint ID'."
 msgstr ""
-"Unique identifier used користувачем BIS Billing 3.0 and its derivatives, "
-"also known as 'Endpoint ID'."
+"Унікальний ідентифікатор, що використовується BIS Billing 3.0 та його "
+"похідними, також відомий як 'Endpoint ID'."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -18628,8 +18696,8 @@ msgid ""
 "Vaccination status as declared by the parent. Partial or exempt status may "
 "trigger additional health protocols at camp."
 msgstr ""
-"Vaccination status as declared користувачем parent. Partial or exempt status "
-"may trigger additional health proдоcols at camp."
+"Статус вакцинації, заявлений батьками. Частковий статус або звільнення може "
+"активувати додаткові медичні протоколи в таборі."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -18753,12 +18821,12 @@ msgstr "Видимий на поточному сайті"
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_story_search
 msgid "Visible to parents"
-msgstr "Visible до parents"
+msgstr "Видимо для батьків"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__visitor_ids
 msgid "Visitors"
-msgstr "Visiдоrs"
+msgstr "Відвідувачі"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -18769,8 +18837,9 @@ msgid ""
 "Visual hint for cabinet hero — separate from any gender semantics. If the "
 "child has a profile photo uploaded, the photo takes priority."
 msgstr ""
-"Visual hint для cabinet hero — separate з будь-який gender semantics. If "
-"child has profile phoдо uploaded, phoдо takes priority."
+"Візуальна підказка для головного банера кабінету — окремо від будь-якої "
+"гендерної семантики. Якщо для дитини завантажено фото профілю, пріоритет має "
+"фото."
 
 #. module: fayna_camp_portal
 #: model:ir.actions.act_window,name:fayna_camp_portal.fayna_vozhatyi_certificate_action
@@ -18802,8 +18871,8 @@ msgid ""
 "Was the child healthy that day? Any pre-existing conditions? Relevant "
 "context for the dochodzenie powypadkowe."
 msgstr ""
-"Was child healthy that day? Any pre-existing conditions? Relevant context "
-"для dochodzenie powypadkowe."
+"Чи була дитина здорова того дня? Чи є наявні захворювання? Відповідний "
+"контекст для dochodzenie powypadkowe."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -18967,7 +19036,7 @@ msgstr "Тижневий план роботи (Załącznik 5 Розділ 2)."
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_incident_action__action_type__paramedic_call
 msgid "Wezwanie pogotowia / 112"
-msgstr "Wezwanie pogoдоwi/ 112"
+msgstr "Wezwanie pogotowia / 112"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -19025,8 +19094,8 @@ msgid ""
 "When camp staff first became aware of the incident. SLA timing (BP-006) "
 "starts from this moment, not incident_datetime."
 msgstr ""
-"When camp staff first became aware of incident. SLtiming (BP-006) starts з "
-"this moment, not incident_datetime."
+"Коли персонал табору вперше дізнався про інцидент. Відлік SLA (BP-006) "
+"починається з цього моменту, а не з incident_datetime."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -19037,8 +19106,8 @@ msgid ""
 "When enabled, camp events (auto-refusal, registration, reminders) trigger "
 "SMS notifications to parents."
 msgstr ""
-"When enabled, camp events (auдо-refusal, registration, reminders) trigger "
-"SMS notifications до parents."
+"Якщо ввімкнено, події табору (авто-відмова, реєстрація, нагадування) "
+"активують SMS-сповіщення батькам."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__tz
@@ -19049,11 +19118,12 @@ msgid ""
 "Anywhere else, time values are computed according to the time offset of your "
 "web client."
 msgstr ""
-"When printing documents and exporting/importing data, time values are "
-"computed according до this timezone.\n"
-"If timezone is not set, UTC (Coordinated Universal Time) is used.\n"
-"Anywhere else, time values are computed according до time offset of your web "
-"client."
+"Під час друку документів та експорту/імпорту даних значення часу "
+"обчислюються відповідно до цього часового поясу.\n"
+"Якщо часовий пояс не задано, використовується UTC (Всесвітній координований "
+"час).\n"
+"В інших випадках значення часу обчислюються відповідно до зміщення часу "
+"вашого веб-клієнта."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -19064,8 +19134,9 @@ msgid ""
 "When recipient acknowledged reading the notification (SMS gateway DLR with "
 "read flag, email open-tracking pixel, or explicit click on portal CTA)."
 msgstr ""
-"When recipient acknowledged reading notification (SMS gateway DLR з read "
-"flag, email open-tracking pixel, or explicit click on portal CTA)."
+"Коли отримувач підтвердив прочитання сповіщення (DLR SMS-шлюзу з прапорцем "
+"прочитання, піксель відстеження відкриття email або явний клік на CTA "
+"порталу)."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_story__publish_date
@@ -19089,8 +19160,8 @@ msgid ""
 "When the incident happened (best estimate from witnesses). May differ from "
 "detected_at — SLA timing starts from detected_at."
 msgstr ""
-"When incident happened (best estimate з witnesses). May differ з detected_at "
-"— SLtiming starts з detected_at."
+"Коли стався інцидент (найкраща оцінка зі слів свідків). Може відрізнятися "
+"від detected_at — відлік SLA починається з detected_at."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -19165,7 +19236,7 @@ msgstr "Які працівники вели цю активність."
 #, python-format
 msgid ""
 "Which variant of the schedule was executed due to weather/circumstances."
-msgstr "Which variant of schedule was executed due до weather/circumstances."
+msgstr "Який варіант розкладу було виконано через погоду/обставини."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -19188,7 +19259,7 @@ msgstr "Winter / Зима"
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__fayna_camp_dziennik_note__note_type__kurator
 msgid "Wizyta kuratora"
-msgstr "Wizytkuraдоra"
+msgstr "Wizyta kuratora"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -19327,7 +19398,7 @@ msgstr "Не можна використати власний код BANDA."
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_incident_action__action_type__evidence_secured
 msgid "Zabezpieczenie dowodów / fotografii"
-msgstr "Zabezpieczenie dowodów / foдоgrafii"
+msgstr "Zabezpieczenie dowodów / fotografii"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_incident_action__action_type__safe_location
@@ -19405,7 +19476,7 @@ msgstr "Обсяг обов'язків (A7)"
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_incident_report__state__disputed
 msgid "Zakwestionowany przez rodziców"
-msgstr "Zakwestionowбудь-який przez rodziców"
+msgstr "Zakwestionowany przez rodziców"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -19461,7 +19532,7 @@ msgstr "Забезпечення медичної опіки"
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_transport__state__planned
 msgid "Zaplanowany"
-msgstr "Zaplanowбудь-який"
+msgstr "Zaplanowany"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_incident_report__injury_type__poisoning
@@ -19507,7 +19578,8 @@ msgid ""
 "Zboża zawierające gluten (pszenica, żyto, jęczmień, owies) i produkty "
 "pochodne"
 msgstr ""
-"Zbożzawierające gluten (pszenica, żyдо, jęczmień, owies) i produkty pochodne"
+"Zboża zawierające gluten (pszenica, żyto, jęczmień, owies) i produkty "
+"pochodne"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -19522,7 +19594,7 @@ msgstr "Медичні події"
 #: code:addons/fayna_camp_portal/models/camp.py:0
 #, python-format
 msgid "Zgłoszenia Kuratorium"
-msgstr "ZgłoszeniKuraдоrium"
+msgstr "Zgłoszenia Kuratorium"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -19535,7 +19607,7 @@ msgstr "Zgłoszenia wypoczynku, подані до Kuratorium Oświaty для ц�
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_camp_kuratorium_notification
 msgid "Zgłoszenie Wypoczynku do Kuratorium Oświaty"
-msgstr "Zgłoszenie wypoczynku до Kuratorium Oświaty"
+msgstr "Zgłoszenie Wypoczynku do Kuratorium Oświaty"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_kuratorium_notification__vacation_form__zimowisko
@@ -19558,7 +19630,7 @@ msgstr "Реалізовано"
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_transport__state__completed
 msgid "Zrealizowany"
-msgstr "Zrealizowбудь-який"
+msgstr "Zrealizowany"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_incident_report__injury_type__fracture
@@ -19571,13 +19643,13 @@ msgid ""
 "[(Total Receivable/Total Revenue) * number of days since the first invoice] "
 "for this customer"
 msgstr ""
-"[(Total Receivable/Total Revenue) * number of days since first invoice] для "
-"this cusдоmer"
+"[(Загальна дебіторська заборгованість/Загальний дохід) * кількість днів від "
+"першої фактури] для цього клієнта"
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.fayna_vozhatyi_certificate_report_template
 msgid "as required by Rozporządzenie MEN 2016 (Dz.U. 2016 poz. 2148)"
-msgstr "as вимагається Rozporządzenie MEN 2016 (Dz.U. 2016 poz. 2148)"
+msgstr "як вимагає Rozporządzenie MEN 2016 (Dz.U. 2016 poz. 2148)"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -20532,8 +20604,8 @@ msgid ""
 "Цей запис мігровано з bs_campscout_addon і потребує review: перевірте DOB + "
 "medical дані перед підписом."
 msgstr ""
-"Цей запис мігровано з bs_campscout_addon і потребує review: перевірте DOB + "
-"medical дані перед підписом."
+"Цей запис мігровано з bs_campscout_addon і потребує перевірки: звірте дату "
+"народження та медичні дані перед підписом."
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.admin_dashboard
@@ -20792,7 +20864,7 @@ msgstr "📨 Надіслати SMS моїй групі"
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.admin_dashboard
 msgid "🔐 Audit (RODO art.30)"
-msgstr "🔐 Audit (RODO ст.30)"
+msgstr "🔐 Аудит (RODO art.30)"
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.view_camp_staff_sms_log_form
@@ -20822,7 +20894,10 @@ msgid ""
 "🚨🚨 USTAWA KAMILKA\n"
 "Tel kierownik: {{ ctx.get('kierownik_phone') or '' }}\n"
 "{{ ctx.get('short_url') or '' }}"
-msgstr "🚨🚨 USTAWA KAMILKA\nТел. керівника: {{ ctx.get('kierownik_phone') or '' }}\n{{ ctx.get('short_url') or '' }}"
+msgstr ""
+"🚨🚨 USTAWA KAMILKA\n"
+"Тел. керівника: {{ ctx.get('kierownik_phone') or '' }}\n"
+"{{ ctx.get('short_url') or '' }}"
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.portal_loyalty
@@ -20965,7 +21040,7 @@ msgstr "Надзвичайні ситуації"
 #. module: fayna_camp_portal
 #: model:ir.ui.menu,name:fayna_camp_portal.menu_incidents
 msgid "Protokoły zdarzeń"
-msgstr "Протоколи НС"
+msgstr "Протоколи надзвичайних ситуацій"
 
 #. module: fayna_camp_portal
 #: model:ir.ui.menu,name:fayna_camp_portal.menu_commercial
@@ -22486,7 +22561,7 @@ msgstr "1. Кваліфікаційні картки учасників"
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
 msgid "2. Kadra — KRK / RSPTS / kursy (Ustawa Kamilka)"
-msgstr "2. Кадра — KRK / RSPTS / курси (Ustawa Kamilka)"
+msgstr "2. Kadra — KRK / RSPTS / курси (Ustawa Kamilka)"
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.camp_teczka_ko_view_form
