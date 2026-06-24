@@ -14,8 +14,8 @@
         <div class="o_camp_kiosk_app d-flex flex-column align-items-center
                     justify-content-center min-vh-100 bg-light p-3 p-md-5">
 
-            <!-- Header -->
-            <div class="text-center mb-4 mb-md-5">
+            <!-- Header — w-100 гарантує центрування навіть без parent flex -->
+            <div class="text-center w-100 mb-4 mb-md-5">
                 <h1 class="display-5 fw-bold text-primary mb-1">
                     Portal CampScout
                 </h1>
@@ -62,14 +62,14 @@
                                    role="img"
                                    t-att-aria-label="tile.label"/>
 
-                                <!-- Label -->
-                                <span class="fw-bold fs-5 text-center lh-sm">
+                                <!-- Label — окремий блок, жирний, зверху -->
+                                <span class="o_camp_kiosk_tile_label d-block w-100 fw-bold fs-5 text-center lh-sm">
                                     <t t-esc="tile.label"/>
                                 </span>
 
-                                <!-- Optional description -->
+                                <!-- Optional description — окремий блок, дрібніший, знизу -->
                                 <t t-if="tile.description">
-                                    <small class="opacity-75 text-center">
+                                    <small class="o_camp_kiosk_tile_desc d-block w-100 opacity-75 text-center mt-1">
                                         <t t-esc="tile.description"/>
                                     </small>
                                 </t>

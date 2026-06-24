@@ -41,9 +41,12 @@ $kiosk-toggle-min:         44px;   // Apple HIG minimum touch target
 // ── Kiosk shell ─────────────────────────────────────────────────────────────
 // Full-screen, no horizontal overflow, safe-area-aware for notch phones.
 .o_camp_kiosk_app {
-    // Stretch to full viewport including safe areas (notch / home indicator)
-    min-height: 100dvh; // dynamic viewport height (avoids iOS toolbar jitter)
-    min-height: calc(100vh + env(safe-area-inset-top, 0px) + env(safe-area-inset-bottom, 0px));
+    // Stretch to full viewport including safe areas (notch / home indicator).
+    // NB: wrap raw CSS in #{"..."} so SCSS (libsass) does NOT try to evaluate
+    // dvh unit / env() — it would fail compilation ("Kompilacja stylu").
+    min-height: 100vh;               // classic fallback (always understood)
+    min-height: #{"100dvh"};         // dynamic viewport height (avoids iOS toolbar jitter)
+    min-height: #{"calc(100vh + env(safe-area-inset-top, 0px) + env(safe-area-inset-bottom, 0px))"};
     width: 100%;
     overflow-x: hidden;
 
@@ -122,16 +125,28 @@ $kiosk-toggle-min:         44px;   // Apple HIG minimum touch target
         }
     }
 
-    // Tile label — minimum 18px, readable on phone
-    .fw-bold {
-        font-size: $kiosk-label-size !important;
-        line-height: 1.25;
+    // Label + description stack vertically REGARDLESS of parent flex.
+    // Force block-level so they NEVER concatenate on one line ("KadraMój obóz").
+    .o_camp_kiosk_tile_label,
+    .o_camp_kiosk_tile_desc {
+        display: block;
+        width: 100%;
+        text-align: center;
     }
 
-    // Optional description — not too small
-    small {
+    // Tile label — bold, minimum 18px, readable on phone
+    .o_camp_kiosk_tile_label {
+        font-size: $kiosk-label-size !important;
+        font-weight: 700 !important;
+        line-height: 1.2;
+    }
+
+    // Optional description — smaller, muted, below the label
+    .o_camp_kiosk_tile_desc {
         font-size: 0.85rem !important;
-        line-height: 1.35;
+        line-height: 1.3;
+        opacity: 0.82;
+        margin-top: 0.25rem;
     }
 
     // Tablet ≥576px: grow icon + label
@@ -143,8 +158,11 @@ $kiosk-toggle-min:         44px;   // Apple HIG minimum touch target
             font-size: $kiosk-icon-size * 1.25 !important; // 2.5rem
         }
 
-        .fw-bold {
+        .o_camp_kiosk_tile_label {
             font-size: 1.2rem !important;
+        }
+        .o_camp_kiosk_tile_desc {
+            font-size: 0.9rem !important;
         }
     }
 
@@ -157,8 +175,11 @@ $kiosk-toggle-min:         44px;   // Apple HIG minimum touch target
             font-size: $kiosk-icon-size * 1.5 !important; // 3rem
         }
 
-        .fw-bold {
-            font-size: 1.25rem !important;
+        .o_camp_kiosk_tile_label {
+            font-size: 1.3rem !important;
+        }
+        .o_camp_kiosk_tile_desc {
+            font-size: 0.95rem !important;
         }
     }
 }
@@ -245,22 +266,36 @@ $kiosk-toggle-min:         44px;   // Apple HIG minimum touch target
     }
 }
 
-// ── БРЕНД-МАПІНГ Bootstrap btn-* → CampScout брендбук (scoped до кіоска) ──────
+// ── БРЕНД-МАПІНГ Bootstrap btn-* → CampScout брендбук ─────────────────────────
+// ВАЖЛИВО: бренд-кольори плиток НЕ залежать від ancestor .o_camp_kiosk_app.
+// Якщо обгортка не намалюється першою (stale-bundle race) — плитки все одно
+// отримають заливку. Тому селектори плиток винесені на верхній рівень.
 .o_camp_kiosk_app {
     .text-primary { color: $cs-teal !important; }   // заголовок/spinner → teal
     .spinner-border.text-primary { color: $cs-gold !important; }
-
-    .o_camp_kiosk_tile {
-        border: none;
-        color: $cs-white;
-        // Bootstrap-suffix із controllers/kiosk.py → бренд-кольори
-        &.btn-primary  { background: $cs-teal       !important; color: $cs-white !important; }
-        &.btn-success  { background: $cs-teal-light  !important; color: $cs-white !important; }
-        &.btn-warning  { background: $cs-gold        !important; color: $cs-ink   !important; }
-        &.btn-danger   { background: $cs-red         !important; color: $cs-white !important; }
-        &.btn-info     { background: $cs-sky         !important; color: $cs-ink   !important; }
-        &:active { transform: scale(0.96); filter: brightness(0.92); }
-    }
     // toggle systray — бренд-акцент
     .o_camp_kiosk_toggle button { background: $cs-gold; color: $cs-ink; border: none; }
+}
+
+// Плитки — самодостатня заливка (НЕ під descendant-селектором).
+.o_camp_kiosk_tile {
+    border: none !important;
+    color: $cs-white !important;
+    // Bootstrap-suffix із controllers/kiosk.py → бренд-кольори
+    &.btn-primary  { background: $cs-teal       !important; color: $cs-white !important; }
+    &.btn-success  { background: $cs-teal-light !important; color: $cs-white !important; }
+    &.btn-warning  { background: $cs-gold       !important; color: $cs-ink   !important; }
+    &.btn-danger   { background: $cs-red        !important; color: $cs-white !important; }
+    &.btn-info     { background: $cs-sky        !important; color: $cs-ink   !important; }
+
+    // На випадок, якщо контролер не передав color → дефолт teal-заливка
+    &:not(.btn-primary):not(.btn-success):not(.btn-warning):not(.btn-danger):not(.btn-info) {
+        background: $cs-teal !important;
+        color: $cs-white !important;
+    }
+
+    // Іконка успадковує колір тексту плитки (білий/ink) — гарантований контраст
+    .fa { color: inherit !important; }
+
+    &:active { transform: scale(0.96); filter: brightness(0.92); }
 }
