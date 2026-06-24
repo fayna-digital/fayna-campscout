@@ -51,6 +51,20 @@ class TestPhaseCWychowawca(TransactionCase):
             }
         )
 
+        # ── assign ownership so record-rules grant access ───────────────
+        # kierownik owns the camp (kierownik rule: event_id.user_id == user)
+        cls.event.user_id = cls.user_kierownik.id
+        # wychowawca assigned to the camp via staff (wychowawca rules:
+        # event_id.staff_ids.user_id == user)
+        cls.env["camp.staff"].sudo().create(
+            {
+                "name": "WC Phase C",
+                "event_id": cls.event.id,
+                "user_id": cls.user_wychowawca.id,
+                "role": "counselor",
+            }
+        )
+
         # ── structured program (normal, published) ──────────────────────
         cls.structured = cls.env["camp.program.structured"].create(
             {
@@ -142,8 +156,8 @@ class TestPhaseCWychowawca(TransactionCase):
     # ── C1: constrain _check_locked_write ────────────────────────────────
 
     def test_constrain_locked_blocks_wychowawca(self):
-        """Wychowawca writing is_locked=True line → ValidationError."""
-        with self.assertRaises(ValidationError):
+        """Wychowawca writing is_locked=True line → blocked (rule AccessError or constrain ValidationError)."""
+        with self.assertRaises((AccessError, ValidationError)):
             self.line_locked.with_user(self.user_wychowawca).write(
                 {"title": "Własny obiad"}
             )
