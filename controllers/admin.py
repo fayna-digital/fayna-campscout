@@ -465,3 +465,69 @@ class CampscoutAdmin(http.Controller):
             "impersonated_role": "parent",
         }
         return request.render("fayna_camp_portal.admin_as_parent", values)
+
+    # ------------------------------------------------------------------
+    # TRUE login-as: switch the WHOLE session to the target user, so the
+    # Organizator uses that role's real backend/portal. RODO-logged on
+    # start AND stop, no escalation (cannot impersonate admin/organizator),
+    # fully reversible via /admin/stop-impersonation.
+    # ------------------------------------------------------------------
+    @http.route("/admin/login-as", type="http", auth="user", website=True)
+    def admin_login_as(self, user_id=None, reason=None, **kw):
+        self._check_admin()
+        if request.session.get("impersonator_uid"):
+            raise UserError(_("Już trwa impersonacja — najpierw wróć do siebie."))
+        if not user_id:
+            raise UserError(_("user_id is required."))
+        try:
+            target = request.env["res.users"].sudo().browse(int(user_id)).exists()
+        except (ValueError, TypeError) as e:
+            raise UserError(_("Invalid user_id.")) from e
+        if not target:
+            raise UserError(_("User not found."))
+        if target.id == request.env.user.id:
+            raise UserError(_("Nie można impersonować samego siebie."))
+        # No privilege escalation — never become an admin / organizator.
+        if target.has_group("base.group_system") or target.has_group(ORGANIZATOR_GROUP):
+            raise UserError(_("Nie można impersonować administratora/organizatora."))
+
+        original_uid = request.env.user.id
+        self._log_access("login_as", target_user=target, reason=reason or "login-as")
+
+        # Switch session + recompute token (else Odoo invalidates next request).
+        request.session["impersonator_uid"] = original_uid
+        request.session.uid = target.id
+        request.session.login = target.login
+        request.session.session_token = target._compute_session_token(request.session.sid)
+        request.update_env(user=target.id)
+
+        dest = "/web" if target.has_group("base.group_user") else "/my"
+        return request.redirect(dest)
+
+    @http.route("/admin/stop-impersonation", type="http", auth="user", website=True)
+    def admin_stop_impersonation(self, **kw):
+        original_uid = request.session.get("impersonator_uid")
+        if not original_uid:
+            return request.redirect("/admin/dashboard")
+        orig_user = request.env["res.users"].sudo().browse(int(original_uid)).exists()
+        if not orig_user:
+            request.session.logout(keep_db=True)
+            return request.redirect("/web/login")
+
+        # Audit the stop AS the original admin (not the impersonated user).
+        request.env["camp.admin.access.log"].sudo().create(
+            {
+                "user_id": original_uid,
+                "impersonated_role": "stop",
+                "target_user_id": request.env.user.id,
+                "ip_address": request.httprequest.remote_addr or False,
+                "session_id": getattr(request.session, "sid", False) or False,
+                "reason": "stop-impersonation",
+            }
+        )
+        request.session.uid = original_uid
+        request.session.login = orig_user.login
+        request.session.session_token = orig_user._compute_session_token(request.session.sid)
+        request.session.pop("impersonator_uid", None)
+        request.update_env(user=original_uid)
+        return request.redirect("/admin/dashboard")

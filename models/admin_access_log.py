@@ -41,6 +41,8 @@ class CampAdminAccessLog(models.Model):
             ("wychowawca", _("Wychowawca")),
             ("instructor", _("Instructor")),
             ("parent", _("Parent")),
+            ("login_as", _("Login-as (full session)")),
+            ("stop", _("Stop impersonation")),
         ],
         required=True,
         readonly=True,
