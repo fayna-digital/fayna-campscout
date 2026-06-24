@@ -47,11 +47,13 @@ $kiosk-toggle-min:         44px;   // Apple HIG minimum touch target
     width: 100%;
     overflow-x: hidden;
 
-    // Safe-area padding so content never hides behind notch / home bar
-    padding-top:    max(1rem, env(safe-area-inset-top, 1rem));
-    padding-bottom: max(1.5rem, env(safe-area-inset-bottom, 1.5rem));
-    padding-left:   max(0.75rem, env(safe-area-inset-left, 0.75rem));
-    padding-right:  max(0.75rem, env(safe-area-inset-right, 0.75rem));
+    // Safe-area padding so content never hides behind notch / home bar.
+    // NB: wrap in #{"..."} so SCSS (libsass) does NOT try to evaluate the CSS
+    // max()/env() functions (it would fail compilation — "Kompilacja stylu").
+    padding-top:    #{"max(1rem, env(safe-area-inset-top, 1rem))"};
+    padding-bottom: #{"max(1.5rem, env(safe-area-inset-bottom, 1.5rem))"};
+    padding-left:   #{"max(0.75rem, env(safe-area-inset-left, 0.75rem))"};
+    padding-right:  #{"max(0.75rem, env(safe-area-inset-right, 0.75rem))"};
 
     box-sizing: border-box;
 
