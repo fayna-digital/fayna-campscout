@@ -339,6 +339,52 @@ class CampStaff(models.Model):
     )
 
     # ------------------------------------------------------------------
+    # D1-prep — ensure wychowawca system group when staff is confirmed/active
+    # ------------------------------------------------------------------
+
+    def _ensure_wychowawca_group(self, user):
+        """Grant group_camp_wychowawca to *user* if not already a member.
+
+        Called when a counselor (role='counselor') transitions to confirmed or
+        active state so the wychowawca record rules kick in immediately.
+        Pattern: recruitment.py:222 (user.sudo().write groups_id [(4, id)]).
+        """
+        if not user:
+            return
+        wychowawca_group = self.env.ref(
+            "fayna_camp_portal.group_camp_wychowawca", raise_if_not_found=False
+        )
+        if not wychowawca_group:
+            _logger.warning(
+                "[camp_operations] group_camp_wychowawca not found — "
+                "skipping _ensure_wychowawca_group for user %s",
+                user.id,
+            )
+            return
+        if wychowawca_group not in user.groups_id:
+            user.sudo().write({"groups_id": [(4, wychowawca_group.id)]})
+            _logger.info(
+                "[camp_operations] D1-prep: granted group_camp_wychowawca to user %s (%s)",
+                user.id,
+                user.name,
+            )
+
+    def write(self, vals):
+        """Hook: grant wychowawca group when a counselor becomes confirmed/active."""
+        res = super().write(vals)
+        if "state" in vals and vals["state"] in ("confirmed", "active"):
+            for staff in self:
+                if staff.role == "counselor" and staff.user_id:
+                    try:
+                        staff._ensure_wychowawca_group(staff.user_id)
+                    except Exception:  # noqa: BLE001 — never block staff state change
+                        _logger.exception(
+                            "[camp_operations] _ensure_wychowawca_group failed for staff %s",
+                            staff.id,
+                        )
+        return res
+
+    # ------------------------------------------------------------------
     # 7-year retention cron (PL law)
     # ------------------------------------------------------------------
 

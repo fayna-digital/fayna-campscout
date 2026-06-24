@@ -320,6 +320,92 @@ class CampGroup(models.Model):
             "context": {"default_event_id": self.event_id.id},
         }
 
+    # ------------------------------------------------------------------
+    # D1 — round-robin assignment of wychowawcy to groups
+    # ------------------------------------------------------------------
+
+    @api.model
+    def action_assign_wychowawcy(self, event):
+        """Assign confirmed/active counselors to shift groups via round-robin.
+
+        Idempotent: clears wychowawca_ids on all event groups before
+        reassigning. Does NOT touch group_id on participants.
+
+        :param event: event.event record or id of the camp shift.
+        :return: number of assignments made (int).
+        """
+        if isinstance(event, int):
+            event = self.env["event.event"].browse(event)
+        event.ensure_one()
+
+        # Confirmed/active counselors with a linked system user.
+        counselors = (
+            self.env["camp.staff"]
+            .search(
+                [
+                    ("event_id", "=", event.id),
+                    ("role", "=", "counselor"),
+                    ("state", "in", ("confirmed", "active")),
+                    ("user_id", "!=", False),
+                ]
+            )
+            .mapped("user_id")
+        )
+        groups = self.search([("event_id", "=", event.id)], order="sequence, id")
+
+        # Clear existing wychowawca assignments (idempotency).
+        groups.write({"wychowawca_ids": [(5,)]})
+
+        if not counselors or not groups:
+            return 0
+
+        counselors_list = list(counselors)
+        n = len(counselors_list)
+        assignments = 0
+        for idx, group in enumerate(groups):
+            counselor = counselors_list[idx % n]
+            group.write({"wychowawca_ids": [(4, counselor.id)]})
+            assignments += 1
+
+        _logger.info(
+            "[camp_group] D1: assigned %d counselor(s) to %d group(s) in event %s",
+            n,
+            len(groups),
+            event.id,
+        )
+        return assignments
+
+    def action_assign_wychowawcy_event(self):
+        """Form button — assign wychowawcy round-robin for this group's shift."""
+        self.ensure_one()
+        self.action_assign_wychowawcy(self.event_id)
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Groups — %(event)s", event=self.event_id.display_name),
+            "res_model": "camp.group",
+            "view_mode": "tree,form,kanban",
+            "domain": [("event_id", "=", self.event_id.id)],
+            "context": {"default_event_id": self.event_id.id},
+        }
+
+    # ------------------------------------------------------------------
+    # D3 — combined «Сформувати групи + розкидати виховників» glue button
+    # ------------------------------------------------------------------
+
+    def action_form_groups_and_assign_wychowawcy(self):
+        """D3 glue: run age-based auto-split then assign wychowawcy round-robin."""
+        self.ensure_one()
+        self.action_auto_split(self.event_id)
+        self.action_assign_wychowawcy(self.event_id)
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Groups — %(event)s", event=self.event_id.display_name),
+            "res_model": "camp.group",
+            "view_mode": "tree,form,kanban",
+            "domain": [("event_id", "=", self.event_id.id)],
+            "context": {"default_event_id": self.event_id.id},
+        }
+
 
 class CampParticipant(models.Model):
     """Adds the wychowawca-group link to the participant (§2 vertical slice)."""
@@ -371,8 +457,143 @@ class CampParticipant(models.Model):
         ),
     )
 
+    # D2 — reserve list (no compatible group with a free slot)
+    is_reserve = fields.Boolean(
+        string=_("Reserve list"),
+        default=False,
+        tracking=True,
+        index=True,
+        help=_(
+            "D2: set to True when the child was registered but no compatible "
+            "wychowawca group had a free slot (camp is full). The child stays "
+            "on the reserve list until a cancellation frees a spot; the system "
+            "promotes the earliest-registered reserve child automatically."
+        ),
+    )
+
     @api.constrains("group_id", "birth_date", "has_disability")
     def _check_group_composition(self):
         # Writing group_id on the participant does not fire camp.group's own
         # constrains — re-validate the affected groups here.
         self.group_id._validate_composition()
+
+
+class EventEventCampGroup(models.Model):
+    """D2 — auto-assign participant to a wychowawca group on registration.
+
+    Extends event.event with the logic that places a newly-registered child
+    into the least-occupied compatible wychowawca group, or marks the child
+    as reserve when the camp is full (ADR §D2, rішення A).
+    """
+
+    _inherit = "event.event"
+
+    def _auto_assign_participant_to_group(self, registration):
+        """Assign *registration.participant_id* to a compatible wychowawca group.
+
+        Compatibility rules (art. 92c, ADR §D2):
+          * child under 10 → groups where has_under_10=True OR empty groups
+            (capacity limit 15). NEVER assigned to a full-sized (20-slot) group
+            that already has ≥10-year-olds.
+          * child ≥ 10 → groups where has_under_10=False, capacity limit 20.
+          * «compatible» = fits legal limit + disabled limit still OK.
+          * Among compatible groups → least occupied (minimum participant_count).
+          * If no slot available → is_reserve=True, group_id stays empty, log.
+
+        :param registration: event.registration record.
+        """
+        self.ensure_one()
+        participant = registration.participant_id
+        if not participant:
+            return
+        # Already in a group or no birth_date → skip.
+        if participant.group_id or not participant.birth_date:
+            return
+
+        start = self.date_begin.date() if self.date_begin else fields.Date.context_today(self)
+        age = relativedelta(start, participant.birth_date).years
+        is_young = age < UNDER_10_AGE
+
+        groups = self.env["camp.group"].search(
+            [("event_id", "=", self.id)],
+            order="participant_count asc, sequence asc, id asc",
+        )
+
+        best_group = None
+        for group in groups:
+            count = group.participant_count
+            limit = group.capacity_limit  # 15 if has_under_10 else 20
+            if count >= limit:
+                continue  # full
+            # art.92c hard rule: <10 child NEVER into a ≥20-slot group with older kids.
+            if is_young and not group.has_under_10 and count > 0:
+                # Group has ≥10-year-olds (not has_under_10, non-empty) → skip.
+                continue
+            # Disability limit check (best-effort; hard constraint re-validates on write).
+            if participant.has_disability and group.disabled_count >= GROUP_LIMIT_DISABLED:
+                continue
+            best_group = group
+            break  # groups already sorted by participant_count asc → first fit = least occupied
+
+        if best_group:
+            participant.write({"group_id": best_group.id, "is_reserve": False})
+            _logger.info(
+                "[camp_group] D2: participant %s → group %s (event %s)",
+                participant.id,
+                best_group.id,
+                self.id,
+            )
+        else:
+            participant.write({"is_reserve": True})
+            _logger.info(
+                "[camp_group] D2: participant %s → reserve list (event %s full)",
+                participant.id,
+                self.id,
+            )
+
+    def _promote_from_reserve(self):
+        """Promote the earliest-registered reserve child when a slot opens.
+
+        Called after a registration cancellation or unlink frees capacity.
+        Finds the oldest-registered (earliest create_date) reserve participant
+        for THIS event that can fit into a now-available compatible group.
+        """
+        self.ensure_one()
+        start = self.date_begin.date() if self.date_begin else fields.Date.context_today(self)
+
+        reserve_regs = self.env["event.registration"].search(
+            [
+                ("event_id", "=", self.id),
+                ("state", "!=", "cancel"),
+                ("participant_id.is_reserve", "=", True),
+            ],
+            order="create_date asc",
+        )
+        for reg in reserve_regs:
+            participant = reg.participant_id
+            if not participant or not participant.birth_date:
+                continue
+            age = relativedelta(start, participant.birth_date).years
+            is_young = age < UNDER_10_AGE
+
+            groups = self.env["camp.group"].search(
+                [("event_id", "=", self.id)],
+                order="participant_count asc, sequence asc, id asc",
+            )
+            for group in groups:
+                count = group.participant_count
+                limit = group.capacity_limit
+                if count >= limit:
+                    continue
+                if is_young and not group.has_under_10 and count > 0:
+                    continue
+                if participant.has_disability and group.disabled_count >= GROUP_LIMIT_DISABLED:
+                    continue
+                participant.write({"group_id": group.id, "is_reserve": False})
+                _logger.info(
+                    "[camp_group] D2 promote: participant %s reserve→group %s (event %s)",
+                    participant.id,
+                    group.id,
+                    self.id,
+                )
+                return  # promote one at a time (next cancel will fire again)

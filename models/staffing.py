@@ -491,6 +491,16 @@ class EventRegistrationStaffing(models.Model):
                 "[camp_staffing] Vacancy sync failed after registration create %s",
                 registrations.ids,
             )
+        # D2 — auto-assign each new participant to a wychowawca group (or reserve).
+        for reg in registrations:
+            try:
+                if reg.event_id and hasattr(reg.event_id, "_auto_assign_participant_to_group"):
+                    reg.event_id._auto_assign_participant_to_group(reg)
+            except Exception:  # noqa: BLE001 — never block a sale/registration on group split
+                _logger.exception(
+                    "[camp_staffing] D2 auto-assign failed after registration create %s",
+                    reg.id,
+                )
         return registrations
 
     def write(self, vals):
@@ -502,5 +512,31 @@ class EventRegistrationStaffing(models.Model):
                 _logger.exception(
                     "[camp_staffing] Vacancy sync failed after registration write %s",
                     self.ids,
+                )
+        # D2 — on cancellation promote earliest reserve participant.
+        if vals.get("state") == "cancel":
+            for reg in self:
+                try:
+                    if reg.event_id and hasattr(reg.event_id, "_promote_from_reserve"):
+                        reg.event_id._promote_from_reserve()
+                except Exception:  # noqa: BLE001 — never block a registration cancel on promotion
+                    _logger.exception(
+                        "[camp_staffing] D2 reserve-promote failed after registration cancel %s",
+                        reg.id,
+                    )
+        return res
+
+    def unlink(self):
+        """D2 — promote reserve child when a registration is deleted."""
+        events = self.mapped("event_id")
+        res = super().unlink()
+        for event in events:
+            try:
+                if hasattr(event, "_promote_from_reserve"):
+                    event._promote_from_reserve()
+            except Exception:  # noqa: BLE001 — never block unlink on promotion
+                _logger.exception(
+                    "[camp_staffing] D2 reserve-promote failed after registration unlink, event %s",
+                    event.id,
                 )
         return res

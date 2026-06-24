@@ -8,6 +8,7 @@ from . import (
     test_karta_2026,
     test_karta_pdf,  # noqa: E402,F401
     test_phase_c_wychowawca,  # noqa: E402,F401
+    test_phase_d_split,  # noqa: E402,F401
     test_portal_camp_day,  # noqa: E402,F401
     test_program_skeleton,  # noqa: E402,F401
     test_registration_seats,  # noqa: E402,F401
