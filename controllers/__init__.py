@@ -1,1 +1,1 @@
-from . import admin, api, portal, escort_portal, recruitment_portal
+from . import admin, api, kiosk, portal, escort_portal, recruitment_portal

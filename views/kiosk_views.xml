@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Kiosk shell per role (TZ §4 — КІОСК vs повний Odoo).
+    Roles: group_camp_kierownik / group_camp_wychowawca / group_camp_instructor.
+
+    ir.actions.client → tag "camp_kiosk" → OWL root CampKiosk
+    (static/src/js/kiosk_app.js).
+
+    Home action is set per-group via res.users._get_login_action override
+    in models/res_users_inherit.py (same pattern as group_camp_organizator
+    already in place).
+
+    Toggle "↔ Odoo" systray (kiosk_odoo_toggle_systray.js) visible only
+    to base.group_system | group_camp_organizator.
+-->
+<odoo>
+    <data>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             Client action — OWL root CampKiosk.
+             target=fullscreen hides the navbar (same as manufacturing kiosk).
+             tag must match registry.category("actions").add(tag, Component)
+             in kiosk_app.js.
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <record id="camp_kiosk_action" model="ir.actions.client">
+            <field name="name">Kiosk CampScout</field>
+            <field name="tag">camp_kiosk</field>
+            <field name="target">fullscreen</field>
+        </record>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             Kiosk menu entry — visible to kiosk roles only.
+             Organizator has group_system → already hidden from this tile
+             via menu_scoping; kierownik/wychowawca/instructor see it.
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <menuitem id="menu_camp_kiosk_root"
+            name="Kiosk"
+            action="camp_kiosk_action"
+            sequence="1"
+            groups="fayna_camp_portal.group_camp_kierownik,fayna_camp_portal.group_camp_wychowawca,fayna_camp_portal.group_camp_instructor"/>
+
+    </data>
+</odoo>
