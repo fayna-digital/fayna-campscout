@@ -66,8 +66,12 @@ orders = SO.search(
 )
 print(f"SO з даними дитини (bs_child_name): {len(orders)}")
 
-created = skipped_done = no_reg = errors = 0
+created = skipped_done = no_reg = errors = skipped_2025 = 0
 report = []
+
+# Scope нового модуля = сезон 2026+ (торішні табори = архів, не мігруємо).
+# Критерій = дата ТАБОРУ (event), не замовлення: SO 2025 на табір 2026 — в scope.
+SEASON_CUTOFF = date(2026, 1, 1)
 
 for so in orders:
     # реєстрація цього замовлення (event_sale зв'язує через sale_order_id)
@@ -80,6 +84,16 @@ for so in orders:
     for reg in regs:
         if reg.participant_id:
             skipped_done += 1
+            continue
+
+        # Scope 2026: торішні табори (event до 2026) — архів, у новий модуль НЕ йдуть.
+        ev = reg.event_id
+        if ev and ev.date_begin and ev.date_begin.date() < SEASON_CUTOFF:
+            skipped_2025 += 1
+            report.append(
+                f"SKIP-2025 SO {so.name}: '{so.bs_child_name}' — "
+                f"табір {ev.name} ({ev.date_begin.date()}) поза scope 2026"
+            )
             continue
 
         # ПІБ: останнє слово = прізвище (польська конвенція 'Imię Nazwisko')
@@ -158,6 +172,7 @@ for so in orders:
 print("\n".join(report[:60]))
 print(
     f"\nПІДСУМОК: created={created} skipped(вже є)={skipped_done} "
+    f"skipped(2025 поза scope)={skipped_2025} "
     f"no_reg={no_reg} errors={errors} | DRY_RUN={DRY_RUN}"
 )
 if not DRY_RUN:
