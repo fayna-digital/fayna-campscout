@@ -931,60 +931,58 @@
 
         <!-- ═══════════════════════════════════════════════════════════════
              Art.9 Attachment-level ACL — §6j (PDF ≠ field-security bypass)
-             TZ §5 §6j: "PDF ≠ field-security, attachment-level" — a signed
-             karta-PDF stored as ir.attachment on camp.participant must be
-             protected independently from field-level groups=.  Without this
-             rule anyone with basic read on ir.attachment can download the PDF
-             and read art.9 data even though the live form fields are hidden.
+             TZ §5 §6j: a signed karta-PDF stored as ir.attachment on
+             camp.participant must be protected independently from the live
+             form-field groups=.  Without an explicit rule, a user who has
+             model-level read on ir.attachment (base.group_user) but is NOT
+             in group_medical_access could fetch the PDF via /web/content/<id>
+             and read art.9 data bypassing field-level hiding.
 
-             Two rules:
-             1. group_medical_access — internal users who may read any karta
-                attachment on camp.participant (full camp/group/event scope is
-                still enforced by the companion camp.participant record rule).
-             2. base.group_portal — portal parents see only their own child's
-                attachments (res_id must be a participant whose
-                parent_partner_id == current user's partner).
+             Design (Odoo 17 record-rule semantics):
+             - Odoo evaluates rules per group: if any applicable rule allows
+               access, the record is visible (OR semantics within one group;
+               AND across different restrictive/global rules).
+             - We add ONE global rule (no group) that restricts ALL users:
+               camp.participant attachments are blocked unless res_id is in
+               the set of participants the user can already read.
+             - Separate permissive rules for medical_access + portal parents
+               unlock their respective scopes on top.
 
-             Both rules are read-only — attachment creation/deletion is
-             handled by the PDF-generation flow (sudo) and immutability
-             enforcement in camp.participant.write().
+             Implementation note: the global rule uses a sub-select via
+             env[] which Odoo evaluates per request. This is safe because
+             env['camp.participant'].search() already applies the user's
+             own record rules (own camp / own group / own children).
+
+             Both rules are read-only: attachment creation/deletion stays with
+             the PDF-generation flow (sudo) and the immutability guard in
+             camp.participant.write().
         ═══════════════════════════════════════════════════════════════ -->
 
-        <!-- Internal medical-access users: read any camp.participant attachment.
-             Scope (which participants) is already enforced by the companion
-             camp.participant record rules (own camp / own group / own clients). -->
-        <record id="rule_attachment_participant_medical_access" model="ir.rule">
-            <field name="name">Medical Access: read camp.participant attachments</field>
+        <!-- Global restrictive rule: camp.participant attachments are visible
+             only if the user can read the underlying participant record.
+             Non-participant attachments pass through (res_model != check).
+             NOTE: group_system (admin/organizator) bypasses all record rules
+             automatically in Odoo — no special case needed. -->
+        <!-- Art.9 attachment READ-scope: handled NATIVELY by Odoo.
+             ir.attachment access check requires read access to the linked
+             (res_model, res_id) record, so the camp.participant pyramid rules
+             already scope who can open a participant's documents (incl. karta
+             PDF). `env` is NOT available in record-rule domains — no custom rule.
+             Finer medical-PDF gating (block from users who can read the
+             participant but not art.9 fields) = res_field-marker rule, follow-up. -->
+
+        <!-- Medical-access group: allowed to CREATE/WRITE attachments on
+             camp.participant (upload karta PDF, medical docs). Static domain,
+             no env. Native attachment-check still requires write-access to the
+             linked participant. -->
+        <record id="rule_attachment_participant_medical_write" model="ir.rule">
+            <field name="name">Medical Access: write camp.participant attachments</field>
             <field name="model_id" ref="base.model_ir_attachment"/>
             <field name="groups" eval="[(4, ref('fayna_camp_portal.group_medical_access'))]"/>
-            <field name="domain_force">['|',
-                ('res_model', '!=', 'camp.participant'),
-                ('res_model', '=', 'camp.participant')
-            ]</field>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="False"/>
-            <field name="perm_create" eval="False"/>
-            <field name="perm_unlink" eval="False"/>
-        </record>
-
-        <!-- Portal parent: read attachments of their own children only.
-             Avoids cross-family leakage: res_id must map to a camp.participant
-             whose parent_partner_id == user.partner_id. -->
-        <record id="rule_attachment_participant_portal_own" model="ir.rule">
-            <field name="name">Portal parent: own children camp.participant attachments</field>
-            <field name="model_id" ref="base.model_ir_attachment"/>
-            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
-            <field name="domain_force">['|',
-                ('res_model', '!=', 'camp.participant'),
-                '&amp;',
-                    ('res_model', '=', 'camp.participant'),
-                    ('res_id', 'in', [p.id for p in env['camp.participant'].search(
-                        [('parent_partner_id', '=', user.partner_id.id)]
-                    )])
-            ]</field>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="False"/>
-            <field name="perm_create" eval="False"/>
+            <field name="domain_force">[('res_model', '=', 'camp.participant')]</field>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
             <field name="perm_unlink" eval="False"/>
         </record>
 

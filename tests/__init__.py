@@ -1,4 +1,5 @@
 from . import (
+    test_art9_access,  # noqa: E402,F401
     test_budget,  # noqa: E402,F401
     test_camp_group,
     test_campscout,
