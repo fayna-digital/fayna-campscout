@@ -255,6 +255,116 @@ class CampEvent(models.Model):
             "context": {"default_event_id": self.id},
         }
 
+    # --- Approval workflow (ADR-13, TZ §6) ----------------------------------
+    # State lives on native event.event — no mirror model.
+
+    camp_approval_state = fields.Selection(
+        selection=[
+            ("draft", "Чернетка"),
+            ("pending_approval", "На погодженні"),
+            ("approved", "Погоджено"),
+            ("rejected", "Відхилено"),
+        ],
+        string="Стан погодження",
+        default="draft",
+        tracking=True,
+        copy=False,
+        index=True,
+        help=_(
+            "Lifecycle approval state for this camp shift. "
+            "draft → pending_approval (kierownik submits) → approved/rejected (organizator)."
+        ),
+    )
+    approved_by_id = fields.Many2one(
+        "res.users",
+        string="Погоджено користувачем",
+        readonly=True,
+        copy=False,
+        tracking=True,
+    )
+    approved_date = fields.Datetime(
+        string="Дата погодження",
+        readonly=True,
+        copy=False,
+    )
+    rejection_reason = fields.Text(
+        string="Причина відхилення",
+        copy=False,
+        help=_("Mandatory when rejecting a pending camp shift."),
+    )
+
+    def action_submit_for_approval(self):
+        """Kierownik submits the shift to organizator for approval.
+        Event stays unpublished (website_published=False, sale_ok=False on ticket).
+        """
+        self.ensure_one()
+        if self.camp_approval_state != "draft":
+            raise UserError(
+                _("Тільки чернетку можна надіслати на погодження (поточний стан: %s).")
+                % self.camp_approval_state
+            )
+        self.write({"camp_approval_state": "pending_approval"})
+        self.message_post(
+            body=_("Табір надіслано на погодження організатора."),
+            message_type="notification",
+            subtype_xmlid="mail.mt_note",
+        )
+
+    def action_approve(self):
+        """Organizator approves the shift → publish event + ticket products."""
+        self.ensure_one()
+        if not self.env.user.has_group("fayna_camp_portal.group_camp_organizator"):
+            raise UserError(_("Тільки Organizator може погоджувати табори."))
+        if self.camp_approval_state == "approved":
+            raise UserError(_("Цей табір вже погоджено."))
+        if self.camp_approval_state != "pending_approval":
+            raise UserError(
+                _("Погодити можна лише табір зі статусом «На погодженні» (поточний: %s).")
+                % self.camp_approval_state
+            )
+        self.write(
+            {
+                "camp_approval_state": "approved",
+                "approved_by_id": self.env.uid,
+                "approved_date": fields.Datetime.now(),
+                "website_published": True,
+            }
+        )
+        # Publish linked camp program product if set (website_sale)
+        if self.camp_program_id:
+            self.camp_program_id.sudo().write({"website_published": True, "sale_ok": True})
+        self.message_post(
+            body=_("Табір погоджено та опубліковано організатором %s.") % self.env.user.name,
+            message_type="notification",
+            subtype_xmlid="mail.mt_note",
+        )
+
+    def action_reject(self):
+        """Organizator rejects the shift. rejection_reason must be filled."""
+        self.ensure_one()
+        if not self.env.user.has_group("fayna_camp_portal.group_camp_organizator"):
+            raise UserError(_("Тільки Organizator може відхиляти табори."))
+        if self.camp_approval_state not in ("pending_approval", "approved"):
+            raise UserError(
+                _("Відхилити можна лише табір зі статусом «На погодженні» або «Погоджено».")
+            )
+        if not self.rejection_reason:
+            raise UserError(_("Вкажіть причину відхилення перед збереженням."))
+        self.write(
+            {
+                "camp_approval_state": "rejected",
+                "website_published": False,
+            }
+        )
+        # Unpublish linked camp program product if set
+        if self.camp_program_id:
+            self.camp_program_id.sudo().write({"website_published": False})
+        self.message_post(
+            body=_("Табір відхилено: %s") % self.rejection_reason,
+            message_type="notification",
+            subtype_xmlid="mail.mt_note",
+        )
+
     # --- Kuratorium notifications -------------------------------------------
 
     kuratorium_notification_ids = fields.One2many(

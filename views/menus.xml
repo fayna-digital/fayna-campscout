@@ -41,6 +41,13 @@
             action="event.action_event_view"
             sequence="10"/>
 
+        <menuitem id="menu_camp_pending_approval"
+            name="Na pogodzenniu (do zatwierdzenia)"
+            parent="menu_camp_management"
+            action="action_events_pending_approval"
+            sequence="11"
+            groups="fayna_camp_portal.group_camp_organizator,fayna_camp_portal.group_fayna_camp_manager"/>
+
         <menuitem id="menu_camp_products"
             name="Oferta / Produkty"
             parent="menu_camp_management"

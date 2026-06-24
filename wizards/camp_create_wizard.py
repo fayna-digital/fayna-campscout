@@ -265,12 +265,16 @@ class CampCreateWizard(models.TransientModel):
         self.ensure_one()
 
         # 1. event.event — the camp shift itself (R11: tickets = capacity layer).
+        #    §6 ADR-13: created immediately as unpublished + pending_approval.
+        #    website_published=False → not on website until organizator approves.
         event_vals = {
             "name": self.name,
             "date_begin": self.date_begin,
             "date_end": self.date_end,
             "seats_limited": True,
             "seats_max": self.seats,
+            "website_published": False,
+            "camp_approval_state": "pending_approval",
         }
         venue = self._get_or_create_venue()
         if venue:
@@ -278,6 +282,8 @@ class CampCreateWizard(models.TransientModel):
         event = self.env["event.event"].create(event_vals)
 
         # 2. Ticket «Udział w obozie» (event_sale layer, native table).
+        #    Event is website_published=False → ticket not visible/buyable on site
+        #    until organizator approves (action_approve sets website_published=True).
         product = self._get_or_create_event_product()
         self.env["event.event.ticket"].create(
             {
