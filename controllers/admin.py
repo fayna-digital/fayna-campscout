@@ -504,6 +504,19 @@ class CampscoutAdmin(http.Controller):
         dest = "/web" if target.has_group("base.group_user") else "/my"
         return request.redirect(dest)
 
+    @http.route("/admin/impersonation-status", type="json", auth="user")
+    def admin_impersonation_status(self):
+        """JSON: чи поточна сесія в режимі імперсонації (для systray/банера)."""
+        imp = request.session.get("impersonator_uid")
+        if not imp:
+            return {"impersonating": False}
+        admin = request.env["res.users"].sudo().browse(int(imp)).exists()
+        return {
+            "impersonating": True,
+            "admin_name": admin.name if admin else "",
+            "current_name": request.env.user.name,
+        }
+
     @http.route("/admin/stop-impersonation", type="http", auth="user", website=True)
     def admin_stop_impersonation(self, **kw):
         original_uid = request.session.get("impersonator_uid")
