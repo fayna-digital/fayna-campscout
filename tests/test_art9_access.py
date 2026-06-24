@@ -139,13 +139,13 @@ class TestArt9Access(TransactionCase):
             "name": "Wychowawca Art9",
             "event_id": cls.event.id,
             "user_id": cls.user_wychowawca.id,
-            "role": "wychowawca",
+            "role": "counselor",
         })
         cls.env["camp.staff"].sudo().create({
             "name": "Wychowawca2 Art9",
             "event_id": cls.event.id,
             "user_id": cls.user_wychowawca2.id,
-            "role": "wychowawca",
+            "role": "counselor",
         })
         cls.env["camp.staff"].sudo().create({
             "name": "Medic Art9",
