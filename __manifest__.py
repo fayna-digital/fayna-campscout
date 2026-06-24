@@ -46,6 +46,7 @@ License: LGPL-3
     "depends": [
         "base",
         "mail",
+        "contacts",
         "portal",
         "website",
         "sale",
@@ -86,6 +87,7 @@ License: LGPL-3
         "views/stories_views.xml",
         "views/admin_views.xml",
         "views/menus.xml",
+        "views/menu_scoping.xml",
         "views/transport_views.xml",
         "views/camp_escort_views.xml",
         "views/staff_sms_views.xml",

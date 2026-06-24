@@ -56,9 +56,20 @@
     </xpath>
 </template>
 
+<!-- Role-aware cabinet title (G1/G0, TZ §G 2026-06-24): the «Кабінет батьків»
+     heading must reflect WHO is logged in. A wychowawca/kierownik/instructor
+     landing on a portal page must not read «Кабінет батьків». We branch on the
+     user's CampScout role groups; parent (portal-only) keeps the default. -->
 <template id="portal_layout_title_campscout" inherit_id="portal.portal_layout" priority="25">
     <xpath expr="//div[hasclass('wrapper')]/h3[hasclass('my-3')]" position="replace">
-        <h3 class="my-3">Кабінет батьків</h3>
+        <h3 class="my-3">
+            <t t-if="user_id.has_group('fayna_camp_portal.group_camp_organizator')">Кабінет організатора</t>
+            <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_kierownik')">Кабінет керівника табору</t>
+            <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_wychowawca')">Кабінет виховника</t>
+            <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_instructor')">Кабінет інструктора</t>
+            <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_finance')">Кабінет бухгалтера</t>
+            <t t-else="">Кабінет батьків</t>
+        </h3>
     </xpath>
 </template>
 
@@ -351,7 +362,13 @@
     <xpath expr="//li[hasclass('breadcrumb-item') and hasclass('ms-1')]" position="replace">
         <li class="breadcrumb-item ms-1">
             <a href="/my/home" class="cs-crumb-home">
-                <i class="fa fa-home me-1"/>Кабінет батьків
+                <i class="fa fa-home me-1"/>
+                <t t-if="user_id.has_group('fayna_camp_portal.group_camp_organizator')">Кабінет організатора</t>
+                <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_kierownik')">Кабінет керівника табору</t>
+                <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_wychowawca')">Кабінет виховника</t>
+                <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_instructor')">Кабінет інструктора</t>
+                <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_finance')">Кабінет бухгалтера</t>
+                <t t-else="">Кабінет батьків</t>
             </a>
         </li>
     </xpath>

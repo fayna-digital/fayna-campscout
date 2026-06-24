@@ -565,8 +565,37 @@ class CampscoutAdmin(http.Controller):
         request.session.session_token = target._compute_session_token(request.session.sid)
         request.update_env(user=target.id)
 
-        dest = "/web" if target.has_group("base.group_user") else "/my"
-        return request.redirect(dest)
+        return request.redirect(self._login_as_landing(target))
+
+    def _login_as_landing(self, target):
+        """Choose the landing URL for a freshly-impersonated user.
+
+        G1 (TZ §G, 2026-06-24): operational internal roles
+        (kierownik/wychowawca/instructor and any other camp role that is a
+        base.group_user) must NOT land in the raw Odoo apps-grid (/web). They
+        land directly inside the «Portal CampScout» root menu so the cabinet
+        is the first thing they see — not a wall of Sales/Website/Employees
+        apps. Portal-only parents keep landing on /my.
+
+        We deep-link via /web#menu_id=<root> (the Odoo 17 web client reads the
+        menu_id from the URL fragment and opens that application directly
+        instead of the apps grid), and fall back to plain /web only if the menu
+        record cannot be resolved (e.g. module half-installed).
+        """
+        if not target.has_group("base.group_user"):
+            # Portal-only (parent) — their cabinet is /my.
+            return "/my"
+        try:
+            root_menu = request.env.ref(
+                "fayna_camp_portal.menu_campscout_root", raise_if_not_found=False
+            )
+        except (ValueError, KeyError):
+            root_menu = None
+        if root_menu:
+            # Odoo 17 web client reads the menu_id from the URL fragment and
+            # opens that application's menu directly instead of the apps grid.
+            return "/web#menu_id=%s" % root_menu.id
+        return "/web"
 
     @http.route("/admin/impersonation-status", type="json", auth="user")
     def admin_impersonation_status(self):
