@@ -176,6 +176,22 @@
             </field>
         </record>
 
+        <!-- 📋 Candidate — applicant for a wychowawca/instructor position.
+             Implied: base.group_portal (NOT group_user — no backend access).
+             Can see own staff record (draft), upload own certs, track own application.
+             §13 RSPTS gate stays intact: candidate cannot confirm own camp.staff. -->
+        <record id="group_camp_candidate" model="res.groups">
+            <field name="name">Camp Candidate (Applicant)</field>
+            <field name="category_id" ref="module_category_fayna_camp_portal"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="comment">
+                Portal-only group for wychowawca/instructor applicants. Sees own
+                camp.staff (draft) + own camp.staff.cert + own application via
+                record rules. No access to camp.participant (children) whatsoever.
+                §13 RSPTS gate (operations.py:217) blocks any confirmation attempt.
+            </field>
+        </record>
+
         <!-- 🎯 Instructor — activity specialist -->
         <record id="group_camp_instructor" model="res.groups">
             <field name="name">Camp Instructor (Activity Specialist)</field>

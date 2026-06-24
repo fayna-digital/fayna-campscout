@@ -69,3 +69,7 @@ from . import staffing  # noqa: E402,I001
 
 # camp.escort — Indywidualna asysta/konwój, міграція супроводу (TZ 2026-06-23 §5).
 from . import camp_escort  # noqa: E402,I001
+
+# Фаза B — рекрутація + онбординг виховника (ADR 09-ADR-FAZA-B-build.md).
+# camp.staff.application: new→reviewing→accepted→rejected + _ensure_portal_user.
+from . import recruitment  # noqa: E402,I001

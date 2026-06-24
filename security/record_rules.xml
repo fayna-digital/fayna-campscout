@@ -850,5 +850,71 @@
             <field name="perm_unlink" eval="False"/>
         </record>
 
+        <!-- ══════════════════════════════════════════════════════════════
+             Фаза B — Кандидат (group_camp_candidate)
+             ADR: 09-ADR-FAZA-B-build.md §B3
+        ══════════════════════════════════════════════════════════════ -->
+
+        <!-- Candidate: sees + edits own camp.staff (draft only, by user_id). -->
+        <record id="rule_staff_candidate_own" model="ir.rule">
+            <field name="name">Candidate: R+W on own camp.staff</field>
+            <field name="model_id" ref="model_camp_staff"/>
+            <field name="groups" eval="[(4, ref('group_camp_candidate'))]"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Candidate: R+W+C on own camp.staff.cert (upload docs). -->
+        <record id="rule_staff_cert_candidate_own" model="ir.rule">
+            <field name="name">Candidate: R+W+C on own camp.staff.cert</field>
+            <field name="model_id" ref="model_camp_staff_cert"/>
+            <field name="groups" eval="[(4, ref('group_camp_candidate'))]"/>
+            <field name="domain_force">[('staff_id.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Candidate: read-only on own application (track status). -->
+        <record id="rule_application_candidate_own" model="ir.rule">
+            <field name="name">Candidate: R on own camp.staff.application</field>
+            <field name="model_id" ref="model_camp_staff_application"/>
+            <field name="groups" eval="[(4, ref('group_camp_candidate'))]"/>
+            <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Organizator: sees ALL applications (bypass by group_system implied,
+             kept explicit for clarity — ADR risk#5). -->
+        <record id="rule_application_organizator_all" model="ir.rule">
+            <field name="name">Organizator: all camp.staff.application</field>
+            <field name="model_id" ref="model_camp_staff_application"/>
+            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- Kierownik: sees applications for own-event vacancies only. -->
+        <record id="rule_application_kierownik_own_event" model="ir.rule">
+            <field name="name">Kierownik: camp.staff.application for own event</field>
+            <field name="model_id" ref="model_camp_staff_application"/>
+            <field name="groups" eval="[(4, ref('group_camp_kierownik'))]"/>
+            <field name="domain_force">[('event_id.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
     </data>
 </odoo>

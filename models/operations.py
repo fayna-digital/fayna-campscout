@@ -285,6 +285,60 @@ class CampStaff(models.Model):
     )
 
     # ------------------------------------------------------------------
+    # Фаза B — Self-onboarding PII fields (groups-gated, RODO)
+    # ADR: 09-ADR-FAZA-B-build.md §B4
+    # ------------------------------------------------------------------
+
+    pesel = fields.Char(
+        string=_("PESEL"),
+        groups=(
+            "fayna_camp_portal.group_camp_organizator,"
+            "fayna_camp_portal.group_camp_admin,"
+            "fayna_camp_portal.group_camp_hr"
+        ),
+        help=_(
+            "Polish national ID number (PESEL) — RODO art.6/art.9 PII data. "
+            "Visible only to HR / Admin / Organizator."
+        ),
+    )
+    photo = fields.Image(
+        string=_("Zdjęcie"),
+        max_width=256,
+        max_height=256,
+        groups=(
+            "fayna_camp_portal.group_camp_organizator,"
+            "fayna_camp_portal.group_camp_admin,"
+            "fayna_camp_portal.group_camp_hr,"
+            "fayna_camp_portal.group_camp_candidate"
+        ),
+        help=_("Candidate / staff photo for ID card."),
+    )
+    cv_attachment = fields.Binary(
+        attachment=True,
+        string=_("CV"),
+        groups=(
+            "fayna_camp_portal.group_camp_organizator,"
+            "fayna_camp_portal.group_camp_admin,"
+            "fayna_camp_portal.group_camp_hr,"
+            "fayna_camp_portal.group_camp_candidate"
+        ),
+        help=_("Curriculum Vitae uploaded by the candidate."),
+    )
+    id_document_attachment = fields.Binary(
+        attachment=True,
+        string=_("Dowód tożsamości"),
+        groups=(
+            "fayna_camp_portal.group_camp_organizator,"
+            "fayna_camp_portal.group_camp_admin,"
+            "fayna_camp_portal.group_camp_hr"
+        ),
+        help=_(
+            "Scan of identity document (dowód/paszport) — RODO art.6 PII. "
+            "Visible only to HR / Admin / Organizator."
+        ),
+    )
+
+    # ------------------------------------------------------------------
     # 7-year retention cron (PL law)
     # ------------------------------------------------------------------
 

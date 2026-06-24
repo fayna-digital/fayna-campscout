@@ -216,5 +216,12 @@ access_camp_staff_vacancy_kierownik,camp.staff.vacancy kierownik,model_camp_staf
 access_camp_staff_vacancy_organizator,camp.staff.vacancy organizator,model_camp_staff_vacancy,fayna_camp_portal.group_camp_organizator,1,1,1,1
 access_camp_staff_vacancy_admin,camp.staff.vacancy admin,model_camp_staff_vacancy,fayna_camp_portal.group_camp_admin,1,1,1,1
 access_camp_staff_vacancy_hr,camp.staff.vacancy hr,model_camp_staff_vacancy,fayna_camp_portal.group_camp_hr,1,1,1,0
+access_camp_staff_application_organizator,camp.staff.application organizator,model_camp_staff_application,fayna_camp_portal.group_camp_organizator,1,1,1,1
+access_camp_staff_application_admin,camp.staff.application admin,model_camp_staff_application,fayna_camp_portal.group_camp_admin,1,1,1,1
+access_camp_staff_application_hr,camp.staff.application hr,model_camp_staff_application,fayna_camp_portal.group_camp_hr,1,1,1,0
+access_camp_staff_application_kierownik,camp.staff.application kierownik,model_camp_staff_application,fayna_camp_portal.group_camp_kierownik,1,0,0,0
+access_camp_staff_candidate,camp.staff candidate,model_camp_staff,fayna_camp_portal.group_camp_candidate,1,1,0,0
+access_camp_staff_cert_candidate,camp.staff.cert candidate,model_camp_staff_cert,fayna_camp_portal.group_camp_candidate,1,1,1,0
+access_camp_staff_application_candidate,camp.staff.application candidate,model_camp_staff_application,fayna_camp_portal.group_camp_candidate,1,0,0,0
 access_event_stage_camp_read,event.stage camp read,event.model_event_stage,base.group_user,1,0,0,0
 access_event_type_camp_read,event.type camp read,event.model_event_type,base.group_user,1,0,0,0
