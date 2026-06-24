@@ -248,9 +248,16 @@ class TestArt9Access(TransactionCase):
         is listed in groups= alongside group_medical_access; scope limited by
         record rule rule_portal_participant_own_children).
         """
-        participant_as_parent = self.participant.with_user(self.user_parent)
+        # Search applies record rules at DB level (the own-children portal rule),
+        # avoiding the shared-cursor cache filled by the sudo setUp.
+        Participant = self.env["camp.participant"].with_user(self.user_parent)
+        own_child = Participant.search([("id", "=", self.participant.id)])
+        self.assertTrue(
+            own_child,
+            "Parent must find their own child (portal own-children record rule)",
+        )
         self.assertEqual(
-            participant_as_parent.allergies,
+            own_child.allergies,
             "Nuts",
             "Parent must read art.9 allergies for their own child",
         )
