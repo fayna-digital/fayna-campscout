@@ -522,5 +522,232 @@
             <field name="perm_unlink" eval="True"/>
         </record>
 
+    
+        <!-- ═══════════════════════════════════════════════════════════
+             Organizator (top-level) БАЧИТЬ УСЕ — дозвільні правила, що OR-
+             комбінуються з обмежувальними kierownik/wychowawca (інакше
+             організатор через implied kierownik ріжеться до 0). 2026-06-24.
+        ═══════════════════════════════════════════════════════════ -->
+        <record id="rule_camp_budget_organizator_all" model="ir.rule">
+            <field name="name">Organizator: all camp_budget (see everything)</field>
+            <field name="model_id" ref="model_camp_budget"/>
+            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_camp_budget_line_organizator_all" model="ir.rule">
+            <field name="name">Organizator: all camp_budget_line (see everything)</field>
+            <field name="model_id" ref="model_camp_budget_line"/>
+            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_camp_daily_report_organizator_all" model="ir.rule">
+            <field name="name">Organizator: all camp_daily_report (see everything)</field>
+            <field name="model_id" ref="model_camp_daily_report"/>
+            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_camp_escort_organizator_all" model="ir.rule">
+            <field name="name">Organizator: all camp_escort (see everything)</field>
+            <field name="model_id" ref="model_camp_escort"/>
+            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_camp_group_organizator_all" model="ir.rule">
+            <field name="name">Organizator: all camp_group (see everything)</field>
+            <field name="model_id" ref="model_camp_group"/>
+            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_camp_incident_card_organizator_all" model="ir.rule">
+            <field name="name">Organizator: all camp_incident_card (see everything)</field>
+            <field name="model_id" ref="model_camp_incident_card"/>
+            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_camp_incident_register_organizator_all" model="ir.rule">
+            <field name="name">Organizator: all camp_incident_register (see everything)</field>
+            <field name="model_id" ref="model_camp_incident_register"/>
+            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_camp_incident_report_organizator_all" model="ir.rule">
+            <field name="name">Organizator: all camp_incident_report (see everything)</field>
+            <field name="model_id" ref="model_camp_incident_report"/>
+            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_camp_journal_organizator_all" model="ir.rule">
+            <field name="name">Organizator: all camp_journal (see everything)</field>
+            <field name="model_id" ref="model_camp_journal"/>
+            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_camp_participant_organizator_all" model="ir.rule">
+            <field name="name">Organizator: all camp_participant (see everything)</field>
+            <field name="model_id" ref="model_camp_participant"/>
+            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_camp_regulamin_organizator_all" model="ir.rule">
+            <field name="name">Organizator: all camp_regulamin (see everything)</field>
+            <field name="model_id" ref="model_camp_regulamin"/>
+            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_camp_regulamin_ack_organizator_all" model="ir.rule">
+            <field name="name">Organizator: all camp_regulamin_ack (see everything)</field>
+            <field name="model_id" ref="model_camp_regulamin_ack"/>
+            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_camp_review_organizator_all" model="ir.rule">
+            <field name="name">Organizator: all camp_review (see everything)</field>
+            <field name="model_id" ref="model_camp_review"/>
+            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_camp_staff_organizator_all" model="ir.rule">
+            <field name="name">Organizator: all camp_staff (see everything)</field>
+            <field name="model_id" ref="model_camp_staff"/>
+            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_camp_staff_vacancy_organizator_all" model="ir.rule">
+            <field name="name">Organizator: all camp_staff_vacancy (see everything)</field>
+            <field name="model_id" ref="model_camp_staff_vacancy"/>
+            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_camp_story_organizator_all" model="ir.rule">
+            <field name="name">Organizator: all camp_story (see everything)</field>
+            <field name="model_id" ref="model_camp_story"/>
+            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_camp_support_request_organizator_all" model="ir.rule">
+            <field name="name">Organizator: all camp_support_request (see everything)</field>
+            <field name="model_id" ref="model_camp_support_request"/>
+            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_camp_teczka_ko_organizator_all" model="ir.rule">
+            <field name="name">Organizator: all camp_teczka_ko (see everything)</field>
+            <field name="model_id" ref="model_camp_teczka_ko"/>
+            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_camp_transport_organizator_all" model="ir.rule">
+            <field name="name">Organizator: all camp_transport (see everything)</field>
+            <field name="model_id" ref="model_camp_transport"/>
+            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_fayna_vozhatyi_certificate_organizator_all" model="ir.rule">
+            <field name="name">Organizator: all fayna_vozhatyi_certificate (see everything)</field>
+            <field name="model_id" ref="model_fayna_vozhatyi_certificate"/>
+            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_fayna_vozhatyi_training_organizator_all" model="ir.rule">
+            <field name="name">Organizator: all fayna_vozhatyi_training (see everything)</field>
+            <field name="model_id" ref="model_fayna_vozhatyi_training"/>
+            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_vozhatyi_training_record_organizator_all" model="ir.rule">
+            <field name="name">Organizator: all vozhatyi_training_record (see everything)</field>
+            <field name="model_id" ref="model_vozhatyi_training_record"/>
+            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
     </data>
 </odoo>
