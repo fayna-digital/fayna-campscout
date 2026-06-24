@@ -202,13 +202,11 @@ class TestArt9Access(TransactionCase):
         # has NO access to the participant at all — nothing to mask. Assert via
         # search (DB-level access check; an attribute read could hit the shared
         # cursor cache filled by the admin setUp, masking the real ACL result).
+        # Finance has NO model access to camp.participant → even search raises
+        # AccessError. THAT is the protection: no access at all, nothing to mask.
         Participant = self.env["camp.participant"].with_user(self.user_finance)
-        found = Participant.search([("id", "=", self.participant.id)])
-        self.assertFalse(
-            found,
-            "Finance (bookkeeper) must NOT access camp.participant — scoped out by "
-            "ACL (group_medical_access required); children's data is outside finance scope.",
-        )
+        with self.assertRaises(AccessError):
+            Participant.search([("id", "=", self.participant.id)])
 
     # ─── 2. Wychowawca sees art.9 of their own group ──────────────────────────
 
@@ -313,7 +311,7 @@ class TestArt9Access(TransactionCase):
         Odoo raises AccessError when a user without the required groups= tries
         to write a group-restricted field.
         """
-        with self.assertRaises((AccessError, Exception)):
-            self.participant.with_user(self.user_finance).write({
-                "allergies": "Should not be saved",
-            })
+        with self.assertRaises(AccessError):
+            self.participant.with_user(self.user_finance).write(
+                {"allergies": "Should not be saved"}
+            )
