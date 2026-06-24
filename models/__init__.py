@@ -73,3 +73,7 @@ from . import camp_escort  # noqa: E402,I001
 # Фаза B — рекрутація + онбординг виховника (ADR 09-ADR-FAZA-B-build.md).
 # camp.staff.application: new→reviewing→accepted→rejected + _ensure_portal_user.
 from . import recruitment  # noqa: E402,I001
+
+# RODO art.9 — ORM-level masking of children medical data (read-override +
+# ir.attachment scope). MUST import after participant. TZ §6j/6l/6n.
+from . import art9_security  # noqa: E402,I001
