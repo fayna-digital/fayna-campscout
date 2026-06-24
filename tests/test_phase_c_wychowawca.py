@@ -62,6 +62,8 @@ class TestPhaseCWychowawca(TransactionCase):
                 "event_id": cls.event.id,
                 "user_id": cls.user_wychowawca.id,
                 "role": "counselor",
+                "date_from": "2026-07-01",
+                "date_to": "2026-07-07",
             }
         )
 
