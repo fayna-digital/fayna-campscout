@@ -35,32 +35,14 @@ def _art9_visible(env):
     )
 
 
-class CampParticipantArt9(models.Model):
-    _inherit = "camp.participant"
-
-    def read(self, fields=None, load="_classic_read"):
-        # Mask in the public read() path (RPC / explicit .read([...])).
-        res = super().read(fields=fields, load=load)
-        if _art9_visible(self.env):
-            return res
-        mask = set(_ART9_FIELDS)
-        for rec in res:
-            for fname in mask.intersection(rec):
-                rec[fname] = False
-        return res
-
-    def _read(self, fields):
-        # Mask attribute access (record.allergies) too — that path goes through
-        # _read → ORM cache, bypassing the public read(). We overwrite the cache
-        # for art.9 fields with False for non-medical users. Cache is per-env, so
-        # a medical user's env (separate) still sees the real values.
-        super()._read(fields)
-        if _art9_visible(self.env):
-            return
-        for fname in set(fields) & set(_ART9_FIELDS):
-            field = self._fields.get(fname)
-            if field is not None:
-                self.env.cache.update(self, field, [False] * len(self))
+# NOTE (≥3-stop, 2026-06-24): reliable ORM-VALUE masking of the 21 art.9 fields
+# proved architecturally hard in Odoo 17 — field `groups=` hides them in VIEWS
+# (UI protected ✅) but does NOT mask the value on ORM attribute-read; read()/
+# _read overrides do not intercept the internal fetch path. The correct reliable
+# fix is the COMPUTED-WRAPPER pattern (rename each stored field → *_real with
+# groups=, expose a non-stored computed field that returns *_real only when
+# _art9_visible(env)). That is a focused but invasive rework (21 fields) — left
+# as a dedicated task, not blind-patched. UI + attachment are protected below.
 
 
 class IrAttachmentArt9(models.Model):

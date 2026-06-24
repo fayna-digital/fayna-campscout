@@ -13,7 +13,8 @@ access_camp_faq_user,camp.faq user,model_camp_faq,base.group_user,1,0,0,0
 access_camp_schedule_entry_admin,camp.schedule.entry admin,model_camp_schedule_entry,base.group_system,1,1,1,1
 access_camp_schedule_entry_user,camp.schedule.entry user,model_camp_schedule_entry,base.group_user,1,0,0,0
 access_camp_participant_admin,camp.participant admin,model_camp_participant,base.group_system,1,1,1,1
-access_camp_participant_user,camp.participant user,model_camp_participant,base.group_user,1,0,0,0
+access_camp_participant_kierownik,camp.participant kierownik,model_camp_participant,fayna_camp_portal.group_camp_kierownik,1,1,0,0
+access_camp_participant_medical_access,camp.participant medical-access read,model_camp_participant,fayna_camp_portal.group_medical_access,1,0,0,0
 access_camp_participant_portal,camp.participant portal,model_camp_participant,base.group_portal,1,0,0,0
 access_camp_participant_medical_officer,camp.participant medical officer,model_camp_participant,fayna_camp_portal.group_medical_officer,1,1,1,0
 access_camp_presence_interval_admin,camp.presence.interval admin,model_camp_presence_interval,base.group_system,1,1,1,1
