@@ -34,6 +34,85 @@ class CampCreateWizard(models.TransientModel):
     _name = "camp.create.wizard"
     _description = "Майстер «Новий табір» (event + квиток + бюджет + teczka + групи)"
 
+    # ── ADR Фаза A §4 — multi-step ────────────────────────────────────────
+    step = fields.Selection(
+        [
+            ("type", "1. Typ obozu"),
+            ("basics", "2. Podstawowe dane"),
+            ("logo", "3. Logo"),
+            ("dates", "4. Daty i miejscowość"),
+            ("accommodation", "5. Obiekt"),
+            ("frame_day", "6. Plan dnia"),
+            ("program", "7. Program"),
+            ("capacity", "8. Miejsca i finanse"),
+        ],
+        default="type",
+        required=True,
+        string=_("Krok"),
+        help=_("Current step in the multi-step wizard."),
+    )
+
+    # Step 1 — typ obozu (mirrors camp.program.wypoczynku)
+    vacation_form = fields.Selection(
+        [
+            ("kolonia", "Kolonia"),
+            ("oboz", "Obóz"),
+            ("biwak", "Biwak"),
+            ("zimowisko", "Zimowisko"),
+            ("inne", "Inne"),
+        ],
+        default="oboz",
+        string=_("Forma wypoczynku"),
+        help=_("Formal form of leisure as classified by MEN regulation."),
+    )
+    camp_type = fields.Selection(
+        [
+            ("kolonijny", "Kolonijny"),
+            ("obozowy", "Obozowy"),
+            ("inne", "Inne"),
+        ],
+        string=_("Typ obozu"),
+        help=_("Camp type classification for Kuratorium filing."),
+    )
+    accommodation_type = fields.Selection(
+        [
+            ("hotel", "Hotel / pensjonat"),
+            ("occasional", "Obiekt okazjonalny"),
+            ("tent", "Pole namiotowe"),
+            ("school", "Szkoła / placówka"),
+            ("other", "Inne"),
+        ],
+        default="hotel",
+        string=_("Rodzaj obiektu"),
+        help=_("Type of accommodation used."),
+    )
+
+    # Step 3 — logo
+    logo_image = fields.Image(
+        string=_("Logo obozu"),
+        max_width=512,
+        max_height=512,
+        help=_("Camp logo — will be set on the camp product template (image_1920)."),
+    )
+
+    # Step 6 — рамковий день (mirrors CampProgramStructured)
+    fd_wake_time = fields.Float(default=7.0, string=_("Pobudka"))
+    fd_breakfast = fields.Float(default=8.0, string=_("Śniadanie"))
+    fd_lunch = fields.Float(default=13.0, string=_("Obiad"))
+    fd_afternoon_rest = fields.Float(default=14.0, string=_("Cisza poobiednia"))
+    fd_snack = fields.Float(default=16.0, string=_("Podwieczorek"))
+    fd_dinner = fields.Float(default=18.0, string=_("Kolacja"))
+    fd_lights_out = fields.Float(default=22.0, string=_("Cisza nocna"))
+    fd_meal_duration = fields.Float(default=0.75, string=_("Czas posiłku (h)"))
+    fd_rest_duration = fields.Float(default=1.0, string=_("Czas ciszy poobiedniej (h)"))
+
+    # Step 7 — program options
+    also_generate_rain_plan = fields.Boolean(
+        default=False,
+        string=_("Generuj też plan B (deszczowy)"),
+        help=_("If True, a second CampProgramStructured (is_rain_plan=True) is generated."),
+    )
+
     name = fields.Char(
         required=True,
         string=_("Camp shift name"),
@@ -237,6 +316,13 @@ class CampCreateWizard(models.TransientModel):
         #    (camp.group.action_auto_split distributes children by age).
         self.env["camp.group"].create({"name": _("Grupa 1"), "event_id": event.id})
 
+        # 7. Structured program skeleton (ADR Фаза A §4)
+        self._create_structured_skeleton(event)
+
+        # 8. Logo → product.template.image_1920 if camp_program_id is set
+        if self.logo_image and event.camp_program_id:
+            event.camp_program_id.sudo().write({"image_1920": self.logo_image})
+
         _logger.info(
             "[camp_create_wizard] Camp shift created: event=%s seats=%s budget=%s",
             event.id,
@@ -307,4 +393,88 @@ class CampCreateWizard(models.TransientModel):
                     "amount": amount,
                 }
             )
+        return True
+
+    # ── ADR Фаза A §4 — step navigation ───────────────────────────────────
+
+    _STEP_ORDER = [
+        "type",
+        "basics",
+        "logo",
+        "dates",
+        "accommodation",
+        "frame_day",
+        "program",
+        "capacity",
+    ]
+
+    def action_next(self):
+        self.ensure_one()
+        idx = self._STEP_ORDER.index(self.step)
+        if idx < len(self._STEP_ORDER) - 1:
+            self.write({"step": self._STEP_ORDER[idx + 1]})
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": self._name,
+            "res_id": self.id,
+            "view_mode": "form",
+            "target": "new",
+        }
+
+    def action_back(self):
+        self.ensure_one()
+        idx = self._STEP_ORDER.index(self.step)
+        if idx > 0:
+            self.write({"step": self._STEP_ORDER[idx - 1]})
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": self._name,
+            "res_id": self.id,
+            "view_mode": "form",
+            "target": "new",
+        }
+
+    # ── ADR Фаза A §4 — skeleton generator call ────────────────────────────
+
+    def _create_structured_skeleton(self, event):
+        """Create structured program(s) and generate skeleton days.
+
+        Always creates the normal plan. If also_generate_rain_plan=True,
+        creates a second structured record with is_rain_plan=True.
+        """
+        self.ensure_one()
+        structured_model = self.env["camp.program.structured"]
+        frame_day_vals = {
+            "wake_time": self.fd_wake_time,
+            "breakfast": self.fd_breakfast,
+            "lunch": self.fd_lunch,
+            "afternoon_rest": self.fd_afternoon_rest,
+            "snack": self.fd_snack,
+            "dinner": self.fd_dinner,
+            "lights_out": self.fd_lights_out,
+            "meal_duration": self.fd_meal_duration,
+            "rest_duration": self.fd_rest_duration,
+        }
+
+        # Normal plan
+        structured_normal = structured_model.create(
+            dict(
+                event_id=event.id,
+                is_rain_plan=False,
+                **frame_day_vals,
+            )
+        )
+        structured_model._generate_skeleton(event, structured_normal)
+
+        # Rain plan
+        if self.also_generate_rain_plan:
+            structured_rain = structured_model.create(
+                dict(
+                    event_id=event.id,
+                    is_rain_plan=True,
+                    **frame_day_vals,
+                )
+            )
+            structured_model._generate_skeleton(event, structured_rain)
+
         return True

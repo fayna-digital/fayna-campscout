@@ -78,6 +78,7 @@ License: LGPL-3
         "views/commercial_views.xml",
         "views/budget_views.xml",
         "views/staffing_views.xml",
+        "views/program_views.xml",
         "views/regulamin_views.xml",
         "views/teczka_views.xml",
         "views/training_views.xml",

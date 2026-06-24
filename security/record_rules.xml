@@ -749,5 +749,106 @@
             <field name="perm_unlink" eval="False"/>
         </record>
 
+        <!-- ═══════════════════════════════════════════════════════════════
+             ADR Фаза A — record rules: camp.program.structured / day / line
+             3 rules × 3 models = 9 records
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <!-- ─── camp.program.structured ──────────────────────────────── -->
+        <record id="rule_structured_kierownik_own" model="ir.rule">
+            <field name="name">Kierownik: own structured programs</field>
+            <field name="model_id" ref="model_camp_program_structured"/>
+            <field name="groups" eval="[(4, ref('group_camp_kierownik'))]"/>
+            <field name="domain_force">['|', ('event_id.user_id', '=', user.id), ('event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_structured_organizator_all" model="ir.rule">
+            <field name="name">Organizator: all structured programs</field>
+            <field name="model_id" ref="model_camp_program_structured"/>
+            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_structured_wychowawca_read_published" model="ir.rule">
+            <field name="name">Wychowawca: read published structured programs of own camps</field>
+            <field name="model_id" ref="model_camp_program_structured"/>
+            <field name="groups" eval="[(4, ref('group_camp_wychowawca'))]"/>
+            <field name="domain_force">['&amp;', ('state', '=', 'published'), '|', ('event_id.staff_ids.user_id', '=', user.id), ('event_id.camp_group_ids.wychowawca_ids', 'in', [user.id])]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- ─── camp.program.day ──────────────────────────────────────── -->
+        <record id="rule_program_day_kierownik_own" model="ir.rule">
+            <field name="name">Kierownik: days of own structured programs</field>
+            <field name="model_id" ref="model_camp_program_day"/>
+            <field name="groups" eval="[(4, ref('group_camp_kierownik'))]"/>
+            <field name="domain_force">['|', ('program_id.event_id.user_id', '=', user.id), ('program_id.event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_program_day_organizator_all" model="ir.rule">
+            <field name="name">Organizator: all program days</field>
+            <field name="model_id" ref="model_camp_program_day"/>
+            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_program_day_wychowawca_read_published" model="ir.rule">
+            <field name="name">Wychowawca: read published program days of own camps</field>
+            <field name="model_id" ref="model_camp_program_day"/>
+            <field name="groups" eval="[(4, ref('group_camp_wychowawca'))]"/>
+            <field name="domain_force">['&amp;', ('program_id.state', '=', 'published'), '|', ('program_id.event_id.staff_ids.user_id', '=', user.id), ('program_id.event_id.camp_group_ids.wychowawca_ids', 'in', [user.id])]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- ─── camp.program.activity.line ───────────────────────────── -->
+        <record id="rule_activity_line_kierownik_own" model="ir.rule">
+            <field name="name">Kierownik: activity lines of own camp programs</field>
+            <field name="model_id" ref="model_camp_program_activity_line"/>
+            <field name="groups" eval="[(4, ref('group_camp_kierownik'))]"/>
+            <field name="domain_force">['|', ('day_id.program_id.event_id.user_id', '=', user.id), ('day_id.program_id.event_id.staff_ids.user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_activity_line_organizator_all" model="ir.rule">
+            <field name="name">Organizator: all activity lines</field>
+            <field name="model_id" ref="model_camp_program_activity_line"/>
+            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_activity_line_wychowawca_own_published" model="ir.rule">
+            <field name="name">Wychowawca: R+W+C on activity lines of own published programs</field>
+            <field name="model_id" ref="model_camp_program_activity_line"/>
+            <field name="groups" eval="[(4, ref('group_camp_wychowawca'))]"/>
+            <field name="domain_force">['&amp;', ('day_id.program_id.state', '=', 'published'), '|', ('day_id.program_id.event_id.staff_ids.user_id', '=', user.id), ('day_id.program_id.event_id.camp_group_ids.wychowawca_ids', 'in', [user.id])]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
     </data>
 </odoo>

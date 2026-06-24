@@ -198,6 +198,23 @@ class CampEvent(models.Model):
         ),
     )
 
+    # --- Structured program (ADR Фаза A §1) ----------------------------------
+
+    structured_program_ids = fields.One2many(
+        "camp.program.structured",
+        "event_id",
+        string=_("Structured programs"),
+        help=_("Day-by-day structured programs (normal + rain plan) for this shift."),
+    )
+
+    # --- Camp groups (reverse of camp.group.event_id) — needed for record rules
+    camp_group_ids = fields.One2many(
+        "camp.group",
+        "event_id",
+        string=_("Camp groups"),
+        help=_("Participant groups for this shift (used in record rules for wychowawca access)."),
+    )
+
     # --- Dziennik zajęć (daily activity register) ----------------------------
 
     dziennik_ids = fields.One2many(

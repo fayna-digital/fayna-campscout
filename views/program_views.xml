@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ============================================================
+             camp.program.structured — tree + form
+        ============================================================ -->
+
+        <record id="view_camp_program_structured_tree" model="ir.ui.view">
+            <field name="name">camp.program.structured.tree</field>
+            <field name="model">camp.program.structured</field>
+            <field name="arch" type="xml">
+                <tree string="Programy strukturalne">
+                    <field name="name"/>
+                    <field name="event_id"/>
+                    <field name="is_rain_plan" widget="boolean_toggle"/>
+                    <field name="day_count"/>
+                    <field name="state" widget="badge"
+                           decoration-success="state == 'published'"
+                           decoration-muted="state == 'draft'"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_program_structured_form" model="ir.ui.view">
+            <field name="name">camp.program.structured.form</field>
+            <field name="model">camp.program.structured</field>
+            <field name="arch" type="xml">
+                <form string="Program strukturalny">
+                    <header>
+                        <button name="action_publish" type="object"
+                                string="Opublikuj" class="btn-primary"
+                                invisible="state == 'published'"/>
+                        <button name="action_back_to_draft" type="object"
+                                string="Cofnij do roboczego"
+                                invisible="state == 'draft'"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,published"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1><field name="name" readonly="1"/></h1>
+                        </div>
+                        <group>
+                            <group string="Obóz">
+                                <field name="event_id"/>
+                                <field name="is_rain_plan"/>
+                                <field name="day_count" readonly="1"/>
+                            </group>
+                            <group string="Ramowy plan dnia">
+                                <field name="wake_time"/>
+                                <field name="breakfast"/>
+                                <field name="lunch"/>
+                                <field name="afternoon_rest"/>
+                                <field name="snack"/>
+                                <field name="dinner"/>
+                                <field name="lights_out"/>
+                                <field name="meal_duration"/>
+                                <field name="rest_duration"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Dni" name="days">
+                                <field name="day_ids">
+                                    <tree string="Dni programu">
+                                        <field name="date"/>
+                                        <field name="day_number"/>
+                                        <field name="display_name"/>
+                                        <field name="notes"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Uwagi" name="notes">
+                                <field name="notes" placeholder="Ogólne uwagi do programu…"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- ============================================================
+             camp.program.day — form (with activity lines inline)
+        ============================================================ -->
+
+        <record id="view_camp_program_day_form" model="ir.ui.view">
+            <field name="name">camp.program.day.form</field>
+            <field name="model">camp.program.day</field>
+            <field name="arch" type="xml">
+                <form string="Dzień programu">
+                    <sheet>
+                        <group>
+                            <field name="program_id"/>
+                            <field name="date"/>
+                            <field name="day_number" readonly="1"/>
+                        </group>
+                        <field name="activity_line_ids">
+                            <tree string="Zajęcia" editable="bottom"
+                                  decoration-muted="is_locked">
+                                <field name="time_from"/>
+                                <field name="time_to"/>
+                                <field name="category" widget="badge"/>
+                                <field name="title"/>
+                                <field name="location"/>
+                                <field name="owner_role"/>
+                                <field name="is_locked" widget="boolean_toggle"/>
+                                <field name="is_skeleton" widget="boolean_toggle" optional="hide"/>
+                                <field name="responsible_id" optional="hide"/>
+                                <field name="notes" optional="hide"/>
+                            </tree>
+                        </field>
+                        <group string="Uwagi dnia">
+                            <field name="notes" nolabel="1" colspan="2"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- ============================================================
+             camp.program.activity.line — standalone tree (search view)
+        ============================================================ -->
+
+        <record id="view_camp_program_activity_line_tree" model="ir.ui.view">
+            <field name="name">camp.program.activity.line.tree</field>
+            <field name="model">camp.program.activity.line</field>
+            <field name="arch" type="xml">
+                <tree string="Linie programu" decoration-muted="is_locked">
+                    <field name="day_id"/>
+                    <field name="time_from"/>
+                    <field name="time_to"/>
+                    <field name="category" widget="badge"/>
+                    <field name="title"/>
+                    <field name="owner_role"/>
+                    <field name="is_locked" widget="boolean_toggle"/>
+                    <field name="is_skeleton" optional="hide"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- ============================================================
+             Actions
+        ============================================================ -->
+
+        <record id="action_camp_program_structured" model="ir.actions.act_window">
+            <field name="name">Programy strukturalne</field>
+            <field name="res_model">camp.program.structured</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_camp_program_day" model="ir.actions.act_window">
+            <field name="name">Dni programu</field>
+            <field name="res_model">camp.program.day</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

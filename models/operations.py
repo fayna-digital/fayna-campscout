@@ -1808,6 +1808,72 @@ class CampProgramStructured(models.Model):
         help=_("Overall program notes, objectives, special requirements."),
     )
 
+    # ── Рамковий день (ADR Фаза A §1) ─────────────────────────────────────
+    wake_time = fields.Float(
+        default=7.0,
+        string=_("Pobudka (hh.mm)"),
+        help=_("Wake-up time in hour.decimal format (e.g. 7.0 = 07:00)."),
+    )
+    breakfast = fields.Float(
+        default=8.0,
+        string=_("Śniadanie"),
+        help=_("Breakfast start time."),
+    )
+    lunch = fields.Float(
+        default=13.0,
+        string=_("Obiad"),
+        help=_("Lunch start time."),
+    )
+    afternoon_rest = fields.Float(
+        default=14.0,
+        string=_("Cisza poobiednia"),
+        help=_("Afternoon rest start time."),
+    )
+    snack = fields.Float(
+        default=16.0,
+        string=_("Podwieczorek"),
+        help=_("Snack start time."),
+    )
+    dinner = fields.Float(
+        default=18.0,
+        string=_("Kolacja"),
+        help=_("Dinner start time."),
+    )
+    lights_out = fields.Float(
+        default=22.0,
+        string=_("Cisza nocna"),
+        help=_("Lights-out / silence start time."),
+    )
+    meal_duration = fields.Float(
+        default=0.75,
+        string=_("Czas posiłku (h)"),
+        help=_("Default meal duration in hours (e.g. 0.75 = 45 min)."),
+    )
+    rest_duration = fields.Float(
+        default=1.0,
+        string=_("Czas ciszy poobiedniej (h)"),
+        help=_("Afternoon rest duration in hours."),
+    )
+
+    @api.constrains("wake_time", "lights_out")
+    def _check_sleep_duration(self):
+        for rec in self:
+            if rec.lights_out <= rec.wake_time:
+                raise ValidationError(
+                    _("Cisza nocna must be after wake-up time (lights_out > wake_time).")
+                )
+            sleep_hours = (24.0 - rec.lights_out) + rec.wake_time
+            if sleep_hours < 9.0:
+                raise ValidationError(
+                    _(
+                        "Minimum sleep time is 9 hours (MEN regulation). "
+                        "Current: %(h).1f h (lights_out=%(lo)s, wake=%(w)s).",
+                        h=sleep_hours,
+                        lo=rec.lights_out,
+                        w=rec.wake_time,
+                    )
+                )
+
     @api.depends("event_id", "is_rain_plan")
     def _compute_name(self):
         for rec in self:
@@ -1835,6 +1901,189 @@ class CampProgramStructured(models.Model):
     def action_print_program(self):
         self.ensure_one()
         return self.env.ref("fayna_camp_portal.camp_program_report_action").report_action(self)
+
+    # ── ADR Фаза A §2 — генератор скелету ────────────────────────────────
+
+    @api.model
+    def _generate_skeleton(self, event, structured):
+        """Generate day records + fixed skeleton lines for every day of the camp.
+
+        Args:
+            event (event.event): The camp shift.
+            structured (camp.program.structured): The structured program record.
+
+        Returns:
+            list[camp.program.day]: Created day records.
+        """
+        from datetime import date as date_cls, timedelta as td
+
+        s = structured
+        day_model = self.env["camp.program.day"]
+        line_model = self.env["camp.program.activity.line"]
+
+        start = event.date_begin.date() if hasattr(event.date_begin, "date") else event.date_begin
+        end = event.date_end.date() if hasattr(event.date_end, "date") else event.date_end
+
+        created_days = []
+        current = start
+        while current <= end:
+            day = day_model.create(
+                {
+                    "program_id": s.id,
+                    "date": current,
+                }
+            )
+
+            # Fixed skeleton lines (is_skeleton=True)
+            skeleton_lines = [
+                {
+                    "day_id": day.id,
+                    "time_from": s.breakfast,
+                    "time_to": s.breakfast + s.meal_duration,
+                    "title": "Śniadanie",
+                    "category": "meal",
+                    "is_skeleton": True,
+                    "is_locked": True,
+                    "owner_role": "kierownik",
+                },
+                {
+                    "day_id": day.id,
+                    "time_from": s.lunch,
+                    "time_to": s.lunch + s.meal_duration,
+                    "title": "Obiad",
+                    "category": "meal",
+                    "is_skeleton": True,
+                    "is_locked": True,
+                    "owner_role": "kierownik",
+                },
+                {
+                    "day_id": day.id,
+                    "time_from": s.afternoon_rest,
+                    "time_to": s.afternoon_rest + s.rest_duration,
+                    "title": "Cisza poobiednia",
+                    "category": "rest",
+                    "is_skeleton": True,
+                    "is_locked": True,
+                    "owner_role": "kierownik",
+                },
+                {
+                    "day_id": day.id,
+                    "time_from": s.snack,
+                    "time_to": s.snack + 0.25,
+                    "title": "Podwieczorek",
+                    "category": "meal",
+                    "is_skeleton": True,
+                    "is_locked": True,
+                    "owner_role": "kierownik",
+                },
+                {
+                    "day_id": day.id,
+                    "time_from": s.dinner,
+                    "time_to": s.dinner + s.meal_duration,
+                    "title": "Kolacja",
+                    "category": "meal",
+                    "is_skeleton": True,
+                    "is_locked": True,
+                    "owner_role": "kierownik",
+                },
+                {
+                    "day_id": day.id,
+                    "time_from": s.lights_out,
+                    "time_to": 24.0,
+                    "title": "Cisza nocna",
+                    "category": "sleep",
+                    "is_skeleton": True,
+                    "is_locked": True,
+                    "owner_role": "kierownik",
+                },
+            ]
+            # Night sleep that wraps midnight: 0:00 → wake_time
+            skeleton_lines.append(
+                {
+                    "day_id": day.id,
+                    "time_from": 0.0,
+                    "time_to": s.wake_time,
+                    "title": "Sen (noc)",
+                    "category": "sleep",
+                    "is_skeleton": True,
+                    "is_locked": True,
+                    "owner_role": "kierownik",
+                }
+            )
+            line_model.create(skeleton_lines)
+
+            # Fill free gaps between wake_time and lights_out
+            self._fill_free_hours(day)
+
+            created_days.append(day)
+            current += td(days=1)
+
+        return created_days
+
+    @api.model
+    def _fill_free_hours(self, day):
+        """Insert 'Czas wolny' lines into gaps [wake..lights_out] > 0.25 h.
+
+        Args:
+            day (camp.program.day): The day record (must already have skeleton lines).
+        """
+        structured = day.program_id
+        wake = structured.wake_time
+        lights = structured.lights_out
+
+        # Collect only lines within [wake, lights_out] window (excludes sleep wraps)
+        busy = []
+        for line in day.activity_line_ids.sorted("time_from"):
+            tf = line.time_from
+            tt = line.time_to
+            # Clamp to [wake, lights] window
+            if tt <= wake or tf >= lights:
+                continue
+            tf = max(tf, wake)
+            tt = min(tt, lights)
+            if tt > tf:
+                busy.append((tf, tt))
+
+        # Merge overlapping/adjacent slots
+        merged = []
+        for tf, tt in sorted(busy):
+            if merged and tf <= merged[-1][1]:
+                merged[-1] = (merged[-1][0], max(merged[-1][1], tt))
+            else:
+                merged.append((tf, tt))
+
+        # Detect gaps
+        cursor = wake
+        free_vals = []
+        for tf, tt in merged:
+            if tf - cursor > 0.25:
+                free_vals.append(
+                    {
+                        "day_id": day.id,
+                        "time_from": cursor,
+                        "time_to": tf,
+                        "title": "Czas wolny — do wypełnienia",
+                        "category": "free",
+                        "is_skeleton": True,
+                        "owner_role": "wychowawca",
+                    }
+                )
+            cursor = max(cursor, tt)
+        # Trailing gap
+        if lights - cursor > 0.25:
+            free_vals.append(
+                {
+                    "day_id": day.id,
+                    "time_from": cursor,
+                    "time_to": lights,
+                    "title": "Czas wolny — do wypełnienia",
+                    "category": "free",
+                    "is_skeleton": True,
+                    "owner_role": "wychowawca",
+                }
+            )
+        if free_vals:
+            self.env["camp.program.activity.line"].create(free_vals)
 
 
 # ---------------------------------------------------------------------------
@@ -1958,6 +2207,45 @@ class CampProgramActivityLine(models.Model):
         string=_("Notes"),
         help=_("Preparation notes, materials needed, special instructions."),
     )
+
+    # ── Фаза A — категорія та замки (ADR §1) ──────────────────────────────
+    category = fields.Selection(
+        [
+            ("meal", "Posiłek"),
+            ("rest", "Odpoczynek"),
+            ("sleep", "Cisza nocna"),
+            ("free", "Czas wolny — do wypełnienia"),
+            ("activity", "Zajęcia"),
+        ],
+        default="activity",
+        string=_("Kategoria"),
+        help=_("Activity category: meal / rest / sleep / free slot / regular activity."),
+    )
+    is_skeleton = fields.Boolean(
+        default=False,
+        string=_("Skeleton"),
+        help=_("True if this line was auto-generated by the skeleton generator."),
+    )
+    is_locked = fields.Boolean(
+        default=False,
+        string=_("Locked"),
+        help=_("Kierownik lock: wychowawca cannot edit this line (enforced in Phase C)."),
+    )
+    owner_role = fields.Selection(
+        [
+            ("kierownik", "Kierownik"),
+            ("wychowawca", "Wychowawca"),
+        ],
+        default="kierownik",
+        string=_("Owner role"),
+        help=_("Role that owns this line. Wychowawca can only edit owner_role=wychowawca lines."),
+    )
+
+    @api.constrains("is_locked", "owner_role")
+    def _check_locked_write(self):
+        """Phase C ENFORCE: non-kierownik cannot write is_locked/owner_role=kierownik lines.
+        Stub for Phase A — enforcement logic will be added in Phase C."""
+        pass
 
     @api.onchange("activity_template_id")
     def _onchange_activity_template(self):

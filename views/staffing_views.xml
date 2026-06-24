@@ -217,12 +217,61 @@
             <field name="model">camp.create.wizard</field>
             <field name="arch" type="xml">
                 <form string="Nowy obóz">
-                    <group>
-                        <group string="Obóz">
-                            <field name="name" placeholder="Obóz NWŚ — turnus 2 (2026)"/>
-                            <field name="date_begin"/>
-                            <field name="date_end"/>
-                            <field name="location" placeholder="Ośrodek Leśna Polana, Drołtowice 12"/>
+                    <field name="step" invisible="1"/>
+
+                    <!-- Krok 1: Typ obozu -->
+                    <group string="1. Typ obozu" invisible="step != 'type'">
+                        <field name="vacation_form"/>
+                        <field name="camp_type"/>
+                    </group>
+
+                    <!-- Krok 2: Podstawowe dane -->
+                    <group string="2. Nazwa i organizator" invisible="step != 'basics'">
+                        <field name="name" placeholder="Obóz NWŚ — turnus 2 (2026)"/>
+                    </group>
+
+                    <!-- Krok 3: Logo -->
+                    <group string="3. Logo obozu" invisible="step != 'logo'">
+                        <field name="logo_image" widget="image" options="{'size': [128,128]}"/>
+                    </group>
+
+                    <!-- Krok 4: Daty i lokalizacja -->
+                    <group string="4. Daty i miejscowość" invisible="step != 'dates'">
+                        <field name="date_begin"/>
+                        <field name="date_end"/>
+                        <field name="location" placeholder="Ośrodek Leśna Polana, Drołtowice 12"/>
+                    </group>
+
+                    <!-- Krok 5: Obiekt -->
+                    <group string="5. Obiekt" invisible="step != 'accommodation'">
+                        <field name="accommodation_type"/>
+                    </group>
+
+                    <!-- Krok 6: Plan dnia (рамковий день) -->
+                    <group string="6. Ramowy plan dnia" invisible="step != 'frame_day'">
+                        <group string="Godziny">
+                            <field name="fd_wake_time"/>
+                            <field name="fd_breakfast"/>
+                            <field name="fd_lunch"/>
+                            <field name="fd_afternoon_rest"/>
+                            <field name="fd_snack"/>
+                            <field name="fd_dinner"/>
+                            <field name="fd_lights_out"/>
+                        </group>
+                        <group string="Czasy trwania">
+                            <field name="fd_meal_duration"/>
+                            <field name="fd_rest_duration"/>
+                        </group>
+                    </group>
+
+                    <!-- Krok 7: Program -->
+                    <group string="7. Program" invisible="step != 'program'">
+                        <field name="also_generate_rain_plan"/>
+                    </group>
+
+                    <!-- Krok 8: Miejsca i finanse -->
+                    <group string="8. Miejsca i finanse" invisible="step != 'capacity'">
+                        <group string="Miejsca">
                             <field name="seats"/>
                         </group>
                         <group string="Finanse (plan)">
@@ -234,9 +283,17 @@
                             <field name="salary_kierownik_per_turnus" widget="monetary"/>
                         </group>
                     </group>
+
                     <footer>
+                        <button name="action_back" type="object"
+                                string="← Wstecz" class="btn-secondary"
+                                invisible="step == 'type'"/>
+                        <button name="action_next" type="object"
+                                string="Dalej →" class="btn-primary"
+                                invisible="step == 'capacity'"/>
                         <button name="action_create_camp" type="object"
-                                string="Utwórz obóz" class="btn-primary"/>
+                                string="Utwórz obóz" class="btn-primary"
+                                invisible="step != 'capacity'"/>
                         <button string="Anuluj" class="btn-secondary" special="cancel"/>
                     </footer>
                 </form>
