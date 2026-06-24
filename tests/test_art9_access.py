@@ -140,18 +140,24 @@ class TestArt9Access(TransactionCase):
             "event_id": cls.event.id,
             "user_id": cls.user_wychowawca.id,
             "role": "counselor",
+            "date_from": "2026-07-01",
+            "date_to": "2026-07-14",
         })
         cls.env["camp.staff"].sudo().create({
             "name": "Wychowawca2 Art9",
             "event_id": cls.event.id,
             "user_id": cls.user_wychowawca2.id,
             "role": "counselor",
+            "date_from": "2026-07-01",
+            "date_to": "2026-07-14",
         })
         cls.env["camp.staff"].sudo().create({
             "name": "Medic Art9",
             "event_id": cls.event.id,
             "user_id": cls.user_medic.id,
             "role": "medic",
+            "date_from": "2026-07-01",
+            "date_to": "2026-07-14",
         })
 
         # ── a second participant in group B (other wychowawca's child) ────────
