@@ -30,6 +30,13 @@ _logger = logging.getLogger(__name__)
 
 _KIEROWNIK_TILES = [
     (
+        "fayna_camp_portal.action_camp_create_wizard",
+        "Nowy obóz",
+        "plus-circle",
+        "warning",
+        "Stwórz nowy obóz (kreator)",
+    ),
+    (
         "fayna_camp_portal.action_camp_staff",
         "Kadra",
         "users",
