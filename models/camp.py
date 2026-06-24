@@ -293,6 +293,21 @@ class CampEvent(models.Model):
         help=_("Mandatory when rejecting a pending camp shift."),
     )
 
+    def _post_note(self, body):
+        """Post an internal chatter note resiliently — a mail/email-config
+        failure must NEVER block the approval workflow (TZ §0b reliability)."""
+        try:
+            self.message_post(
+                body=body,
+                message_type="notification",
+                subtype_xmlid="mail.mt_note",
+            )
+        except Exception:  # noqa: BLE001
+            _logger.warning(
+                "fayna_camp_portal: chatter note skipped for event=%s (non-blocking)",
+                self.id,
+            )
+
     def action_submit_for_approval(self):
         """Kierownik submits the shift to organizator for approval.
         Event stays unpublished (website_published=False, sale_ok=False on ticket).
@@ -304,11 +319,7 @@ class CampEvent(models.Model):
                 % self.camp_approval_state
             )
         self.sudo().write({"camp_approval_state": "pending_approval"})
-        self.message_post(
-            body=_("Табір надіслано на погодження організатора."),
-            message_type="notification",
-            subtype_xmlid="mail.mt_note",
-        )
+        self._post_note(_("Табір надіслано на погодження організатора."))
 
     def action_approve(self):
         """Organizator approves the shift → publish event + ticket products."""
@@ -344,10 +355,8 @@ class CampEvent(models.Model):
                 "approval continues, card must be filled manually.",
                 self.id,
             )
-        self.message_post(
-            body=_("Табір погоджено та опубліковано організатором %s.") % self.env.user.name,
-            message_type="notification",
-            subtype_xmlid="mail.mt_note",
+        self._post_note(
+            _("Табір погоджено та опубліковано організатором %s.") % self.env.user.name
         )
 
     # F-GENERATOR (TZ §8) ─────────────────────────────────────────────────────
@@ -608,10 +617,8 @@ class CampEvent(models.Model):
         # Unpublish linked camp program product if set
         if self.camp_program_id:
             self.camp_program_id.sudo().write({"website_published": False})
-        self.message_post(
-            body=_("Табір відхилено: %s") % self.rejection_reason,
-            message_type="notification",
-            subtype_xmlid="mail.mt_note",
+        self._post_note(
+            _("Табір відхилено: %s") % self.rejection_reason
         )
 
     # --- Kuratorium notifications -------------------------------------------
