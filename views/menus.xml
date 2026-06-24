@@ -13,6 +13,19 @@
             sequence="50"
             groups="base.group_user"/>
 
+        <!-- Клікабельний вхід у кабінет організатора (dashboard /admin/dashboard) -->
+        <record id="action_admin_dashboard_url" model="ir.actions.act_url">
+            <field name="name">Кабінет організатора</field>
+            <field name="url">/admin/dashboard</field>
+            <field name="target">self</field>
+        </record>
+        <menuitem id="menu_admin_dashboard"
+            name="Кабінет організатора"
+            parent="menu_campscout_root"
+            action="action_admin_dashboard_url"
+            sequence="1"
+            groups="fayna_camp_portal.group_camp_organizator"/>
+
         <!-- ═══════════════════════════════════════════════════════════════
              Camp Management
         ═══════════════════════════════════════════════════════════════ -->
