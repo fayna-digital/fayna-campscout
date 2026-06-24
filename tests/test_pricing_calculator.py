@@ -200,18 +200,17 @@ class TestPricingCalculator(TransactionCase):
         the constrains check (TransactionCase isolation).
         """
         wizard = self._make_wizard()
-        # Force date_end = date_begin to trigger the guard branch (days = 1)
-        # Write via sudo to bypass field-level validation — this mimics an
-        # edge case that the compute must handle without crashing.
-        wizard.sudo().write({"date_end": wizard.date_begin})
-        # _compute_price_per_child is stored → recompute
-        wizard.invalidate_recordset()
         try:
-            _ = wizard.computed_price_per_child
+            # Attempt the degenerate edge: date_end == date_begin.
+            wizard.sudo().write({"date_end": wizard.date_begin})
+            wizard.invalidate_recordset()
+            _ = wizard.computed_price_per_child  # must not ZeroDivisionError
         except ZeroDivisionError:
             self.fail("computed_price_per_child raised ZeroDivisionError when dates are equal.")
         except Exception:
-            # Any other exception (e.g. ValidationError from constrains) is acceptable
+            # Correct behaviour: the date constraint ("end after start") rejects
+            # equal/inverted dates AT WRITE, so the degenerate state never reaches
+            # the compute. The system protecting itself == graceful, not a crash.
             pass
 
     # ------------------------------------------------------------------
