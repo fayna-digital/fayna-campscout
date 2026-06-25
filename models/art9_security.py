@@ -43,6 +43,11 @@ _ART9_FIELDS = (
 def _art9_visible(env):
     """True if the current user may see children's art.9 medical data."""
     u = env.user
+    # Порожній recordset (неавтентифікований/публічний запит, sudo-без-юзера) →
+    # fail-closed: art.9 медичні дані НЕ видно. Також прибирає краш
+    # "Expected singleton: res.users()" на _is_superuser() (спіймав Sentry 2026-06-25).
+    if not u:
+        return False
     return bool(
         u._is_superuser()
         or u._is_system()
