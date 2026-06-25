@@ -186,16 +186,19 @@
                     </table>
                 </t>
 
-                <!-- Upload форма — лише якщо є прийнятий staff record -->
-                <t t-if="staff and staff.state == 'draft'">
+                <!-- Onboarding — лише якщо staff ще не dopuszczony (draft/pending) -->
+                <t t-if="staff and staff.state in ('draft', 'pending_admission')">
+                    <!-- Krok 1: dokumenty (CV / foto / KRK) -->
                     <div class="card border-0 shadow-sm mt-3">
                         <div class="card-header bg-light fw-semibold">
-                            Prześlij dokumenty
+                            Krok 1 — Prześlij dokumenty
                         </div>
                         <div class="card-body">
                             <p class="text-muted small mb-3">
                                 Twoje zgłoszenie zostało zaakceptowane.
-                                Prześlij CV i zdjęcie, aby kontynuować proces weryfikacji.
+                                Prześlij CV, zdjęcie oraz wyciąg z KRK
+                                (zaświadczenie o niekaralności), aby kontynuować
+                                proces weryfikacji.
                             </p>
                             <form action="/my/candidate/upload" method="post"
                                   enctype="multipart/form-data">
@@ -217,10 +220,62 @@
                                         <small class="text-success">✓ Przesłano wcześniej</small>
                                     </t>
                                 </div>
+                                <div class="mb-3">
+                                    <label class="form-label">
+                                        Wyciąg z KRK — zaświadczenie o niekaralności (PDF)
+                                    </label>
+                                    <input type="file" name="krk_attachment"
+                                           class="form-control" accept=".pdf,image/*"/>
+                                    <t t-if="staff.krk_attachment">
+                                        <small class="text-success">✓ Przesłano — czeka na weryfikację administratora</small>
+                                    </t>
+                                </div>
                                 <button type="submit" class="btn btn-primary btn-sm">
                                     Wyślij dokumenty
                                 </button>
                             </form>
+                        </div>
+                    </div>
+
+                    <!-- Krok 2: declaracja niekaralności (podpis) -->
+                    <div class="card border-0 shadow-sm mt-3">
+                        <div class="card-header bg-light fw-semibold">
+                            Krok 2 — Oświadczenie o niekaralności
+                        </div>
+                        <div class="card-body">
+                            <t t-if="staff.declaration_signed">
+                                <div class="alert alert-success mb-0">
+                                    ✓ Oświadczenie podpisane
+                                    <t t-if="staff.declaration_date">
+                                        (<t t-esc="staff.declaration_date" t-options='{"widget": "datetime"}'/>)
+                                    </t>.
+                                    Czeka na decyzję kierownika o dopuszczeniu.
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <p class="text-muted small mb-3">
+                                    Oświadczam, że nie byłem(am) prawomocnie skazany(a)
+                                    za przestępstwa wykluczające pracę z małoletnimi
+                                    oraz że nie figuruję w Rejestrze Sprawców Przestępstw
+                                    na Tle Seksualnym (art. 21 ustawy z dnia 13 maja 2016 r.).
+                                    Oświadczenie nie zastępuje wyciągu z KRK — jest jego
+                                    uzupełnieniem. Podpis i jego data zostaną utrwalone.
+                                </p>
+                                <form action="/my/candidate/declaration" method="post">
+                                    <input type="hidden" name="csrf_token"
+                                           t-att-value="request.csrf_token()"/>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox"
+                                               name="accept" id="declAccept" required="required"/>
+                                        <label class="form-check-label" for="declAccept">
+                                            Potwierdzam prawdziwość powyższego oświadczenia.
+                                        </label>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-sm">
+                                        Podpisz oświadczenie
+                                    </button>
+                                </form>
+                            </t>
                         </div>
                     </div>
                 </t>

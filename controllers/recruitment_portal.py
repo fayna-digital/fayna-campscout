@@ -205,10 +205,60 @@ class RecruitmentPortal(CustomerPortal):
             import base64
             vals["photo"] = base64.b64encode(photo_file.read())
 
+        # KRK upload — wyciąg z Krajowego Rejestru Karnego (§13)
+        krk_file = request.httprequest.files.get("krk_attachment")
+        if krk_file and krk_file.filename:
+            import base64
+
+            vals["krk_attachment"] = base64.b64encode(krk_file.read())
+
         if vals:
             try:
                 staff.write(vals)
             except (UserError, ValidationError, AccessError) as e:
                 return request.redirect(f"/my/candidate?error={str(e)[:80]}")
+
+        return request.redirect("/my/candidate?success=1")
+
+    # ── POST /my/candidate/declaration — підпис declaracji niekaralności ─────
+    @http.route(
+        ["/my/candidate/declaration"],
+        type="http",
+        auth="user",
+        website=True,
+        methods=["POST"],
+        csrf=True,
+    )
+    def portal_candidate_declaration(self, **post):
+        """Kandydat składa oświadczenie o niekaralności (§13 / §6m).
+
+        Wymaga zaznaczenia zgody (accept=on). Utrwalamy moment + IP
+        (niezaprzeczalność podpisu, §6k/§6o). NIE zastępuje weryfikacji
+        KRK/RSPTS — admission gate sprawdza oba warunki niezależnie."""
+        partner = request.env.user.partner_id
+        applications = (
+            request.env["camp.staff.application"]
+            .sudo()
+            .search(
+                [("partner_id", "=", partner.id), ("state", "=", "accepted")],
+                limit=1,
+                order="create_date desc",
+            )
+        )
+        if not applications or not applications.staff_id:
+            return request.redirect("/my/candidate?error=no_staff")
+
+        staff = applications.staff_id.sudo()
+        if staff.user_id.id != request.env.user.id:
+            raise AccessError("Not your staff record")
+
+        if not post.get("accept"):
+            return request.redirect("/my/candidate?error=Zaznacz zgodę, aby podpisać oświadczenie.")
+
+        ip_address = request.httprequest.remote_addr or ""
+        try:
+            staff._sign_declaration(ip_address=ip_address)
+        except (UserError, ValidationError, AccessError) as e:
+            return request.redirect(f"/my/candidate?error={str(e)[:80]}")
 
         return request.redirect("/my/candidate?success=1")

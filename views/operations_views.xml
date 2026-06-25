@@ -10,7 +10,7 @@
             <field name="name">camp.staff.tree</field>
             <field name="model">camp.staff</field>
             <field name="arch" type="xml">
-                <tree decoration-success="is_eligible_for_camp" decoration-danger="not is_eligible_for_camp and state == 'confirmed'">
+                <tree decoration-success="is_eligible_for_camp" decoration-danger="not is_eligible_for_camp and state == 'confirmed'" decoration-warning="state == 'pending_admission'">
                     <field name="name"/>
                     <field name="event_id"/>
                     <field name="role"/>
@@ -31,8 +31,18 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
+                        <!-- §13: «Dopuść» — twardy gate (declaracja podpisana
+                             + KRK/RSPTS zweryfikowane). Serwerowy strażnik w
+                             action_admit() + constraint; przycisk dodatkowo
+                             ukryty grupą i stanem. -->
+                        <button name="action_admit" type="object"
+                                string="Dopuść do pracy z dziećmi"
+                                class="btn-primary"
+                                invisible="state not in ('draft', 'pending_admission') or not is_eligible_for_camp or not declaration_signed"
+                                confirm="Potwierdzasz, że KRK/RSPTS są zweryfikowane, a declaracja niekaralności podpisana? Dopuszczenie nadaje pełny dostęp do danych dzieci (§13 Ustawa Kamilka)."
+                                groups="fayna_camp_portal.group_camp_organizator,fayna_camp_portal.group_camp_admin,fayna_camp_portal.group_camp_kierownik"/>
                         <field name="state" widget="statusbar"
-                               statusbar_visible="draft,confirmed,active,finished"/>
+                               statusbar_visible="draft,pending_admission,confirmed,active,finished"/>
                     </header>
                     <sheet>
                         <group>
@@ -76,6 +86,13 @@
                             <field name="has_valid_rps" readonly="1"/>
                             <field name="has_valid_course" readonly="1"/>
                             <field name="is_eligible_for_camp" readonly="1"/>
+                        </group>
+                        <group string="Declaracja niekaralności (§13)">
+                            <field name="declaration_signed" readonly="1"/>
+                            <field name="declaration_date" readonly="1"
+                                   invisible="not declaration_signed"/>
+                            <field name="declaration_ip" readonly="1"
+                                   invisible="not declaration_signed"/>
                         </group>
                         <separator string="Certifications"/>
                         <field name="cert_ids" nolabel="1" colspan="2">

@@ -151,6 +151,7 @@ class CampStaff(models.Model):
     state = fields.Selection(
         [
             ("draft", "Draft"),
+            ("pending_admission", "Pending admission"),
             ("confirmed", "Confirmed"),
             ("active", "Active"),
             ("on_leave", "On leave"),
@@ -159,7 +160,14 @@ class CampStaff(models.Model):
         default="draft",
         string=_("Status"),
         tracking=True,
-        help=_("Current participation status of this staff member."),
+        help=_(
+            "Admission state machine (§13 Ustawa Kamilka):\n"
+            "draft → kandydat zatrudniony, brak dokumentów;\n"
+            "pending_admission → declaracja niekaralności podpisana + KRK przesłane, "
+            "czeka na decyzję kierownika;\n"
+            "confirmed/active → kierownik dopuścił po weryfikacji KRK/RSPTS — "
+            "pełny dostęp do danych dzieci."
+        ),
     )
 
     notes = fields.Text(
@@ -288,6 +296,125 @@ class CampStaff(models.Model):
             "(Załącznik A7 — zakres czynności)."
         ),
     )
+
+    # ------------------------------------------------------------------
+    # §13 / §6m — Declaracja niekaralności (oświadczenie kandydata)
+    # Самопідписана декларація: кандидат заявляє, що не фігурує в RSTPO
+    # і не є prawomocnie skazany za przestępstwa, які виключають роботу
+    # з małoletnimi (art. 21 ust. 6 ustawy z 13.05.2016). Незаперечність
+    # підпису: фіксуємо момент + IP (§6k / §6o). НЕ замінює KRK/RSPTS-
+    # верифікацію — лише доповнює її; admission гейт перевіряє ОБИДВА.
+    # ------------------------------------------------------------------
+
+    declaration_signed = fields.Boolean(
+        string=_("Declaracja niekaralności podpisana"),
+        readonly=True,
+        copy=False,
+        tracking=True,
+        help=_(
+            "Kandydat złożył oświadczenie o niekaralności i o tym, że nie figuruje "
+            "w Rejestrze Sprawców Przestępstw na Tle Seksualnym (art. 21 ustawy "
+            "z 13.05.2016). Pole tylko do odczytu — ustawiane przez podpis w portalu."
+        ),
+    )
+    declaration_date = fields.Datetime(
+        string=_("Data podpisania declaracji"),
+        readonly=True,
+        copy=False,
+        help=_("Moment złożenia oświadczenia (niezaprzeczalność podpisu, §6k)."),
+    )
+    declaration_ip = fields.Char(
+        string=_("IP podpisu"),
+        readonly=True,
+        copy=False,
+        help=_("Adres IP z którego złożono oświadczenie (utrwalenie deklaranta, §6o)."),
+    )
+
+    def _sign_declaration(self, ip_address=None):
+        """Zapisz podpis declaracji niekaralności (jednorazowo, §6n).
+
+        Wywoływane z portalu (controller, sudo) po zaznaczeniu zgody przez
+        kandydata. Po podpisie + obecności KRK staff przechodzi w
+        pending_admission (czeka na «Dopuść» kierownika)."""
+        self.ensure_one()
+        if self.declaration_signed:
+            # Mandat «1 raz» (§6n) — nie nadpisujemy już złożonego oświadczenia.
+            return False
+        self.write(
+            {
+                "declaration_signed": True,
+                "declaration_date": fields.Datetime.now(),
+                "declaration_ip": ip_address or "",
+            }
+        )
+        self.message_post(
+            body=_(
+                "Kandydat podpisał declarację niekaralności "
+                "(IP: %(ip)s, %(when)s).",
+                ip=ip_address or "—",
+                when=fields.Datetime.now(),
+            )
+        )
+        # Jeśli KRK już przesłane — automatycznie do «czeka na dopuszczenie».
+        if self.state == "draft" and self.krk_attachment:
+            self.write({"state": "pending_admission"})
+        return True
+
+    # ------------------------------------------------------------------
+    # §13 — Allow-gate «Dopuść» (kierownik/organizator admits staff)
+    # ------------------------------------------------------------------
+
+    def _is_admitter(self):
+        return (
+            self.env.user.has_group("fayna_camp_portal.group_camp_organizator")
+            or self.env.user.has_group("fayna_camp_portal.group_camp_admin")
+            or self.env.user.has_group("fayna_camp_portal.group_camp_kierownik")
+        )
+
+    def action_admit(self):
+        """Kierownik/Organizator dopuszcza kadrę do pracy z dziećmi (§13).
+
+        Twardy gate przed przejściem w 'active':
+          1. Tylko Kierownik/Organizator/Admin może dopuścić.
+          2. Declaracja niekaralności musi być podpisana (samodeklaracja).
+          3. KRK + RSPTS + kurs muszą być zweryfikowane (is_eligible_for_camp).
+        Constraint _check_rspts_before_admission stanowi drugą, niezależną
+        zaporę po stronie ORM (na wypadek pominięcia przycisku)."""
+        for staff in self:
+            if not staff._is_admitter():
+                raise UserError(
+                    _(
+                        "Tylko Kierownik / Organizator / Administrator może "
+                        "dopuścić kadrę do pracy z dziećmi (§13 Ustawa Kamilka)."
+                    )
+                )
+            if not staff.declaration_signed:
+                raise UserError(
+                    _(
+                        "%(name)s nie podpisał(a) jeszcze declaracji "
+                        "niekaralności — dopuszczenie niemożliwe.",
+                        name=staff.name,
+                    )
+                )
+            if not staff.is_eligible_for_camp:
+                raise UserError(
+                    _(
+                        "%(name)s: brak zweryfikowanego KRK / RSPTS / kursu. "
+                        "Najpierw zaakceptuj certyfikaty (art. 21 ustawy "
+                        "z 16.05.2016 — dopuszczenie bez weryfikacji RSPTS jest "
+                        "zagrożone karą aresztu lub grzywny min. 1000 zł).",
+                        name=staff.name,
+                    )
+                )
+            staff.write({"state": "active"})
+            staff.message_post(
+                body=_(
+                    "Dopuszczono do pracy z dziećmi przez %(user)s "
+                    "(KRK/RSPTS zweryfikowane, declaracja podpisana).",
+                    user=self.env.user.name,
+                )
+            )
+        return True
 
     # ------------------------------------------------------------------
     # Фаза B — Self-onboarding PII fields (groups-gated, RODO)
