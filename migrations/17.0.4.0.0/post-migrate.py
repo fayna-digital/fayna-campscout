@@ -83,7 +83,7 @@ def migrate(cr, version):
 
         for legacy, canon in _LEGACY_TO_CANON.items():
             cr.execute(
-                f'UPDATE "{table}" SET "{column}" = %s '
+                f'UPDATE "{table}" SET "{column}" = %s '  # nosec B608
                 f'WHERE "{column}" = %s',  # noqa: S608 — table/col are static constants above
                 (canon, legacy),
             )
@@ -104,7 +104,7 @@ def migrate(cr, version):
         if not _table_exists(cr, table) or not _column_exists(cr, table, column):
             continue
         cr.execute(
-            f'SELECT "{column}", count(*) FROM "{table}" '
+            f'SELECT "{column}", count(*) FROM "{table}" '  # nosec B608
             f'WHERE "{column}" IN %s GROUP BY "{column}"',  # noqa: S608 — static identifiers
             (legacy_keys,),
         )
