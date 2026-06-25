@@ -250,7 +250,7 @@ msgstr ""
 "запити\n"
 "                підтримки, маркетингові звіти, публічні історії. БЕЗ доступу "
 "до медичних\n"
-"                даних, kuratorium, dziennik, щоденних звітів, інцидентів.\n"
+"                даних, kuratorium, щоденника занять, щоденних звітів, інцидентів.\n"
 "            "
 
 #. module: fayna_camp_portal
@@ -272,7 +272,7 @@ msgstr ""
 "                групу через правило запису camp.staff.event_id == self. "
 "Бачить\n"
 "                allergies + emergency_contact (дітей), але НЕ medications/\n"
-"                doctor_notes. Право підпису dziennik згідно із Załącznik 5 "
+"                doctor_notes. Право підпису щоденника занять згідно із Załącznik 5 "
 "MEN.\n"
 "            "
 
@@ -306,7 +306,7 @@ msgstr "Кількість днів"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_event_event__dziennik_count
 #, python-format
 msgid "# Dzienniki"
-msgstr "Кількість dziennik-ів"
+msgstr "Кількість щоденників"
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__event_count
@@ -3150,7 +3150,7 @@ msgstr "Заїзд (event.event), на який було спрямовано р
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_report__section_program
 #, python-format
 msgid "Camp shift program (auto-aggregated from dziennik activities)."
-msgstr "Програма заїзду (автоматично агрегована з активностей dziennik)."
+msgstr "Програма заїзду (автоматично агрегована з активностей щоденника занять)."
 
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_camp_report
@@ -3201,7 +3201,7 @@ msgid ""
 "from dziennik's kierownik or wychowawca list."
 msgstr ""
 "Працівник табору, який підписав цей запис активності. Автозаповнення при "
-"підписі зі списку керівника або вожатого dziennik."
+"підписі зі списку керівника або вожатого щоденника занять."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -3463,42 +3463,42 @@ msgstr ""
 #: code:addons/fayna_camp_portal/models/operations.py:0
 #, python-format
 msgid "Cannot delete activities on a submitted dziennik."
-msgstr "Не можна видаляти активності у поданому dziennik."
+msgstr "Не можна видаляти активності у поданому щоденнику занять."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/operations.py:0
 #, python-format
 msgid "Cannot delete notes on a submitted dziennik."
-msgstr "Не можна видаляти нотатки у поданому dziennik."
+msgstr "Не можна видаляти нотатки у поданому щоденнику занять."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/operations.py:0
 #, python-format
 msgid "Cannot delete plan lines on a submitted dziennik."
-msgstr "Не можна видаляти рядки плану у поданому dziennik."
+msgstr "Не можна видаляти рядки плану у поданому щоденнику занять."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/operations.py:0
 #, python-format
 msgid "Cannot edit activities on a submitted dziennik."
-msgstr "Не можна редагувати активності у поданому dziennik."
+msgstr "Не можна редагувати активності у поданому щоденнику занять."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/operations.py:0
 #, python-format
 msgid "Cannot edit notes on a submitted dziennik."
-msgstr "Не можна редагувати нотатки у поданому dziennik."
+msgstr "Не можна редагувати нотатки у поданому щоденнику занять."
 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/operations.py:0
 #, python-format
 msgid "Cannot edit plan lines on a submitted dziennik."
-msgstr "Не можна редагувати рядки плану у поданому dziennik."
+msgstr "Не можна редагувати рядки плану у поданому щоденнику занять."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -4975,7 +4975,7 @@ msgstr "Записи денних активностей (Załącznik 5 Розд
 #: model:ir.model.fields,help:fayna_camp_portal.field_event_event__dziennik_ids
 #, python-format
 msgid "Daily activity registers (dzienniki zajęć) for this camp shift."
-msgstr "Журнали денних активностей (dzienniki zajęć) для цього заїзду."
+msgstr "Журнали денних активностей (щоденники занять) для цього заїзду."
 
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_camp_journal
@@ -5994,7 +5994,7 @@ msgstr "Чернетка = редагується; Подано = заморож
 #: code:addons/fayna_camp_portal/models/operations.py:0
 #, python-format
 msgid "Draft dziennik"
-msgstr "Чернетка dziennik"
+msgstr "Чернетка щоденника занять"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -6072,7 +6072,7 @@ msgstr "Прибуткова діяльність"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_camp_dziennik_plan_line__dziennik_id
 #, python-format
 msgid "Dziennik"
-msgstr "Dziennik"
+msgstr "Щоденник занять"
 
 #. module: fayna_camp_portal
 #: model:ir.actions.act_window,name:fayna_camp_portal.action_fayna_camp_dziennik
@@ -6091,7 +6091,7 @@ msgstr "Журнал занять"
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_fayna_camp_dziennik__activity_ids
 #, python-format
 msgid "Dziennik zajęć (записи занять)"
-msgstr "Dziennik zajęć (записи занять)"
+msgstr "Щоденник занять (записи занять)"
 
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_fayna_camp_dziennik
@@ -6102,7 +6102,7 @@ msgstr ""
 #. module: fayna_camp_portal
 #: model:ir.model,name:fayna_camp_portal.model_fayna_camp_dziennik_activity
 msgid "Dziennik zajęć — single activity entry"
-msgstr "Dziennik zajęć — окремий запис активності"
+msgstr "Щоденник занять — окремий запис активності"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -6685,7 +6685,7 @@ msgstr "Події та інциденти"
 #: model:ir.model.fields,help:fayna_camp_portal.field_camp_report__section_events
 #, python-format
 msgid "Events/incidents (auto-aggregated from dziennik incident notes)."
-msgstr "Події/інциденти (агреговано з нотаток інцидентів dziennik)."
+msgstr "Події/інциденти (агреговано з нотаток інцидентів щоденника занять)."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -9752,7 +9752,7 @@ msgid ""
 "camp."
 msgstr ""
 "Обліковий запис для входу, який використовує цей співробітник. Потрібен для "
-"обмеження записів правилами — Вожатий бачить лише власні dzienniki; Керівник "
+"обмеження записів правилами — Вожатий бачить лише власні щоденники занять; Керівник "
 "табору бачить усі групи у власному таборі."
 
 #. module: fayna_camp_portal
@@ -10562,7 +10562,7 @@ msgstr "Мінімальний рекомендований вік учасни�
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_camp_dziennik_plan_line__state
 #, python-format
 msgid "Mirrored from parent dziennik — controls immutability."
-msgstr "Віддзеркалено з батьківського dziennik — керує незмінністю."
+msgstr "Віддзеркалено з батьківського щоденника занять — керує незмінністю."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -11459,7 +11459,7 @@ msgstr "Кількість персоналу на чергуванні цьог
 #: model:ir.model.fields,help:fayna_camp_portal.field_event_event__dziennik_submitted_count
 #, python-format
 msgid "Number of submitted (signed-off) dziennik records."
-msgstr "Кількість поданих (підписаних) записів dziennik."
+msgstr "Кількість поданих (підписаних) записів щоденника занять."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -16603,7 +16603,7 @@ msgstr "Дата подання"
 #: code:addons/fayna_camp_portal/models/operations.py:0
 #, python-format
 msgid "Submitted dziennik is frozen — cannot modify %(fields)s"
-msgstr "Поданий dziennik заморожено — не можна змінювати %(fields)s"
+msgstr "Поданий щоденник занять заморожено — не можна змінювати %(fields)s"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17135,7 +17135,7 @@ msgstr "Заїзд табору, до якого належить цей ден�
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_camp_dziennik__event_id
 #, python-format
 msgid "The camp shift this dziennik belongs to."
-msgstr "Заїзд табору, до якого належить цей dziennik."
+msgstr "Заїзд табору, до якого належить цей щоденник занять."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17188,7 +17188,7 @@ msgstr "Дитина, до якої належить цей інтервал п�
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_camp_dziennik_activity__dziennik_id
 #, python-format
 msgid "The dziennik this activity entry belongs to."
-msgstr "Dziennik, до якого належить цей запис заняття."
+msgstr "Щоденник занять, до якого належить цей запис заняття."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17196,7 +17196,7 @@ msgstr "Dziennik, до якого належить цей запис занят�
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_camp_dziennik_note__dziennik_id
 #, python-format
 msgid "The dziennik this note belongs to."
-msgstr "Dziennik, до якого належить ця нотатка."
+msgstr "Щоденник занять, до якого належить ця нотатка."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17204,7 +17204,7 @@ msgstr "Dziennik, до якого належить ця нотатка."
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_camp_dziennik_plan_line__dziennik_id
 #, python-format
 msgid "The dziennik this plan line belongs to."
-msgstr "Dziennik, до якого належить цей рядок плану."
+msgstr "Щоденник занять, до якого належить цей рядок плану."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17717,7 +17717,7 @@ msgstr "Час застосування підпису."
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_camp_dziennik__submitted_at
 #, python-format
 msgid "Timestamp when this dziennik was submitted."
-msgstr "Час подання цього dziennik."
+msgstr "Час подання цього щоденника занять."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__tz
@@ -17839,7 +17839,7 @@ msgstr "Загальна кількість годин для завершенн
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_camp_dziennik__activity_count
 #, python-format
 msgid "Total number of activity entries in this dziennik."
-msgstr "Загальна кількість записів активностей у цьому dziennik."
+msgstr "Загальна кількість записів активностей у цьому щоденнику занять."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -17855,7 +17855,7 @@ msgstr "Загальна кількість пунктів чек-листа."
 #: model:ir.model.fields,help:fayna_camp_portal.field_event_event__dziennik_count
 #, python-format
 msgid "Total number of dziennik records for this shift."
-msgstr "Загальна кількість записів dziennik для цього заїзду."
+msgstr "Загальна кількість записів щоденника занять для цього заїзду."
 
 #. module: fayna_camp_portal
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_payment_installment_plan__installment_count
@@ -18540,7 +18540,7 @@ msgstr "Користувач, який затвердив цю програму.
 #: model:ir.model.fields,help:fayna_camp_portal.field_fayna_camp_dziennik__submitted_by
 #, python-format
 msgid "User who submitted this dziennik."
-msgstr "Користувач, який подав цей dziennik."
+msgstr "Користувач, який подав цей щоденник занять."
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -20201,7 +20201,7 @@ msgstr "Немає даних за поточний місяць."
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.admin_as_wychowawca
 msgid "Немає записів dziennika."
-msgstr "Немає записів dziennika."
+msgstr "Немає записів щоденника занять."
 
 #. module: fayna_camp_portal
 #: model_terms:ir.ui.view,arch_db:fayna_camp_portal.admin_dashboard
