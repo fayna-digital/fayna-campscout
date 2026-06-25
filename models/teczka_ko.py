@@ -372,9 +372,7 @@ class CampTeczkaKO(models.Model):
         (PyPDF2 vs single QWeb bundle) to be decided at integration.
         """
         self.ensure_one()
-        raise UserError(
-            _("Eksport pakietu PDF — w przygotowaniu (Тир 3).")
-        )
+        raise UserError(_("Eksport pakietu PDF — w przygotowaniu (Тир 3)."))
 
     def action_check_regulamin_acks(self):
         """Manual trigger of the unsigned-regulamin warning (activity/log)."""
@@ -444,7 +442,7 @@ class CampTeczkaKO(models.Model):
             "fayna_camp_portal.action_report_teczka_ko_checklist",
             res_ids=self.ids,
         )
-        filename = "Teczka_KO_%s.pdf" % (self.event_id.name or "").replace(" ", "_")
+        filename = "Teczka_KO_{}.pdf".format((self.event_id.name or "").replace(" ", "_"))
         attachment = (
             self.env["ir.attachment"]
             .sudo()

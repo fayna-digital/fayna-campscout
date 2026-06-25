@@ -19,8 +19,8 @@ from . import (
     test_program_skeleton,  # noqa: E402,F401
     test_registration_seats,  # noqa: E402,F401
     test_regulamin_teczka,  # noqa: E402,F401
-    test_role_canon,  # noqa: E402,F401
     test_rodo_consent_immutable,  # noqa: E402,F401
+    test_role_canon,  # noqa: E402,F401
     test_scaffold,
     test_signoff_rodo,  # noqa: E402,F401
     test_staffing,  # noqa: E402,F401

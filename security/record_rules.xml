@@ -522,7 +522,7 @@
             <field name="perm_unlink" eval="True"/>
         </record>
 
-    
+
         <!-- ═══════════════════════════════════════════════════════════
              Organizator (top-level) БАЧИТЬ УСЕ — дозвільні правила, що OR-
              комбінуються з обмежувальними kierownik/wychowawca (інакше

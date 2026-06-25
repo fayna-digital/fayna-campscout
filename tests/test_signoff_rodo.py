@@ -130,9 +130,7 @@ class TestSignoffRodo(TransactionCase):
 
     def test_double_sign_blocked(self):
         """A card can be signed exactly once (legal immutability of the act)."""
-        self.child.sudo().sign_qualification(
-            signature=_PNG_1x1, signed_by_id=self.parent_user.id
-        )
+        self.child.sudo().sign_qualification(signature=_PNG_1x1, signed_by_id=self.parent_user.id)
         with self.assertRaises(UserError):
             self.child.sudo().sign_qualification(
                 signature=_PNG_1x1, signed_by_id=self.parent_user.id
@@ -183,9 +181,7 @@ class TestSignoffRodo(TransactionCase):
             .with_user(self.parent_user)
             .search([("id", "=", other_child.id)])
         )
-        self.assertFalse(
-            found, "portal parent must not see another parent's child via search"
-        )
+        self.assertFalse(found, "portal parent must not see another parent's child via search")
         # Direct access must be blocked by the record rule, not silently allowed.
         with self.assertRaises(AccessError):
             other_child.with_user(self.parent_user).check_access_rule("read")
@@ -241,9 +237,7 @@ class TestSignoffRodo(TransactionCase):
         editing case). FAILS if the write() immutability guard is removed.
         """
         child = self._make_child(self.parent_partner)
-        child.sudo().sign_qualification(
-            signature=_PNG_1x1, signed_by_id=self.parent_user.id
-        )
+        child.sudo().sign_qualification(signature=_PNG_1x1, signed_by_id=self.parent_user.id)
         # A staff user (group_user, not system) must be blocked from editing
         # protected fields on a signed card.
         staff = new_test_user(

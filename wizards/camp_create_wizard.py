@@ -436,8 +436,7 @@ class CampCreateWizard(models.TransientModel):
             else:  # zw
                 price = base
                 note = _(
-                    "Zwolniona z VAT (art.43 ust.1 pkt 24 lit.a)"
-                    " — opieka nad dziećmi i młodzieżą."
+                    "Zwolniona z VAT (art.43 ust.1 pkt 24 lit.a) — opieka nad dziećmi i młodzieżą."
                 )
 
             rec.computed_price_per_child = round(price, 2)
@@ -533,12 +532,21 @@ class CampCreateWizard(models.TransientModel):
             if (rec.markup_percent or 0.0) < 0:
                 raise ValidationError(_("Marża musi być ≥ 0%."))
 
-    @api.constrains("cost_advertising_total", "cost_lodging_per_day",
-                    "cost_food_per_child_day", "salary_wychowawca_per_turnus",
-                    "salary_kierownik_per_turnus", "salary_instructor_per_turnus",
-                    "cost_insurance_per_child_day", "cost_merch_per_child",
-                    "cost_stationery_per_child", "cost_operational_per_child",
-                    "seats", "date_begin", "date_end")
+    @api.constrains(
+        "cost_advertising_total",
+        "cost_lodging_per_day",
+        "cost_food_per_child_day",
+        "salary_wychowawca_per_turnus",
+        "salary_kierownik_per_turnus",
+        "salary_instructor_per_turnus",
+        "cost_insurance_per_child_day",
+        "cost_merch_per_child",
+        "cost_stationery_per_child",
+        "cost_operational_per_child",
+        "seats",
+        "date_begin",
+        "date_end",
+    )
     def _check_advertising_cap(self):
         """Advertising ≤ 20% of total cost budget (excl. advertising itself)."""
         for rec in self:

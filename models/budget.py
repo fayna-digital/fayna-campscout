@@ -447,9 +447,7 @@ class CampBudget(models.Model):
         Mirrors teczka_ko.delegatura_email: a per-shift override is kept if an
         organizator typed one by hand; otherwise the module-level default wins.
         """
-        default_email = (
-            self.env["ir.config_parameter"].sudo().get_param(_PARAM_KSIEGOWA_EMAIL, "")
-        )
+        default_email = self.env["ir.config_parameter"].sudo().get_param(_PARAM_KSIEGOWA_EMAIL, "")
         for rec in self:
             if rec.ksiegowa_email:
                 continue
@@ -473,15 +471,18 @@ class CampBudget(models.Model):
                 lines = MoveLine.sudo().search(
                     [
                         ("parent_state", "=", "posted"),
-                        ("move_id.move_type", "in", ("out_invoice", "out_refund",
-                                                     "in_invoice", "in_refund")),
+                        (
+                            "move_id.move_type",
+                            "in",
+                            ("out_invoice", "out_refund", "in_invoice", "in_refund"),
+                        ),
                         ("display_type", "=", False),
                     ]
                 )
                 for line in lines:
                     dist = line.analytic_distribution or {}
                     # analytic_distribution keys are str(account.id) → percent.
-                    if str(account.id) not in {str(k) for k in dist.keys()}:
+                    if str(account.id) not in {str(k) for k in dist}:
                         continue
                     move_type = line.move_id.move_type
                     is_revenue = move_type in ("out_invoice", "out_refund")
@@ -586,9 +587,9 @@ class CampBudget(models.Model):
     def action_print_evidence(self):
         """Render the per-shift financial evidence as a QWeb-PDF (no child data)."""
         self.ensure_one()
-        return self.env.ref(
-            "fayna_camp_portal.action_report_camp_budget_evidence"
-        ).report_action(self)
+        return self.env.ref("fayna_camp_portal.action_report_camp_budget_evidence").report_action(
+            self
+        )
 
     def action_send_evidence_to_ksiegowa(self):
         """Wyślij ewidencję finansową turnusu (PDF) na e-mail księgowej.
@@ -614,7 +615,7 @@ class CampBudget(models.Model):
             "fayna_camp_portal.report_camp_budget_evidence",
             res_ids=self.ids,
         )
-        filename = "Ewidencja_%s.pdf" % (self.event_id.name or "").replace(" ", "_")
+        filename = "Ewidencja_{}.pdf".format((self.event_id.name or "").replace(" ", "_"))
         attachment = (
             self.env["ir.attachment"]
             .sudo()
@@ -667,9 +668,9 @@ class CampBudget(models.Model):
             "Wysłał(a): %(user)s<br/>"
             "Data: %(when)s",
             to=email_to,
-            rev="%.2f" % self.evidence_revenue_net,
-            cost="%.2f" % self.evidence_costs_net,
-            bal="%.2f" % self.evidence_balance,
+            rev=f"{self.evidence_revenue_net:.2f}",
+            cost=f"{self.evidence_costs_net:.2f}",
+            bal=f"{self.evidence_balance:.2f}",
             user=self.env.user.name,
             when=fields.Datetime.to_string(fields.Datetime.now()),
         )
@@ -696,9 +697,7 @@ class CampBudget(models.Model):
         AND the shift has booked analytic figures, so empty drafts are skipped.
         Failures on one budget never block the rest.
         """
-        default_email = (
-            self.env["ir.config_parameter"].sudo().get_param(_PARAM_KSIEGOWA_EMAIL, "")
-        )
+        default_email = self.env["ir.config_parameter"].sudo().get_param(_PARAM_KSIEGOWA_EMAIL, "")
         budgets = self.search([("active", "=", True), ("analytic_account_id", "!=", False)])
         sent = 0
         for budget in budgets:
@@ -712,9 +711,7 @@ class CampBudget(models.Model):
                 budget.action_send_evidence_to_ksiegowa()
                 sent += 1
             except Exception as exc:  # noqa: BLE001 — one bad budget must not stop the cron
-                _logger.warning(
-                    "Monthly evidence cron: budget %s failed: %s", budget.id, exc
-                )
+                _logger.warning("Monthly evidence cron: budget %s failed: %s", budget.id, exc)
         _logger.info("Monthly evidence cron: sent %s evidence e-mail(s).", sent)
         return sent
 

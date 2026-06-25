@@ -10,7 +10,9 @@
 реального staging можуть потребувати уточнення (action-id меню Kadra, точні лейбли).
 Скелети, що залежать від навігації меню, поки @skip — знімаємо skip після калібрування.
 """
+
 import os
+
 import pytest
 from playwright.sync_api import Page, expect
 
@@ -36,10 +38,14 @@ def test_login_smoke(page: Page):
     """
     _login(page)
     # на сторінці логіну є поле password; після успіху його НЕ має бути
-    assert page.locator("input[name='password']").count() == 0, "лишились на логіні — авторизація не пройшла"
+    assert (
+        page.locator("input[name='password']").count() == 0
+    ), "лишились на логіні — авторизація не пройшла"
 
 
-@pytest.mark.skip(reason="калібрувати навігацію меню Kadra проти staging (action-id), тоді зняти skip")
+@pytest.mark.skip(
+    reason="калібрувати навігацію меню Kadra проти staging (action-id), тоді зняти skip"
+)
 def test_staff_role_dropdown_is_canon(page: Page):
     """Анти-казус 25.06: дропдаун ролей Kadra показує КАНОН-ключі, не старі.
 
@@ -49,8 +55,8 @@ def test_staff_role_dropdown_is_canon(page: Page):
     # TODO калібрування: точний шлях до форми camp.staff (меню/action-id зі staging)
     page.get_by_role("button", name="Dodaj").first.click()
     dd = page.locator("[name='role']")
-    expect(dd).to_contain_text("Kierownik wypoczynku")   # канон
-    expect(dd).not_to_contain_text("activity_lead")        # старий ключ зник
+    expect(dd).to_contain_text("Kierownik wypoczynku")  # канон
+    expect(dd).not_to_contain_text("activity_lead")  # старий ключ зник
 
 
 @pytest.mark.skip(reason="калібрувати флоу реєстрації дитини в порталі батьків проти staging")

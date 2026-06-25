@@ -11,11 +11,12 @@
 Патерн: escort_portal.py — ownership check + sudo після validation.
 Захист: csrf (вбудований website=True) + whitelist полів + sudo лише після перевірки.
 """
+
 import logging
 
 from odoo import http
 from odoo.addons.portal.controllers.portal import CustomerPortal
-from odoo.exceptions import AccessError, MissingError, UserError, ValidationError
+from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.http import request
 
 _logger = logging.getLogger(__name__)
@@ -197,10 +198,7 @@ class RecruitmentPortal(CustomerPortal):
                 order="event_id, sequence, name, id",
             )
         )
-        return [
-            {"name": group.name, "count": group.participant_count}
-            for group in groups
-        ]
+        return [{"name": group.name, "count": group.participant_count} for group in groups]
 
     # ── POST /my/candidate/upload — завантаження CV/фото (auth=user) ─────────
     @http.route(
@@ -238,12 +236,14 @@ class RecruitmentPortal(CustomerPortal):
         cv_file = request.httprequest.files.get("cv_attachment")
         if cv_file and cv_file.filename:
             import base64
+
             vals["cv_attachment"] = base64.b64encode(cv_file.read())
 
         # Photo upload
         photo_file = request.httprequest.files.get("photo")
         if photo_file and photo_file.filename:
             import base64
+
             vals["photo"] = base64.b64encode(photo_file.read())
 
         # KRK upload — wyciąg z Krajowego Rejestru Karnego (§13)

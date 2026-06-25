@@ -357,9 +357,7 @@ class CampEvent(models.Model):
                 "approval continues, card must be filled manually.",
                 self.id,
             )
-        self._post_note(
-            _("Табір погоджено та опубліковано організатором %s.") % self.env.user.name
-        )
+        self._post_note(_("Табір погоджено та опубліковано організатором %s.") % self.env.user.name)
 
     # F-GENERATOR (TZ §8) ─────────────────────────────────────────────────────
 
@@ -385,8 +383,7 @@ class CampEvent(models.Model):
         product = self.camp_program_id
         if not product:
             _logger.info(
-                "fayna_camp_portal._generate_product_card: event=%s has no "
-                "camp_program_id — skip.",
+                "fayna_camp_portal._generate_product_card: event=%s has no camp_program_id — skip.",
                 self.id,
             )
             return
@@ -420,8 +417,7 @@ class CampEvent(models.Model):
         if vals:
             product.sudo().write(vals)
             _logger.info(
-                "fayna_camp_portal._generate_product_card: event=%s product=%s "
-                "updated fields=%s",
+                "fayna_camp_portal._generate_product_card: event=%s product=%s updated fields=%s",
                 self.id,
                 product.id,
                 list(vals.keys()),
@@ -474,20 +470,14 @@ class CampEvent(models.Model):
             ("Cisza nocna", program.lights_out),
         ]
         for label, t in anchor_map:
-            ramowy_parts.append(
-                f"<li><strong>{self._float_to_hhmm(t)}</strong> — {label}</li>"
-            )
-        ramowy_html = (
-            "<h4>Ramowy dzień obozu</h4><ul>"
-            + "".join(ramowy_parts)
-            + "</ul>"
-        )
+            ramowy_parts.append(f"<li><strong>{self._float_to_hhmm(t)}</strong> — {label}</li>")
+        ramowy_html = "<h4>Ramowy dzień obozu</h4><ul>" + "".join(ramowy_parts) + "</ul>"
 
         # Per-day detail (from activity lines, skip sleep/free)
         day_blocks = []
         for day in program.day_ids.sorted("date"):
             lines = day.activity_line_ids.filtered(
-                lambda l: l.category not in ("sleep", "free")
+                lambda ln: ln.category not in ("sleep", "free")
             ).sorted("time_from")
             if not lines:
                 continue
@@ -516,24 +506,20 @@ class CampEvent(models.Model):
             return []
 
         activity_lines = program.day_ids.mapped("activity_line_ids").filtered(
-            lambda l: l.category == "activity" and l.title and l.title != "Czas wolny — do wypełnienia"
+            lambda ln: (
+                ln.category == "activity" and ln.title and ln.title != "Czas wolny — do wypełnienia"
+            )
         )
         names = list({line.title.strip() for line in activity_lines if line.title.strip()})
         if not names:
             return []
 
-        matched = (
-            self.env["camp.activity"]
-            .sudo()
-            .search([("name", "in", names)])
-        )
+        matched = self.env["camp.activity"].sudo().search([("name", "in", names)])
         if not matched:
             # Try case-insensitive fallback (ilike search per name)
             matched_ids = []
             for name in names:
-                rec = self.env["camp.activity"].sudo().search(
-                    [("name", "=ilike", name)], limit=1
-                )
+                rec = self.env["camp.activity"].sudo().search([("name", "=ilike", name)], limit=1)
                 if rec:
                     matched_ids.append(rec.id)
             return matched_ids
@@ -566,7 +552,7 @@ class CampEvent(models.Model):
         items = []
         for day in program.day_ids.sorted("date"):
             for line in day.activity_line_ids.filtered(
-                lambda l: l.category == "activity" and l.title
+                lambda ln: ln.category == "activity" and ln.title
             ).sorted("time_from"):
                 title = line.title.strip()
                 if title in _SKIP_TITLES or title in seen:
@@ -589,8 +575,8 @@ class CampEvent(models.Model):
         except AttributeError:
             # camp_budget_id not yet available (module load order) — fallback search
             try:
-                budget = self.env["camp.budget"].sudo().search(
-                    [("event_id", "=", self.id)], limit=1
+                budget = (
+                    self.env["camp.budget"].sudo().search([("event_id", "=", self.id)], limit=1)
                 )
             except Exception:  # noqa: BLE001
                 return 0.0
@@ -619,9 +605,7 @@ class CampEvent(models.Model):
         # Unpublish linked camp program product if set
         if self.camp_program_id:
             self.camp_program_id.sudo().write({"website_published": False})
-        self._post_note(
-            _("Табір відхилено: %s") % self.rejection_reason
-        )
+        self._post_note(_("Табір відхилено: %s") % self.rejection_reason)
 
     # --- Kuratorium notifications -------------------------------------------
 
@@ -676,7 +660,7 @@ class CampProduct(models.Model):
         string="Camp Status",
         tracking=True,
         copy=False,
-        help=_("Lifecycle state of the camp program. " "Controls visibility on the website."),
+        help=_("Lifecycle state of the camp program. Controls visibility on the website."),
     )
 
     def action_publish(self):
@@ -799,7 +783,7 @@ class CampProduct(models.Model):
         string="Daily routine (legacy HTML)",
         translate=True,
         sanitize=True,
-        help=_("Free-text HTML fallback. " "Prefer the structured Plan A/B schedule below."),
+        help=_("Free-text HTML fallback. Prefer the structured Plan A/B schedule below."),
     )
     schedule_ids = fields.One2many(
         "camp.schedule.entry",
@@ -932,7 +916,7 @@ class CampProduct(models.Model):
         "product_tmpl_id",
         "attachment_id",
         string="Gallery",
-        help=_("Extra photos for the camp gallery " "— in addition to the main product images."),
+        help=_("Extra photos for the camp gallery — in addition to the main product images."),
     )
     camp_program_pdf_id = fields.Many2one(
         "ir.attachment",
@@ -946,15 +930,14 @@ class CampProduct(models.Model):
         string="TOP rendered",
         compute="_compute_camp_rendered_html",
         sanitize=False,
-        help=_("Preview of the top banner of the camp page " "— auto-built from the fields above."),
+        help=_("Preview of the top banner of the camp page — auto-built from the fields above."),
     )
     camp_bot_html = fields.Html(
         string="BOT rendered",
         compute="_compute_camp_rendered_html",
         sanitize=False,
         help=_(
-            "Preview of the main content block of the camp page "
-            "— auto-built from the fields above."
+            "Preview of the main content block of the camp page — auto-built from the fields above."
         ),
     )
 

@@ -152,7 +152,7 @@ class CampStaffApplication(models.Model):
         self.vacancy_id.write({"candidate_name": self.candidate_name})
 
         # 3. Hire via vacancy (creates camp.staff in draft — §13 safe).
-        staff = self.vacancy_id.action_hire()
+        self.vacancy_id.action_hire()
         # action_hire returns act_window dict; vacancy now has staff_id
         staff_record = self.vacancy_id.staff_id
         if not staff_record:

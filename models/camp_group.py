@@ -17,11 +17,14 @@
 #     the group link is the ACL source of truth.
 #   * `camp.participant.group_id` is added here (same vertical slice) so the
 #     whole feature ships in one file; integration only needs the import.
+import logging
 import math
 
 from dateutil.relativedelta import relativedelta
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
+
+_logger = logging.getLogger(__name__)
 
 # Legal capacity limits — art. 92c ust. 2 pkt 1 ustawy o systemie oświaty.
 GROUP_LIMIT_DEFAULT = 20
@@ -447,6 +450,7 @@ class CampParticipant(models.Model):
         for rec in self:
             reg = rec.current_registration_id or rec.registration_ids[:1]
             rec.group_event_id = reg.event_id if reg else False
+
     has_disability = fields.Boolean(
         string=_("Niepełnosprawność / przewlekła choroba (§2)"),
         tracking=True,

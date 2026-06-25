@@ -33,7 +33,6 @@
 #                         = 36 820 + 3 800 + 2 200 = 42 820 zł
 #   cap = 42 820 × 0.20 = 8 564 zł
 
-import math
 from datetime import datetime
 
 from odoo.exceptions import ValidationError
@@ -209,7 +208,7 @@ class TestPricingCalculator(TransactionCase):
             _ = wizard.computed_price_per_child  # must not ZeroDivisionError
         except ZeroDivisionError:
             self.fail("computed_price_per_child raised ZeroDivisionError when dates are equal.")
-        except Exception:
+        except Exception:  # noqa: S110 — навмисно: констрейнт коректно відхиляє
             # Correct behaviour: the date constraint ("end after start") rejects
             # equal/inverted dates AT WRITE, so the degenerate state never reaches
             # the compute. The system protecting itself == graceful, not a crash.

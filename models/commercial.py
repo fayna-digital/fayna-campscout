@@ -759,13 +759,13 @@ class SaleOrderCommercial(models.Model):
                 # acceptable here because this is a backend audit hook and
                 # a logged failure is the correct degradation (not a 500).
                 _logger.exception(
-                    "fayna_camp_portal commercial: failed to record RODO consent " "for order=%s",
+                    "fayna_camp_portal commercial: failed to record RODO consent for order=%s",
                     order.id,
                 )
                 continue
             order.write({"rodo_consent_id": consent.id})
             _logger.info(
-                "fayna_camp_portal commercial: RODO consent=%s linked to " "order=%s partner=%s",
+                "fayna_camp_portal commercial: RODO consent=%s linked to order=%s partner=%s",
                 consent.id,
                 order.id,
                 partner.id,
@@ -1514,8 +1514,7 @@ class FaynaPaymentInstallmentPlan(models.Model):
         default=25.0,
         string="Deposit %",
         help=(
-            "Percentage of total as first payment. "
-            "Only used when plan_type='deposit_plus_equal'."
+            "Percentage of total as first payment. Only used when plan_type='deposit_plus_equal'."
         ),
         digits=(5, 2),
     )

@@ -184,14 +184,10 @@ def _resolve_tiles(env, raw_tiles):
         try:
             record = env.ref(xmlid, raise_if_not_found=False)
             if not record:
-                _logger.debug(
-                    "camp kiosk: action xmlid not found, skipping tile: %s", xmlid
-                )
+                _logger.debug("camp kiosk: action xmlid not found, skipping tile: %s", xmlid)
                 continue
         except Exception:
-            _logger.warning(
-                "camp kiosk: error resolving xmlid %s, skipping", xmlid, exc_info=True
-            )
+            _logger.warning("camp kiosk: error resolving xmlid %s, skipping", xmlid, exc_info=True)
             continue
 
         result.append(
@@ -232,8 +228,7 @@ class CampKioskController(http.Controller):
 
         # User has none of the kiosk roles — return empty with a message.
         _logger.warning(
-            "camp kiosk: user %s (%d) accessed /camp/kiosk/layout "
-            "without a kiosk role",
+            "camp kiosk: user %s (%d) accessed /camp/kiosk/layout without a kiosk role",
             user.login,
             user.id,
         )
@@ -276,7 +271,5 @@ class CampKioskController(http.Controller):
             {"visible": True/False}
         """
         user = request.env.user
-        visible = any(
-            user.has_group(group_xmlid) for group_xmlid, _tiles in _TILES_BY_GROUP
-        )
+        visible = any(user.has_group(group_xmlid) for group_xmlid, _tiles in _TILES_BY_GROUP)
         return {"visible": visible}

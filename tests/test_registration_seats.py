@@ -76,7 +76,9 @@ class TestRegistrationSeats(TransactionCase):
     def _event_registrations(self):
         return self.env["event.registration"].search([("event_id", "=", self.event.id)])
 
-    @skip("ADR-2 verified manually on staging: 209 open regs; event-product fixture differs in this Odoo build")
+    @skip(
+        "ADR-2 verified manually on staging: 209 open regs; event-product fixture differs in this Odoo build"
+    )
     def test_confirm_creates_one_registration_per_seat(self):
         """qty=3 → exactly 3 event.registration rows for the event.
 

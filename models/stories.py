@@ -152,10 +152,7 @@ class CampStory(models.Model):
         for record in self:
             if record.state != "draft":
                 raise UserError(
-                    _(
-                        "Cannot publish a story in state '%s'. "
-                        "Only draft stories can be published."
-                    )
+                    _("Cannot publish a story in state '%s'. Only draft stories can be published.")
                     % record.state
                 )
             record.write({"state": "published", "publish_date": fields.Datetime.now()})

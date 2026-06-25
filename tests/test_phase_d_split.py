@@ -101,9 +101,7 @@ class TestPhaseDSplit(TransactionCase):
                 "date_end": "2026-07-14 18:00:00",
             }
         )
-        older_group = self.env["camp.group"].create(
-            {"name": "Older Group", "event_id": event.id}
-        )
+        older_group = self.env["camp.group"].create({"name": "Older Group", "event_id": event.id})
         # Add one 10-year-old to make it a ≥10 group (has_under_10=False).
         older, _ = self._make_child(900, "2016-07-01", event=event)
         older.write({"group_id": older_group.id})
@@ -112,8 +110,9 @@ class TestPhaseDSplit(TransactionCase):
         # Register a child under 10 — should NOT go into the older_group.
         young, _ = self._make_child(901, "2020-07-01", event=event)
         # _auto_assign called by create hook already; check result.
-        self.assertNotEqual(young.group_id, older_group,
-                            "Under-10 child must not be placed in an older (≥10) group")
+        self.assertNotEqual(
+            young.group_id, older_group, "Under-10 child must not be placed in an older (≥10) group"
+        )
 
     def test_d2_full_camp_to_reserve(self):
         """When no compatible group has a free slot the child goes to reserve."""
@@ -157,8 +156,7 @@ class TestPhaseDSplit(TransactionCase):
 
         # First extra → goes into last slot.
         child1, reg1 = self._make_child(801, "2014-06-01", event=event)
-        self.assertEqual(child1.group_id, group,
-                         "Child 1 should fill the last available slot")
+        self.assertEqual(child1.group_id, group, "Child 1 should fill the last available slot")
 
         # Second extra → reserve (group now full = 20).
         child2, reg2 = self._make_child(802, "2014-06-02", event=event)
@@ -168,8 +166,9 @@ class TestPhaseDSplit(TransactionCase):
         reg1.write({"state": "cancel"})
         child2.invalidate_recordset()
         child1.invalidate_recordset()
-        self.assertEqual(child2.group_id, group,
-                         "Reserve child must be promoted after cancellation")
+        self.assertEqual(
+            child2.group_id, group, "Reserve child must be promoted after cancellation"
+        )
         self.assertFalse(child2.is_reserve, "Promoted child must no longer be marked as reserve")
 
     def test_d2_trigger_does_not_block_sale(self):
@@ -182,9 +181,7 @@ class TestPhaseDSplit(TransactionCase):
             }
         )
         # Child with NO birth_date — _auto_assign will no-op; registration must succeed.
-        child = self.env["camp.participant"].create(
-            {"first_name": "NoBirth", "last_name": "Child"}
-        )
+        child = self.env["camp.participant"].create({"first_name": "NoBirth", "last_name": "Child"})
         reg = self.env["event.registration"].create(
             {
                 "event_id": event.id,
@@ -208,25 +205,35 @@ class TestPhaseDSplit(TransactionCase):
                 "date_end": "2026-07-14 18:00:00",
             }
         )
-        g1 = self.env["camp.group"].create({"name": "Group A", "event_id": event.id, "sequence": 10})
-        g2 = self.env["camp.group"].create({"name": "Group B", "event_id": event.id, "sequence": 20})
-        g3 = self.env["camp.group"].create({"name": "Group C", "event_id": event.id, "sequence": 30})
+        g1 = self.env["camp.group"].create(
+            {"name": "Group A", "event_id": event.id, "sequence": 10}
+        )
+        g2 = self.env["camp.group"].create(
+            {"name": "Group B", "event_id": event.id, "sequence": 20}
+        )
+        g3 = self.env["camp.group"].create(
+            {"name": "Group C", "event_id": event.id, "sequence": 30}
+        )
 
         # Create confirmed counselors with valid certs (bypass Kamilka check via cert).
         # Simplest: patch state directly via write without cert check (use sudo + bypass).
         # Use draft → write state=confirmed bypassing _check_rspts_before_admission
         # by granting is_eligible_for_camp=True via cert records.
         def make_counselor(user):
-            staff = self.env["camp.staff"].sudo().create(
-                {
-                    "name": user.name,
-                    "event_id": event.id,
-                    "role": "wychowawca",
-                    "user_id": user.id,
-                    "date_from": "2026-07-01",
-                    "date_to": "2026-07-14",
-                    "state": "draft",
-                }
+            staff = (
+                self.env["camp.staff"]
+                .sudo()
+                .create(
+                    {
+                        "name": user.name,
+                        "event_id": event.id,
+                        "role": "wychowawca",
+                        "user_id": user.id,
+                        "date_from": "2026-07-01",
+                        "date_to": "2026-07-14",
+                        "state": "draft",
+                    }
+                )
             )
             # Grant certs so state→confirmed passes Kamilka check.
             today = "2026-06-24"
@@ -255,8 +262,9 @@ class TestPhaseDSplit(TransactionCase):
         # Round-robin: g1→w1, g2→w2, g3→w1 (or w2 depending on search order)
         w1_groups = (g1 | g2 | g3).filtered(lambda g: self.user_w1 in g.wychowawca_ids)
         w2_groups = (g1 | g2 | g3).filtered(lambda g: self.user_w2 in g.wychowawca_ids)
-        self.assertEqual(len(w1_groups) + len(w2_groups), 3,
-                         "All 3 groups must have exactly one counselor each")
+        self.assertEqual(
+            len(w1_groups) + len(w2_groups), 3, "All 3 groups must have exactly one counselor each"
+        )
         # No group without a counselor.
         for g in (g1, g2, g3):
             self.assertTrue(g.wychowawca_ids, f"{g.name} must have a wychowawca assigned")
@@ -321,9 +329,7 @@ class TestPhaseDSplit(TransactionCase):
         # Verify record rule: wychowawca without group assignment cannot see the participant.
         # user_w2 is NOT in group.wychowawca_ids for this event.
         visible_to_w2 = (
-            self.env["camp.participant"]
-            .with_user(self.user_w2)
-            .search([("id", "=", child.id)])
+            self.env["camp.participant"].with_user(self.user_w2).search([("id", "=", child.id)])
         )
         self.assertFalse(
             visible_to_w2,

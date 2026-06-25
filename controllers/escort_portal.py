@@ -7,6 +7,7 @@ auth=user (на відміну від старого public bs-флоу). Дос
 Підпис — canvas signature pad → base64 PNG → action_sign() (патерн порталу).
 TZ §5.5. Дизайн ухвалено панеллю + СТО 2026-06-23.
 """
+
 import logging
 
 from odoo import http
@@ -108,9 +109,7 @@ class EscortPortal(CustomerPortal):
         return request.redirect(f"/my/escort/{escort.id}")
 
     # ── Підпис (canvas → base64 PNG) ─────────────────────────────────────
-    @http.route(
-        ["/my/escort/<int:escort_id>/sign"], type="json", auth="user", website=True
-    )
+    @http.route(["/my/escort/<int:escort_id>/sign"], type="json", auth="user", website=True)
     def portal_my_escort_sign(self, escort_id, signature=None, **kw):
         try:
             escort = self._get_own_escort(escort_id)

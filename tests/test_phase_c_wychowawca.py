@@ -7,7 +7,7 @@
 #   100%-гейт action_wychowawca_submit (unfilled → UserError; all filled → wychowawca_done)
 #   rain plan — окремий гейт (rain structured not affected by normal submit)
 #   fill_progress compute: 0 → 100
-from datetime import date, timedelta
+from datetime import date
 
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests.common import TransactionCase, tagged
@@ -95,30 +95,38 @@ class TestPhaseCWychowawca(TransactionCase):
             }
         )
         # locked kierownik line (Obiad)
-        cls.line_locked = cls.env["camp.program.activity.line"].sudo().create(
-            {
-                "day_id": cls.day.id,
-                "time_from": 13.0,
-                "time_to": 13.75,
-                "title": "Obiad",
-                "category": "meal",
-                "owner_role": "kierownik",
-                "is_locked": True,
-                "skeleton_label": "Obiad",
-            }
+        cls.line_locked = (
+            cls.env["camp.program.activity.line"]
+            .sudo()
+            .create(
+                {
+                    "day_id": cls.day.id,
+                    "time_from": 13.0,
+                    "time_to": 13.75,
+                    "title": "Obiad",
+                    "category": "meal",
+                    "owner_role": "kierownik",
+                    "is_locked": True,
+                    "skeleton_label": "Obiad",
+                }
+            )
         )
         # free wychowawca line
-        cls.line_free = cls.env["camp.program.activity.line"].sudo().create(
-            {
-                "day_id": cls.day.id,
-                "time_from": 15.0,
-                "time_to": 16.0,
-                "title": "Czas wolny — do wypełnienia",
-                "category": "free",
-                "owner_role": "wychowawca",
-                "is_locked": False,
-                "skeleton_label": "Czas wolny",
-            }
+        cls.line_free = (
+            cls.env["camp.program.activity.line"]
+            .sudo()
+            .create(
+                {
+                    "day_id": cls.day.id,
+                    "time_from": 15.0,
+                    "time_to": 16.0,
+                    "title": "Czas wolny — do wypełnienia",
+                    "category": "free",
+                    "owner_role": "wychowawca",
+                    "is_locked": False,
+                    "skeleton_label": "Czas wolny",
+                }
+            )
         )
 
         # ── rain plan structured (published) ────────────────────────────
@@ -144,17 +152,21 @@ class TestPhaseCWychowawca(TransactionCase):
                 "date": date(2026, 7, 1),
             }
         )
-        cls.line_rain_free = cls.env["camp.program.activity.line"].sudo().create(
-            {
-                "day_id": cls.day_rain.id,
-                "time_from": 10.0,
-                "time_to": 11.0,
-                "title": "Czas wolny — do wypełnienia",
-                "category": "free",
-                "owner_role": "wychowawca",
-                "is_locked": False,
-                "skeleton_label": "Czas wolny (deszcz)",
-            }
+        cls.line_rain_free = (
+            cls.env["camp.program.activity.line"]
+            .sudo()
+            .create(
+                {
+                    "day_id": cls.day_rain.id,
+                    "time_from": 10.0,
+                    "time_to": 11.0,
+                    "title": "Czas wolny — do wypełnienia",
+                    "category": "free",
+                    "owner_role": "wychowawca",
+                    "is_locked": False,
+                    "skeleton_label": "Czas wolny (deszcz)",
+                }
+            )
         )
 
     # ── C1: constrain _check_locked_write ────────────────────────────────
@@ -162,9 +174,7 @@ class TestPhaseCWychowawca(TransactionCase):
     def test_constrain_locked_blocks_wychowawca(self):
         """Wychowawca writing is_locked=True line → blocked (rule AccessError or constrain ValidationError)."""
         with self.assertRaises((AccessError, ValidationError)):
-            self.line_locked.with_user(self.user_wychowawca).write(
-                {"title": "Własny obiad"}
-            )
+            self.line_locked.with_user(self.user_wychowawca).write({"title": "Własny obiad"})
 
     def test_constrain_free_allows_wychowawca(self):
         """Wychowawca writing free (unlocked, owner=wychowawca) line → OK."""
@@ -174,32 +184,32 @@ class TestPhaseCWychowawca(TransactionCase):
         )
         self.assertEqual(self.line_free.title, "Badminton drużynowy")
         # restore
-        self.line_free.sudo().write(
-            {"title": "Czas wolny — do wypełnienia", "category": "free"}
-        )
+        self.line_free.sudo().write({"title": "Czas wolny — do wypełnienia", "category": "free"})
 
     def test_constrain_sudo_regres_generator(self):
         """Generator in sudo creates locked lines without ValidationError (Phase A regress)."""
-        new_line = self.env["camp.program.activity.line"].sudo().create(
-            {
-                "day_id": self.day.id,
-                "time_from": 20.0,
-                "time_to": 21.0,
-                "title": "Zajęcia wieczorne",
-                "category": "activity",
-                "owner_role": "kierownik",
-                "is_locked": True,
-                "skeleton_label": "Wieczór",
-            }
+        new_line = (
+            self.env["camp.program.activity.line"]
+            .sudo()
+            .create(
+                {
+                    "day_id": self.day.id,
+                    "time_from": 20.0,
+                    "time_to": 21.0,
+                    "title": "Zajęcia wieczorne",
+                    "category": "activity",
+                    "owner_role": "kierownik",
+                    "is_locked": True,
+                    "skeleton_label": "Wieczór",
+                }
+            )
         )
         self.assertTrue(new_line.id, "Sudo create should not raise for locked lines")
         new_line.sudo().unlink()
 
     def test_constrain_kierownik_can_edit_locked(self):
         """Kierownik writing locked line → OK (no ValidationError)."""
-        self.line_locked.with_user(self.user_kierownik).write(
-            {"notes": "Uwaga: bezmięsne"}
-        )
+        self.line_locked.with_user(self.user_kierownik).write({"notes": "Uwaga: bezmięsne"})
         self.assertEqual(self.line_locked.notes, "Uwaga: bezmięsne")
         self.line_locked.sudo().write({"notes": False})
 
@@ -208,16 +218,12 @@ class TestPhaseCWychowawca(TransactionCase):
     def test_rule_wychowawca_cannot_write_locked_via_rule(self):
         """Record rule blocks wychowawca from writing a locked (kierownik-owned) line."""
         with self.assertRaises((AccessError, ValidationError)):
-            self.line_locked.with_user(self.user_wychowawca).write(
-                {"notes": "Próba edycji"}
-            )
+            self.line_locked.with_user(self.user_wychowawca).write({"notes": "Próba edycji"})
 
     def test_rule_wychowawca_cannot_create_line(self):
         """Record rule blocks wychowawca from creating new activity lines."""
         with self.assertRaises(AccessError):
-            self.env["camp.program.activity.line"].with_user(
-                self.user_wychowawca
-            ).create(
+            self.env["camp.program.activity.line"].with_user(self.user_wychowawca).create(
                 {
                     "day_id": self.day.id,
                     "time_from": 9.0,
@@ -238,15 +244,11 @@ class TestPhaseCWychowawca(TransactionCase):
 
     def test_fill_progress_hundred_when_filled(self):
         """fill_progress = 100 after free slot is concretely filled."""
-        self.line_free.sudo().write(
-            {"title": "Badminton drużynowy", "category": "activity"}
-        )
+        self.line_free.sudo().write({"title": "Badminton drużynowy", "category": "activity"})
         self.structured.invalidate_recordset()
         self.assertAlmostEqual(self.structured.fill_progress, 100.0, delta=0.1)
         # restore
-        self.line_free.sudo().write(
-            {"title": "Czas wolny — do wypełnienia", "category": "free"}
-        )
+        self.line_free.sudo().write({"title": "Czas wolny — do wypełnienia", "category": "free"})
 
     # ── C1: action_wychowawca_submit (100%-gate) ──────────────────────────
 
@@ -257,16 +259,12 @@ class TestPhaseCWychowawca(TransactionCase):
 
     def test_submit_gate_passes_when_all_filled(self):
         """action_wychowawca_submit sets wychowawca_done=True when all slots filled."""
-        self.line_free.sudo().write(
-            {"title": "Badminton drużynowy", "category": "activity"}
-        )
+        self.line_free.sudo().write({"title": "Badminton drużynowy", "category": "activity"})
         self.structured.action_wychowawca_submit()
         self.assertTrue(self.structured.wychowawca_done)
         # restore
         self.structured.sudo().write({"wychowawca_done": False})
-        self.line_free.sudo().write(
-            {"title": "Czas wolny — do wypełnienia", "category": "free"}
-        )
+        self.line_free.sudo().write({"title": "Czas wolny — do wypełnienia", "category": "free"})
 
     # ── Rain plan — separate gate ─────────────────────────────────────────
 
@@ -277,9 +275,7 @@ class TestPhaseCWychowawca(TransactionCase):
 
     def test_rain_submit_passes_when_filled(self):
         """Rain plan: after filling its free slot, submit succeeds independently."""
-        self.line_rain_free.sudo().write(
-            {"title": "Gry planszowe", "category": "activity"}
-        )
+        self.line_rain_free.sudo().write({"title": "Gry planszowe", "category": "activity"})
         self.structured_rain.action_wychowawca_submit()
         self.assertTrue(self.structured_rain.wychowawca_done)
         # normal plan still unaffected
@@ -292,14 +288,10 @@ class TestPhaseCWychowawca(TransactionCase):
 
     def test_normal_submit_does_not_affect_rain(self):
         """Filling normal plan does not mark rain plan as done."""
-        self.line_free.sudo().write(
-            {"title": "Badminton", "category": "activity"}
-        )
+        self.line_free.sudo().write({"title": "Badminton", "category": "activity"})
         self.structured.action_wychowawca_submit()
         self.assertTrue(self.structured.wychowawca_done)
         self.assertFalse(self.structured_rain.wychowawca_done)
         # restore
         self.structured.sudo().write({"wychowawca_done": False})
-        self.line_free.sudo().write(
-            {"title": "Czas wolny — do wypełnienia", "category": "free"}
-        )
+        self.line_free.sudo().write({"title": "Czas wolny — do wypełnienia", "category": "free"})

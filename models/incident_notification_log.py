@@ -113,8 +113,5 @@ class CampIncidentNotificationLog(models.Model):
     def unlink(self):
         """Forbid deletion — 7-year retention mandated by PL law."""
         raise UserError(
-            _(
-                "Notification log cannot be deleted "
-                "(7-year retention — PL camp law / RODO art. 30)."
-            )
+            _("Notification log cannot be deleted (7-year retention — PL camp law / RODO art. 30).")
         )

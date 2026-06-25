@@ -22,9 +22,9 @@ import logging
 from datetime import datetime, timedelta
 
 from odoo import _, http
+from odoo.addons.web.controllers.home import Home
 from odoo.exceptions import AccessError, MissingError, UserError
 from odoo.http import request
-from odoo.addons.web.controllers.home import Home
 
 _logger = logging.getLogger(__name__)
 
@@ -216,9 +216,7 @@ class CampscoutAdmin(http.Controller):
                 seen_ids.add(user.id)
                 rows.append({"id": user.id, "name": user.name})
             if rows:
-                sections.append(
-                    {"role": role, "label": labels.get(role, role), "users": rows}
-                )
+                sections.append({"role": role, "label": labels.get(role, role), "users": rows})
         return sections
 
     # --- KPI helpers -------------------------------------------------
@@ -615,7 +613,7 @@ class CampscoutAdmin(http.Controller):
         if root_menu:
             # Odoo 17 web client reads the menu_id from the URL fragment and
             # opens that application's menu directly instead of the apps grid.
-            return "/web#menu_id=%s" % root_menu.id
+            return f"/web#menu_id={root_menu.id}"
         return "/web"
 
     @http.route("/admin/impersonation-status", type="json", auth="user")

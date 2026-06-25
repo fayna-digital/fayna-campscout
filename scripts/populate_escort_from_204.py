@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright Fayna Digital — Volodymyr Shevchenko
 # License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """Міграція: для замовлень з продуктом 204 (Indywidualna asysta) створити
@@ -13,6 +12,7 @@ TZ §5.2/§7. Патерн — scripts/populate_from_bs.py.
    на staging (M0): нижче використано registration.partner_id == participant.partner_id.
    Перед commit-прогоном підтвердити реальні поля.
 """
+
 import logging
 
 DRY_RUN = True  # True → лише рахує/друкує, нічого не пише
@@ -33,7 +33,7 @@ def run(env):
         ]
     )
     orders = lines.mapped("order_id")
-    print("Замовлень з продуктом 204 (sale/done): %s" % len(orders))
+    print(f"Замовлень з продуктом 204 (sale/done): {len(orders)}")
 
     created = skipped = no_match = 0
     for order in orders:
@@ -70,8 +70,7 @@ def run(env):
                 created += 1
 
     print(
-        "Результат: created=%s skipped(існують)=%s no_match=%s  DRY_RUN=%s"
-        % (created, skipped, no_match, DRY_RUN)
+        f"Результат: created={created} skipped(існують)={skipped} no_match={no_match}  DRY_RUN={DRY_RUN}"
     )
     if not DRY_RUN:
         env.cr.commit()

@@ -16,13 +16,27 @@
 from odoo import models
 
 _ART9_FIELDS = (
-    "allergies", "medications", "chronic_conditions", "doctor_notes",
-    "allergy_meds", "allergy_pollen", "allergy_food", "allergy_insect_venom",
-    "motion_sickness", "orthodontic_appliance", "wears_glasses",
-    "wears_contact_lenses", "diet_low_calorie", "diet_vegetarian",
-    "emotional_expression_issues", "group_functioning_issues",
-    "psycho_behavioral_notes", "vacc_other", "health_risk_flags",
-    "iii_health_events", "iii_medication_given",
+    "allergies",
+    "medications",
+    "chronic_conditions",
+    "doctor_notes",
+    "allergy_meds",
+    "allergy_pollen",
+    "allergy_food",
+    "allergy_insect_venom",
+    "motion_sickness",
+    "orthodontic_appliance",
+    "wears_glasses",
+    "wears_contact_lenses",
+    "diet_low_calorie",
+    "diet_vegetarian",
+    "emotional_expression_issues",
+    "group_functioning_issues",
+    "psycho_behavioral_notes",
+    "vacc_other",
+    "health_risk_flags",
+    "iii_health_events",
+    "iii_medication_given",
 )
 
 
@@ -50,16 +64,16 @@ def _art9_visible(env):
 class IrAttachmentArt9(models.Model):
     _inherit = "ir.attachment"
 
-    def _search(self, domain, offset=0, limit=None, order=None,
-                access_rights_uid=None):
+    def _search(self, domain, offset=0, limit=None, order=None, access_rights_uid=None):
         # Hide camp.participant attachments (karta PDF with medical data) from
         # users who may not see the card. Native attachment-check alone leaks
         # them because Finance can read the participant record itself.
         if not _art9_visible(self.env):
-            domain = ["&", "!", ("res_model", "=", "camp.participant")] + list(
-                domain or []
-            )
+            domain = ["&", "!", ("res_model", "=", "camp.participant")] + list(domain or [])
         return super()._search(
-            domain, offset=offset, limit=limit, order=order,
+            domain,
+            offset=offset,
+            limit=limit,
+            order=order,
             access_rights_uid=access_rights_uid,
         )

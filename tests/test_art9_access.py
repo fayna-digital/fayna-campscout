@@ -42,153 +42,224 @@ class TestArt9Access(TransactionCase):
         group_kierownik = cls.env.ref("fayna_camp_portal.group_camp_kierownik")
 
         # ── users ────────────────────────────────────────────────────────────
-        cls.user_finance = cls.env["res.users"].create({
-            "name": "Test Finance Art9",
-            "login": "test_finance_art9@campscout.test",
-            "email": "test_finance_art9@campscout.test",
-            "groups_id": [(6, 0, [group_finance.id, group_user.id])],
-        })
+        cls.user_finance = cls.env["res.users"].create(
+            {
+                "name": "Test Finance Art9",
+                "login": "test_finance_art9@campscout.test",
+                "email": "test_finance_art9@campscout.test",
+                "groups_id": [(6, 0, [group_finance.id, group_user.id])],
+            }
+        )
 
-        cls.user_wychowawca = cls.env["res.users"].create({
-            "name": "Test Wychowawca Art9",
-            "login": "test_wychowawca_art9@campscout.test",
-            "email": "test_wychowawca_art9@campscout.test",
-            "groups_id": [(6, 0, [group_wychowawca.id, group_user.id])],
-        })
+        cls.user_wychowawca = cls.env["res.users"].create(
+            {
+                "name": "Test Wychowawca Art9",
+                "login": "test_wychowawca_art9@campscout.test",
+                "email": "test_wychowawca_art9@campscout.test",
+                "groups_id": [(6, 0, [group_wychowawca.id, group_user.id])],
+            }
+        )
 
-        cls.user_wychowawca2 = cls.env["res.users"].create({
-            "name": "Test Wychowawca2 Art9",
-            "login": "test_wychowawca2_art9@campscout.test",
-            "email": "test_wychowawca2_art9@campscout.test",
-            "groups_id": [(6, 0, [group_wychowawca.id, group_user.id])],
-        })
+        cls.user_wychowawca2 = cls.env["res.users"].create(
+            {
+                "name": "Test Wychowawca2 Art9",
+                "login": "test_wychowawca2_art9@campscout.test",
+                "email": "test_wychowawca2_art9@campscout.test",
+                "groups_id": [(6, 0, [group_wychowawca.id, group_user.id])],
+            }
+        )
 
-        cls.user_medic = cls.env["res.users"].create({
-            "name": "Test Medic Art9",
-            "login": "test_medic_art9@campscout.test",
-            "email": "test_medic_art9@campscout.test",
-            "groups_id": [(6, 0, [group_medical.id, group_user.id])],
-        })
+        cls.user_medic = cls.env["res.users"].create(
+            {
+                "name": "Test Medic Art9",
+                "login": "test_medic_art9@campscout.test",
+                "email": "test_medic_art9@campscout.test",
+                "groups_id": [(6, 0, [group_medical.id, group_user.id])],
+            }
+        )
 
-        cls.user_kierownik = cls.env["res.users"].create({
-            "name": "Test Kierownik Art9",
-            "login": "test_kierownik_art9@campscout.test",
-            "email": "test_kierownik_art9@campscout.test",
-            "groups_id": [(6, 0, [group_kierownik.id, group_user.id])],
-        })
+        cls.user_kierownik = cls.env["res.users"].create(
+            {
+                "name": "Test Kierownik Art9",
+                "login": "test_kierownik_art9@campscout.test",
+                "email": "test_kierownik_art9@campscout.test",
+                "groups_id": [(6, 0, [group_kierownik.id, group_user.id])],
+            }
+        )
 
         # ── parent partner + portal user ─────────────────────────────────────
-        cls.parent_partner = cls.env["res.partner"].create({
-            "name": "Test Parent Art9",
-            "email": "parent_art9@test.com",
-        })
-        cls.user_parent = cls.env["res.users"].create({
-            "name": "Test Parent Art9",
-            "login": "test_parent_art9@campscout.test",
-            "email": "parent_art9@test.com",
-            "partner_id": cls.parent_partner.id,
-            "groups_id": [(6, 0, [group_portal.id])],
-        })
+        cls.parent_partner = cls.env["res.partner"].create(
+            {
+                "name": "Test Parent Art9",
+                "email": "parent_art9@test.com",
+            }
+        )
+        cls.user_parent = cls.env["res.users"].create(
+            {
+                "name": "Test Parent Art9",
+                "login": "test_parent_art9@campscout.test",
+                "email": "parent_art9@test.com",
+                "partner_id": cls.parent_partner.id,
+                "groups_id": [(6, 0, [group_portal.id])],
+            }
+        )
 
         # ── camp event ───────────────────────────────────────────────────────
-        cls.event = cls.env["event.event"].create({
-            "name": "Art9 Test Camp 2026",
-            "date_begin": "2026-07-10 08:00:00",
-            "date_end": "2026-07-17 18:00:00",
-            "seats_max": 40,
-            "user_id": cls.user_kierownik.id,
-        })
+        cls.event = cls.env["event.event"].create(
+            {
+                "name": "Art9 Test Camp 2026",
+                "date_begin": "2026-07-10 08:00:00",
+                "date_end": "2026-07-17 18:00:00",
+                "seats_max": 40,
+                "user_id": cls.user_kierownik.id,
+            }
+        )
 
         # ── participant — child of the portal parent ──────────────────────────
-        cls.child_partner = cls.env["res.partner"].sudo().create({
-            "name": "Test Child Art9",
-            "email": "child_art9@test.com",
-        })
-        cls.participant = cls.env["camp.participant"].sudo().create({
-            "first_name": "TestChild",
-            "last_name": "Art9",
-            "parent_partner_id": cls.parent_partner.id,
-            "allergies": "Nuts",
-            "medications": "Inhaler daily",
-            "chronic_conditions": "Asthma",
-            "emergency_contact_1_name": "Parent Art9",
-            "emergency_contact_1_phone": "+48000000000",
-        })
+        cls.child_partner = (
+            cls.env["res.partner"]
+            .sudo()
+            .create(
+                {
+                    "name": "Test Child Art9",
+                    "email": "child_art9@test.com",
+                }
+            )
+        )
+        cls.participant = (
+            cls.env["camp.participant"]
+            .sudo()
+            .create(
+                {
+                    "first_name": "TestChild",
+                    "last_name": "Art9",
+                    "parent_partner_id": cls.parent_partner.id,
+                    "allergies": "Nuts",
+                    "medications": "Inhaler daily",
+                    "chronic_conditions": "Asthma",
+                    "emergency_contact_1_name": "Parent Art9",
+                    "emergency_contact_1_phone": "+48000000000",
+                }
+            )
+        )
         # Register participant in the event
-        cls.registration = cls.env["event.registration"].sudo().create({
-            "event_id": cls.event.id,
-            "participant_id": cls.participant.id,
-            "partner_id": cls.parent_partner.id,
-        })
+        cls.registration = (
+            cls.env["event.registration"]
+            .sudo()
+            .create(
+                {
+                    "event_id": cls.event.id,
+                    "participant_id": cls.participant.id,
+                    "partner_id": cls.parent_partner.id,
+                }
+            )
+        )
 
         # ── camp group A: wychowawca's group (includes our participant) ───────
-        cls.group_a = cls.env["camp.group"].sudo().create({
-            "name": "Group A",
-            "event_id": cls.event.id,
-            "wychowawca_ids": [(4, cls.user_wychowawca.id)],
-        })
+        cls.group_a = (
+            cls.env["camp.group"]
+            .sudo()
+            .create(
+                {
+                    "name": "Group A",
+                    "event_id": cls.event.id,
+                    "wychowawca_ids": [(4, cls.user_wychowawca.id)],
+                }
+            )
+        )
         cls.participant.sudo().write({"group_id": cls.group_a.id})
 
         # ── camp group B: belongs to wychowawca2 (different group, no access) ─
-        cls.group_b = cls.env["camp.group"].sudo().create({
-            "name": "Group B",
-            "event_id": cls.event.id,
-            "wychowawca_ids": [(4, cls.user_wychowawca2.id)],
-        })
+        cls.group_b = (
+            cls.env["camp.group"]
+            .sudo()
+            .create(
+                {
+                    "name": "Group B",
+                    "event_id": cls.event.id,
+                    "wychowawca_ids": [(4, cls.user_wychowawca2.id)],
+                }
+            )
+        )
 
         # ── staff records so record-rules pass ───────────────────────────────
-        cls.env["camp.staff"].sudo().create({
-            "name": "Wychowawca Art9",
-            "event_id": cls.event.id,
-            "user_id": cls.user_wychowawca.id,
-            "role": "wychowawca",
-            "date_from": "2026-07-01",
-            "date_to": "2026-07-14",
-        })
-        cls.env["camp.staff"].sudo().create({
-            "name": "Wychowawca2 Art9",
-            "event_id": cls.event.id,
-            "user_id": cls.user_wychowawca2.id,
-            "role": "wychowawca",
-            "date_from": "2026-07-01",
-            "date_to": "2026-07-14",
-        })
-        cls.env["camp.staff"].sudo().create({
-            "name": "Medic Art9",
-            "event_id": cls.event.id,
-            "user_id": cls.user_medic.id,
-            "role": "ratownik",
-            "date_from": "2026-07-01",
-            "date_to": "2026-07-14",
-        })
+        cls.env["camp.staff"].sudo().create(
+            {
+                "name": "Wychowawca Art9",
+                "event_id": cls.event.id,
+                "user_id": cls.user_wychowawca.id,
+                "role": "wychowawca",
+                "date_from": "2026-07-01",
+                "date_to": "2026-07-14",
+            }
+        )
+        cls.env["camp.staff"].sudo().create(
+            {
+                "name": "Wychowawca2 Art9",
+                "event_id": cls.event.id,
+                "user_id": cls.user_wychowawca2.id,
+                "role": "wychowawca",
+                "date_from": "2026-07-01",
+                "date_to": "2026-07-14",
+            }
+        )
+        cls.env["camp.staff"].sudo().create(
+            {
+                "name": "Medic Art9",
+                "event_id": cls.event.id,
+                "user_id": cls.user_medic.id,
+                "role": "ratownik",
+                "date_from": "2026-07-01",
+                "date_to": "2026-07-14",
+            }
+        )
 
         # ── a second participant in group B (other wychowawca's child) ────────
-        cls.participant_b = cls.env["camp.participant"].sudo().create({
-            "first_name": "ChildB",
-            "last_name": "Art9",
-            "allergies": "Pollen",
-            "medications": "None",
-            "emergency_contact_1_name": "OtherParent",
-            "emergency_contact_1_phone": "+48111111111",
-        })
-        cls.env["event.registration"].sudo().create({
-            "event_id": cls.event.id,
-            "participant_id": cls.participant_b.id,
-            "partner_id": cls.env["res.partner"].sudo().create({
-                "name": "OtherParent Art9",
-            }).id,
-        })
+        cls.participant_b = (
+            cls.env["camp.participant"]
+            .sudo()
+            .create(
+                {
+                    "first_name": "ChildB",
+                    "last_name": "Art9",
+                    "allergies": "Pollen",
+                    "medications": "None",
+                    "emergency_contact_1_name": "OtherParent",
+                    "emergency_contact_1_phone": "+48111111111",
+                }
+            )
+        )
+        cls.env["event.registration"].sudo().create(
+            {
+                "event_id": cls.event.id,
+                "participant_id": cls.participant_b.id,
+                "partner_id": cls.env["res.partner"]
+                .sudo()
+                .create(
+                    {
+                        "name": "OtherParent Art9",
+                    }
+                )
+                .id,
+            }
+        )
         cls.participant_b.sudo().write({"group_id": cls.group_b.id})
 
         # ── ir.attachment on participant (simulates stored karta PDF) ─────────
-        cls.karta_attachment = cls.env["ir.attachment"].sudo().create({
-            "name": "Karta_TestChild_Art9.pdf",
-            "res_model": "camp.participant",
-            "res_id": cls.participant.id,
-            "mimetype": "application/pdf",
-            "datas": b"",   # empty binary — sufficient for ACL test
-            "type": "binary",
-        })
+        cls.karta_attachment = (
+            cls.env["ir.attachment"]
+            .sudo()
+            .create(
+                {
+                    "name": "Karta_TestChild_Art9.pdf",
+                    "res_model": "camp.participant",
+                    "res_id": cls.participant.id,
+                    "mimetype": "application/pdf",
+                    "datas": b"",  # empty binary — sufficient for ACL test
+                    "type": "binary",
+                }
+            )
+        )
 
     # ─── 1. Finance (bookkeeper) cannot read art.9 fields ─────────────────────
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright Fayna Digital — Volodymyr Shevchenko
 # License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """Детач даних campscout_management: бізнес-записи (товари-табори, події, квитки,
@@ -13,6 +12,7 @@
 
 TZ §3.1/§6.1. ⚠️ Це репетиція на staging-копії прода; на ПРОД — лише окремо за «ок».
 """
+
 DRY_RUN = True
 MODULE = "campscout_management"
 
@@ -38,14 +38,14 @@ def parity(env, tag):
         UNION ALL SELECT 'event.registration', count(*) FROM event_registration
     """
     env.cr.execute(q)
-    rows = dict((m, c) for m, c in env.cr.fetchall())
-    print("PARITY [%s]: %s" % (tag, rows))
+    rows = dict(env.cr.fetchall())
+    print(f"PARITY [{tag}]: {rows}")
     return rows
 
 
 def run(env):
     IMD = env["ir.model.data"]
-    print("=== DETACH %s (DRY_RUN=%s) ===" % (MODULE, DRY_RUN))
+    print(f"=== DETACH {MODULE} (DRY_RUN={DRY_RUN}) ===")
     before = parity(env, "before")
 
     to_detach = IMD.search([("module", "=", MODULE), ("model", "in", DATA_MODELS)])
@@ -53,14 +53,14 @@ def run(env):
     for d in to_detach:
         by_model.setdefault(d.model, []).append((d.name, d.res_id))
     for m, items in sorted(by_model.items()):
-        print("  %s: %s записів → detach" % (m, len(items)))
-    print("  РАЗОМ to-detach: %s ir_model_data рядків" % len(to_detach))
+        print(f"  {m}: {len(items)} записів → detach")
+    print(f"  РАЗОМ to-detach: {len(to_detach)} ir_model_data рядків")
 
     # реверс-лог (для відновлення)
     print("  REVERSE-LOG (module,model,name,res_id):")
     for d in to_detach[:5]:
-        print("    %s|%s|%s|%s" % (MODULE, d.model, d.name, d.res_id))
-    print("    ...(%s total)" % len(to_detach))
+        print(f"    {MODULE}|{d.model}|{d.name}|{d.res_id}")
+    print(f"    ...({len(to_detach)} total)")
 
     if not DRY_RUN:
         # DELETE лінків ir_model_data — самі записи (товари/події) ЛИШАЮТЬСЯ
@@ -71,9 +71,11 @@ def run(env):
         print("  DETACHED + commit.")
         after = parity(env, "after-detach")
         ok = all(after[k] >= before[k] for k in before)  # нічого не зменшилось
-        print("  PARITY OK (нічого не зникло): %s" % ok)
+        print(f"  PARITY OK (нічого не зникло): {ok}")
     else:
-        print("  DRY_RUN — нічого не змінено. Записи лишаться при uninstall ПІСЛЯ реального detach.")
+        print(
+            "  DRY_RUN — нічого не змінено. Записи лишаться при uninstall ПІСЛЯ реального detach."
+        )
 
 
 try:

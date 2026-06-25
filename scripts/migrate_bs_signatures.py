@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright Fayna Digital — Volodymyr Shevchenko
 # License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """§5.6 — перенос живих підписів bs_parents_signature (sale.order, Binary attachment)
@@ -12,12 +11,13 @@
 
 Критерій приймання: count(bs_parents_signature) ≈ count(qualification_signature) після.
 """
+
 DRY_RUN = True
 
 Reg = env["event.registration"].sudo()  # noqa: F821
 migrated = skipped = nosig = noreg = 0
 regs = Reg.search([("participant_id", "!=", False)])
-print("registrations з participant: %s" % len(regs))
+print(f"registrations з participant: {len(regs)}")
 for reg in regs:
     order = reg.sale_order_id
     part = reg.participant_id
@@ -27,7 +27,7 @@ for reg in regs:
     try:
         sig = order.bs_parents_signature
     except Exception as e:
-        print("  read FAIL order %s: %s" % (order.id, str(e)[:80]))
+        print(f"  read FAIL order {order.id}: {str(e)[:80]}")
         nosig += 1
         continue
     if not sig:
@@ -43,8 +43,7 @@ for reg in regs:
     migrated += 1
 
 print(
-    "ПІДСУМОК: migrated=%s skipped(вже є)=%s no_signature=%s no_order=%s | DRY_RUN=%s"
-    % (migrated, skipped, nosig, noreg, DRY_RUN)
+    f"ПІДСУМОК: migrated={migrated} skipped(вже є)={skipped} no_signature={nosig} no_order={noreg} | DRY_RUN={DRY_RUN}"
 )
 if not DRY_RUN:
     env.cr.commit()  # noqa: F821

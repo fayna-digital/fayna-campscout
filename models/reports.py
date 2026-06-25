@@ -567,6 +567,6 @@ class CampMarketingReport(models.TransientModel):
         # Fallback — keep wizard usable even without a PDF template.
         raise UserError(
             _(
-                "PDF report template is not installed. " "Live metrics are visible above.",
+                "PDF report template is not installed. Live metrics are visible above.",
             ),
         )

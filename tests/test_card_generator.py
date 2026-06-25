@@ -42,12 +42,8 @@ class TestCardGenerator(TransactionCase):
         )
 
         # --- Camp activity records (pre-existing, matched by name) ---------
-        cls.activity_kajak = cls.env["camp.activity"].sudo().create(
-            {"name": "Kajakarstwo"}
-        )
-        cls.activity_archery = cls.env["camp.activity"].sudo().create(
-            {"name": "Łucznictwo"}
-        )
+        cls.activity_kajak = cls.env["camp.activity"].sudo().create({"name": "Kajakarstwo"})
+        cls.activity_archery = cls.env["camp.activity"].sudo().create({"name": "Łucznictwo"})
 
     # ------------------------------------------------------------------
     # Helper: make product.template (camp program card)
@@ -263,9 +259,7 @@ class TestCardGenerator(TransactionCase):
         try:
             event.with_user(self.organizator_user).action_approve()
         except Exception as exc:
-            self.fail(
-                f"action_approve raised unexpectedly when no structured program: {exc}"
-            )
+            self.fail(f"action_approve raised unexpectedly when no structured program: {exc}")
 
         self.assertEqual(
             event.camp_approval_state,
@@ -354,9 +348,7 @@ class TestCardGenerator(TransactionCase):
         try:
             event.with_user(self.organizator_user).action_approve()
         except Exception as exc:
-            self.fail(
-                f"action_approve raised unexpectedly when camp_program_id is unset: {exc}"
-            )
+            self.fail(f"action_approve raised unexpectedly when camp_program_id is unset: {exc}")
 
         self.assertEqual(
             event.camp_approval_state,

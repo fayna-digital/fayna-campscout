@@ -124,9 +124,7 @@ class TestEscortSignoff(TransactionCase):
         escort = self._make_escort(self.child)
         escort.sudo().action_sign(signature=_PNG_1x1, signed_by_id=self.parent_user.id)
         with self.assertRaises(UserError):
-            escort.sudo().action_sign(
-                signature=_PNG_1x1, signed_by_id=self.parent_user.id
-            )
+            escort.sudo().action_sign(signature=_PNG_1x1, signed_by_id=self.parent_user.id)
 
     # --- REQ 5: immutability after signed ------------------------------------
 
@@ -149,9 +147,7 @@ class TestEscortSignoff(TransactionCase):
             ("escort_person_name", "Ktoś Inny"),
             ("direction", "powrot"),
         ):
-            with self.assertRaises(
-                UserError, msg=f"escort field {field} must freeze after signed"
-            ):
+            with self.assertRaises(UserError, msg=f"escort field {field} must freeze after signed"):
                 escort.with_user(staff).write({field: value})
 
     # --- REQ 2: ownership ----------------------------------------------------

@@ -55,7 +55,9 @@ class TestRodoConsentImmutable(TransactionCase):
         with self.assertRaises(UserError):
             consent.write({"consent_given": False})
 
-    @skip("fayna.rodo.consent.log unlink-guard = dependency behavior; test admin is group_system -> allowed (expected)")
+    @skip(
+        "fayna.rodo.consent.log unlink-guard = dependency behavior; test admin is group_system -> allowed (expected)"
+    )
     def test_unlink_blocked_for_non_superuser(self):
         """Audit rows cannot be deleted by a normal admin — only SUPERUSER.
 

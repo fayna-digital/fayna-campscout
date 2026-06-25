@@ -10,6 +10,7 @@
 TZ: DevJournal/projects/campscout/TZ-migracja-legacy-to-portal-2026-06-23.md §5.
 Дизайн ухвалено мульти-агентним конвеєром + СТО-рев'ю 2026-06-23.
 """
+
 import logging
 
 from odoo import _, api, fields, models
@@ -132,8 +133,7 @@ class CampEscort(models.Model):
             ):
                 raise ValidationError(
                     _(
-                        "Przyjazd (%(arrival)s) nie może być wcześniejszy "
-                        "niż wyjazd (%(dep)s).",
+                        "Przyjazd (%(arrival)s) nie może być wcześniejszy niż wyjazd (%(dep)s).",
                         arrival=rec.arrival_datetime,
                         dep=rec.departure_datetime,
                     )
@@ -228,6 +228,9 @@ class CampEscort(models.Model):
                             "Asysta %(name)s jest podpisana — nie można zmienić %(fields)s. "
                             "Użyj nowego rekordu (kopia + nowy podpis).",
                         )
-                        % {"name": rec.display_name, "fields": ", ".join(sorted(changing_protected))}
+                        % {
+                            "name": rec.display_name,
+                            "fields": ", ".join(sorted(changing_protected)),
+                        }
                     )
         return super().write(vals)

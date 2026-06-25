@@ -3,7 +3,6 @@
 # Fayna CampScout — tests for ADR Фаза A: skeleton generator + constraints
 # Covers ADR §1 (поля + constrains), §2 (генератор), §3 (ACL — model-level),
 # §4 (wizard rain plan).
-from datetime import date, timedelta
 
 from odoo.exceptions import ValidationError
 from odoo.tests.common import TransactionCase, tagged
@@ -80,16 +79,20 @@ class TestProgramSkeleton(TransactionCase):
         structured = self._make_structured()
         self.env["camp.program.structured"]._generate_skeleton(self.event, structured)
 
-        expected_titles = {"Śniadanie", "Obiad", "Cisza poobiednia", "Podwieczorek",
-                           "Kolacja", "Cisza nocna", "Sen (noc)"}
+        expected_titles = {
+            "Śniadanie",
+            "Obiad",
+            "Cisza poobiednia",
+            "Podwieczorek",
+            "Kolacja",
+            "Cisza nocna",
+            "Sen (noc)",
+        }
         for day in structured.day_ids:
-            skeleton_titles = set(
-                day.activity_line_ids.filtered("is_skeleton").mapped("title")
-            )
+            skeleton_titles = set(day.activity_line_ids.filtered("is_skeleton").mapped("title"))
             for title in expected_titles:
                 self.assertIn(
-                    title, skeleton_titles,
-                    f"Day {day.date}: missing skeleton line '{title}'"
+                    title, skeleton_titles, f"Day {day.date}: missing skeleton line '{title}'"
                 )
 
     def test_generate_skeleton_meal_categories(self):
@@ -100,8 +103,9 @@ class TestProgramSkeleton(TransactionCase):
         meal_titles = {"Śniadanie", "Obiad", "Kolacja", "Podwieczorek"}
         for line in day.activity_line_ids.filtered("is_skeleton"):
             if line.title in meal_titles:
-                self.assertEqual(line.category, "meal",
-                                 f"'{line.title}' should have category='meal'")
+                self.assertEqual(
+                    line.category, "meal", f"'{line.title}' should have category='meal'"
+                )
 
     # ── §2 free-hours ───────────────────────────────────────────────────
 
@@ -110,11 +114,8 @@ class TestProgramSkeleton(TransactionCase):
         structured = self._make_structured()
         self.env["camp.program.structured"]._generate_skeleton(self.event, structured)
         for day in structured.day_ids:
-            free_lines = day.activity_line_ids.filtered(lambda l: l.category == "free")
-            self.assertTrue(
-                len(free_lines) > 0,
-                f"Day {day.date}: no free-time lines generated"
-            )
+            free_lines = day.activity_line_ids.filtered(lambda ln: ln.category == "free")
+            self.assertTrue(len(free_lines) > 0, f"Day {day.date}: no free-time lines generated")
 
     def test_free_hours_no_overlap_with_skeleton(self):
         """Free lines must not overlap with skeleton fixed lines within [wake, lights_out]."""
@@ -125,20 +126,19 @@ class TestProgramSkeleton(TransactionCase):
         lights = structured.lights_out
 
         skeleton_slots = [
-            (l.time_from, l.time_to)
-            for l in day.activity_line_ids.filtered("is_skeleton")
-            if l.category != "free" and l.time_to <= lights and l.time_from >= wake
+            (ln.time_from, ln.time_to)
+            for ln in day.activity_line_ids.filtered("is_skeleton")
+            if ln.category != "free" and ln.time_to <= lights and ln.time_from >= wake
         ]
         free_slots = [
-            (l.time_from, l.time_to)
-            for l in day.activity_line_ids.filtered(lambda l: l.category == "free")
+            (ln.time_from, ln.time_to)
+            for ln in day.activity_line_ids.filtered(lambda li: li.category == "free")
         ]
         for fs, fe in free_slots:
             for ss, se in skeleton_slots:
                 overlap = min(fe, se) - max(fs, ss)
                 self.assertLessEqual(
-                    overlap, 0,
-                    f"Free slot [{fs},{fe}] overlaps with skeleton slot [{ss},{se}]"
+                    overlap, 0, f"Free slot [{fs},{fe}] overlaps with skeleton slot [{ss},{se}]"
                 )
 
     # ── §4 rain plan ────────────────────────────────────────────────────
@@ -168,8 +168,7 @@ class TestProgramSkeleton(TransactionCase):
             [("event_id", "=", self.event.id)]
         )
         self.assertEqual(
-            len(structured_records), 2,
-            "Expected 2 structured programs: normal + rain plan"
+            len(structured_records), 2, "Expected 2 structured programs: normal + rain plan"
         )
         rain_records = structured_records.filtered("is_rain_plan")
         self.assertEqual(len(rain_records), 1, "Expected exactly one rain plan")
@@ -181,20 +180,29 @@ class TestProgramSkeleton(TransactionCase):
         line_model = self.env["camp.program.activity.line"]
         for field_name in ("category", "is_skeleton", "is_locked", "owner_role"):
             self.assertIn(
-                field_name, line_model._fields,
-                f"Field '{field_name}' missing on camp.program.activity.line"
+                field_name,
+                line_model._fields,
+                f"Field '{field_name}' missing on camp.program.activity.line",
             )
 
     def test_new_fields_on_structured(self):
         """camp.program.structured must have all rамовий день Float fields."""
         model = self.env["camp.program.structured"]
         for field_name in (
-            "wake_time", "breakfast", "lunch", "afternoon_rest",
-            "snack", "dinner", "lights_out", "meal_duration", "rest_duration"
+            "wake_time",
+            "breakfast",
+            "lunch",
+            "afternoon_rest",
+            "snack",
+            "dinner",
+            "lights_out",
+            "meal_duration",
+            "rest_duration",
         ):
             self.assertIn(
-                field_name, model._fields,
-                f"Field '{field_name}' missing on camp.program.structured"
+                field_name,
+                model._fields,
+                f"Field '{field_name}' missing on camp.program.structured",
             )
 
     def test_structured_program_ids_on_event(self):
@@ -202,5 +210,5 @@ class TestProgramSkeleton(TransactionCase):
         self.assertIn(
             "structured_program_ids",
             self.env["event.event"]._fields,
-            "Field 'structured_program_ids' missing on event.event"
+            "Field 'structured_program_ids' missing on event.event",
         )

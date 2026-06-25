@@ -10,13 +10,13 @@ Covers:
      bypassing the Selection) is rewritten to its canonical key by the same
      UPDATE logic the post-migrate script runs.
 """
-from odoo.tests.common import TransactionCase, tagged
 
 from odoo.addons.fayna_camp_portal.models._role_taxonomy import (
     CAMP_ROLE_KEYS,
     CAMP_ROLE_SELECTION,
     LEGACY_ROLE_MAP,
 )
+from odoo.tests.common import TransactionCase, tagged
 
 CANON_KEYS = [key for key, _label in CAMP_ROLE_SELECTION]
 
@@ -116,9 +116,7 @@ class TestRoleCanon(TransactionCase):
                 "date_to": "2026-07-14",
             }
         )
-        self.env.cr.execute(
-            "UPDATE camp_staff SET role = 'counselor' WHERE id = %s", (staff.id,)
-        )
+        self.env.cr.execute("UPDATE camp_staff SET role = 'counselor' WHERE id = %s", (staff.id,))
 
         # Run the canonical UPDATE (same statement the migration issues).
         self.env.cr.execute(
@@ -130,10 +128,6 @@ class TestRoleCanon(TransactionCase):
         self.assertEqual(self.env.cr.fetchone()[0], "wychowawca")
 
         # And no legacy key survives anywhere in the table.
-        legacy_keys = tuple(
-            k for k in LEGACY_ROLE_MAP if k not in CAMP_ROLE_KEYS
-        )
-        self.env.cr.execute(
-            "SELECT count(*) FROM camp_staff WHERE role IN %s", (legacy_keys,)
-        )
+        legacy_keys = tuple(k for k in LEGACY_ROLE_MAP if k not in CAMP_ROLE_KEYS)
+        self.env.cr.execute("SELECT count(*) FROM camp_staff WHERE role IN %s", (legacy_keys,))
         self.assertEqual(self.env.cr.fetchone()[0], 0)

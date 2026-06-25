@@ -35,7 +35,6 @@ class ResPartner(models.Model):
         string=_("Receive marketing SMS"),
         default=False,
         help=_(
-            "Marketing/promotional SMS — explicit opt-in required per "
-            "RODO art.7. Never overridden."
+            "Marketing/promotional SMS — explicit opt-in required per RODO art.7. Never overridden."
         ),
     )

@@ -393,9 +393,11 @@ class CampIncidentReport(models.Model):
 
             # First aid within 2 minutes
             first_aid = actions.filtered(
-                lambda a, _t0=t0: a.action_type == "first_aid"
-                and a.performed_at
-                and (a.performed_at - _t0) <= timedelta(minutes=2)
+                lambda a, _t0=t0: (
+                    a.action_type == "first_aid"
+                    and a.performed_at
+                    and (a.performed_at - _t0) <= timedelta(minutes=2)
+                )
             )
             rec.first_aid_within_2min = bool(first_aid)
 
@@ -403,14 +405,18 @@ class CampIncidentReport(models.Model):
             # paramedic_call (paramedic only required for moderate+).
             need_paramedic = rec.severity not in ("light",)
             safe_loc = actions.filtered(
-                lambda a, _t0=t0: a.action_type == "safe_location"
-                and a.performed_at
-                and (a.performed_at - _t0) <= timedelta(minutes=15)
+                lambda a, _t0=t0: (
+                    a.action_type == "safe_location"
+                    and a.performed_at
+                    and (a.performed_at - _t0) <= timedelta(minutes=15)
+                )
             )
             paramedic = actions.filtered(
-                lambda a, _t0=t0: a.action_type == "paramedic_call"
-                and a.performed_at
-                and (a.performed_at - _t0) <= timedelta(minutes=15)
+                lambda a, _t0=t0: (
+                    a.action_type == "paramedic_call"
+                    and a.performed_at
+                    and (a.performed_at - _t0) <= timedelta(minutes=15)
+                )
             )
             rec.safety_secured_within_15min = bool(
                 first_aid and safe_loc and (paramedic if need_paramedic else True)
@@ -418,9 +424,11 @@ class CampIncidentReport(models.Model):
 
             # Parents within 30 min
             parents = actions.filtered(
-                lambda a, _t0=t0: a.action_type == "parent_notified"
-                and a.performed_at
-                and (a.performed_at - _t0) <= timedelta(minutes=30)
+                lambda a, _t0=t0: (
+                    a.action_type == "parent_notified"
+                    and a.performed_at
+                    and (a.performed_at - _t0) <= timedelta(minutes=30)
+                )
             )
             rec.parents_notified_within_30min = bool(parents)
 
@@ -429,9 +437,9 @@ class CampIncidentReport(models.Model):
             cutoff = t0 + timedelta(hours=24)
 
             kurator = actions.filtered(
-                lambda a, _c=cutoff: a.action_type == "kurator_notified"
-                and a.performed_at
-                and a.performed_at <= _c
+                lambda a, _c=cutoff: (
+                    a.action_type == "kurator_notified" and a.performed_at and a.performed_at <= _c
+                )
             )
             sanepid_needed = rec.severity == "food_poisoning"
             prokurator_needed = rec.severity in ("severe", "fatal", "mass")
@@ -439,27 +447,31 @@ class CampIncidentReport(models.Model):
 
             sanepid = (
                 actions.filtered(
-                    lambda a, _c=cutoff: a.action_type == "sanepid_notified"
-                    and a.performed_at
-                    and a.performed_at <= _c
+                    lambda a, _c=cutoff: (
+                        a.action_type == "sanepid_notified"
+                        and a.performed_at
+                        and a.performed_at <= _c
+                    )
                 )
                 if sanepid_needed
                 else True
             )
             prokurator = (
                 actions.filtered(
-                    lambda a, _c=cutoff: a.action_type == "prokurator_notified"
-                    and a.performed_at
-                    and a.performed_at <= _c
+                    lambda a, _c=cutoff: (
+                        a.action_type == "prokurator_notified"
+                        and a.performed_at
+                        and a.performed_at <= _c
+                    )
                 )
                 if prokurator_needed
                 else True
             )
             rpd = (
                 actions.filtered(
-                    lambda a, _c=cutoff: a.action_type == "rpd_notified"
-                    and a.performed_at
-                    and a.performed_at <= _c
+                    lambda a, _c=cutoff: (
+                        a.action_type == "rpd_notified" and a.performed_at and a.performed_at <= _c
+                    )
                 )
                 if rpd_needed
                 else True
@@ -654,10 +666,7 @@ class CampIncidentReport(models.Model):
         """
         if any(r.state in ("delivered", "disputed", "closed") for r in self):
             raise UserError(
-                _(
-                    "Delivered/closed incident reports cannot be deleted "
-                    "(legal evidence retention)."
-                )
+                _("Delivered/closed incident reports cannot be deleted (legal evidence retention).")
             )
         return super().unlink()
 
@@ -821,10 +830,7 @@ class CampIncidentAction(models.Model):
     def unlink(self):
         if any(rec.state in ("delivered", "disputed", "closed") for rec in self):
             raise UserError(
-                _(
-                    "Cannot delete actions on a delivered/closed report "
-                    "(legal evidence retention)."
-                )
+                _("Cannot delete actions on a delivered/closed report (legal evidence retention).")
             )
         return super().unlink()
 

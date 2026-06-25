@@ -277,11 +277,7 @@ class CampscoutPortal(CustomerPortal):
             participant = self._get_own_participant(participant_id)
         except (AccessError, MissingError):
             return http.request.redirect("/my/participants")
-        vals = {
-            k: post.get(k)
-            for k in PARTICIPANT_PORTAL_EDITABLE_FIELDS
-            if k in post
-        }
+        vals = {k: post.get(k) for k in PARTICIPANT_PORTAL_EDITABLE_FIELDS if k in post}
         try:
             # sudo після ownership-check: portal ACL read-only; whitelist вище
             # гарантує, що секції III-VI (персонал) сюди не потраплять.
@@ -672,6 +668,4 @@ class CampscoutPortal(CustomerPortal):
                 "token": access_token,
             }
         )
-        return http.request.render(
-            "fayna_camp_portal.portal_support_detail", values
-        )
+        return http.request.render("fayna_camp_portal.portal_support_detail", values)

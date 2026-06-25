@@ -347,8 +347,7 @@ class CampStaff(models.Model):
         )
         self.message_post(
             body=_(
-                "Kandydat podpisał declarację niekaralności "
-                "(IP: %(ip)s, %(when)s).",
+                "Kandydat podpisał declarację niekaralności (IP: %(ip)s, %(when)s).",
                 ip=ip_address or "—",
                 when=fields.Datetime.now(),
             )
@@ -2139,23 +2138,28 @@ class CampProgramStructured(models.Model):
     def _get_free_lines(self):
         """Return activity lines that are considered unfilled free slots."""
         return self.day_ids.mapped("activity_line_ids").filtered(
-            lambda l: l.category == "free" or l.title == self._FREE_MARKER
+            lambda ln: ln.category == "free" or ln.title == self._FREE_MARKER
         )
 
     def _get_filled_lines(self):
         """Return free-owned lines that have been concretely filled by wychowawca."""
         return self.day_ids.mapped("activity_line_ids").filtered(
-            lambda l: l.owner_role == "wychowawca"
-            and l.category != "free"
-            and l.title != self._FREE_MARKER
+            lambda ln: (
+                ln.owner_role == "wychowawca"
+                and ln.category != "free"
+                and ln.title != self._FREE_MARKER
+            )
         )
 
-    @api.depends("day_ids.activity_line_ids.category", "day_ids.activity_line_ids.title",
-                 "day_ids.activity_line_ids.owner_role")
+    @api.depends(
+        "day_ids.activity_line_ids.category",
+        "day_ids.activity_line_ids.title",
+        "day_ids.activity_line_ids.owner_role",
+    )
     def _compute_fill_progress(self):
         for rec in self:
             all_wychowawca = rec.day_ids.mapped("activity_line_ids").filtered(
-                lambda l: l.owner_role == "wychowawca"
+                lambda ln: ln.owner_role == "wychowawca"
             )
             total = len(all_wychowawca)
             if total == 0:
@@ -2163,9 +2167,11 @@ class CampProgramStructured(models.Model):
                 rec.free_filled = 0
                 rec.fill_progress = 100.0
             else:
-                filled = len(all_wychowawca.filtered(
-                    lambda l: l.category != "free" and l.title != rec._FREE_MARKER
-                ))
+                filled = len(
+                    all_wychowawca.filtered(
+                        lambda ln, rec=rec: ln.category != "free" and ln.title != rec._FREE_MARKER
+                    )
+                )
                 rec.free_total = total
                 rec.free_filled = filled
                 rec.fill_progress = round(100.0 * filled / total, 1)
@@ -2217,7 +2223,7 @@ class CampProgramStructured(models.Model):
         Returns:
             list[camp.program.day]: Created day records.
         """
-        from datetime import date as date_cls, timedelta as td
+        from datetime import timedelta as td
 
         s = structured
         day_model = self.env["camp.program.day"]
@@ -2551,8 +2557,16 @@ class CampProgramActivityLine(models.Model):
     )
 
     @api.constrains(
-        "is_locked", "owner_role", "title", "time_from", "time_to",
-        "activity_template_id", "location", "responsible_id", "notes", "category",
+        "is_locked",
+        "owner_role",
+        "title",
+        "time_from",
+        "time_to",
+        "activity_template_id",
+        "location",
+        "responsible_id",
+        "notes",
+        "category",
     )
     def _check_locked_write(self):
         """Phase C ENFORCE: wychowawca cannot write locked or kierownik-owned lines."""

@@ -710,9 +710,7 @@ class CampParticipant(models.Model):
     v_kierownik_signature = fields.Binary(
         string=_("Podpis kierownika (Sekcja V)"),
         attachment=True,
-        help=_(
-            "Podpis kierownika przechwycony przez wizard Sekcji IV-V. " "Zamraża pola Sekcji V."
-        ),
+        help=_("Podpis kierownika przechwycony przez wizard Sekcji IV-V. Zamraża pola Sekcji V."),
     )
     v_signed_by = fields.Many2one(
         "res.users",

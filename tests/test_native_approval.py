@@ -52,16 +52,20 @@ class TestNativeApproval(TransactionCase):
 
     def _make_pending_event(self):
         """Create event as wizard would: pending_approval + unpublished."""
-        event = self.env["event.event"].sudo().create(
-            {
-                "name": "Test Turnus Approval 2026",
-                "date_begin": "2026-07-10 08:00:00",
-                "date_end": "2026-07-24 18:00:00",
-                "seats_limited": True,
-                "seats_max": 30,
-                "website_published": False,
-                "camp_approval_state": "pending_approval",
-            }
+        event = (
+            self.env["event.event"]
+            .sudo()
+            .create(
+                {
+                    "name": "Test Turnus Approval 2026",
+                    "date_begin": "2026-07-10 08:00:00",
+                    "date_end": "2026-07-24 18:00:00",
+                    "seats_limited": True,
+                    "seats_max": 30,
+                    "website_published": False,
+                    "camp_approval_state": "pending_approval",
+                }
+            )
         )
         return event
 
@@ -159,14 +163,18 @@ class TestNativeApproval(TransactionCase):
 
     def test_submit_for_approval_transitions_state(self):
         """action_submit_for_approval must move state draft→pending_approval."""
-        event = self.env["event.event"].sudo().create(
-            {
-                "name": "Draft Camp Submit Test",
-                "date_begin": "2026-08-01 08:00:00",
-                "date_end": "2026-08-14 18:00:00",
-                "camp_approval_state": "draft",
-                "website_published": False,
-            }
+        event = (
+            self.env["event.event"]
+            .sudo()
+            .create(
+                {
+                    "name": "Draft Camp Submit Test",
+                    "date_begin": "2026-08-01 08:00:00",
+                    "date_end": "2026-08-14 18:00:00",
+                    "camp_approval_state": "draft",
+                    "website_published": False,
+                }
+            )
         )
         event.with_user(self.kierownik_user).action_submit_for_approval()
         self.assertEqual(event.camp_approval_state, "pending_approval")

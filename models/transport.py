@@ -205,7 +205,7 @@ class CampTransport(models.Model):
             if rec.state not in ("planned",):
                 raise UserError(
                     _(
-                        "Only planned trips can be confirmed. " "Current state: %(state)s",
+                        "Only planned trips can be confirmed. Current state: %(state)s",
                         state=rec.state,
                     )
                 )
