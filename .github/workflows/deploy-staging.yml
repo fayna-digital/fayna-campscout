@@ -1,0 +1,62 @@
+name: Deploy Staging
+
+# CD: безпечний staging-деплой, що ВБУДОВУЄ RCA інциденту 2026-06-25 у систему
+# (stale .pyc → running odoo тримав старий Selection). Урок більше НЕ в голові —
+# він рядок коду в пайплайні, виконується автоматично, без людського фактора.
+#
+# ПРАВИЛА, ВШИТІ В ПАЙПЛАЙН:
+#   • No Manual DB Updates — зміни даних ЛИШЕ через migrations/<version>/ (запускає -u нижче).
+#   • Automated Cache Invalidation — clear .pyc ПЕРЕД кожним рестартом.
+#   • Immutable-ish restart — процес піднімається «на холодно» (clean restart), не патчиться зсередини.
+#   • Trust-but-Verify — наприкінці перевірка login 200; провал = червоний пайплайн.
+#
+# ПОТРІБНІ SECRETS (Repo → Settings → Secrets → Actions):
+#   STAGING_SSH_HOST, STAGING_SSH_USER, STAGING_SSH_KEY (приватний ключ deploy-користувача).
+#
+# Активація: push у гілку `staging` АБО ручний запуск (workflow_dispatch).
+
+on:
+  workflow_dispatch:
+    inputs:
+      module:
+        description: "Odoo module to upgrade"
+        default: "fayna_camp_portal"
+  push:
+    branches: [staging]
+
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: false   # деплої не можна переривати на півдорозі
+
+jobs:
+  deploy:
+    name: Safe staging deploy (clear .pyc + migrations + clean restart + verify)
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH safe-deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.STAGING_SSH_HOST }}
+          username: ${{ secrets.STAGING_SSH_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          command_timeout: 10m
+          script: |
+            set -e
+            MODULE="${{ github.event.inputs.module || 'fayna_camp_portal' }}"
+            ADDON="/opt/campscout/custom-addons/${MODULE}"
+            CONT="campscout_web"; DB="campscout"; CONF="/etc/odoo/odoo.conf"
+            cd "$ADDON"
+            echo "[1/5] pull"
+            git fetch origin && git checkout "${{ github.ref_name }}" && git pull && sudo chmod -R o+rX .
+            echo "[2/5] CLEAR .pyc (root cause 25.06)"
+            find . -name '*.pyc' -delete 2>/dev/null || true
+            find . -name __pycache__ -type d -exec rm -rf {} + 2>/dev/null || true
+            echo "[3/5] -u (migrations/<version>/, no manual SQL) --no-http vs Exit 255"
+            docker exec "$CONT" odoo -c "$CONF" -d "$DB" -u "$MODULE" --stop-after-init --no-http 2>&1 \
+              | grep -iE 'ERROR|CRITICAL|Traceback|migration' | grep -vi werkzeug | tail -8 || true
+            echo "[4/5] clean restart (reload registry/Selection)"
+            docker restart "$CONT" >/dev/null 2>&1; sleep 11
+            echo "[5/5] VERIFY login 200"
+            code=$(curl -s -o /dev/null -w '%{http_code}' -k https://staging.campscout.eu/web/login)
+            echo "staging login = $code"
+            test "$code" = "200"
