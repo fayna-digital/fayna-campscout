@@ -284,6 +284,14 @@
             action="action_camp_loyalty_participant"
             sequence="10"/>
 
+        <!-- Sierota: action_camp_loyalty_history istniała bez menu — historia
+             punktów lojalnościowych była nieosiągalna z UI. -->
+        <menuitem id="menu_loyalty_history"
+            name="Historia punktów lojalnościowych"
+            parent="menu_commercial"
+            action="action_camp_loyalty_history"
+            sequence="15"/>
+
         <menuitem id="menu_support_requests"
             name="Zgłoszenia rodziców"
             parent="menu_commercial"
