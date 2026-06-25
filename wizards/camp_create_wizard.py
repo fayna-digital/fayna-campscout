@@ -32,6 +32,32 @@ _TICKET_NAME = "Udział w obozie"
 _SALARY_WYCHOWAWCA_PARAM = "fayna_camp_portal.salary_wychowawca_default"
 _SALARY_KIEROWNIK_PARAM = "fayna_camp_portal.salary_kierownik_default"
 
+# §7 — VAT mode is a CONSEQUENCE of the chosen account.fiscal.position, not a
+# hard-coded default. We classify a fiscal position into one of three camp VAT
+# modes from explicit XML-id markers (data/fiscal_positions.xml) first, then by
+# name keywords (covers fiscal positions the accountant set up by hand). If a
+# position carries no signal, we fall back to the safe 'zw' (TZ §7: default zw.
+# is justified; final certainty = interpretacja indywidualna).
+_FISCAL_XMLID_VAT_MODE = {
+    "fiscal_position_camp_zw": "zw",
+    "fiscal_position_camp_marza": "marza",
+    "fiscal_position_camp_standard": "standard",
+}
+# Keyword → vat_mode, checked in order (most specific first).
+_FISCAL_NAME_KEYWORDS = (
+    ("marża", "marza"),
+    ("marza", "marza"),
+    ("art.119", "marza"),
+    ("art. 119", "marza"),
+    ("turyst", "marza"),  # firma turystyczna / rejestr turystyki
+    ("zwoln", "zw"),
+    ("zw.", "zw"),
+    ("art.43", "zw"),
+    ("art. 43", "zw"),
+    ("zwolni", "zw"),
+)
+_VAT_MODE_DEFAULT = "zw"
+
 
 class CampCreateWizard(models.TransientModel):
     _name = "camp.create.wizard"
@@ -233,23 +259,49 @@ class CampCreateWizard(models.TransientModel):
             " Constrained to ≤ 20% of total cost budget (§7). Spread per child."
         ),
     )
-    # ------- VAT та націнка -------
+    # ------- VAT — наслідок account.fiscal.position (§7) -------
+    # §7: VAT-режим = НАСЛІДОК fiscal.position за формою організатора
+    # (sp. z o.o. → marża art.119 / fundacja → zw. art.43 / JDG-standard → 23%),
+    # НЕ зашитий дефолт. fiscal_position_id — джерело істини; vat_mode —
+    # читабельна класифікація, виведена з неї (з ручним override як страховка).
+    fiscal_position_id = fields.Many2one(
+        "account.fiscal.position",
+        string=_("Pozycja fiskalna (forma organizatora)"),
+        default=lambda self: self._default_fiscal_position(),
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
+        help=_(
+            "Fiscal position of the organizer's form. The VAT mode of the camp"
+            " price is DERIVED from this (TZ §7) — not a hard-coded default:\n"
+            "• fundacja / NGO → zwolniona (art.43 ust.1 pkt 24)\n"
+            "• sp. z o.o. / firma turystyczna → VAT-marża (art.119)\n"
+            "• JDG / standard → 23%\n"
+            "Default = the company's own fiscal position. Change the form here"
+            " and the VAT verdict follows automatically."
+        ),
+    )
+    company_id = fields.Many2one(
+        "res.company",
+        string=_("Spółka"),
+        default=lambda self: self.env.company,
+    )
     vat_mode = fields.Selection(
         [
             ("zw", "Zwolniona art.43 ust.1 pkt 24 (opieka nad dziećmi)"),
             ("marza", "VAT-marża 23% (art.119, firma turystyczna)"),
             ("standard", "Standard 23%"),
         ],
-        default="zw",
-        required=True,
-        string=_("Tryb VAT"),
+        compute="_compute_vat_mode",
+        store=True,
+        readonly=False,  # organizer-overridable (human-in-the-loop, §7)
+        string=_("Tryb VAT (wynik pozycji fiskalnej)"),
         help=_(
-            "VAT regime for the camp service.\n"
-            "• zw — default, safe; applies when organizer = fundacja/NGO (art.43).\n"
-            "• marza — organizer is a registered tourism firm (rejestr turystyki); VAT"
-            " only on the margin component.\n"
-            "• standard — full 23% on the whole price.\n"
-            "[UWAGA] Consult a księgowa before switching from 'zw' — grey-zone per TZ §7."
+            "VAT regime — DERIVED from the chosen account.fiscal.position (TZ §7),"
+            " editable as a manual override only after consulting a księgowa.\n"
+            "• zw — default safe; organizer = fundacja/NGO (art.43).\n"
+            "• marza — registered tourism firm (rejestr turystyki); VAT only on margin.\n"
+            "• standard — full 23%.\n"
+            "[UWAGA] Final zw. vs marża qualification is a grey-zone (TZ §7) —"
+            " requires interpretacja indywidualna / księgowa. NOT legally final."
         ),
     )
     markup_percent = fields.Float(
@@ -390,6 +442,76 @@ class CampCreateWizard(models.TransientModel):
 
             rec.computed_price_per_child = round(price, 2)
             rec.vat_note = note
+
+    # ── §7 — VAT mode derived from account.fiscal.position ────────────────
+
+    @api.depends("fiscal_position_id")
+    def _compute_vat_mode(self):
+        """Derive vat_mode from the chosen fiscal position (TZ §7).
+
+        readonly=False + store=True → the value is recomputed whenever the
+        organizer changes the fiscal position, but the organizer can still
+        override it manually afterwards (human-in-the-loop, §7 grey-zone).
+        Empty fiscal position → safe default 'zw'.
+        """
+        for rec in self:
+            if rec.fiscal_position_id:
+                rec.vat_mode = rec._classify_fiscal_position(rec.fiscal_position_id)
+            elif not rec.vat_mode:
+                rec.vat_mode = _VAT_MODE_DEFAULT
+
+    @api.model
+    def _classify_fiscal_position(self, fiscal_position):
+        """Map an account.fiscal.position → camp vat_mode (zw / marza / standard).
+
+        Priority:
+          1. Explicit XML-id marker (data/fiscal_positions.xml example records).
+          2. Name keywords (covers accountant-defined positions).
+          3. Safe fallback 'zw' (TZ §7).
+        """
+        if not fiscal_position:
+            return _VAT_MODE_DEFAULT
+        # 1. XML-id marker (only matches our own example data records)
+        for xmlid, mode in _FISCAL_XMLID_VAT_MODE.items():
+            ref = self.env.ref(f"fayna_camp_portal.{xmlid}", raise_if_not_found=False)
+            if ref and ref.id == fiscal_position.id:
+                return mode
+        # 2. Name keywords
+        name = (fiscal_position.name or "").lower()
+        for keyword, mode in _FISCAL_NAME_KEYWORDS:
+            if keyword in name:
+                return mode
+        # 3. Safe fallback
+        return _VAT_MODE_DEFAULT
+
+    @api.model
+    def _default_fiscal_position(self):
+        """Default = the company's own fiscal position (NOT a hard-coded VAT mode).
+
+        Resolution order (native-first):
+          1. The fiscal position auto-applied for the company's own partner
+             (account.fiscal.position._get_fiscal_position — the native resolver).
+          2. The first auto_apply position scoped to this company.
+          3. Any fiscal position for this company.
+        Returns an empty recordset if none exists (vat_mode then falls to 'zw').
+        """
+        fp_model = self.env["account.fiscal.position"]
+        company = self.env.company
+        partner = company.partner_id
+        # 1. Native resolver against the company's own partner.
+        try:
+            fp = fp_model.with_company(company)._get_fiscal_position(partner)
+        except Exception:  # noqa: BLE001 — never block wizard open on tax setup
+            fp = fp_model.browse()
+        if fp:
+            return fp
+        domain = ["|", ("company_id", "=", False), ("company_id", "=", company.id)]
+        # 2. First auto_apply position for this company.
+        fp = fp_model.search(domain + [("auto_apply", "=", True)], limit=1)
+        if fp:
+            return fp
+        # 3. Any position for this company.
+        return fp_model.search(domain, limit=1)
 
     def action_apply_computed_price(self):
         """Copy computed_price_per_child → price_per_child."""

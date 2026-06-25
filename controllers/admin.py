@@ -268,7 +268,7 @@ class CampscoutAdmin(http.Controller):
                 kierownik = False
                 try:
                     staff = env_sudo["camp.staff"].search(
-                        [("event_id", "=", ev.id), ("role", "in", ("director", "leader"))],
+                        [("event_id", "=", ev.id), ("role", "=", "kierownik")],
                         limit=1,
                     )
                     kierownik = staff.name or (staff.user_id and staff.user_id.name) or False

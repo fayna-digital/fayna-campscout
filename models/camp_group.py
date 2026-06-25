@@ -346,7 +346,7 @@ class CampGroup(models.Model):
             .search(
                 [
                     ("event_id", "=", event.id),
-                    ("role", "=", "counselor"),
+                    ("role", "=", "wychowawca"),
                     ("state", "in", ("confirmed", "active")),
                     ("user_id", "!=", False),
                 ]

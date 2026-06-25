@@ -18,10 +18,10 @@
 # R12: ставка за турнус з ir.config_parameter
 #   fayna_camp_portal.salary_wychowawca_default / salary_kierownik_default.
 #
-# Мапінг ролей [ПЕРЕВІРЕНО grep 2026-06-10]: camp.staff.role НЕ має ключа
-# 'wychowawca' — селекшен оперує 'counselor' / 'leader' / 'activity_lead'.
-# Вакансія говорить юридичною мовою (wychowawca/kierownik/instructor),
-# найм транслює в технічні ключі camp.staff через _VACANCY_TO_STAFF_ROLE.
+# ADR-22 (канон ролей): camp.staff.vacancy.role і camp.staff.role тепер
+# користуються ОДНІЄЮ канонічною таксономією (_role_taxonomy.CAMP_ROLE_SELECTION).
+# Ключі тотожні 1:1 → найм НЕ мапить вакансію в інший набір (старий міст
+# _VACANCY_TO_STAFF_ROLE прибрано). Вакансія wychowawca → staff wychowawca.
 import logging
 import math
 
@@ -29,6 +29,7 @@ from dateutil.relativedelta import relativedelta
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
+from ._role_taxonomy import CAMP_ROLE_SELECTION
 from .camp_group import GROUP_LIMIT_DEFAULT, GROUP_LIMIT_UNDER_10, UNDER_10_AGE
 
 _logger = logging.getLogger(__name__)
@@ -37,13 +38,6 @@ _logger = logging.getLogger(__name__)
 SALARY_PARAM_BY_ROLE = {
     "wychowawca": "fayna_camp_portal.salary_wychowawca_default",
     "kierownik": "fayna_camp_portal.salary_kierownik_default",
-}
-
-# vacancy.role (legal language) → camp.staff.role (technical selection key).
-_VACANCY_TO_STAFF_ROLE = {
-    "wychowawca": "counselor",
-    "kierownik": "leader",
-    "instructor": "activity_lead",
 }
 
 # Budget line name pattern — dedup key for auto-added salary lines.
@@ -78,20 +72,15 @@ class CampStaffVacancy(models.Model):
         help=_("The shift this vacancy belongs to."),
     )
     role = fields.Selection(
-        [
-            ("wychowawca", "Wychowawca"),
-            ("kierownik", "Kierownik wypoczynku"),
-            ("instructor", "Instructor"),
-        ],
+        CAMP_ROLE_SELECTION,
         required=True,
         default="wychowawca",
         index=True,
         tracking=True,
         string=_("Role"),
         help=_(
-            "Legal role of the vacancy. Hiring maps it onto camp.staff.role "
-            "technical keys (wychowawca→counselor, kierownik→leader, "
-            "instructor→activity_lead)."
+            "Role of the vacancy. Canonical taxonomy shared 1:1 with "
+            "camp.staff.role (ADR-22) — hiring copies the same key, no mapping."
         ),
     )
     state = fields.Selection(
@@ -197,7 +186,8 @@ class CampStaffVacancy(models.Model):
             {
                 "name": self.candidate_name,
                 "event_id": event.id,
-                "role": _VACANCY_TO_STAFF_ROLE.get(self.role, "counselor"),
+                # ADR-22: canon taxonomy — vacancy role == staff role, no bridge.
+                "role": self.role,
                 "date_from": date_from,
                 "date_to": date_to,
                 "state": "draft",  # RSPTS gate: confirmation only after verification
@@ -271,7 +261,7 @@ class EventEventStaffing(models.Model):
     current_wychowawcy = fields.Integer(
         compute="_compute_staffing",
         string=_("Current wychowawcy"),
-        help=_("camp.staff in confirmed/active with role 'counselor' (= wychowawca)."),
+        help=_("camp.staff in confirmed/active with role 'wychowawca' (ADR-22 canon)."),
     )
     staffing_gap = fields.Integer(
         compute="_compute_staffing",
@@ -328,7 +318,7 @@ class EventEventStaffing(models.Model):
             )
             current = len(
                 event.staff_ids.filtered(
-                    lambda s: s.state in ("confirmed", "active") and s.role == "counselor"
+                    lambda s: s.state in ("confirmed", "active") and s.role == "wychowawca"
                 )
             )
             pipeline = event.staff_vacancy_ids.filtered(

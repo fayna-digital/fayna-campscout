@@ -113,14 +113,15 @@ else:
     # — Штат: 3 виховники (2 з KRK→доступ, 1 без), 3 волонтери, 1 інструктор плавання —
     df = START
     dt = START + timedelta(days=DAYS)
+    # ADR-22 canon role keys.
     staff_spec = [
-        ("Wychowawca Anna (KRK ✓)", "counselor", True, "Палата номер 6, Чортики"),
-        ("Wychowawca Bartek (KRK ✓)", "counselor", True, "Водолази, Наполеони"),
-        ("Wychowawca Cezary (BEZ KRK)", "counselor", False, "Русалки, Медузи"),
-        ("Wolontariusz Dawid", "logistics", False, ""),
-        ("Wolontariusz Ewa", "logistics", False, ""),
-        ("Wolontariusz Franek", "logistics", False, ""),
-        ("Instruktor pływania Gosia", "activity_lead", True, ""),
+        ("Wychowawca Anna (KRK ✓)", "wychowawca", True, "Палата номер 6, Чортики"),
+        ("Wychowawca Bartek (KRK ✓)", "wychowawca", True, "Водолази, Наполеони"),
+        ("Wychowawca Cezary (BEZ KRK)", "wychowawca", False, "Русалки, Медузи"),
+        ("Wolontariusz Dawid", "wolontariusz", False, ""),
+        ("Wolontariusz Ewa", "wolontariusz", False, ""),
+        ("Wolontariusz Franek", "wolontariusz", False, ""),
+        ("Instruktor pływania Gosia", "instruktor", True, ""),
     ]
     staff = {}
     for name, role, has_krk, assigned in staff_spec:

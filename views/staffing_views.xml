@@ -298,7 +298,11 @@
                             <field name="cost_advertising_total"/>
                         </group>
                         <group string="VAT i marża">
-                            <field name="vat_mode" widget="radio"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="fiscal_position_id"
+                                   options="{'no_create': True}"/>
+                            <field name="vat_mode" widget="radio"
+                                   help="Wynik pozycji fiskalnej (§7). Można nadpisać ręcznie po konsultacji z księgową."/>
                             <field name="markup_percent"/>
                         </group>
                         <group string="Wynik kalkulatora" colspan="2">
@@ -306,6 +310,16 @@
                                    readonly="1"
                                    class="o_field_highlight fw-bold text-success"/>
                             <field name="vat_note" readonly="1"/>
+                            <!-- §7: human-in-the-loop disclaimer — NOT legally final -->
+                            <div class="alert alert-warning mt-2" role="alert" colspan="2">
+                                <i class="fa fa-exclamation-triangle"/>
+                                <strong> Uwaga prawna (VAT):</strong>
+                                Finalna kwalifikacja VAT (zw. / marża) wymaga
+                                interpretacji indywidualnej lub konsultacji z księgową.
+                                Kalkulator podaje wartość orientacyjną na podstawie
+                                wybranej pozycji fiskalnej — to <strong>nie jest</strong>
+                                gotowa wykładnia prawna.
+                            </div>
                             <button name="action_apply_computed_price"
                                     type="object"
                                     string="Zastosuj jako cenę biletu →"

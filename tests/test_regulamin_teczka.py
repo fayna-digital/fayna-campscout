@@ -68,7 +68,7 @@ class TestRegulaminTeczka(TransactionCase):
             {
                 "name": "Wychowawca A",
                 "event_id": cls.event.id,
-                "role": "counselor",
+                "role": "wychowawca",
                 "user_id": cls.user_a.id,
                 "date_from": "2026-07-01",
                 "date_to": "2026-07-14",
@@ -78,7 +78,7 @@ class TestRegulaminTeczka(TransactionCase):
             {
                 "name": "Wychowawca B",
                 "event_id": cls.event.id,
-                "role": "counselor",
+                "role": "wychowawca",
                 "user_id": cls.user_b.id,
                 "date_from": "2026-07-01",
                 "date_to": "2026-07-14",
@@ -121,7 +121,7 @@ class TestRegulaminTeczka(TransactionCase):
             {
                 "name": "Wychowawca C",
                 "event_id": self.event.id,
-                "role": "counselor",
+                "role": "wychowawca",
                 "date_from": "2026-07-01",
                 "date_to": "2026-07-14",
             }
@@ -181,7 +181,7 @@ class TestRegulaminTeczka(TransactionCase):
             {
                 "name": "Bez konta",
                 "event_id": self.event.id,
-                "role": "counselor",
+                "role": "wychowawca",
                 "date_from": "2026-07-01",
                 "date_to": "2026-07-14",
             }

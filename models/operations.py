@@ -19,6 +19,8 @@ from markupsafe import Markup
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError, ValidationError
 
+from ._role_taxonomy import CAMP_ROLE_SELECTION
+
 _logger = logging.getLogger(__name__)
 
 _MANAGER_GROUP = "fayna_camp_portal.group_fayna_camp_manager"
@@ -75,19 +77,15 @@ class CampStaff(models.Model):
     )
 
     role = fields.Selection(
-        [
-            ("activity_lead", "Activity lead"),
-            ("counselor", "Counselor"),
-            ("medic", "Medical officer"),
-            ("kitchen_staff", "Kitchen staff"),
-            ("logistics", "Logistics"),
-            ("director", "Director"),
-            ("leader", "Kierownik wypoczynku (camp leader)"),
-        ],
+        CAMP_ROLE_SELECTION,
         required=True,
+        default="wychowawca",
         string=_("Role"),
         tracking=True,
-        help=_("Operational role of this staff member in the shift."),
+        help=_(
+            "Operational role of this staff member in the shift. "
+            "Canonical taxonomy shared with camp.staff.vacancy (ADR-22)."
+        ),
     )
 
     user_id = fields.Many2one(
@@ -477,7 +475,7 @@ class CampStaff(models.Model):
     def _ensure_wychowawca_group(self, user):
         """Grant group_camp_wychowawca to *user* if not already a member.
 
-        Called when a counselor (role='counselor') transitions to confirmed or
+        Called when a wychowawca (role='wychowawca') transitions to confirmed or
         active state so the wychowawca record rules kick in immediately.
         Pattern: recruitment.py:222 (user.sudo().write groups_id [(4, id)]).
         """
@@ -502,11 +500,11 @@ class CampStaff(models.Model):
             )
 
     def write(self, vals):
-        """Hook: grant wychowawca group when a counselor becomes confirmed/active."""
+        """Hook: grant wychowawca group when a wychowawca becomes confirmed/active."""
         res = super().write(vals)
         if "state" in vals and vals["state"] in ("confirmed", "active"):
             for staff in self:
-                if staff.role == "counselor" and staff.user_id:
+                if staff.role == "wychowawca" and staff.user_id:
                     try:
                         staff._ensure_wychowawca_group(staff.user_id)
                     except Exception:  # noqa: BLE001 — never block staff state change
@@ -1339,7 +1337,7 @@ class CampReport(models.Model):
         "camp.staff",
         string=_("Kierownik (author of report)"),
         help=_("Camp director who authored and signs this Sprawozdanie."),
-        domain="[('event_id', '=', event_id), ('role', '=', 'director')]",
+        domain="[('event_id', '=', event_id), ('role', '=', 'kierownik')]",
         index=True,
         ondelete="set null",
     )
@@ -1724,7 +1722,7 @@ class CampProgramWypoczynku(models.Model):
 
     kierownik_id = fields.Many2one(
         "camp.staff",
-        domain=[("role", "=", "leader")],
+        domain=[("role", "=", "kierownik")],
         string=_("Kierownik"),
         index=True,
         help=_("Kierownik wypoczynku listed on this document."),
@@ -2945,7 +2943,7 @@ class FaynaCampDziennik(models.Model):
     kierownik_id = fields.Many2one(
         "camp.staff",
         string=_("Imię i nazwisko kierownika wypoczynku"),
-        domain="[('event_id', '=', event_id), ('role', '=', 'leader')]",
+        domain="[('event_id', '=', event_id), ('role', '=', 'kierownik')]",
         tracking=True,
         help=_("Camp leader assigned to this group."),
     )
@@ -2955,7 +2953,7 @@ class FaynaCampDziennik(models.Model):
         column1="dziennik_id",
         column2="staff_id",
         string=_("Imiona i nazwiska wychowawców"),
-        domain="[('event_id', '=', event_id), ('role', '=', 'counselor')]",
+        domain="[('event_id', '=', event_id), ('role', '=', 'wychowawca')]",
         help=_("Counselors assigned to this group."),
     )
     date_start = fields.Date(

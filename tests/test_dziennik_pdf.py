@@ -32,7 +32,7 @@ class TestDziennikPdf(TransactionCase):
             {
                 "event_id": cls.event.id,
                 "name": "Adam Kierowniczy",
-                "role": "leader",
+                "role": "kierownik",
                 "date_from": "2026-07-01",
                 "date_to": "2026-07-14",
             }
@@ -41,7 +41,7 @@ class TestDziennikPdf(TransactionCase):
             {
                 "event_id": cls.event.id,
                 "name": "Maria Wychowawcza",
-                "role": "counselor",
+                "role": "wychowawca",
                 "date_from": "2026-07-01",
                 "date_to": "2026-07-14",
             }

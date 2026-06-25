@@ -141,7 +141,7 @@ class TestArt9Access(TransactionCase):
             "name": "Wychowawca Art9",
             "event_id": cls.event.id,
             "user_id": cls.user_wychowawca.id,
-            "role": "counselor",
+            "role": "wychowawca",
             "date_from": "2026-07-01",
             "date_to": "2026-07-14",
         })
@@ -149,7 +149,7 @@ class TestArt9Access(TransactionCase):
             "name": "Wychowawca2 Art9",
             "event_id": cls.event.id,
             "user_id": cls.user_wychowawca2.id,
-            "role": "counselor",
+            "role": "wychowawca",
             "date_from": "2026-07-01",
             "date_to": "2026-07-14",
         })
@@ -157,7 +157,7 @@ class TestArt9Access(TransactionCase):
             "name": "Medic Art9",
             "event_id": cls.event.id,
             "user_id": cls.user_medic.id,
-            "role": "medic",
+            "role": "ratownik",
             "date_from": "2026-07-01",
             "date_to": "2026-07-14",
         })

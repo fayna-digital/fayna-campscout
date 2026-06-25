@@ -63,7 +63,7 @@ class TestPhaseCWychowawca(TransactionCase):
                 "name": "WC Phase C",
                 "event_id": cls.event.id,
                 "user_id": cls.user_wychowawca.id,
-                "role": "counselor",
+                "role": "wychowawca",
                 "date_from": "2026-07-01",
                 "date_to": "2026-07-07",
             }

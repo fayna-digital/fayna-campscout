@@ -79,7 +79,7 @@ class TestPhaseDSplit(TransactionCase):
             {
                 "name": user.name,
                 "event_id": self.event.id,
-                "role": "counselor",
+                "role": "wychowawca",
                 "user_id": user.id,
                 "date_from": "2026-07-01",
                 "date_to": "2026-07-14",
@@ -221,7 +221,7 @@ class TestPhaseDSplit(TransactionCase):
                 {
                     "name": user.name,
                     "event_id": event.id,
-                    "role": "counselor",
+                    "role": "wychowawca",
                     "user_id": user.id,
                     "date_from": "2026-07-01",
                     "date_to": "2026-07-14",
