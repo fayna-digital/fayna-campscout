@@ -24,10 +24,29 @@ from datetime import datetime, timedelta
 from odoo import _, http
 from odoo.exceptions import AccessError, MissingError, UserError
 from odoo.http import request
+from odoo.addons.web.controllers.home import Home
 
 _logger = logging.getLogger(__name__)
 
 ORGANIZATOR_GROUP = "fayna_camp_portal.group_camp_organizator"
+
+
+class CampHome(Home):
+    """Login redirect: Organizator → server-rendered /admin/dashboard.
+
+    Root cause (TZ §20 R1): the organizator home action was an `act_url` to
+    /admin/dashboard, but the web client does NOT auto-execute an act_url home
+    action → blank /web (stuck "Pobieranie"). Redirect at the HTTP login level
+    so they land straight on the dashboard. Kiosk roles fall through to default
+    (web client → camp_kiosk_action via res.users._get_login_action).
+    """
+
+    def _login_redirect(self, uid, redirect=None):
+        if not redirect:
+            user = request.env["res.users"].sudo().browse(uid)
+            if user.has_group(ORGANIZATOR_GROUP):
+                return "/admin/dashboard"
+        return super()._login_redirect(uid, redirect=redirect)
 
 
 class CampscoutAdmin(http.Controller):
