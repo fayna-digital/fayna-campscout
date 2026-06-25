@@ -16,7 +16,6 @@
         <!-- Fundacja / NGO → zwolniona z VAT (art.43 ust.1 pkt 24 lit.a) -->
         <record id="fiscal_position_camp_zw" model="account.fiscal.position">
             <field name="name">Obóz — fundacja / NGO (zwolniona art.43)</field>
-            <field name="company_id" eval="False"/>
             <field name="auto_apply" eval="False"/>
             <field name="note">Forma oświaty + zgłoszenie do kuratorium → usługa
                 opieki nad dziećmi zwolniona z VAT (art.43 ust.1 pkt 24 lit.a).
@@ -27,7 +26,6 @@
         <!-- Sp. z o.o. / firma turystyczna → VAT-marża (art.119) -->
         <record id="fiscal_position_camp_marza" model="account.fiscal.position">
             <field name="name">Obóz — firma turystyczna (VAT-marża art.119)</field>
-            <field name="company_id" eval="False"/>
             <field name="auto_apply" eval="False"/>
             <field name="note">Organizator wpisany do rejestru organizatorów
                 turystyki → VAT 23% naliczany TYLKO od marży (art.119 ustawy o VAT).
@@ -38,7 +36,6 @@
         <!-- JDG / inne → standard 23% -->
         <record id="fiscal_position_camp_standard" model="account.fiscal.position">
             <field name="name">Obóz — standard 23% (JDG / inne)</field>
-            <field name="company_id" eval="False"/>
             <field name="auto_apply" eval="False"/>
             <field name="note">Pełna stawka VAT 23% od całej ceny usługi. Stosować,
                 gdy nie przysługuje ani zwolnienie (art.43), ani procedura marży
