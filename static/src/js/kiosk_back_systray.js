@@ -36,6 +36,12 @@ export class KioskBackButton extends Component {
                 // Best-effort: on any error stay hidden so the navbar is never broken.
                 this.state.visible = false;
             }
+            // Containment: a kiosk role landing in the standard backend must NOT
+            // see admin escape hatches (apps menu, create "+", settings cog).
+            // Tag <body> so SCSS hides them; admins/organizators stay untouched.
+            if (this.state.visible && document.body) {
+                document.body.classList.add("o_camp_kiosk_user");
+            }
         });
     }
 

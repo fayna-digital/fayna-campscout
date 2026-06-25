@@ -339,3 +339,26 @@ $kiosk-toggle-min:         44px;   // Apple HIG minimum touch target
         }
     }
 }
+
+// ── Kiosk containment (TZ §19, H3/H5) ────────────────────────────────────────
+// When a kiosk role (kierownik/wychowawca/instructor) lands in the standard
+// Odoo backend after tapping a tile, hide the admin "escape hatches" so a
+// non-technical user can neither wander into full Odoo nor create junk records.
+// The body class `o_camp_kiosk_user` is added by kiosk_back_systray.js (which
+// already resolves the kiosk role server-side). Admins/organizators: untouched.
+// We KEEP the view switcher (kanban/list — wanted), search, and "← Powrót".
+body.o_camp_kiosk_user {
+    // App grid / "other apps" menu — the main route out of the kiosk.
+    .o_navbar_apps_menu,
+    .o_menu_systray .o_user_menu,        // user menu (logout/preferences/dev)
+    // Create / new-record buttons in list & kanban control panels.
+    .o-kanban-button-new,
+    .o_list_button_add,
+    // Settings / action cog (export, archive, server-actions, etc.).
+    .o_cp_action_menus,
+    // Inline "+" on grouped kanban columns / x2many sub-lists.
+    .o_kanban_quick_add,
+    .o_field_x2many_list_row_add {
+        display: none !important;
+    }
+}
