@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """Публічний портал рекрутації — /camp/vacancies + /camp/vacancy/<id>/apply.
 
 Кандидат без акаунту заповнює форму → camp.staff.application.sudo().create().

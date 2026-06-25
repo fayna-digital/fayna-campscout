@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — Teczka KO (gotowość do kontroli Kuratorium Oświaty)
 # TZ_SPRINT_2026-06-10 §4: kierownik dashboard — readiness checklist per
 # arkusz kontroli (doc-kku-arkusz-ko, protokol-kontroli-2026):

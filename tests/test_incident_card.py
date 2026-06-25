@@ -1,5 +1,4 @@
 # Copyright 2026 Fayna Digital — Volodymyr Shevchenko
-# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl-3.0).
 """Tests — §11 Karta Wypadku (camp.incident.card) + §12 Rejestr Wypadków
 (camp.incident.register), TZ_SPRINT_2026-06-10.
 

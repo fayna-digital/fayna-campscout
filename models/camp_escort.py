@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """camp.escort — Indywidualna asysta / konwój uczestnika.
 
 Збір даних супроводу дитини на конкретний заїзд (одна дитина може їхати на

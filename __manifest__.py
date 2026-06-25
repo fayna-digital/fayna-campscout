@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 {
     "name": "Портал CampScout",
     "version": "17.0.3.0.0",
@@ -38,11 +40,11 @@ All camp-specific logic lives in this single module. Horizontal infrastructure
 (fayna_rodo_compliance, fayna_sms_base) stays as separate reusable modules.
 
 Author: Fayna Digital — Volodymyr Shevchenko
-License: LGPL-3
+License: OPL-1 (Odoo Proprietary License v1.0)
     """,
     "author": "Fayna Digital — Volodymyr Shevchenko",
     "website": "https://fayna.agency",
-    "license": "LGPL-3",
+    "license": "OPL-1",
     "depends": [
         "base",
         "mail",

@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — camp budget (TZ_SPRINT_2026-06-10 §5 «Фінанси», decision R8).
 #
 # Two margins — НЕ одна (R8):

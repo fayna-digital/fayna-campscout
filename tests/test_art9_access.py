@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — RODO Art.9 field-level + attachment-level access tests
 # TZ §5 §6j §6l-final: two-layer protection for special-category health data.
 #

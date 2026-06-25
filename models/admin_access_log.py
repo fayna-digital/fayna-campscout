@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """Organizator (admin) impersonation log — RODO art.30 register of processing.
 
 Each entry records when a top-level Organizator (group_camp_organizator) views

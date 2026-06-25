@@ -3,7 +3,7 @@
 ![Odoo Version](https://img.shields.io/badge/Odoo-17.0%20Community-purple)
 ![Python](https://img.shields.io/badge/Python-3.10+-blue)
 ![PL Law](https://img.shields.io/badge/PL%20Law-Rozp.%20MEN%202016-red)
-![License](https://img.shields.io/badge/License-LGPL--3-green.svg)
+![License](https://img.shields.io/badge/License-OPL--1-blue.svg)
 ![Status](https://img.shields.io/badge/Status-Active%20Development-orange)
 
 **Developed by [Fayna Digital](https://www.fayna.agency) for the Polish camp organization market**
@@ -35,7 +35,7 @@ Reference deployment: [CampScout](https://campscout.eu) — child summer camps i
 
 ```
 fayna_camp_portal/
-├── __manifest__.py                       # v17.0.2.0.0 · LGPL-3 · application=True
+├── __manifest__.py                       # v17.0.2.0.0 · OPL-1 · application=True
 ├── hooks.py                              # post_init_hook — seed data, default config
 ├── models/
 │   ├── camp.py                           # camp.category, camp.activity, camp.room.type + event.event extensions
@@ -130,7 +130,7 @@ fayna_camp_portal/
 | Testing | Odoo test framework + `pytest` |
 | RODO/GDPR | `fayna_rodo_compliance` (consent log + 7y retention) |
 | Module version | 17.0.2.0.0 |
-| License | LGPL-3 |
+| License | OPL-1 (proprietary) |
 
 ---
 
@@ -479,7 +479,7 @@ Record rules (`security/record_rules.xml`) enforce per-shift scoping for staff r
 
 ## License
 
-LGPL-3 — see [LICENSE](LICENSE)
+OPL-1 (Odoo Proprietary License v1.0) — see [LICENSE](LICENSE)
 
 ---
 

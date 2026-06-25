@@ -1,5 +1,4 @@
 # Copyright 2026 Fayna Digital — Volodymyr Shevchenko
-# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl-3.0).
 """Tests — Dziennik Zajęć PDF report (Załącznik 5 Rozp. MEN 30.03.2016).
 
 Smoke test: the report action referenced by FaynaCampDziennik.action_submit

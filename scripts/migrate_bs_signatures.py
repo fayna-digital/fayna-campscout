@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """§5.6 — перенос живих підписів bs_parents_signature (sale.order, Binary attachment)
 → camp.participant.qualification_signature. Прогалина, якої populate_from_bs НЕ робить
 (він переносить лише PDF). Без цього 107 підписів лишаються тільки в legacy-полі.

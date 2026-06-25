@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — тести автоштату §6 (camp.staff.vacancy + event staffing)
 # Registration ↔ participant pattern: той самий, що в tests/test_camp_group.py
 # (event.registration з partner_id + participant_id; вік = camp.participant.birth_date).

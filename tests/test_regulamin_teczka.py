@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — tests for Regulaminy + Teczka KO (TZ_SPRINT_2026-06-10 §4)
 # Covers:
 #   - camp.regulamin.ack: only the staff member's OWN user can sign (others →

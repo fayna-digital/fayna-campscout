@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — tests for ADR Фаза A: skeleton generator + constraints
 # Covers ADR §1 (поля + constrains), §2 (генератор), §3 (ACL — model-level),
 # §4 (wizard rain plan).

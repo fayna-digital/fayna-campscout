@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — Phase D tests
 # ADR: 11-ADR-FAZA-D-build.md
 # Tests: <10 never in group-20; full camp → reserve; cancel → promotion;

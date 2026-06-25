@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — tests for Karta Kwalifikacyjna wzór 2026 (§10 Dz.U. 2026/704)
 # + R1 hard block (water/heights) + §13 RSPTS manual verification workflow.
 from odoo.exceptions import UserError, ValidationError

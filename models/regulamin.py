@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — Regulaminy wypoczynku + acknowledgment kadry
 # TZ_SPRINT_2026-06-10 §4 "Regulaminy + Teczka KO":
 #   - camp.regulamin       — regulamin kolonii/obozu, kąpieli, wycieczek, ppoż.,

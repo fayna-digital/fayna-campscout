@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """Portal mixin extensions — `portal.message_thread` chatter integration.
 
 Adds the standard Odoo 17 `portal.mixin` to a small set of camp models so

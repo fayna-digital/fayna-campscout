@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """Кабінет батьків: Indywidualna asysta / konwój (camp.escort).
 
 auth=user (на відміну від старого public bs-флоу). Доступ обмежує record-rule

@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 from . import (  # noqa: I001 — preserve historical order; new imports appended below
     camp,
     commercial,

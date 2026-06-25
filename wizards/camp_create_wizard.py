@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — майстер «Новий табір» (TZ_SPRINT_2026-06-10 §6, R11/R12)
 #
 # One wizard run generates the full shift skeleton in NATIVE tables

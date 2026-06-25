@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — REQUIREMENT-DRIVEN tests for ADR-2 seats / registration.
 #
 # Requirement (ADR-2): confirming a camp sale.order creates one orphan

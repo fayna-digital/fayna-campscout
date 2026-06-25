@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — Commercial models (loyalty, reviews, sales, installments)
 # Native Odoo extensions where a native model exists; custom models only where
 # there is no Community equivalent.

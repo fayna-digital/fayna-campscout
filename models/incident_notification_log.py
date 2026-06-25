@@ -1,5 +1,4 @@
 # Copyright 2026 Fayna Digital — Volodymyr Shevchenko
-# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl-3.0).
 """Immutable notification trail for camp.incident.report.
 
 Every dispatched notification (SMS / email / phone / inbox) is logged

@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — автоштат §2 + легкі вакансії (TZ_SPRINT_2026-06-10 §6, R12/R13)
 #
 # Engine:

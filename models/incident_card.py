@@ -1,5 +1,4 @@
 # Copyright 2026 Fayna Digital — Volodymyr Shevchenko
-# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl-3.0).
 """Karta Wypadku (§11) + Rejestr Wypadków (§12) — TZ_SPRINT_2026-06-10.
 
 Models:

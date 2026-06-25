@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # populate_step2_groups_budgets.py — MIGRATION_BACK кроки 4.2 + 4.4:
 # для кожного event з реєстраціями: групи (auto-split §2) + budget(analytic) + teczka KO.
 # Запуск: cat scripts/populate_step2_groups_budgets.py | docker exec -i campscout_web \

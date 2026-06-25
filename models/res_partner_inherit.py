@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """``res.partner`` extension — SMS opt-in flags (RODO art.7 compliant).
 
 Two independent toggles:

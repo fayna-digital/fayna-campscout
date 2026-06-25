@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """Post-install hooks for fayna_camp_portal.
 
 Strangler Fig migration: transfer ownership of ir.model.data records

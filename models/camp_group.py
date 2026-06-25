@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — Grupa wychowawcza (§2 / art. 92c ustawy o systemie oświaty)
 #
 # Legal basis: art. 92c ust. 2 pkt 1 ustawy z 7.09.1991 o systemie oświaty +

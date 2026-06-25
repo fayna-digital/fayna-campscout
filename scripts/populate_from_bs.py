@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # populate_from_bs.py — MIGRATION_BACK крок 4.3: bs_* (sale_order) → camp.participant
 #
 # Запуск НА STAGING (odoo shell, БД вже нейтралізована):

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """Міграція: для замовлень з продуктом 204 (Indywidualna asysta) створити
 draft camp.escort на кожну дитину+заїзд. Ідемпотентний, DRY_RUN за замовчуванням.
 

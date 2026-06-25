@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — Native-state approval workflow tests (TZ §6, ADR-13)
 #
 # Principle §0: approval state lives on event.event — NO mirror model.

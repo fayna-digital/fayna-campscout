@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """Camp stories — daily logs / adventures / team moments published to parents.
 
 Migrated 2026-04-30 from the standalone ``fayna_camp_stories`` module

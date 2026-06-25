@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — Pricing calculator tests (TZ §7)
 #
 # Tests camp.create.wizard §7 cost-buildup formula:

@@ -1,5 +1,4 @@
 # Copyright 2026 Fayna Digital — Volodymyr Shevchenko
-# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl-3.0).
 """event.event extension — deputy kierownik backup contact.
 
 Used by the Ustawa Kamilka escalation cron (5-min SLA) when the

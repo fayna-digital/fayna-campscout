@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """Детач даних campscout_management: бізнес-записи (товари-табори, події, квитки,
 атрибути) ВІДВʼЯЗУються від ir_model_data → стають звичайними плоскими записами,
 що НЕ зникнуть при uninstall модуля. КОД (views/menus/fields) НЕ чіпаємо.

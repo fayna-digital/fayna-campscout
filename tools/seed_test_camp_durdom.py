@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """SEED тестового табору «ДУРДОМ СОНЕЧКО» — для візуального тесту кіоска/сторінок на STAGING.
 Запуск:  cat tools/seed_test_camp_durdom.py | docker exec -i campscout_web \
             odoo shell -c /etc/odoo/odoo.conf -d campscout --no-http

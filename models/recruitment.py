@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — Staff Recruitment (Фаза B)
 # ADR: DevJournal/projects/campscout/it-project/09-ADR-FAZA-B-build.md
 import logging

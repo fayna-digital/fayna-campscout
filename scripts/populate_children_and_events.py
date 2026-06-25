@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — Populate children + events (F4, LOOP-E iteration 1)
 # Дотяжка 11 дітей без group_id та 6 таборів без budget/teczka/program.
 

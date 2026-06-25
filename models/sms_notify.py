@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """SMS notification layer for CampScout — priority-aware mail.thread integration.
 
 Three priority levels (declared on each model via class attribute ``_notify_priority``):

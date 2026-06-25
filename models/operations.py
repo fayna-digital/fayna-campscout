@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — Camp Operations models
 # Sources:
 #   fayna_camp_operations:   CampReport, CampJournal, CampStaff, CampStaffCert,

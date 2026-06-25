@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """Organizator (admin) dashboard + view-as routes.
 
 Top-level Organizator (group_camp_organizator per PL law, Rozp. MEN

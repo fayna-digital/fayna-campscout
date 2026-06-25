@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """Camp reports & analytics models (migrated from fayna_camp_reports).
 
 Consolidates three models that capture or render camp performance data:

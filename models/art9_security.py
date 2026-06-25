@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # RODO art.9 — reliable ORM-level masking of children's medical data.
 #
 # WHY: field-level `groups=` hides a field in VIEWS, but the VALUE is still

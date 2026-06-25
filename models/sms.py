@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """SMS routing and dispatch for CampScout.
 
 Multi-provider routing: UA phones (+38x) → TurboSMS, PL phones (+48x) → secondary.

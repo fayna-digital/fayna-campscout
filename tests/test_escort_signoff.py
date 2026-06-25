@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — REQUIREMENT-DRIVEN tests for camp.escort signoff.
 #
 # camp.escort (asysta/eskorta PKP) shares the participant signoff *contract*:
