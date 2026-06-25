@@ -186,6 +186,54 @@
                     </table>
                 </t>
 
+                <!-- ════════════════════════════════════════════════════════
+                     §13 — Blurred children. Viewer w stanie pending_admission
+                     (przed «Dopuść», KRK/RSPTS niezweryfikowane) widzi LICZBĘ
+                     dzieci swoich grup + N rozmytych placeholderów. Żadne dane
+                     dziecka (imię/PESEL/foto/art.9) nie są tu renderowane —
+                     kontroler przekazuje wyłącznie {name, count}. Lista «żyje»:
+                     count rośnie przy nowych rezerwacjach.
+                ════════════════════════════════════════════════════════ -->
+                <t t-if="blurred_groups">
+                    <div class="card border-warning shadow-sm mt-3">
+                        <div class="card-header bg-warning-subtle fw-semibold d-flex align-items-center">
+                            <i class="fa fa-user-secret me-2"/>
+                            Moje grupy — dane dzieci ukryte
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-warning small mb-3" role="alert">
+                                <i class="fa fa-lock me-1"/>
+                                Dane dzieci ukryte do czasu weryfikacji KRK/RSPTS (§13).
+                                Po dopuszczeniu przez kierownika zobaczysz pełne karty
+                                kwalifikacyjne swoich podopiecznych.
+                            </div>
+                            <t t-foreach="blurred_groups" t-as="grp">
+                                <div class="cs-blur-group mb-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <strong t-esc="grp['name']"/>
+                                        <span class="badge bg-secondary">
+                                            <t t-esc="grp['count']"/> dzieci
+                                        </span>
+                                    </div>
+                                    <ul class="list-unstyled mb-0">
+                                        <t t-foreach="list(range(grp['count']))" t-as="i">
+                                            <li class="cs-blur-row d-flex align-items-center">
+                                                <span class="cs-blur-avatar"/>
+                                                <span class="cs-blur-line"/>
+                                            </li>
+                                        </t>
+                                        <t t-if="grp['count'] == 0">
+                                            <li class="text-muted small fst-italic">
+                                                Brak przypisanych dzieci — pojawią się przy nowych rezerwacjach.
+                                            </li>
+                                        </t>
+                                    </ul>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+
                 <!-- Onboarding — лише якщо staff ще не dopuszczony (draft/pending) -->
                 <t t-if="staff and staff.state in ('draft', 'pending_admission')">
                     <!-- Krok 1: dokumenty (CV / foto / KRK) -->

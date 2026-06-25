@@ -150,16 +150,57 @@ class RecruitmentPortal(CustomerPortal):
         if applications and applications[0].staff_id:
             staff_record = applications[0].staff_id.sudo()
 
+        # §13 — blurred-children: виховник у стані pending_admission (ще НЕ
+        # «Dopuść», KRK/RSPTS не zweryfikowane) бачить лише KILKOŚĆ dzieci
+        # swoich grup + N rozmytych placeholderów. ŻADNE pole dziecka
+        # (imię/PESEL/foto/art.9) nie trafia do odpowiedzi — czytamy WYŁĄCZNIE
+        # camp.group.participant_count, NIGDY rekordów camp.participant.
+        blurred_groups = self._candidate_blurred_groups(staff_record)
+
         return request.render(
             "fayna_camp_portal.portal_candidate_status",
             {
                 "applications": applications,
                 "staff": staff_record,
+                "blurred_groups": blurred_groups,
                 "page_name": "candidate",
                 "error": kw.get("error"),
                 "success": kw.get("success"),
             },
         )
+
+    def _candidate_blurred_groups(self, staff_record):
+        """§13 — dane grup viewer-a pending_admission w formie rozmytej.
+
+        Zwraca listę dict {name, count} — TYLKO dla viewer-ów, którzy NIE są
+        jeszcze dopuszczeni (staff.state != 'active'). Po «Dopuść» (active)
+        zwraca [] — pełne karty pokazuje kiosk/backend przez record-rule
+        `rule_participant_wychowawca_own`, tu nic nie dublujemy.
+
+        Gwarancja prawna: odczytujemy wyłącznie `participant_count`
+        (liczba żywa — rośnie przy nowych rezerwacjach) z grup, w których
+        bieżący user figuruje jako wychowawca. NIE dotykamy modelu
+        camp.participant, więc żadne pole osobowe/art.9 dziecka nie może
+        trafić do odpowiedzi serwera.
+        """
+        if not staff_record or staff_record.state == "active":
+            return []
+
+        user = request.env.user
+        # sudo: pending wychowawca nie ma jeszcze group_camp_wychowawca, więc
+        # record-rule nie da mu czytać camp.group; scope domeną do JEGO grup.
+        groups = (
+            request.env["camp.group"]
+            .sudo()
+            .search(
+                [("wychowawca_ids", "in", [user.id])],
+                order="event_id, sequence, name, id",
+            )
+        )
+        return [
+            {"name": group.name, "count": group.participant_count}
+            for group in groups
+        ]
 
     # ── POST /my/candidate/upload — завантаження CV/фото (auth=user) ─────────
     @http.route(
