@@ -44,7 +44,7 @@
                         <button name="action_hire" type="object"
                                 string="Zatrudnij (draft staff)" class="oe_highlight"
                                 invisible="state not in ('open', 'candidate')"
-                                help="Створює camp.staff у draft — підтвердження лише після верифікації KRK/RSPTS (§13)."/>
+                                help="Створює camp.staff у draft — підтвердження лише після верифікації KRK (Zaświadczenie o niekaralności) i RPS/RSTPS (Rejestr Sprawców Przestępstw na tle seksualnym) (§13)."/>
                         <button name="action_close" type="object" string="Zamknij"
                                 invisible="state == 'closed'"
                                 confirm="Закрити вакансію вручну? Двигун автоштату НЕ закриває вакансії сам (R13)."/>

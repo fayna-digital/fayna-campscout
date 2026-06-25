@@ -31,11 +31,29 @@ Reference deployment: [CampScout](https://campscout.eu) — child summer camps i
 
 ---
 
+## Ролі та кабінети
+
+Один модуль обслуговує всі ролі табірної організації. Кожна роль після входу потрапляє у свій кабінет і бачить лише те, що дозволяють record rules та field-level ACL.
+
+| Роля (PL / UA) | Кабінет (вхід) | Що бачить коротко |
+|----------------|----------------|-------------------|
+| **Organizator** / Організатор | `/admin/dashboard` | Усе: KPI-дашборд (реєстрації, виручка, заповненість, непідписані картки, інциденти, дедлайни Kuratorium), view-as у будь-яку роль (з RODO-логом), бюджети (BEP/marża), Teczka kontroli KO |
+| **Sales** / Менеджер продажів | Backend (Odoo) | Каталог таборів, `sale.order`, тікети підтримки, маркетинг-звіти, публічні stories. НЕ бачить медичних полів, dziennik, інцидентів |
+| **Kierownik** / Керівник табору | Backend (свій турнус) | Лише свій турнус: щоденний звіт, журнал, кадри, картка (секції III–V), Program Wypoczynku, чеклист Kuratorium |
+| **Wychowawca** / Вихователь | Backend (своя група) | Лише своя група: dziennik zajęć (Załącznik 5), картка (секція VI), SMS-розсилка з лімітом, груповий чат турнусу |
+| **Instructor** / Інструктор | Backend (свої активності) | Свої активності; обмежений медичний доступ під активність (напр. астма для бігу). НЕ бачить повної медкарти, журналу, інцидентів |
+| **Finanse** / Бухгалтер | `/Finanse` (backend) | Бюджети таборів (BEP — próg rentowności, marża VAT art. 119 / marża biznesowa), категорії витрат, план vs факт. НЕ бачить медичних/виховних даних |
+| **Parent** / Батько | `/my` | Свій кабінет: діти-картки, кваліфікаційна картка (секції I–II + підпис), stories свого турнусу, документи, лояльність, asysta (escort). Лише власні діти |
+
+Спеціалізовані ортогональні ролі (опційні, накладаються поверх основних): **Medical Officer** (RODO art.9 медполя), **Nutrition Officer** (дієти + алергени EU-14), **HR Manager** (KRK/RPS/сертифікати кадрів), **Emergency Responder / Manager** (інциденти). Детальна CRUD-матриця — у розділі [Role-Based Access Reference](#role-based-access-reference).
+
+---
+
 ## Architecture
 
 ```
 fayna_camp_portal/
-├── __manifest__.py                       # v17.0.2.0.0 · OPL-1 · application=True
+├── __manifest__.py                       # v17.0.3.0.0 · OPL-1 · application=True
 ├── hooks.py                              # post_init_hook — seed data, default config
 ├── models/
 │   ├── camp.py                           # camp.category, camp.activity, camp.room.type + event.event extensions
@@ -129,7 +147,7 @@ fayna_camp_portal/
 | i18n | Native Odoo `.po` (`uk_UA`, `pl_PL`) |
 | Testing | Odoo test framework + `pytest` |
 | RODO/GDPR | `fayna_rodo_compliance` (consent log + 7y retention) |
-| Module version | 17.0.2.0.0 |
+| Module version | 17.0.3.0.0 |
 | License | OPL-1 (proprietary) |
 
 ---

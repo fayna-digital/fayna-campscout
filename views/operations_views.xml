@@ -157,8 +157,8 @@
                                     </div>
                                     <div class="o_kanban_record_bottom">
                                         <div class="oe_kanban_bottom_left">
-                                            <span t-attf-class="badge me-1 #{record.has_valid_krk.raw_value ? 'bg-success' : 'bg-secondary'}" title="KRK">KRK</span>
-                                            <span t-attf-class="badge me-1 #{record.has_valid_rps.raw_value ? 'bg-success' : 'bg-secondary'}" title="RPS">RPS</span>
+                                            <span t-attf-class="badge me-1 #{record.has_valid_krk.raw_value ? 'bg-success' : 'bg-secondary'}" title="Zaświadczenie o niekaralności (KRK)">KRK</span>
+                                            <span t-attf-class="badge me-1 #{record.has_valid_rps.raw_value ? 'bg-success' : 'bg-secondary'}" title="Rejestr Sprawców Przestępstw na tle seksualnym (RPS)">RPS</span>
                                             <span t-attf-class="badge me-1 #{record.has_valid_course.raw_value ? 'bg-success' : 'bg-secondary'}" title="Kurs">Kurs</span>
                                         </div>
                                     </div>

@@ -31,19 +31,23 @@
                         </div>
 
                         <!-- ── BEP — найбільша цифра дашборду ─────────────── -->
-                        <div class="alert alert-danger" role="alert" invisible="not bep_warning">
-                            <strong>BEP nieosiągalny:</strong> cena za dziecko ≤ koszt zmienny na dziecko —
+                        <div class="alert alert-danger" role="alert" invisible="not bep_warning"
+                             title="BEP = próg rentowności (Break-Even Point).">
+                            <strong>BEP (próg rentowności) nieosiągalny:</strong> cena za dziecko ≤ koszt zmienny na dziecko —
                             każde dziecko powiększa stratę. Popraw cenę lub koszty zmienne.
                         </div>
                         <group>
                             <group string="Break-even">
-                                <label for="bep_children" string="BEP — min. dzieci"/>
+                                <label for="bep_children" string="BEP — min. dzieci"
+                                       help="Próg rentowności (BEP, Break-Even Point) — minimalna liczba dzieci, przy której obóz wychodzi na zero."/>
                                 <div>
                                     <field name="bep_children" readonly="1"
+                                           title="Próg rentowności (BEP) — minimalna liczba dzieci, przy której przychód pokrywa koszty."
                                            style="font-size: 2.5rem; font-weight: bold;"/>
                                 </div>
                                 <field name="registered_children" readonly="1"/>
-                                <label for="fill_vs_bep_pct" string="Wypełnienie vs BEP"/>
+                                <label for="fill_vs_bep_pct" string="Wypełnienie vs BEP"
+                                       help="Stopień wypełnienia względem progu rentowności (BEP)."/>
                                 <field name="fill_vs_bep_pct" widget="progressbar" nolabel="1"/>
                                 <field name="contribution_margin" readonly="1"/>
                                 <field name="bep_warning" invisible="1"/>
@@ -103,7 +107,8 @@
                                         <field name="qty"/>
                                         <field name="subtotal_planned" sum="Razem"/>
                                         <field name="vat_marza" optional="show"
-                                               string="VAT-marża (art. 119)"/>
+                                               string="VAT-marża (art. 119)"
+                                               help="Procedura VAT marża (art. 119 ustawy o VAT) — usługi turystyczne opodatkowane od marży, nie od obrotu."/>
                                         <field name="is_salary" column_invisible="1"/>
                                         <field name="currency_id" column_invisible="1"/>
                                     </tree>
