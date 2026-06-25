@@ -114,6 +114,8 @@ License: OPL-1 (Odoo Proprietary License v1.0)
         "reports/dziennik_reports.xml",
         "reports/escort_report_templates.xml",
         "reports/escort_reports.xml",
+        "reports/escort_rodo_report_templates.xml",
+        "reports/escort_rodo_reports.xml",
         "templates/portal_templates.xml",
         "templates/portal_camp_day.xml",
         "templates/portal_chatter.xml",
