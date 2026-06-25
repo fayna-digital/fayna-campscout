@@ -101,6 +101,7 @@ License: OPL-1 (Odoo Proprietary License v1.0)
         "reports/teczka_report_templates.xml",
         "reports/teczka_reports.xml",
         "reports/budget_report_templates.xml",
+        "reports/budget_evidence_templates.xml",
         "reports/budget_reports.xml",
         "reports/incident_report_templates.xml",
         "reports/incident_reports.xml",

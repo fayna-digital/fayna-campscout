@@ -19,6 +19,19 @@
                                 class="btn-secondary"
                                 invisible="analytic_account_id"
                                 help="Creates the CAMP/{event} analytic account used for plan-vs-fact."/>
+                        <button name="action_print_evidence"
+                                type="object"
+                                string="Podgląd ewidencji (PDF)"
+                                class="btn-secondary"
+                                groups="fayna_camp_portal.group_camp_finance,fayna_camp_portal.group_camp_organizator,fayna_camp_portal.group_camp_kierownik"
+                                help="Podgląd ewidencji finansowej turnusu (przychody / koszty / saldo / VAT) — bez danych dzieci."/>
+                        <button name="action_send_evidence_to_ksiegowa"
+                                type="object"
+                                string="Wyślij ewidencję do księgowej"
+                                class="btn-primary"
+                                groups="fayna_camp_portal.group_camp_finance,fayna_camp_portal.group_camp_organizator,fayna_camp_portal.group_camp_kierownik"
+                                confirm="Wysłać ewidencję finansową turnusu na adres księgowej? Dokument zawiera tylko kwoty zbiorcze, bez danych dzieci."
+                                help="Renderuje ewidencję (PDF) i wysyła e-mailem na adres księgowej (RODO art.9 — bez danych uczestników)."/>
                         <field name="fill_vs_bep" widget="badge"
                                decoration-success="fill_vs_bep == 'ok'"
                                decoration-warning="fill_vs_bep == 'warning'"
@@ -92,6 +105,20 @@
                                 <field name="actual_revenue" readonly="1"/>
                                 <field name="actual_costs" readonly="1"/>
                                 <field name="actual_profit" readonly="1"/>
+                            </group>
+                        </group>
+
+                        <!-- ── Ewidencja dla księgowej (§10/§4c) ──────────── -->
+                        <group string="Ewidencja dla księgowej (faktury — bez danych dzieci, RODO art.9)">
+                            <group string="Przychody / koszty (faktury)">
+                                <field name="ksiegowa_email"
+                                       placeholder="ksiegowa@biuro.pl"
+                                       help="Domyślnie z parametru systemu; można nadpisać dla turnusu."/>
+                                <field name="evidence_revenue_net" readonly="1"/>
+                                <field name="evidence_revenue_vat" readonly="1"/>
+                                <field name="evidence_costs_net" readonly="1"/>
+                                <field name="evidence_costs_vat" readonly="1"/>
+                                <field name="evidence_balance" readonly="1"/>
                             </group>
                         </group>
 

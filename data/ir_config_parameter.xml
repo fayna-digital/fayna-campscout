@@ -60,5 +60,16 @@
             <field name="value"></field>
         </record>
 
+        <!-- E-mail zewnętrznej księgowej — odbiorca ewidencji finansowej
+             obozu (§10/§4c). Księgowa jest POZA systemem: faktury dostaje
+             przez KSeF, a 1 ewidencję na turnus (przychody / koszty / saldo /
+             VAT) na e-mail. RODO art.9: ewidencja zawiera WYŁĄCZNIE kwoty
+             zbiorcze — żadnych danych dzieci. Pusty = organizator uzupełnia
+             realny adres swojej księgowej w Ustawieniach. -->
+        <record id="cfg_ksiegowa_email" model="ir.config_parameter">
+            <field name="key">fayna_camp_portal.ksiegowa_email</field>
+            <field name="value"></field>
+        </record>
+
     </data>
 </odoo>

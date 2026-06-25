@@ -27,7 +27,7 @@ import logging
 import math
 
 from odoo import _, api, fields, models
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -37,6 +37,11 @@ ANALYTIC_PREFIX = "CAMP"
 
 # fill_vs_bep: registered/bep ≥ 1 → ok; ≥ WARNING_FILL_RATIO → warning; else loss.
 WARNING_FILL_RATIO = 0.8
+
+# ir.config_parameter holding the external księgowa (accountant) e-mail —
+# recipient of the per-camp financial evidence (§10/§4c). The accountant is
+# OUTSIDE the system: invoices via KSeF + one evidence per shift by e-mail.
+_PARAM_KSIEGOWA_EMAIL = "fayna_camp_portal.ksiegowa_email"
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -250,6 +255,70 @@ class CampBudget(models.Model):
         string="Wynik (fakt)",
     )
 
+    # ── Ewidencja dla zewnętrznej księgowej (§10/§4c) ─────────────────────────
+    # RODO art.9: agregaty finansowe TYLKO — żadnych danych dzieci. Odbiorcą
+    # jest urzędowy adres księgowej (config-param), nie e-mail wpisany ad hoc.
+
+    ksiegowa_email = fields.Char(
+        compute="_compute_ksiegowa_email",
+        store=True,
+        readonly=False,
+        string="E-mail księgowej",
+        help=(
+            "Adres zewnętrznej księgowej — odbiorca ewidencji finansowej tego "
+            "turnusu. Domyślnie z parametru systemu; można nadpisać dla turnusu. "
+            "RODO art.9: ewidencja zawiera tylko kwoty zbiorcze, bez danych dzieci."
+        ),
+    )
+
+    evidence_revenue_net = fields.Monetary(
+        compute="_compute_evidence_vat",
+        currency_field="currency_id",
+        string="Przychód netto (ewidencja)",
+        help="Suma kwot netto z faktur sprzedaży powiązanych z kontem analitycznym obozu.",
+    )
+    evidence_revenue_vat = fields.Monetary(
+        compute="_compute_evidence_vat",
+        currency_field="currency_id",
+        string="VAT należny (ewidencja)",
+        help="Suma kwot VAT z faktur sprzedaży powiązanych z kontem analitycznym obozu.",
+    )
+    evidence_revenue_gross = fields.Monetary(
+        compute="_compute_evidence_vat",
+        currency_field="currency_id",
+        string="Przychód brutto (ewidencja)",
+        help="Przychód netto + VAT należny (faktury sprzedaży).",
+    )
+    evidence_costs_net = fields.Monetary(
+        compute="_compute_evidence_vat",
+        currency_field="currency_id",
+        string="Koszty netto (ewidencja)",
+        help="Suma kwot netto z faktur zakupu (vendor bills) powiązanych z kontem analitycznym obozu.",
+    )
+    evidence_costs_vat = fields.Monetary(
+        compute="_compute_evidence_vat",
+        currency_field="currency_id",
+        string="VAT naliczony (ewidencja)",
+        help="Suma kwot VAT z faktur zakupu powiązanych z kontem analitycznym obozu.",
+    )
+    evidence_costs_gross = fields.Monetary(
+        compute="_compute_evidence_vat",
+        currency_field="currency_id",
+        string="Koszty brutto (ewidencja)",
+        help="Koszty netto + VAT naliczony (faktury zakupu).",
+    )
+    evidence_balance = fields.Monetary(
+        compute="_compute_evidence_vat",
+        currency_field="currency_id",
+        string="Saldo (ewidencja)",
+        help="Przychód netto − koszty netto (wynik turnusu wg faktur).",
+    )
+    evidence_vat_lines = fields.Json(
+        compute="_compute_evidence_vat",
+        string="VAT — rozbicie wg stawek",
+        help="Rozbicie kwot wg stawek VAT: [{rate, base, vat, kind}]. Tylko agregaty.",
+    )
+
     _sql_constraints = [
         (
             "unique_event_budget",
@@ -369,6 +438,85 @@ class CampBudget(models.Model):
             rec.actual_costs = costs
             rec.actual_profit = revenue - costs
 
+    # ── Ewidencja księgowej: e-mail + rozbicie VAT ────────────────────────────
+
+    @api.depends("event_id")
+    def _compute_ksiegowa_email(self):
+        """Default the accountant e-mail from the system parameter.
+
+        Mirrors teczka_ko.delegatura_email: a per-shift override is kept if an
+        organizator typed one by hand; otherwise the module-level default wins.
+        """
+        default_email = (
+            self.env["ir.config_parameter"].sudo().get_param(_PARAM_KSIEGOWA_EMAIL, "")
+        )
+        for rec in self:
+            if rec.ksiegowa_email:
+                continue
+            rec.ksiegowa_email = default_email or False
+
+    def _compute_evidence_vat(self):
+        """Aggregate net / VAT / gross per shift from POSTED account.move lines.
+
+        Source: account.move.line whose ``analytic_distribution`` references the
+        camp's analytic account, on posted customer invoices (revenue) and
+        vendor bills (costs). Pure aggregates — NO child personal data (RODO
+        art.9). Graceful: stays 0 when account models are unavailable or no
+        analytic account is linked yet.
+        """
+        MoveLine = self.env.get("account.move.line")
+        for rec in self:
+            rev_net = rev_vat = cost_net = cost_vat = 0.0
+            vat_map = {}  # (kind, rate) -> {"base": x, "vat": y}
+            account = rec.analytic_account_id
+            if MoveLine is not None and account:
+                lines = MoveLine.sudo().search(
+                    [
+                        ("parent_state", "=", "posted"),
+                        ("move_id.move_type", "in", ("out_invoice", "out_refund",
+                                                     "in_invoice", "in_refund")),
+                        ("display_type", "=", False),
+                    ]
+                )
+                for line in lines:
+                    dist = line.analytic_distribution or {}
+                    # analytic_distribution keys are str(account.id) → percent.
+                    if str(account.id) not in {str(k) for k in dist.keys()}:
+                        continue
+                    move_type = line.move_id.move_type
+                    is_revenue = move_type in ("out_invoice", "out_refund")
+                    sign = -1.0 if move_type in ("out_refund", "in_refund") else 1.0
+                    base = abs(line.price_subtotal) * sign
+                    vat = (abs(line.price_total) - abs(line.price_subtotal)) * sign
+                    rate = sum(line.tax_ids.mapped("amount")) if line.tax_ids else 0.0
+                    kind = "revenue" if is_revenue else "cost"
+                    if is_revenue:
+                        rev_net += base
+                        rev_vat += vat
+                    else:
+                        cost_net += base
+                        cost_vat += vat
+                    bucket = vat_map.setdefault((kind, rate), {"base": 0.0, "vat": 0.0})
+                    bucket["base"] += base
+                    bucket["vat"] += vat
+
+            rec.evidence_revenue_net = rev_net
+            rec.evidence_revenue_vat = rev_vat
+            rec.evidence_revenue_gross = rev_net + rev_vat
+            rec.evidence_costs_net = cost_net
+            rec.evidence_costs_vat = cost_vat
+            rec.evidence_costs_gross = cost_net + cost_vat
+            rec.evidence_balance = rev_net - cost_net
+            rec.evidence_vat_lines = [
+                {
+                    "kind": kind,
+                    "rate": rate,
+                    "base": round(vals["base"], 2),
+                    "vat": round(vals["vat"], 2),
+                }
+                for (kind, rate), vals in sorted(vat_map.items())
+            ]
+
     # ── Constraints ───────────────────────────────────────────────────────────
 
     @api.constrains("price_per_child", "planned_children")
@@ -432,6 +580,143 @@ class CampBudget(models.Model):
     def action_ensure_analytic(self):
         self._ensure_analytic()
         return True
+
+    # ── Ewidencja dla księgowej (§10/§4c) — PDF + e-mail ──────────────────────
+
+    def action_print_evidence(self):
+        """Render the per-shift financial evidence as a QWeb-PDF (no child data)."""
+        self.ensure_one()
+        return self.env.ref(
+            "fayna_camp_portal.action_report_camp_budget_evidence"
+        ).report_action(self)
+
+    def action_send_evidence_to_ksiegowa(self):
+        """Wyślij ewidencję finansową turnusu (PDF) na e-mail księgowej.
+
+        Renders the per-shift financial evidence (revenue / costs / balance /
+        VAT breakdown — pure aggregates, NO child data, RODO art.9) as a
+        QWeb-PDF and e-mails it to ``ksiegowa_email``. Logs who / when / where
+        to the chatter. Kierownik/organizator may run it; the render and mail
+        go through sudo (kierownik has the budget read-only by record rule).
+        """
+        self.ensure_one()
+        email_to = (self.ksiegowa_email or "").strip()
+        if not email_to:
+            raise UserError(
+                _(
+                    "Brak adresu e-mail księgowej. Uzupełnij pole „E-mail księgowej” "
+                    "lub parametr systemu (Ustawienia → fayna_camp_portal.ksiegowa_email)."
+                )
+            )
+
+        report = self.env.ref("fayna_camp_portal.action_report_camp_budget_evidence")
+        pdf_content, _ext = report.sudo()._render_qweb_pdf(
+            "fayna_camp_portal.report_camp_budget_evidence",
+            res_ids=self.ids,
+        )
+        filename = "Ewidencja_%s.pdf" % (self.event_id.name or "").replace(" ", "_")
+        attachment = (
+            self.env["ir.attachment"]
+            .sudo()
+            .create(
+                {
+                    "name": filename,
+                    "type": "binary",
+                    "raw": pdf_content,
+                    "mimetype": "application/pdf",
+                    "res_model": self._name,
+                    "res_id": self.id,
+                }
+            )
+        )
+
+        company = self.event_id.company_id or self.env.company
+        email_from = company.email or self.env.user.email_formatted or "noreply@campscout.eu"
+        body_html = _(
+            "<p>Szanowni Państwo,</p>"
+            "<p>w załączeniu przesyłamy ewidencję finansową turnusu "
+            "<strong>%(event)s</strong> (organizator: %(org)s):<br/>"
+            "przychody, koszty, saldo oraz rozbicie VAT.</p>"
+            "<p>Ewidencja zawiera wyłącznie kwoty zbiorcze — bez danych uczestników "
+            "(RODO art. 9). Faktury źródłowe otrzymują Państwo przez KSeF.</p>"
+            "<p>Z poważaniem,<br/>%(sender)s</p>",
+            event=self.event_id.name or "—",
+            org=company.name or "—",
+            sender=self.env.user.name or "CampScout",
+        )
+
+        mail = (
+            self.env["mail.mail"]
+            .sudo()
+            .create(
+                {
+                    "subject": _("Ewidencja finansowa turnusu — %s", self.event_id.name or ""),
+                    "body_html": body_html,
+                    "email_from": email_from,
+                    "email_to": email_to,
+                    "attachment_ids": [(4, attachment.id)],
+                }
+            )
+        )
+        mail.send()
+
+        log = _(
+            "📊 Ewidencja finansowa wysłana do księgowej.<br/>"
+            "Odbiorca: <strong>%(to)s</strong><br/>"
+            "Przychód netto: %(rev)s · Koszty netto: %(cost)s · Saldo: %(bal)s<br/>"
+            "Wysłał(a): %(user)s<br/>"
+            "Data: %(when)s",
+            to=email_to,
+            rev="%.2f" % self.evidence_revenue_net,
+            cost="%.2f" % self.evidence_costs_net,
+            bal="%.2f" % self.evidence_balance,
+            user=self.env.user.name,
+            when=fields.Datetime.to_string(fields.Datetime.now()),
+        )
+        # sudo: kierownik has the budget read-only (record rule); the audit
+        # note must still be written regardless of write rights.
+        self.sudo().message_post(body=log)
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Ewidencja wysłana"),
+                "message": _("Ewidencja została wysłana na adres %s.") % email_to,
+                "type": "success",
+                "sticky": False,
+            },
+        }
+
+    @api.model
+    def _cron_send_monthly_evidence(self):
+        """Optional monthly auto-evidence: e-mail one evidence per active budget.
+
+        Sends only when a księgowa e-mail is configured (per-budget or global)
+        AND the shift has booked analytic figures, so empty drafts are skipped.
+        Failures on one budget never block the rest.
+        """
+        default_email = (
+            self.env["ir.config_parameter"].sudo().get_param(_PARAM_KSIEGOWA_EMAIL, "")
+        )
+        budgets = self.search([("active", "=", True), ("analytic_account_id", "!=", False)])
+        sent = 0
+        for budget in budgets:
+            email_to = (budget.ksiegowa_email or default_email or "").strip()
+            if not email_to:
+                continue
+            # Skip shifts with no booked figures yet (nothing to report).
+            if not (budget.evidence_revenue_net or budget.evidence_costs_net):
+                continue
+            try:
+                budget.action_send_evidence_to_ksiegowa()
+                sent += 1
+            except Exception as exc:  # noqa: BLE001 — one bad budget must not stop the cron
+                _logger.warning(
+                    "Monthly evidence cron: budget %s failed: %s", budget.id, exc
+                )
+        _logger.info("Monthly evidence cron: sent %s evidence e-mail(s).", sent)
+        return sent
 
 
 # ──────────────────────────────────────────────────────────────────────────────
