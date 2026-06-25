@@ -128,8 +128,11 @@ class CampStaff(models.Model):
     )
 
     assigned_groups = fields.Char(
-        string=_("Assigned groups"),
-        help=_("e.g. 'Group A, Group C' or 'Entire shift'."),
+        string=_("Assigned groups (obowiązki)"),
+        help=_(
+            "Which camp groups this staff member is responsible for. "
+            "List group names separated by commas, or write 'Entire shift'."
+        ),
     )
 
     date_from = fields.Date(

@@ -305,3 +305,37 @@ $kiosk-toggle-min:         44px;   // Apple HIG minimum touch target
 
     &:active { transform: scale(0.96); filter: brightness(0.92); }
 }
+
+// =============================================================================
+// Kiosk kanban cards — bigger, touch-friendly squares for kierownik tiles
+// (Kadra / Grupy / Karty). Applied via class="o_camp_kiosk_kanban" on the
+// kanban root; pure CSS so the action just sets view_mode order.
+// =============================================================================
+.o_camp_kiosk_kanban {
+    .o_kanban_record {
+        min-width: 180px;
+        min-height: 140px;
+        padding: 12px 14px;
+        font-size: 1.05rem;
+        border: 1px solid $cs-border;
+        border-radius: 10px;
+
+        .o_kanban_record_title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: $cs-ink;
+        }
+
+        .badge {
+            font-size: 0.85rem;
+            padding: 0.35em 0.6em;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .o_kanban_record {
+            min-width: 220px;
+            min-height: 160px;
+        }
+    }
+}

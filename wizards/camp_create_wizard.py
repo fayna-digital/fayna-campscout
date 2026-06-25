@@ -144,7 +144,7 @@ class CampCreateWizard(models.TransientModel):
     )
     currency_id = fields.Many2one(
         "res.currency",
-        default=lambda self: self.env.company.currency_id,
+        default=lambda self: self._default_currency(),
         string=_("Currency"),
     )
     price_per_child = fields.Monetary(
@@ -449,6 +449,18 @@ class CampCreateWizard(models.TransientModel):
                         cap=cap,
                     )
                 )
+
+    @api.model
+    def _default_currency(self):
+        """Robust currency default: never return False (MonetaryField would crash
+        in OWL). Fall back to PLN, then any active currency."""
+        company = self.env.company
+        if company.currency_id:
+            return company.currency_id
+        pln = self.env["res.currency"].search([("name", "=", "PLN")], limit=1)
+        if pln:
+            return pln
+        return self.env["res.currency"].search([("active", "=", True)], limit=1)
 
     @api.model
     def _default_salary(self, param):

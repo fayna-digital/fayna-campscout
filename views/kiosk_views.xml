@@ -30,6 +30,29 @@
         </record>
 
         <!-- ═══════════════════════════════════════════════════════════════
+             "Moje obozy" — shifts where the current user is the kierownik
+             (event.user_id) OR a member of the kadra (staff_ids.user_id).
+             uid is resolved by Odoo at act_window context evaluation.
+             Resolved via env.ref() by the kiosk tile (_KIEROWNIK_TILES).
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <record id="action_camp_moje_obozy" model="ir.actions.act_window">
+            <field name="name">Moje obozy</field>
+            <field name="res_model">event.event</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="domain">['|', ('user_id', '=', uid), ('staff_ids.user_id', '=', uid)]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Nie masz jeszcze przypisanych obozów
+                </p>
+                <p>
+                    Tu pojawią się zmiany, których jesteś kierownikiem
+                    lub w których wchodzisz w skład kadry.
+                </p>
+            </field>
+        </record>
+
+        <!-- ═══════════════════════════════════════════════════════════════
              Kiosk menu entry — visible to kiosk roles only.
              Organizator has group_system → already hidden from this tile
              via menu_scoping; kierownik/wychowawca/instructor see it.

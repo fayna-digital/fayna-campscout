@@ -37,6 +37,13 @@ _KIEROWNIK_TILES = [
         "Stwórz nowy obóz (kreator)",
     ),
     (
+        "fayna_camp_portal.action_camp_moje_obozy",
+        "Moje obozy",
+        "suitcase",
+        "primary",
+        "Moje zmiany — wybierz obóz",
+    ),
+    (
         "fayna_camp_portal.action_camp_staff",
         "Kadra",
         "users",
@@ -248,4 +255,26 @@ class CampKioskController(http.Controller):
         """
         user = request.env.user
         visible = any(user.has_group(g) for g in _TOGGLE_GROUPS)
+        return {"visible": visible}
+
+    @http.route(
+        "/camp/kiosk/back_visible",
+        type="json",
+        auth="user",
+        methods=["POST"],
+    )
+    def kiosk_back_visible(self, **kw):
+        """Return whether the "← Powrót" (back to fullscreen kiosk) systray
+        button should be shown.
+
+        Mirror image of toggle_visible: the back button is for the kiosk roles
+        (kierownik / wychowawca / instructor) who land in the standard backend
+        after tapping a tile, NOT for admin/organizator (they have the toggle).
+        Returns:
+            {"visible": True/False}
+        """
+        user = request.env.user
+        visible = any(
+            user.has_group(group_xmlid) for group_xmlid, _tiles in _TILES_BY_GROUP
+        )
         return {"visible": visible}

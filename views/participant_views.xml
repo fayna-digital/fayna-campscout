@@ -264,11 +264,58 @@
             </field>
         </record>
 
+        <record id="view_camp_participant_kanban" model="ir.ui.view">
+            <field name="name">camp.participant.kanban</field>
+            <field name="model">camp.participant</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="group_event_id" class="o_kanban_small_column o_camp_kiosk_kanban">
+                    <field name="id"/>
+                    <field name="display_name"/>
+                    <field name="age"/>
+                    <field name="gender"/>
+                    <field name="image_1920"/>
+                    <field name="qualification_signed"/>
+                    <field name="auto_refusal_state"/>
+                    <field name="group_id"/>
+                    <field name="group_event_id"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="o_kanban_image">
+                                    <img t-att-src="kanban_image('camp.participant', 'image_1920', record.id.raw_value)"
+                                         alt="Avatar" class="o_image_64_cover"/>
+                                </div>
+                                <div class="oe_kanban_details">
+                                    <div class="o_kanban_record_top">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="display_name"/>
+                                        </strong>
+                                        <t t-if="record.qualification_signed.raw_value">
+                                            <span class="badge bg-success" title="Karta podpisana">✓</span>
+                                        </t>
+                                        <t t-if="record.auto_refusal_state.raw_value == 'refused'">
+                                            <span class="badge bg-danger" title="Karta niepodpisana w terminie">!</span>
+                                        </t>
+                                        <t t-if="record.auto_refusal_state.raw_value == 'pending'">
+                                            <span class="badge bg-warning" title="Oczekuje podpisu">…</span>
+                                        </t>
+                                    </div>
+                                    <div class="o_kanban_record_body text-muted small">
+                                        <field name="age"/> lat · <field name="gender"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
         <record id="action_camp_participant" model="ir.actions.act_window">
             <field name="name">Participants</field>
             <field name="res_model">camp.participant</field>
-            <field name="view_mode">tree,form</field>
-            <field name="context">{'search_default_signed': 0}</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="context">{'search_default_signed': 0, 'default_order': 'last_name,first_name'}</field>
         </record>
 
         <!-- ================================================================ -->

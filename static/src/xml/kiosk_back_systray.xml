@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Systray template for KioskBackButton ("← Powrót do kiosku").
+    Visible only when state.visible (set by /camp/kiosk/back_visible
+    which checks the kiosk roles kierownik/wychowawca/instructor).
+-->
+<templates xml:space="preserve">
+
+    <t t-name="fayna_camp_portal.KioskBackButton">
+        <t t-if="state.visible">
+            <li class="o_camp_kiosk_back o_dropdown d-flex align-items-center">
+                <button type="button"
+                        class="btn btn-outline-secondary btn-sm d-flex
+                               align-items-center gap-1"
+                        t-on-click="onBack"
+                        title="Powrót do kiosku">
+                    <i class="fa fa-arrow-left" role="img" aria-label="Powrót"/>
+                    <span class="d-none d-md-inline">Powrót</span>
+                </button>
+            </li>
+        </t>
+    </t>
+
+</templates>

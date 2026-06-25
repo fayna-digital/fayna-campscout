@@ -218,6 +218,11 @@
             <field name="arch" type="xml">
                 <form string="Nowy obóz">
                     <field name="step" invisible="1"/>
+                    <!-- Currency hoisted to form level: monetary fields appear in
+                         several steps (capacity group + calculator) and the wizard
+                         opens at step=type, so a step-local currency would be invisible
+                         at first render → MonetaryField crashes in OWL initiateRender. -->
+                    <field name="currency_id" invisible="1"/>
 
                     <!-- Krok 1: Typ obozu -->
                     <group string="1. Typ obozu" invisible="step != 'type'">
@@ -275,7 +280,6 @@
                             <field name="seats"/>
                         </group>
                         <group string="Koszty bazowe (plan)">
-                            <field name="currency_id" invisible="1"/>
                             <field name="cost_lodging_per_day" widget="monetary"/>
                             <field name="cost_food_per_child_day" widget="monetary"/>
                             <field name="salary_wychowawca_per_turnus" widget="monetary"/>

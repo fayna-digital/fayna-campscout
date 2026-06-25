@@ -131,6 +131,8 @@ License: LGPL-3
             "fayna_camp_portal/static/src/xml/kiosk_template.xml",
             "fayna_camp_portal/static/src/js/kiosk_odoo_toggle_systray.js",
             "fayna_camp_portal/static/src/xml/kiosk_toggle_systray.xml",
+            "fayna_camp_portal/static/src/js/kiosk_back_systray.js",
+            "fayna_camp_portal/static/src/xml/kiosk_back_systray.xml",
         ],
     },
     "post_init_hook": "post_init_hook",
