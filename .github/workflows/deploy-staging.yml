@@ -44,7 +44,7 @@ jobs:
             MODULE="${{ github.event.inputs.module || 'fayna_camp_portal' }}"
             ADDON="/opt/campscout/custom-addons/${MODULE}"
             CONT="campscout_web"; DB="campscout"; CONF="/etc/odoo/odoo.conf"
-            URL="https://staging.campscout.eu/web/webclient/version_info"
+            URL="https://staging.campscout.eu/web/health"   # GET-safe 200; version_info=POST-only→GET 400 хибний rollback
             cd "$ADDON"
 
             echo "[a] rollback-point + pull"

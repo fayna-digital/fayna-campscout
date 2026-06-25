@@ -23,7 +23,7 @@ CONTAINER="campscout_web"
 DB="campscout"
 ADDON="/opt/campscout/custom-addons/${MODULE}"
 CONF="/etc/odoo/odoo.conf"
-URL="https://staging.campscout.eu/web/webclient/version_info"   # 200 = Odoo живий
+URL="https://staging.campscout.eu/web/health"   # 200 {"status":"pass"} = Odoo живий (GET-safe; version_info=POST-only→GET 400 хибний rollback)
 
 echo "==> [1/2] push гілки ${BRANCH}"
 git push -u origin "${BRANCH}"
