@@ -1,0 +1,32 @@
+name: E2E (staging)
+
+# Наскрізні тести критичних шляхів проти staging (Playwright).
+# Поки workflow_dispatch (ручний) — бо потребує creds-secrets. Коли стабільно —
+# додати у PR-гейт (Gate 4: червоний E2E → реліз блоковано).
+#
+# ПОТРІБНІ SECRETS:
+#   E2E_BASE_URL = https://staging.campscout.eu
+#   E2E_ADMIN_LOGIN, E2E_ADMIN_PASSWORD  (тех-користувач для тестів, НЕ реальний адмін прода)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  e2e:
+    name: Playwright critical paths
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install Playwright
+        run: |
+          pip install playwright pytest-playwright
+          playwright install --with-deps chromium
+      - name: Run E2E
+        env:
+          E2E_BASE_URL: ${{ secrets.E2E_BASE_URL }}
+          E2E_ADMIN_LOGIN: ${{ secrets.E2E_ADMIN_LOGIN }}
+          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+        run: pytest tests/e2e -v --tb=short
