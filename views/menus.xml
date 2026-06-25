@@ -260,6 +260,15 @@
             action="action_camp_incident_report"
             sequence="10"/>
 
+        <!-- Ustawa Kamilka 2024: niezmienny dziennik powiadomień (audyt KO).
+             Widoczny dla ról z dostępem do logu (organizator/kierownik). -->
+        <menuitem id="menu_incident_notification_log"
+            name="Dziennik powiadomień (audyt Kuratorium)"
+            parent="menu_emergency"
+            action="action_camp_incident_notification_log"
+            sequence="20"
+            groups="fayna_camp_portal.group_camp_organizator,fayna_camp_portal.group_camp_kierownik"/>
+
         <!-- ═══════════════════════════════════════════════════════════════
              Commercial
         ═══════════════════════════════════════════════════════════════ -->

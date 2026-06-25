@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ================================================================ -->
+        <!-- camp.incident.notification.log — immutable Kuratorium audit       -->
+        <!-- trail (Ustawa Kamilka 2024). Read-only / append-only: model        -->
+        <!-- forbids edit & unlink, so UI is presented readonly.                -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_incident_notification_log_tree" model="ir.ui.view">
+            <field name="name">camp.incident.notification.log.tree</field>
+            <field name="model">camp.incident.notification.log</field>
+            <field name="arch" type="xml">
+                <tree string="Dziennik powiadomień (audyt Kuratorium)"
+                      create="false" edit="false" delete="false"
+                      decoration-danger="error"
+                      decoration-success="read_at"
+                      decoration-muted="not delivered_at and not error">
+                    <field name="notified_at"/>
+                    <field name="incident_id"/>
+                    <field name="recipient_partner_id"/>
+                    <field name="recipient_role"/>
+                    <field name="channel"/>
+                    <field name="delivered_at" optional="show"/>
+                    <field name="read_at" optional="show"/>
+                    <field name="error" optional="show"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_incident_notification_log_search" model="ir.ui.view">
+            <field name="name">camp.incident.notification.log.search</field>
+            <field name="model">camp.incident.notification.log</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="incident_id"/>
+                    <field name="recipient_partner_id"/>
+                    <filter name="filter_failed" string="Błędy dostarczenia"
+                            domain="[('error', '!=', False)]"/>
+                    <filter name="filter_delivered" string="Dostarczone"
+                            domain="[('delivered_at', '!=', False)]"/>
+                    <filter name="filter_read" string="Odczytane"
+                            domain="[('read_at', '!=', False)]"/>
+                    <group expand="0" string="Grupuj wg">
+                        <filter name="group_by_incident" string="Incydent"
+                                context="{'group_by': 'incident_id'}"/>
+                        <filter name="group_by_role" string="Rola odbiorcy"
+                                context="{'group_by': 'recipient_role'}"/>
+                        <filter name="group_by_channel" string="Kanał"
+                                context="{'group_by': 'channel'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="view_camp_incident_notification_log_form" model="ir.ui.view">
+            <field name="name">camp.incident.notification.log.form</field>
+            <field name="model">camp.incident.notification.log</field>
+            <field name="arch" type="xml">
+                <form string="Wpis dziennika powiadomień" create="false"
+                      edit="false" delete="false">
+                    <sheet>
+                        <group>
+                            <group string="Powiadomienie">
+                                <field name="incident_id"/>
+                                <field name="recipient_partner_id"/>
+                                <field name="recipient_role"/>
+                                <field name="channel"/>
+                            </group>
+                            <group string="Status dostarczenia">
+                                <field name="notified_at"/>
+                                <field name="delivered_at"/>
+                                <field name="read_at"/>
+                                <field name="error"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_camp_incident_notification_log" model="ir.actions.act_window">
+            <field name="name">Dziennik powiadomień (audyt Kuratorium)</field>
+            <field name="res_model">camp.incident.notification.log</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_camp_incident_notification_log_search"/>
+            <field name="context">{'create': False, 'edit': False, 'delete': False}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiley_face">
+                    Brak wpisów w dzienniku powiadomień.
+                </p>
+                <p>
+                    Niezmienny ślad audytowy powiadomień o incydentach
+                    (Ustawa Kamilka 2024). Wpisy są tworzone automatycznie
+                    i przechowywane przez 7 lat — nie można ich edytować
+                    ani usuwać.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>
