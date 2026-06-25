@@ -229,6 +229,7 @@ class CampStaffApplication(models.Model):
                 "name": name or email_lower,
                 "login": email_lower,
                 "email": email_lower,
+                "lang": "pl_PL",  # продукт = польський ринок (TZ §18.3 default pl_PL)
                 "groups_id": [
                     (4, portal_group.id),
                     (4, candidate_group.id),

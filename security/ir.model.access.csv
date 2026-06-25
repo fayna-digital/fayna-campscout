@@ -160,6 +160,8 @@ access_vozhatyi_training_record_user,vozhatyi.training.record user,model_vozhaty
 access_vozhatyi_training_record_portal,vozhatyi.training.record portal,model_vozhatyi_training_record,base.group_portal,1,0,0,0
 access_vozhatyi_training_record_hr,vozhatyi.training.record hr,model_vozhatyi_training_record,fayna_camp_portal.group_camp_hr,1,1,1,0
 access_camp_story_admin,camp.story admin,model_camp_story,base.group_system,1,1,1,1
+access_camp_create_wizard_kierownik,camp.create.wizard kierownik,model_camp_create_wizard,fayna_camp_portal.group_camp_kierownik,1,1,1,1
+access_camp_create_wizard_organizator,camp.create.wizard organizator,model_camp_create_wizard,fayna_camp_portal.group_camp_organizator,1,1,1,1
 access_camp_story_kierownik,camp.story kierownik,model_camp_story,fayna_camp_portal.group_camp_kierownik,1,1,1,1
 access_camp_story_wychowawca,camp.story wychowawca,model_camp_story,fayna_camp_portal.group_camp_wychowawca,1,1,1,0
 access_camp_story_portal,camp.story portal,model_camp_story,base.group_portal,1,0,0,0
