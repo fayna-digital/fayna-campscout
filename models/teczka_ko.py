@@ -12,6 +12,7 @@ import logging
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+from odoo.tools.pdf import merge_pdf
 
 _logger = logging.getLogger(__name__)
 
@@ -361,18 +362,122 @@ class CampTeczkaKO(models.Model):
             self
         )
 
-    def action_export_pdf_pack(self):
-        """Export the FULL KO documentation pack as one PDF.
+    def _collect_pack_sections(self):
+        """Render every available KO sub-report to PDF bytes for this shift.
 
-        TODO(sprint 2026-06-10 §4, integration phase): assemble the complete
-        pack after all sub-reports land — karty kwalifikacyjne PDFs, dzienniki
-        zajęć (Załącznik 5), Program Wypoczynku (Załącznik 9), regulaminy +
-        acknowledgment sheets, kadra cert scans (KRK/RSPTS), rejestr wypadków.
-        Blocked on the parallel camp.incident.register agent; merge strategy
-        (PyPDF2 vs single QWeb bundle) to be decided at integration.
+        Read-only: each section is rendered freshly via QWeb-PDF (no stored
+        copy, no business-record write). Sections with zero target records are
+        skipped silently so the merge never fails on an empty turnus. The
+        readiness checklist (self) is ALWAYS page 1, so the pack is never empty.
+
+        Returns the ordered list of non-empty PDF byte strings.
+
+        Verified relations (file:line):
+          * karty kwalifikacyjne → camp.participant reached via this event's
+            non-cancelled event.registration.participant_id (_compute_karty,
+            teczka_ko.py:91-104; participant_id field participant.py:2269).
+          * dziennik zajęć → fayna.camp.dziennik.event_id (operations.py:2923,
+            mirrors _compute_dziennik teczka_ko.py:195-200).
+          * rejestr wypadków → camp.incident.register.event_id
+            (incident_card.py:504, mirrors _compute_wypadki teczka_ko.py:225-240;
+            model looked up via env.get(), absent gracefully).
+          * ewidencja budżetu → camp.budget.event_id (budget.py:100).
+
+        Skipped (no report_name / no template exists in reports/): Program
+        Wypoczynku (camp.program.wypoczynku) and regulaminy + acknowledgment
+        sheets (camp.regulamin) — there is no qweb-pdf report for those models
+        yet, so they cannot be rendered here.
         """
         self.ensure_one()
-        raise UserError(_("Eksport pakietu PDF — w przygotowaniu (Тир 3)."))
+        event = self.event_id
+        Report = self.env["ir.actions.report"].sudo()
+        sections = []
+
+        def _add(report_ref, res_ids):
+            """Render one report over res_ids; skip silently if empty/missing."""
+            if not res_ids:
+                return
+            try:
+                pdf_content, _fmt = Report._render_qweb_pdf(report_ref, res_ids)
+            except Exception:  # noqa: BLE001 — never let one section break the pack
+                _logger.exception("Teczka KO pack: skipping report %s", report_ref)
+                return
+            if pdf_content:
+                sections.append(pdf_content)
+
+        # 1. Readiness checklist (self) — always page 1.
+        _add("fayna_camp_portal.action_report_teczka_ko_checklist", self.ids)
+
+        # 2. Karty kwalifikacyjne — one per participant of a non-cancelled
+        #    registration of this shift (same source as _compute_karty).
+        registrations = self.env["event.registration"].search(
+            [("event_id", "=", event.id), ("state", "!=", "cancel")]
+        )
+        participant_ids = registrations.mapped("participant_id").ids
+        _add("fayna_camp_portal.action_report_karta_kwalifikacyjna", participant_ids)
+
+        # 3. Dziennik zajęć (Załącznik 5) — fayna.camp.dziennik of this shift.
+        dziennik_ids = self.env["fayna.camp.dziennik"].search([("event_id", "=", event.id)]).ids
+        _add("fayna_camp_portal.action_report_dziennik", dziennik_ids)
+
+        # 4. Rejestr wypadków — camp.incident.register, built by a parallel
+        #    agent; absent gracefully via env.get() (mirrors _compute_wypadki).
+        IncidentRegister = self.env.get("camp.incident.register")
+        if IncidentRegister is not None and "event_id" in IncidentRegister._fields:
+            register_ids = IncidentRegister.search([("event_id", "=", event.id)]).ids
+            _add("fayna_camp_portal.action_report_incident_register", register_ids)
+
+        # 5. Ewidencja dla księgowej — camp.budget of this shift.
+        budget_ids = self.env["camp.budget"].search([("event_id", "=", event.id)]).ids
+        _add("fayna_camp_portal.action_report_camp_budget_evidence", budget_ids)
+
+        return sections
+
+    def action_export_pdf_pack(self):
+        """Export the FULL KO documentation pack as one merged PDF (download).
+
+        Assembles, in order: (1) readiness checklist [always], (2) karty
+        kwalifikacyjne for every participant of this shift, (3) dzienniki zajęć
+        (Załącznik 5), (4) rejestr wypadków (when the camp.incident.register
+        model is installed), (5) ewidencja dla księgowej (camp.budget). Each
+        section is rendered to PDF bytes and merged with the canonical Odoo 17
+        helper ``odoo.tools.pdf.merge_pdf``. Empty sections are skipped silently.
+
+        Still SKIPPED (no qweb-pdf report exists for these models): Program
+        Wypoczynku (Załącznik 9, camp.program.wypoczynku) and regulaminy +
+        acknowledgment sheets (camp.regulamin). They appear only as checklist
+        items until a report template lands for them.
+
+        Read-only render+merge: stores the result as an ir.attachment on this
+        teczka and returns an act_url download — no business record is written.
+        """
+        self.ensure_one()
+        sections = self._collect_pack_sections()
+        if not sections:
+            # Should never happen (checklist is always page 1), but never crash.
+            raise UserError(_("Nie udało się wygenerować żadnej strony teczki KO."))
+
+        merged_pdf = merge_pdf(sections)
+        filename = "Teczka_KO_pakiet_{}.pdf".format((self.event_id.name or "").replace(" ", "_"))
+        attachment = (
+            self.env["ir.attachment"]
+            .sudo()
+            .create(
+                {
+                    "name": filename,
+                    "type": "binary",
+                    "raw": merged_pdf,
+                    "mimetype": "application/pdf",
+                    "res_model": self._name,
+                    "res_id": self.id,
+                }
+            )
+        )
+        return {
+            "type": "ir.actions.act_url",
+            "url": f"/web/content/{attachment.id}?download=true",
+            "target": "self",
+        }
 
     def action_check_regulamin_acks(self):
         """Manual trigger of the unsigned-regulamin warning (activity/log)."""
