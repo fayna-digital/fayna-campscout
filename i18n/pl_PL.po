@@ -1421,7 +1421,7 @@ msgstr "Kategoria zajęcia używana do filtrowania harmonogramu i raportowania."
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_staff__role__activity_lead
 msgid "Activity lead"
-msgstr "Aktywność lead"
+msgstr "Opiekun zajęć"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -5752,7 +5752,7 @@ msgstr "Dinner (Kolacja)"
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_staff__role__director
 msgid "Director"
-msgstr "Director"
+msgstr "Dyrektor"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -9003,7 +9003,7 @@ msgstr "Kierownik wypoczynku"
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_staff__role__leader
 msgid "Kierownik wypoczynku (camp leader)"
-msgstr "Kierownik wypoczynku (camp leader)"
+msgstr "Kierownik wypoczynku"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -9051,7 +9051,7 @@ msgstr "Kitchen notes"
 #. module: fayna_camp_portal
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_staff__role__kitchen_staff
 msgid "Kitchen staff"
-msgstr "Kitchen staff"
+msgstr "Personel kuchni"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -9773,7 +9773,7 @@ msgstr ""
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_staff__role__logistics
 #: model:ir.model.fields.selection,name:fayna_camp_portal.selection__camp_support_request__category__logistics
 msgid "Logistics"
-msgstr "Logistics"
+msgstr "Logistyka"
 
 #. module: fayna_camp_portal
 #. odoo-python
