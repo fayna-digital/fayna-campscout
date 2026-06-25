@@ -358,7 +358,13 @@ body.o_camp_kiosk_user {
     .o_cp_action_menus,
     // Inline "+" on grouped kanban columns / x2many sub-lists.
     .o_kanban_quick_add,
-    .o_field_x2many_list_row_add {
+    .o_field_x2many_list_row_add,
+    // Per-column kanban group config gear (edit/delete column, fold, etc.).
+    .o_kanban_config,
+    .o_kanban_group .o_kanban_header .dropdown,
+    // Record-level kanban dropdown menu (edit/delete a single card).
+    .o_kanban_record .o_dropdown_kanban,
+    .o_kanban_record .o_kanban_manage_toggle_button {
         display: none !important;
     }
 }
