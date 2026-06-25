@@ -63,12 +63,12 @@
 <template id="portal_layout_title_campscout" inherit_id="portal.portal_layout" priority="25">
     <xpath expr="//div[hasclass('wrapper')]/h3[hasclass('my-3')]" position="replace">
         <h3 class="my-3">
-            <t t-if="user_id.has_group('fayna_camp_portal.group_camp_organizator')">Кабінет організатора</t>
-            <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_kierownik')">Кабінет керівника табору</t>
-            <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_wychowawca')">Кабінет виховника</t>
-            <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_instructor')">Кабінет інструктора</t>
-            <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_finance')">Кабінет бухгалтера</t>
-            <t t-else="">Кабінет батьків</t>
+            <t t-if="user_id.has_group('fayna_camp_portal.group_camp_organizator')">Panel organizatora</t>
+            <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_kierownik')">Panel kierownika obozu</t>
+            <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_wychowawca')">Panel wychowawcy</t>
+            <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_instructor')">Panel instruktora</t>
+            <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_finance')">Panel księgowego</t>
+            <t t-else="">Panel rodzica</t>
         </h3>
     </xpath>
 </template>
