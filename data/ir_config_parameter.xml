@@ -51,5 +51,14 @@
             <field name="value">0</field>
         </record>
 
+        <!-- Domyślny e-mail delegatury Kuratorium Oświaty — odbiorca teczki
+             kontrolnej (camp.teczka.ko). Pusty = organizator uzupełnia
+             realny adres swojej delegatury w Ustawieniach (nasza = Kalisz).
+             RODO art.9: dane dzieci tylko na adres urzędowy. -->
+        <record id="cfg_kuratorium_delegatura_email" model="ir.config_parameter">
+            <field name="key">fayna_camp_portal.kuratorium_delegatura_email</field>
+            <field name="value"></field>
+        </record>
+
     </data>
 </odoo>

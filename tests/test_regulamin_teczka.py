@@ -314,3 +314,43 @@ class TestRegulaminTeczka(TransactionCase):
         self.assertEqual(teczka.regulamin_total, 1)
         # Staff are draft (not confirmed/active) → no active kadra → not ready.
         self.assertFalse(teczka.regulaminy_ready)
+
+    # ------------------------------------------------------------------
+    # §9 — Zgłoszenie do Kuratorium checklist item (reuses notification)
+    # ------------------------------------------------------------------
+
+    def test_teczka_zgloszenie_filed_when_submitted(self):
+        teczka = self.env["camp.teczka.ko"].create({"event_id": self.event.id})
+        self.assertFalse(teczka.zgloszenie_ready)
+        self.assertEqual(teczka.zgloszenie_count, 0)
+
+        organizer = self.env["res.partner"].create({"name": "Organizator Test"})
+        notif = self.env["camp.kuratorium.notification"].create(
+            {
+                "event_id": self.event.id,
+                "organizer_id": organizer.id,
+                "organizer_type": "company",
+            }
+        )
+        teczka.invalidate_recordset()
+        self.assertEqual(teczka.zgloszenie_count, 1)
+        # draft notification → not yet filed.
+        self.assertFalse(teczka.zgloszenie_ready)
+
+        notif.action_submit()
+        teczka.invalidate_recordset()
+        self.assertEqual(teczka.zgloszenie_filed, 1)
+        self.assertTrue(teczka.zgloszenie_ready)
+
+    def test_teczka_send_requires_delegatura_email(self):
+        teczka = self.env["camp.teczka.ko"].create({"event_id": self.event.id})
+        teczka.delegatura_email = False
+        with self.assertRaises(UserError):
+            teczka.action_send_teczka_to_kuratorium()
+
+    def test_teczka_send_blocks_incomplete(self):
+        teczka = self.env["camp.teczka.ko"].create({"event_id": self.event.id})
+        teczka.delegatura_email = "kalisz@ko.poznan.test"
+        # Fresh teczka has open items → must refuse without override.
+        with self.assertRaises(UserError):
+            teczka.action_send_teczka_to_kuratorium()
