@@ -41,14 +41,20 @@ $kiosk-toggle-min:         44px;   // Apple HIG minimum touch target
 // ── Kiosk shell ─────────────────────────────────────────────────────────────
 // Full-screen, no horizontal overflow, safe-area-aware for notch phones.
 .o_camp_kiosk_app {
-    // Stretch to full viewport including safe areas (notch / home indicator).
-    // NB: wrap raw CSS in #{"..."} so SCSS (libsass) does NOT try to evaluate
-    // dvh unit / env() — it would fail compilation ("Kompilacja stylu").
-    min-height: 100vh;               // classic fallback (always understood)
-    min-height: #{"100dvh"};         // dynamic viewport height (avoids iOS toolbar jitter)
-    min-height: #{"calc(100vh + env(safe-area-inset-top, 0px) + env(safe-area-inset-bottom, 0px))"};
+    // Bound to the viewport AND make the app itself the vertical scroller.
+    // Without this, on a phone the lower tiles (Budżet/Sytuacje/Raport/Nowy obóz)
+    // are UNREACHABLE — the fullscreen client action clips overflow and nothing
+    // scrolls. height + overflow-y:auto = the fix (momentum scroll on iOS).
+    // NB: wrap raw CSS in #{"..."} so SCSS (libsass) does NOT evaluate the dvh
+    // unit — it would fail compilation ("Kompilacja stylu").
+    height: 100vh;                   // classic fallback (always understood)
+    height: #{"100dvh"};             // dynamic viewport height (iOS toolbar-aware)
+    max-height: 100vh;
+    max-height: #{"100dvh"};
     width: 100%;
+    overflow-y: auto;                // ← vertical scroll for tall tile lists
     overflow-x: hidden;
+    -webkit-overflow-scrolling: touch; // iOS momentum scroll
 
     // Safe-area padding so content never hides behind notch / home bar.
     // NB: wrap in #{"..."} so SCSS (libsass) does NOT try to evaluate the CSS
