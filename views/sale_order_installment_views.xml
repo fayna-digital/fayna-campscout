@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ================================================================ -->
+        <!-- sale.order form ← Raty / Rozstrocznja (fayna_payment_installments) -->
+        <!-- Pola i metoda istnieją na modelu (commercial.py); brakowało tylko  -->
+        <!-- ekspozycji na formularzu zamówienia. Manager może wybrać plan      -->
+        <!-- ratalny i wygenerować harmonogram z poziomu zamówienia.            -->
+        <!-- ================================================================ -->
+
+        <record id="view_order_form_installments" model="ir.ui.view">
+            <field name="name">sale.order.form.installments</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page name="installments" string="Raty / Розстрочка">
+                        <group>
+                            <group string="Plan ratalny">
+                                <field name="installment_plan_id"
+                                       options="{'no_create': True}"/>
+                                <field name="installment_count"/>
+                                <field name="has_overdue_installment"/>
+                            </group>
+                            <group>
+                                <button name="action_generate_installments"
+                                        type="object"
+                                        string="Wygeneruj harmonogram rat"
+                                        class="btn-primary"
+                                        icon="fa-calendar"
+                                        confirm="Wygenerować harmonogram rat dla tego zamówienia?"/>
+                            </group>
+                        </group>
+                        <field name="payment_installment_ids">
+                            <tree editable="bottom"
+                                  decoration-danger="state == 'overdue'"
+                                  decoration-success="state == 'paid'"
+                                  decoration-muted="state == 'cancelled'">
+                                <field name="installment_number"/>
+                                <field name="due_date"/>
+                                <field name="amount"/>
+                                <field name="currency_id" column_invisible="1"/>
+                                <field name="state"/>
+                                <field name="payment_date" optional="show"/>
+                                <field name="payment_reference" optional="hide"/>
+                                <field name="invoice_id" optional="hide"/>
+                                <field name="notes" optional="hide"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

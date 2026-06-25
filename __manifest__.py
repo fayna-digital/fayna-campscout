@@ -81,6 +81,7 @@ License: OPL-1 (Odoo Proprietary License v1.0)
         "views/incident_card_views.xml",
         "views/incident_notification_log_views.xml",
         "views/commercial_views.xml",
+        "views/sale_order_installment_views.xml",
         "views/budget_views.xml",
         "views/staffing_views.xml",
         "views/recruitment_views.xml",
