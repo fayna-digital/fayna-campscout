@@ -1,9 +1,11 @@
 # ТЗ — fayna_camp_portal (Портал CampScout)
 
 > Spec-driven ТЗ за [REPO_STANDARD](../../fayna-digital-docs/contributing/REPO_STANDARD.md) — 6 областей.
-> Owner: Fayna Digital (Volodymyr Shevchenko). Версія модуля: `17.0.2.0.0`.
+> Owner: Fayna Digital (Volodymyr Shevchenko). Версія модуля: `17.0.4.0.0`.
 > Архітектура: **hotel-pattern** — увесь camp-specific код в одному модулі (pivot 2026-06-07, Strangler Fig із `campscout_management`).
 > Цей TZ переписано 2026-06-08 зі старого scaffold-шаблону (`fayna_campscout` «thin data layer»), що більше не відображав реальність: модуль — повноцінна система з 27 моделей, ~95% реалізовано.
+>
+> **Реальний стан (оновлено 2026-06-30, версія `17.0.4.0.0`):** модуль функціонально завершений, на staging ✅, prod ❌. Правові доповнення (P2) і тести критичних шляхів (P3) — **зроблено**; міграційні скрипти (P1) написані й відрепетирувані, але **не виконані на проді**. Додано фічі поза первинним знімком ТЗ: **escort/konwój** (`camp_escort.py`, `/my/escort`), **kiosk-режим** (`controllers/kiosk.py`), **teczka KO** (`teczka_ko.py`), **regulaminy** (`regulamin.py`), **budget** (`budget.py`), **канон ролей ADR-22** (`test_role_canon.py`), **VAT §7**, **CD-інфра** (CI/CD + secrets). Єдине плече, що лишилось — **prod-cutover** (виконати міграцію на проді + human QA green + перший живий деплой). Детальний статус по фазах — у [PLAN.md](PLAN.md).
 
 ---
 
@@ -19,7 +21,7 @@
 - **Portal `/my/*`** — кабінет батьків: учасники, реєстрації, лояльність, stories, транспорт, support.
 - **Admin dashboard `/admin/dashboard`** — KPI + view-as impersonation через `with_user()` (НЕ `sudo()`) + immutable RODO art.30 log.
 - **Бізнес-логіка:** лояльність (banda/platinum/gold), сезони, reviews, installment plans, харчування (EU-14 алергени, дієти, меню), транспорт, stories, навчання (MEN 36h/10h + vozhatyi), звіти/snapshots.
-- **i18n:** PL + UA по 374 рядки (~100%).
+- **i18n:** PL + UA значно розширено (`pl_PL.po` / `uk_UA.po` ~23k рядків кожен станом на 2026-06-30; первинний знімок 08.06 був 374 рядки).
 
 **Що ще scaffold:** `campscout.portal.session` / `campscout.portal.menu` (session-tracking, мінімальні методи).
 
@@ -109,12 +111,12 @@ fayna_camp_portal/
 
 ## Success Criteria
 
-- [ ] Міграція даних `campscout_management → fayna_camp_portal` без втрати юр.карток + RODO trail.
-- [ ] Тести покривають критичні правові шляхи (Kamilka, cost-guard, immutability, field-level RODO) ≥70%.
-- [ ] Картка кваліфікаційна wzór 2026 (Dz.U.2026/704 §10) — поля пункту 9.
-- [ ] `camp.incident.register` (§12, 10 колонок) + `camp.incident.card` (§11).
-- [ ] `staff.rspts_verified` (§13) — блокада допуску кадри без weryfikacji RSPTS.
-- [ ] i18n UA довести з 63%→100% для kierownik/wychowawca інтерфейсу.
+- [ ] 🔴 Міграція даних `campscout_management → fayna_camp_portal` **виконана на проді** без втрати юр.карток + RODO trail (скрипти готові й відрепетирувані — лишилось виконання).
+- [x] Тести критичних правових шляхів (Kamilka, immutability, field-level RODO, RSPTS, escort) — ~25 тест-файлів; формальний coverage ≥70% звести перед gate.
+- [x] Картка кваліфікаційна wzór 2026 (Dz.U.2026/704 §10) — поля пункту 9 (12 полів у `participant.py`).
+- [x] `camp.incident.register` (§12) + `camp.incident.card` (§11) — `models/incident_card.py`.
+- [x] RSPTS-гейт §13 — `camp.staff._check_rspts_before_admission` (кадра draft без weryfikacji KRK/RSPTS).
+- [🟡] i18n UA — значно розширено (~23k рядків .po); точний % покриття не зведено.
 - [ ] Human QA green на staging → prod-gate знятий.
 
 ## Open Questions
