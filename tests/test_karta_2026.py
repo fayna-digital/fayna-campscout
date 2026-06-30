@@ -31,6 +31,12 @@ class TestKarta2026(TransactionCase):
             }
         )
         cls.admin_user = cls.env.ref("base.user_admin")
+        # §13 RSPTS verification is gated to Organizator/Admin (camp.staff.cert
+        # ._is_verifier). base.user_admin is not in the camp groups by default —
+        # grant Organizator so it can accept verifications in these tests.
+        cls.admin_user.sudo().write(
+            {"groups_id": [(4, cls.env.ref("fayna_camp_portal.group_camp_organizator").id)]}
+        )
 
     # --- §10 wzór 2026 ------------------------------------------------------
 
@@ -56,10 +62,32 @@ class TestKarta2026(TransactionCase):
     def test_pkt9_locked_after_signoff(self):
         """pkt 9 is parent-declared → frozen once the card is signed."""
         child = self.child.sudo()
-        child.write({"hydrophobia": True})
+        # Emergency contact 1 is required before sign-off (Karta §; constrain
+        # _check_emergency_before_signoff) — set it so the card can be signed.
+        child.write(
+            {
+                "hydrophobia": True,
+                "emergency_contact_1_name": "Mama Karta",
+                "emergency_contact_1_phone": "+48500600700",
+            }
+        )
         child.write({"qualification_signed": True})
+        # The sign-off lock is enforced for non-superuser writes (sudo/system may
+        # amend via the amendment flow), so attempt the protected write as a
+        # plain user — participant.write() raises before the value is changed.
+        plain_user = (
+            self.env["res.users"]
+            .sudo()
+            .create(
+                {
+                    "name": "Karta Lock User",
+                    "login": "karta-lock@campscout.test",
+                    "groups_id": [(6, 0, [self.env.ref("base.group_user").id])],
+                }
+            )
+        )
         with self.assertRaises(UserError):
-            child.write({"hydrophobia": False})
+            child.with_user(plain_user).write({"hydrophobia": False})
 
     # --- R1 hard block (water / heights) ------------------------------------
 
@@ -69,6 +97,7 @@ class TestKarta2026(TransactionCase):
             {
                 "event_id": self.event.id,
                 "group_name": "Grupa R1",
+                "date_start": "2026-07-01",  # required (NOT NULL) on fayna.camp.dziennik
                 "participant_ids": [(6, 0, [self.child.id])],
             }
         )
