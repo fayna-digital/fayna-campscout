@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — тести автоштату §6 (camp.staff.vacancy + event staffing)
 # Registration ↔ participant pattern: той самий, що в tests/test_camp_group.py
 # (event.registration з partner_id + participant_id; вік = camp.participant.birth_date).
@@ -156,7 +158,7 @@ class TestStaffing(TransactionCase):
         self.assertTrue(staff)
         self.assertEqual(staff.name, "Anna Testowa")
         self.assertEqual(staff.state, "draft")  # RSPTS §13: not confirmed
-        self.assertEqual(staff.role, "counselor")  # wychowawca → counselor mapping
+        self.assertEqual(staff.role, "wychowawca")  # ADR-22: canon — vacancy role == staff role
         self.assertEqual(staff.event_id, self.event)
         # Draft staff does NOT count as current (no KRK/RSPTS verification yet).
         self.assertEqual(self.event.current_wychowawcy, 0)

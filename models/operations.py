@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — Camp Operations models
 # Sources:
 #   fayna_camp_operations:   CampReport, CampJournal, CampStaff, CampStaffCert,
@@ -16,6 +18,8 @@ from dateutil.relativedelta import relativedelta
 from markupsafe import Markup
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError, ValidationError
+
+from ._role_taxonomy import CAMP_ROLE_SELECTION
 
 _logger = logging.getLogger(__name__)
 
@@ -73,19 +77,15 @@ class CampStaff(models.Model):
     )
 
     role = fields.Selection(
-        [
-            ("activity_lead", "Activity lead"),
-            ("counselor", "Counselor"),
-            ("medic", "Medical officer"),
-            ("kitchen_staff", "Kitchen staff"),
-            ("logistics", "Logistics"),
-            ("director", "Director"),
-            ("leader", "Kierownik wypoczynku (camp leader)"),
-        ],
+        CAMP_ROLE_SELECTION,
         required=True,
+        default="wychowawca",
         string=_("Role"),
         tracking=True,
-        help=_("Operational role of this staff member in the shift."),
+        help=_(
+            "Operational role of this staff member in the shift. "
+            "Canonical taxonomy shared with camp.staff.vacancy (ADR-22)."
+        ),
     )
 
     user_id = fields.Many2one(
@@ -128,8 +128,11 @@ class CampStaff(models.Model):
     )
 
     assigned_groups = fields.Char(
-        string=_("Assigned groups"),
-        help=_("e.g. 'Group A, Group C' or 'Entire shift'."),
+        string=_("Assigned groups (obowiązki)"),
+        help=_(
+            "Which camp groups this staff member is responsible for. "
+            "List group names separated by commas, or write 'Entire shift'."
+        ),
     )
 
     date_from = fields.Date(
@@ -146,6 +149,7 @@ class CampStaff(models.Model):
     state = fields.Selection(
         [
             ("draft", "Draft"),
+            ("pending_admission", "Pending admission"),
             ("confirmed", "Confirmed"),
             ("active", "Active"),
             ("on_leave", "On leave"),
@@ -154,7 +158,14 @@ class CampStaff(models.Model):
         default="draft",
         string=_("Status"),
         tracking=True,
-        help=_("Current participation status of this staff member."),
+        help=_(
+            "Admission state machine (§13 Ustawa Kamilka):\n"
+            "draft → kandydat zatrudniony, brak dokumentów;\n"
+            "pending_admission → declaracja niekaralności podpisana + KRK przesłane, "
+            "czeka na decyzję kierownika;\n"
+            "confirmed/active → kierownik dopuścił po weryfikacji KRK/RSPTS — "
+            "pełny dostęp do danych dzieci."
+        ),
     )
 
     notes = fields.Text(
@@ -283,6 +294,224 @@ class CampStaff(models.Model):
             "(Załącznik A7 — zakres czynności)."
         ),
     )
+
+    # ------------------------------------------------------------------
+    # §13 / §6m — Declaracja niekaralności (oświadczenie kandydata)
+    # Самопідписана декларація: кандидат заявляє, що не фігурує в RSTPO
+    # і не є prawomocnie skazany za przestępstwa, які виключають роботу
+    # з małoletnimi (art. 21 ust. 6 ustawy z 13.05.2016). Незаперечність
+    # підпису: фіксуємо момент + IP (§6k / §6o). НЕ замінює KRK/RSPTS-
+    # верифікацію — лише доповнює її; admission гейт перевіряє ОБИДВА.
+    # ------------------------------------------------------------------
+
+    declaration_signed = fields.Boolean(
+        string=_("Declaracja niekaralności podpisana"),
+        readonly=True,
+        copy=False,
+        tracking=True,
+        help=_(
+            "Kandydat złożył oświadczenie o niekaralności i o tym, że nie figuruje "
+            "w Rejestrze Sprawców Przestępstw na Tle Seksualnym (art. 21 ustawy "
+            "z 13.05.2016). Pole tylko do odczytu — ustawiane przez podpis w portalu."
+        ),
+    )
+    declaration_date = fields.Datetime(
+        string=_("Data podpisania declaracji"),
+        readonly=True,
+        copy=False,
+        help=_("Moment złożenia oświadczenia (niezaprzeczalność podpisu, §6k)."),
+    )
+    declaration_ip = fields.Char(
+        string=_("IP podpisu"),
+        readonly=True,
+        copy=False,
+        help=_("Adres IP z którego złożono oświadczenie (utrwalenie deklaranta, §6o)."),
+    )
+
+    def _sign_declaration(self, ip_address=None):
+        """Zapisz podpis declaracji niekaralności (jednorazowo, §6n).
+
+        Wywoływane z portalu (controller, sudo) po zaznaczeniu zgody przez
+        kandydata. Po podpisie + obecności KRK staff przechodzi w
+        pending_admission (czeka na «Dopuść» kierownika)."""
+        self.ensure_one()
+        if self.declaration_signed:
+            # Mandat «1 raz» (§6n) — nie nadpisujemy już złożonego oświadczenia.
+            return False
+        self.write(
+            {
+                "declaration_signed": True,
+                "declaration_date": fields.Datetime.now(),
+                "declaration_ip": ip_address or "",
+            }
+        )
+        self.message_post(
+            body=_(
+                "Kandydat podpisał declarację niekaralności (IP: %(ip)s, %(when)s).",
+                ip=ip_address or "—",
+                when=fields.Datetime.now(),
+            )
+        )
+        # Jeśli KRK już przesłane — automatycznie do «czeka na dopuszczenie».
+        if self.state == "draft" and self.krk_attachment:
+            self.write({"state": "pending_admission"})
+        return True
+
+    # ------------------------------------------------------------------
+    # §13 — Allow-gate «Dopuść» (kierownik/organizator admits staff)
+    # ------------------------------------------------------------------
+
+    def _is_admitter(self):
+        return (
+            self.env.user.has_group("fayna_camp_portal.group_camp_organizator")
+            or self.env.user.has_group("fayna_camp_portal.group_camp_admin")
+            or self.env.user.has_group("fayna_camp_portal.group_camp_kierownik")
+        )
+
+    def action_admit(self):
+        """Kierownik/Organizator dopuszcza kadrę do pracy z dziećmi (§13).
+
+        Twardy gate przed przejściem w 'active':
+          1. Tylko Kierownik/Organizator/Admin może dopuścić.
+          2. Declaracja niekaralności musi być podpisana (samodeklaracja).
+          3. KRK + RSPTS + kurs muszą być zweryfikowane (is_eligible_for_camp).
+        Constraint _check_rspts_before_admission stanowi drugą, niezależną
+        zaporę po stronie ORM (na wypadek pominięcia przycisku)."""
+        for staff in self:
+            if not staff._is_admitter():
+                raise UserError(
+                    _(
+                        "Tylko Kierownik / Organizator / Administrator może "
+                        "dopuścić kadrę do pracy z dziećmi (§13 Ustawa Kamilka)."
+                    )
+                )
+            if not staff.declaration_signed:
+                raise UserError(
+                    _(
+                        "%(name)s nie podpisał(a) jeszcze declaracji "
+                        "niekaralności — dopuszczenie niemożliwe.",
+                        name=staff.name,
+                    )
+                )
+            if not staff.is_eligible_for_camp:
+                raise UserError(
+                    _(
+                        "%(name)s: brak zweryfikowanego KRK / RSPTS / kursu. "
+                        "Najpierw zaakceptuj certyfikaty (art. 21 ustawy "
+                        "z 16.05.2016 — dopuszczenie bez weryfikacji RSPTS jest "
+                        "zagrożone karą aresztu lub grzywny min. 1000 zł).",
+                        name=staff.name,
+                    )
+                )
+            staff.write({"state": "active"})
+            staff.message_post(
+                body=_(
+                    "Dopuszczono do pracy z dziećmi przez %(user)s "
+                    "(KRK/RSPTS zweryfikowane, declaracja podpisana).",
+                    user=self.env.user.name,
+                )
+            )
+        return True
+
+    # ------------------------------------------------------------------
+    # Фаза B — Self-onboarding PII fields (groups-gated, RODO)
+    # ADR: 09-ADR-FAZA-B-build.md §B4
+    # ------------------------------------------------------------------
+
+    pesel = fields.Char(
+        string=_("PESEL"),
+        groups=(
+            "fayna_camp_portal.group_camp_organizator,"
+            "fayna_camp_portal.group_camp_admin,"
+            "fayna_camp_portal.group_camp_hr"
+        ),
+        help=_(
+            "Polish national ID number (PESEL) — RODO art.6/art.9 PII data. "
+            "Visible only to HR / Admin / Organizator."
+        ),
+    )
+    photo = fields.Image(
+        string=_("Zdjęcie"),
+        max_width=256,
+        max_height=256,
+        groups=(
+            "fayna_camp_portal.group_camp_organizator,"
+            "fayna_camp_portal.group_camp_admin,"
+            "fayna_camp_portal.group_camp_hr,"
+            "fayna_camp_portal.group_camp_candidate"
+        ),
+        help=_("Candidate / staff photo for ID card."),
+    )
+    cv_attachment = fields.Binary(
+        attachment=True,
+        string=_("CV"),
+        groups=(
+            "fayna_camp_portal.group_camp_organizator,"
+            "fayna_camp_portal.group_camp_admin,"
+            "fayna_camp_portal.group_camp_hr,"
+            "fayna_camp_portal.group_camp_candidate"
+        ),
+        help=_("Curriculum Vitae uploaded by the candidate."),
+    )
+    id_document_attachment = fields.Binary(
+        attachment=True,
+        string=_("Dowód tożsamości"),
+        groups=(
+            "fayna_camp_portal.group_camp_organizator,"
+            "fayna_camp_portal.group_camp_admin,"
+            "fayna_camp_portal.group_camp_hr"
+        ),
+        help=_(
+            "Scan of identity document (dowód/paszport) — RODO art.6 PII. "
+            "Visible only to HR / Admin / Organizator."
+        ),
+    )
+
+    # ------------------------------------------------------------------
+    # D1-prep — ensure wychowawca system group when staff is confirmed/active
+    # ------------------------------------------------------------------
+
+    def _ensure_wychowawca_group(self, user):
+        """Grant group_camp_wychowawca to *user* if not already a member.
+
+        Called when a wychowawca (role='wychowawca') transitions to confirmed or
+        active state so the wychowawca record rules kick in immediately.
+        Pattern: recruitment.py:222 (user.sudo().write groups_id [(4, id)]).
+        """
+        if not user:
+            return
+        wychowawca_group = self.env.ref(
+            "fayna_camp_portal.group_camp_wychowawca", raise_if_not_found=False
+        )
+        if not wychowawca_group:
+            _logger.warning(
+                "[camp_operations] group_camp_wychowawca not found — "
+                "skipping _ensure_wychowawca_group for user %s",
+                user.id,
+            )
+            return
+        if wychowawca_group not in user.groups_id:
+            user.sudo().write({"groups_id": [(4, wychowawca_group.id)]})
+            _logger.info(
+                "[camp_operations] D1-prep: granted group_camp_wychowawca to user %s (%s)",
+                user.id,
+                user.name,
+            )
+
+    def write(self, vals):
+        """Hook: grant wychowawca group when a wychowawca becomes confirmed/active."""
+        res = super().write(vals)
+        if "state" in vals and vals["state"] in ("confirmed", "active"):
+            for staff in self:
+                if staff.role == "wychowawca" and staff.user_id:
+                    try:
+                        staff._ensure_wychowawca_group(staff.user_id)
+                    except Exception:  # noqa: BLE001 — never block staff state change
+                        _logger.exception(
+                            "[camp_operations] _ensure_wychowawca_group failed for staff %s",
+                            staff.id,
+                        )
+        return res
 
     # ------------------------------------------------------------------
     # 7-year retention cron (PL law)
@@ -1107,7 +1336,7 @@ class CampReport(models.Model):
         "camp.staff",
         string=_("Kierownik (author of report)"),
         help=_("Camp director who authored and signs this Sprawozdanie."),
-        domain="[('event_id', '=', event_id), ('role', '=', 'director')]",
+        domain="[('event_id', '=', event_id), ('role', '=', 'kierownik')]",
         index=True,
         ondelete="set null",
     )
@@ -1492,7 +1721,7 @@ class CampProgramWypoczynku(models.Model):
 
     kierownik_id = fields.Many2one(
         "camp.staff",
-        domain=[("role", "=", "leader")],
+        domain=[("role", "=", "kierownik")],
         string=_("Kierownik"),
         index=True,
         help=_("Kierownik wypoczynku listed on this document."),
@@ -1808,6 +2037,72 @@ class CampProgramStructured(models.Model):
         help=_("Overall program notes, objectives, special requirements."),
     )
 
+    # ── Рамковий день (ADR Фаза A §1) ─────────────────────────────────────
+    wake_time = fields.Float(
+        default=7.0,
+        string=_("Pobudka (hh.mm)"),
+        help=_("Wake-up time in hour.decimal format (e.g. 7.0 = 07:00)."),
+    )
+    breakfast = fields.Float(
+        default=8.0,
+        string=_("Śniadanie"),
+        help=_("Breakfast start time."),
+    )
+    lunch = fields.Float(
+        default=13.0,
+        string=_("Obiad"),
+        help=_("Lunch start time."),
+    )
+    afternoon_rest = fields.Float(
+        default=14.0,
+        string=_("Cisza poobiednia"),
+        help=_("Afternoon rest start time."),
+    )
+    snack = fields.Float(
+        default=16.0,
+        string=_("Podwieczorek"),
+        help=_("Snack start time."),
+    )
+    dinner = fields.Float(
+        default=18.0,
+        string=_("Kolacja"),
+        help=_("Dinner start time."),
+    )
+    lights_out = fields.Float(
+        default=22.0,
+        string=_("Cisza nocna"),
+        help=_("Lights-out / silence start time."),
+    )
+    meal_duration = fields.Float(
+        default=0.75,
+        string=_("Czas posiłku (h)"),
+        help=_("Default meal duration in hours (e.g. 0.75 = 45 min)."),
+    )
+    rest_duration = fields.Float(
+        default=1.0,
+        string=_("Czas ciszy poobiedniej (h)"),
+        help=_("Afternoon rest duration in hours."),
+    )
+
+    @api.constrains("wake_time", "lights_out")
+    def _check_sleep_duration(self):
+        for rec in self:
+            if rec.lights_out <= rec.wake_time:
+                raise ValidationError(
+                    _("Cisza nocna must be after wake-up time (lights_out > wake_time).")
+                )
+            sleep_hours = (24.0 - rec.lights_out) + rec.wake_time
+            if sleep_hours < 9.0:
+                raise ValidationError(
+                    _(
+                        "Minimum sleep time is 9 hours (MEN regulation). "
+                        "Current: %(h).1f h (lights_out=%(lo)s, wake=%(w)s).",
+                        h=sleep_hours,
+                        lo=rec.lights_out,
+                        w=rec.wake_time,
+                    )
+                )
+
     @api.depends("event_id", "is_rain_plan")
     def _compute_name(self):
         for rec in self:
@@ -1835,6 +2130,268 @@ class CampProgramStructured(models.Model):
     def action_print_program(self):
         self.ensure_one()
         return self.env.ref("fayna_camp_portal.camp_program_report_action").report_action(self)
+
+    # ── ADR Фаза C — прогрес наповнення та гейт виховника ────────────────
+
+    _FREE_MARKER = "Czas wolny — do wypełnienia"
+
+    def _get_free_lines(self):
+        """Return activity lines that are considered unfilled free slots."""
+        return self.day_ids.mapped("activity_line_ids").filtered(
+            lambda ln: ln.category == "free" or ln.title == self._FREE_MARKER
+        )
+
+    def _get_filled_lines(self):
+        """Return free-owned lines that have been concretely filled by wychowawca."""
+        return self.day_ids.mapped("activity_line_ids").filtered(
+            lambda ln: (
+                ln.owner_role == "wychowawca"
+                and ln.category != "free"
+                and ln.title != self._FREE_MARKER
+            )
+        )
+
+    @api.depends(
+        "day_ids.activity_line_ids.category",
+        "day_ids.activity_line_ids.title",
+        "day_ids.activity_line_ids.owner_role",
+    )
+    def _compute_fill_progress(self):
+        for rec in self:
+            all_wychowawca = rec.day_ids.mapped("activity_line_ids").filtered(
+                lambda ln: ln.owner_role == "wychowawca"
+            )
+            total = len(all_wychowawca)
+            if total == 0:
+                rec.free_total = 0
+                rec.free_filled = 0
+                rec.fill_progress = 100.0
+            else:
+                filled = len(
+                    all_wychowawca.filtered(
+                        lambda ln, rec=rec: ln.category != "free" and ln.title != rec._FREE_MARKER
+                    )
+                )
+                rec.free_total = total
+                rec.free_filled = filled
+                rec.fill_progress = round(100.0 * filled / total, 1)
+
+    free_total = fields.Integer(
+        compute="_compute_fill_progress",
+        string=_("Free slots total"),
+        help=_("Total wychowawca-owned slots (free + filled)."),
+    )
+    free_filled = fields.Integer(
+        compute="_compute_fill_progress",
+        string=_("Free slots filled"),
+        help=_("Wychowawca-owned slots already filled in."),
+    )
+    fill_progress = fields.Float(
+        compute="_compute_fill_progress",
+        string=_("Fill progress (%)"),
+        help=_("Percentage of wychowawca slots filled. 100 % unlocks submission."),
+    )
+    wychowawca_done = fields.Boolean(
+        default=False,
+        string=_("Wychowawca done"),
+        tracking=True,
+        help=_("Set to True by action_wychowawca_submit when all free slots are filled."),
+    )
+
+    def action_wychowawca_submit(self):
+        """Gate: all wychowawca slots must be filled before submission."""
+        self.ensure_one()
+        unfilled = self._get_free_lines()
+        if unfilled:
+            titles = ", ".join(unfilled.mapped("title")[:5])
+            raise UserError(
+                _("Uzupełnij wszystkie wolne sloty przed wysłaniem. Brakuje: %s") % titles
+            )
+        self.wychowawca_done = True
+        return True
+
+    # ── ADR Фаза A §2 — генератор скелету ────────────────────────────────
+
+    @api.model
+    def _generate_skeleton(self, event, structured):
+        """Generate day records + fixed skeleton lines for every day of the camp.
+
+        Args:
+            event (event.event): The camp shift.
+            structured (camp.program.structured): The structured program record.
+
+        Returns:
+            list[camp.program.day]: Created day records.
+        """
+        from datetime import timedelta as td
+
+        s = structured
+        day_model = self.env["camp.program.day"]
+        line_model = self.env["camp.program.activity.line"]
+
+        start = event.date_begin.date() if hasattr(event.date_begin, "date") else event.date_begin
+        end = event.date_end.date() if hasattr(event.date_end, "date") else event.date_end
+
+        created_days = []
+        current = start
+        while current <= end:
+            day = day_model.create(
+                {
+                    "program_id": s.id,
+                    "date": current,
+                }
+            )
+
+            # Fixed skeleton lines (is_skeleton=True)
+            skeleton_lines = [
+                {
+                    "day_id": day.id,
+                    "time_from": s.breakfast,
+                    "time_to": s.breakfast + s.meal_duration,
+                    "title": "Śniadanie",
+                    "category": "meal",
+                    "is_skeleton": True,
+                    "is_locked": True,
+                    "owner_role": "kierownik",
+                },
+                {
+                    "day_id": day.id,
+                    "time_from": s.lunch,
+                    "time_to": s.lunch + s.meal_duration,
+                    "title": "Obiad",
+                    "category": "meal",
+                    "is_skeleton": True,
+                    "is_locked": True,
+                    "owner_role": "kierownik",
+                },
+                {
+                    "day_id": day.id,
+                    "time_from": s.afternoon_rest,
+                    "time_to": s.afternoon_rest + s.rest_duration,
+                    "title": "Cisza poobiednia",
+                    "category": "rest",
+                    "is_skeleton": True,
+                    "is_locked": True,
+                    "owner_role": "kierownik",
+                },
+                {
+                    "day_id": day.id,
+                    "time_from": s.snack,
+                    "time_to": s.snack + 0.25,
+                    "title": "Podwieczorek",
+                    "category": "meal",
+                    "is_skeleton": True,
+                    "is_locked": True,
+                    "owner_role": "kierownik",
+                },
+                {
+                    "day_id": day.id,
+                    "time_from": s.dinner,
+                    "time_to": s.dinner + s.meal_duration,
+                    "title": "Kolacja",
+                    "category": "meal",
+                    "is_skeleton": True,
+                    "is_locked": True,
+                    "owner_role": "kierownik",
+                },
+                {
+                    "day_id": day.id,
+                    "time_from": s.lights_out,
+                    "time_to": 24.0,
+                    "title": "Cisza nocna",
+                    "category": "sleep",
+                    "is_skeleton": True,
+                    "is_locked": True,
+                    "owner_role": "kierownik",
+                },
+            ]
+            # Night sleep that wraps midnight: 0:00 → wake_time
+            skeleton_lines.append(
+                {
+                    "day_id": day.id,
+                    "time_from": 0.0,
+                    "time_to": s.wake_time,
+                    "title": "Sen (noc)",
+                    "category": "sleep",
+                    "is_skeleton": True,
+                    "is_locked": True,
+                    "owner_role": "kierownik",
+                }
+            )
+            line_model.create(skeleton_lines)
+
+            # Fill free gaps between wake_time and lights_out
+            self._fill_free_hours(day)
+
+            created_days.append(day)
+            current += td(days=1)
+
+        return created_days
+
+    @api.model
+    def _fill_free_hours(self, day):
+        """Insert 'Czas wolny' lines into gaps [wake..lights_out] > 0.25 h.
+
+        Args:
+            day (camp.program.day): The day record (must already have skeleton lines).
+        """
+        structured = day.program_id
+        wake = structured.wake_time
+        lights = structured.lights_out
+
+        # Collect only lines within [wake, lights_out] window (excludes sleep wraps)
+        busy = []
+        for line in day.activity_line_ids.sorted("time_from"):
+            tf = line.time_from
+            tt = line.time_to
+            # Clamp to [wake, lights] window
+            if tt <= wake or tf >= lights:
+                continue
+            tf = max(tf, wake)
+            tt = min(tt, lights)
+            if tt > tf:
+                busy.append((tf, tt))
+
+        # Merge overlapping/adjacent slots
+        merged = []
+        for tf, tt in sorted(busy):
+            if merged and tf <= merged[-1][1]:
+                merged[-1] = (merged[-1][0], max(merged[-1][1], tt))
+            else:
+                merged.append((tf, tt))
+
+        # Detect gaps
+        cursor = wake
+        free_vals = []
+        for tf, tt in merged:
+            if tf - cursor > 0.25:
+                free_vals.append(
+                    {
+                        "day_id": day.id,
+                        "time_from": cursor,
+                        "time_to": tf,
+                        "title": "Czas wolny — do wypełnienia",
+                        "category": "free",
+                        "is_skeleton": True,
+                        "owner_role": "wychowawca",
+                    }
+                )
+            cursor = max(cursor, tt)
+        # Trailing gap
+        if lights - cursor > 0.25:
+            free_vals.append(
+                {
+                    "day_id": day.id,
+                    "time_from": cursor,
+                    "time_to": lights,
+                    "title": "Czas wolny — do wypełnienia",
+                    "category": "free",
+                    "is_skeleton": True,
+                    "owner_role": "wychowawca",
+                }
+            )
+        if free_vals:
+            self.env["camp.program.activity.line"].create(free_vals)
 
 
 # ---------------------------------------------------------------------------
@@ -1958,6 +2515,72 @@ class CampProgramActivityLine(models.Model):
         string=_("Notes"),
         help=_("Preparation notes, materials needed, special instructions."),
     )
+
+    # ── Фаза A — категорія та замки (ADR §1) ──────────────────────────────
+    category = fields.Selection(
+        [
+            ("meal", "Posiłek"),
+            ("rest", "Odpoczynek"),
+            ("sleep", "Cisza nocna"),
+            ("free", "Czas wolny — do wypełnienia"),
+            ("activity", "Zajęcia"),
+        ],
+        default="activity",
+        string=_("Kategoria"),
+        help=_("Activity category: meal / rest / sleep / free slot / regular activity."),
+    )
+    is_skeleton = fields.Boolean(
+        default=False,
+        string=_("Skeleton"),
+        help=_("True if this line was auto-generated by the skeleton generator."),
+    )
+    is_locked = fields.Boolean(
+        default=False,
+        string=_("Locked"),
+        help=_("Kierownik lock: wychowawca cannot edit this line (enforced in Phase C)."),
+    )
+    owner_role = fields.Selection(
+        [
+            ("kierownik", "Kierownik"),
+            ("wychowawca", "Wychowawca"),
+        ],
+        default="kierownik",
+        string=_("Owner role"),
+        help=_("Role that owns this line. Wychowawca can only edit owner_role=wychowawca lines."),
+    )
+
+    # ── Фаза C — skeleton label (readonly, inherited from skeleton generator) ──
+    skeleton_label = fields.Char(
+        string=_("Skeleton label"),
+        readonly=True,
+        help=_("General activity name from the skeleton. Wychowawca fills in the concrete title."),
+    )
+
+    @api.constrains(
+        "is_locked",
+        "owner_role",
+        "title",
+        "time_from",
+        "time_to",
+        "activity_template_id",
+        "location",
+        "responsible_id",
+        "notes",
+        "category",
+    )
+    def _check_locked_write(self):
+        """Phase C ENFORCE: wychowawca cannot write locked or kierownik-owned lines."""
+        if self.env.su:
+            return
+        if self.env.user.has_group("fayna_camp_portal.group_camp_kierownik"):
+            return
+        if self.env.user.has_group("fayna_camp_portal.group_camp_organizator"):
+            return
+        for line in self:
+            if line.is_locked or line.owner_role == "kierownik":
+                raise ValidationError(
+                    _("Slot zablokowany przez kierownika — wychowawca nie edytuje: %s") % line.title
+                )
 
     @api.onchange("activity_template_id")
     def _onchange_activity_template(self):
@@ -2334,7 +2957,7 @@ class FaynaCampDziennik(models.Model):
     kierownik_id = fields.Many2one(
         "camp.staff",
         string=_("Imię i nazwisko kierownika wypoczynku"),
-        domain="[('event_id', '=', event_id), ('role', '=', 'leader')]",
+        domain="[('event_id', '=', event_id), ('role', '=', 'kierownik')]",
         tracking=True,
         help=_("Camp leader assigned to this group."),
     )
@@ -2344,7 +2967,7 @@ class FaynaCampDziennik(models.Model):
         column1="dziennik_id",
         column2="staff_id",
         string=_("Imiona i nazwiska wychowawców"),
-        domain="[('event_id', '=', event_id), ('role', '=', 'counselor')]",
+        domain="[('event_id', '=', event_id), ('role', '=', 'wychowawca')]",
         help=_("Counselors assigned to this group."),
     )
     date_start = fields.Date(

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ══════════════════════════════════════════════════════════════
+             res.company — секція CampScout: підпис організатора wypoczynku
+             Завантажується раз у Settings → Companies → ваша фірма. Рендериться
+             на кожній karcie kwalifikacyjnej (PDF) у секціях I та III.
+        ══════════════════════════════════════════════════════════════════ -->
+
+        <record id="view_company_form_campscout_organizer" model="ir.ui.view">
+            <field name="name">res.company.form.campscout.organizer</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page string="CampScout" name="campscout_organizer">
+                        <group>
+                            <group string="Podpis organizatora wypoczynku">
+                                <field name="camp_organizer_signature"
+                                       widget="signature"
+                                       nolabel="1"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

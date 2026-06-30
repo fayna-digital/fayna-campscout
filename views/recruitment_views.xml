@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fayna CampScout — recruitment views (Фаза B, ADR §B1) -->
+<odoo>
+    <data>
+
+        <!-- ══════════════════════════════════════════════
+             camp.staff.application — Tree
+        ══════════════════════════════════════════════ -->
+        <record id="view_camp_staff_application_tree" model="ir.ui.view">
+            <field name="name">camp.staff.application.tree</field>
+            <field name="model">camp.staff.application</field>
+            <field name="arch" type="xml">
+                <tree string="Applications" decoration-success="state == 'accepted'"
+                      decoration-danger="state == 'rejected'"
+                      decoration-info="state == 'reviewing'">
+                    <field name="name"/>
+                    <field name="vacancy_id"/>
+                    <field name="event_id"/>
+                    <field name="role"/>
+                    <field name="candidate_name"/>
+                    <field name="candidate_email"/>
+                    <field name="state" widget="badge"
+                           decoration-success="state == 'accepted'"
+                           decoration-danger="state == 'rejected'"
+                           decoration-info="state == 'reviewing'"
+                           decoration-muted="state == 'new'"/>
+                    <field name="create_date" string="Applied"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════
+             camp.staff.application — Form
+        ══════════════════════════════════════════════ -->
+        <record id="view_camp_staff_application_form" model="ir.ui.view">
+            <field name="name">camp.staff.application.form</field>
+            <field name="model">camp.staff.application</field>
+            <field name="arch" type="xml">
+                <form string="Staff Application">
+                    <header>
+                        <button name="action_start_review" type="object"
+                                string="Start Review"
+                                invisible="state != 'new'"
+                                class="btn-secondary"/>
+                        <button name="action_accept" type="object"
+                                string="Accept"
+                                invisible="state not in ['new', 'reviewing']"
+                                class="btn-primary"
+                                confirm="Accept this application and create a draft staff record?"/>
+                        <button name="action_reject" type="object"
+                                string="Reject"
+                                invisible="state in ['accepted', 'rejected']"
+                                class="btn-danger"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="new,reviewing,accepted,rejected"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1><field name="name" readonly="1"/></h1>
+                        </div>
+                        <group>
+                            <group string="Vacancy">
+                                <field name="vacancy_id"/>
+                                <field name="event_id" readonly="1"/>
+                                <field name="role" readonly="1"/>
+                            </group>
+                            <group string="Candidate">
+                                <field name="candidate_name"/>
+                                <field name="candidate_email"/>
+                                <field name="candidate_phone"/>
+                            </group>
+                        </group>
+                        <group string="Cover message" col="1">
+                            <field name="message" nolabel="1"/>
+                        </group>
+                        <group string="Result" invisible="state not in ['accepted', 'rejected']">
+                            <field name="staff_id" readonly="1"
+                                   invisible="state != 'accepted'"/>
+                            <field name="partner_id" readonly="1"
+                                   invisible="state != 'accepted'"/>
+                            <field name="rejection_reason"
+                                   invisible="state != 'rejected'"/>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════
+             camp.staff.application — Kanban
+        ══════════════════════════════════════════════ -->
+        <record id="view_camp_staff_application_kanban" model="ir.ui.view">
+            <field name="name">camp.staff.application.kanban</field>
+            <field name="model">camp.staff.application</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="state" class="o_kanban_small_column">
+                    <field name="state"/>
+                    <field name="candidate_name"/>
+                    <field name="candidate_email"/>
+                    <field name="vacancy_id"/>
+                    <field name="event_id"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="o_kanban_record_top">
+                                    <strong>
+                                        <field name="candidate_name"/>
+                                    </strong>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <span class="text-muted">
+                                        <field name="vacancy_id"/>
+                                    </span><br/>
+                                    <span>
+                                        <field name="candidate_email"/>
+                                    </span>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════
+             Action
+        ══════════════════════════════════════════════ -->
+        <record id="action_camp_staff_application" model="ir.actions.act_window">
+            <field name="name">Staff Applications</field>
+            <field name="res_model">camp.staff.application</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No applications yet. Share the public /camp/vacancies link!
+                </p>
+            </field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════
+             Menu items (під HR / Staffing)
+        ══════════════════════════════════════════════ -->
+        <menuitem id="menu_camp_staff_applications"
+                  name="Aplikacje (rekrutacja)"
+                  action="action_camp_staff_application"
+                  parent="fayna_camp_portal.menu_operations"
+                  sequence="12"
+                  groups="fayna_camp_portal.group_camp_hr,fayna_camp_portal.group_camp_organizator,fayna_camp_portal.group_fayna_camp_manager"/>
+
+    </data>
+</odoo>

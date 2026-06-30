@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — tests for camp.group (grupa wychowawcza, §2 art. 92c)
 from odoo.exceptions import ValidationError
 from odoo.tests.common import TransactionCase, tagged

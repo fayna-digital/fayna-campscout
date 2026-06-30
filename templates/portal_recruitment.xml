@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fayna CampScout — public recruitment + candidate cabinet (Фаза B)
+     ADR: 09-ADR-FAZA-B-build.md §B2 / §B4
+-->
+<odoo>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         /camp/vacancies — публічний список відкритих вакансій
+    ══════════════════════════════════════════════════════════════════ -->
+    <template id="portal_vacancy_list" name="Open Vacancies">
+        <t t-call="website.layout">
+            <div class="container py-4">
+                <h2 class="mb-4">Rekrutacja — otwarte stanowiska</h2>
+                <t t-if="not vacancies">
+                    <div class="alert alert-info">
+                        Brak aktualnie otwartych stanowisk. Sprawdź ponownie wkrótce!
+                    </div>
+                </t>
+                <div t-if="vacancies" class="row g-3">
+                    <t t-foreach="vacancies" t-as="v">
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="card h-100 shadow-sm cs-vacancy-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <t t-esc="dict(v._fields['role'].selection).get(v.role, v.role)"/>
+                                    </h5>
+                                    <p class="card-text text-muted mb-1">
+                                        <t t-esc="v.event_id.name"/>
+                                    </p>
+                                    <t t-if="v.event_id.date_begin">
+                                        <small class="text-muted">
+                                            <t t-esc="v.event_id.date_begin" t-options='{"widget": "date"}'/>
+                                            –
+                                            <t t-esc="v.event_id.date_end" t-options='{"widget": "date"}'/>
+                                        </small>
+                                    </t>
+                                </div>
+                                <div class="card-footer bg-transparent border-0">
+                                    <a t-attf-href="/camp/vacancy/#{v.id}/apply"
+                                       class="btn btn-primary btn-sm w-100">
+                                        Aplikuj teraz
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         /camp/vacancy/<id>/apply — форма заявки (public)
+    ══════════════════════════════════════════════════════════════════ -->
+    <template id="portal_vacancy_apply" name="Apply for Vacancy">
+        <t t-call="website.layout">
+            <div class="container py-4" style="max-width:640px">
+                <nav aria-label="breadcrumb" class="mb-3">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/camp/vacancies">Stanowiska</a></li>
+                        <li class="breadcrumb-item active">
+                            <t t-esc="dict(vacancy._fields['role'].selection).get(vacancy.role, vacancy.role)"/>
+                        </li>
+                    </ol>
+                </nav>
+
+                <h2 class="mb-1">
+                    <t t-esc="dict(vacancy._fields['role'].selection).get(vacancy.role, vacancy.role)"/>
+                </h2>
+                <p class="text-muted mb-4">
+                    <t t-esc="vacancy.event_id.name"/>
+                </p>
+
+                <!-- Результат успіху -->
+                <t t-if="success">
+                    <div class="alert alert-success">
+                        <strong>Dziękujemy!</strong> Twoje zgłoszenie zostało wysłane.
+                        Skontaktujemy się z Tobą e-mailem.
+                    </div>
+                </t>
+
+                <!-- Помилка -->
+                <t t-if="error">
+                    <div class="alert alert-danger"><t t-esc="error"/></div>
+                </t>
+
+                <!-- Форма -->
+                <t t-if="not success">
+                    <form t-attf-action="/camp/vacancy/#{vacancy.id}/apply"
+                          method="post" enctype="multipart/form-data" novalidate="">
+                        <input type="hidden" name="csrf_token"
+                               t-att-value="request.csrf_token()"/>
+
+                        <!-- Honeypot (anti-spam) -->
+                        <div style="display:none">
+                            <input type="text" name="website_url" autocomplete="off"/>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Imię i nazwisko *</label>
+                            <input type="text" name="candidate_name" class="form-control"
+                                   required="required"
+                                   t-att-value="form_data.get('candidate_name') if form_data else ''"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">E-mail *</label>
+                            <input type="email" name="candidate_email" class="form-control"
+                                   required="required"
+                                   t-att-value="form_data.get('candidate_email') if form_data else ''"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Telefon</label>
+                            <input type="tel" name="candidate_phone" class="form-control"
+                                   t-att-value="form_data.get('candidate_phone') if form_data else ''"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Wiadomość / motywacja</label>
+                            <textarea name="message" class="form-control" rows="4">
+                                <t t-esc="form_data.get('message') if form_data else ''"/>
+                            </textarea>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                Wyślij zgłoszenie
+                            </button>
+                        </div>
+                    </form>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         /my/candidate — кабінет кандидата (auth=user)
+         B4-portal: статус заявки + upload форма (CV / фото)
+    ══════════════════════════════════════════════════════════════════ -->
+    <template id="portal_candidate_status" name="My Candidate Status">
+        <t t-call="portal.portal_layout">
+            <div class="o_portal_my_doc">
+                <h3 class="mb-3">Moje zgłoszenie — status kandydata</h3>
+
+                <t t-if="error">
+                    <div class="alert alert-danger"><t t-esc="error"/></div>
+                </t>
+                <t t-if="success">
+                    <div class="alert alert-success">Dokument przesłany pomyślnie.</div>
+                </t>
+
+                <!-- Список заявок -->
+                <t t-if="not applications">
+                    <div class="alert alert-info">
+                        Brak zgłoszeń. Aplikuj na <a href="/camp/vacancies">otwarte stanowiska</a>.
+                    </div>
+                </t>
+
+                <t t-if="applications">
+                    <table class="table table-sm table-hover mb-4">
+                        <thead>
+                            <tr>
+                                <th>Stanowisko</th>
+                                <th>Obóz</th>
+                                <th>Data</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="applications" t-as="app">
+                                <td>
+                                    <t t-esc="dict(app._fields['role'].selection).get(app.role, app.role or '—')"/>
+                                </td>
+                                <td><t t-esc="app.event_id.name or '—'"/></td>
+                                <td><t t-esc="app.create_date" t-options='{"widget": "date"}'/></td>
+                                <td>
+                                    <span t-attf-class="badge #{
+                                        'bg-success' if app.state == 'accepted' else
+                                        'bg-danger' if app.state == 'rejected' else
+                                        'bg-info' if app.state == 'reviewing' else
+                                        'bg-secondary'
+                                    }">
+                                        <t t-esc="dict(app._fields['state'].selection).get(app.state)"/>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+
+                <!-- ════════════════════════════════════════════════════════
+                     §13 — Blurred children. Viewer w stanie pending_admission
+                     (przed «Dopuść», KRK/RSPTS niezweryfikowane) widzi LICZBĘ
+                     dzieci swoich grup + N rozmytych placeholderów. Żadne dane
+                     dziecka (imię/PESEL/foto/art.9) nie są tu renderowane —
+                     kontroler przekazuje wyłącznie {name, count}. Lista «żyje»:
+                     count rośnie przy nowych rezerwacjach.
+                ════════════════════════════════════════════════════════ -->
+                <t t-if="blurred_groups">
+                    <div class="card border-warning shadow-sm mt-3">
+                        <div class="card-header bg-warning-subtle fw-semibold d-flex align-items-center">
+                            <i class="fa fa-user-secret me-2"/>
+                            Moje grupy — dane dzieci ukryte
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-warning small mb-3" role="alert">
+                                <i class="fa fa-lock me-1"/>
+                                Dane dzieci ukryte do czasu weryfikacji KRK/RSPTS (§13).
+                                Po dopuszczeniu przez kierownika zobaczysz pełne karty
+                                kwalifikacyjne swoich podopiecznych.
+                            </div>
+                            <t t-foreach="blurred_groups" t-as="grp">
+                                <div class="cs-blur-group mb-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <strong t-esc="grp['name']"/>
+                                        <span class="badge bg-secondary">
+                                            <t t-esc="grp['count']"/> dzieci
+                                        </span>
+                                    </div>
+                                    <ul class="list-unstyled mb-0">
+                                        <t t-foreach="list(range(grp['count']))" t-as="i">
+                                            <li class="cs-blur-row d-flex align-items-center">
+                                                <span class="cs-blur-avatar"/>
+                                                <span class="cs-blur-line"/>
+                                            </li>
+                                        </t>
+                                        <t t-if="grp['count'] == 0">
+                                            <li class="text-muted small fst-italic">
+                                                Brak przypisanych dzieci — pojawią się przy nowych rezerwacjach.
+                                            </li>
+                                        </t>
+                                    </ul>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- Onboarding — лише якщо staff ще не dopuszczony (draft/pending) -->
+                <t t-if="staff and staff.state in ('draft', 'pending_admission')">
+                    <!-- Krok 1: dokumenty (CV / foto / KRK) -->
+                    <div class="card border-0 shadow-sm mt-3">
+                        <div class="card-header bg-light fw-semibold">
+                            Krok 1 — Prześlij dokumenty
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted small mb-3">
+                                Twoje zgłoszenie zostało zaakceptowane.
+                                Prześlij CV, zdjęcie oraz wyciąg z KRK
+                                (zaświadczenie o niekaralności), aby kontynuować
+                                proces weryfikacji.
+                            </p>
+                            <form action="/my/candidate/upload" method="post"
+                                  enctype="multipart/form-data">
+                                <input type="hidden" name="csrf_token"
+                                       t-att-value="request.csrf_token()"/>
+                                <div class="mb-3">
+                                    <label class="form-label">CV (PDF / DOCX)</label>
+                                    <input type="file" name="cv_attachment"
+                                           class="form-control" accept=".pdf,.doc,.docx"/>
+                                    <t t-if="staff.cv_attachment">
+                                        <small class="text-success">✓ Przesłano wcześniej</small>
+                                    </t>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Zdjęcie (JPG / PNG)</label>
+                                    <input type="file" name="photo"
+                                           class="form-control" accept="image/*"/>
+                                    <t t-if="staff.photo">
+                                        <small class="text-success">✓ Przesłano wcześniej</small>
+                                    </t>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">
+                                        Wyciąg z KRK — zaświadczenie o niekaralności (PDF)
+                                    </label>
+                                    <input type="file" name="krk_attachment"
+                                           class="form-control" accept=".pdf,image/*"/>
+                                    <t t-if="staff.krk_attachment">
+                                        <small class="text-success">✓ Przesłano — czeka na weryfikację administratora</small>
+                                    </t>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm">
+                                    Wyślij dokumenty
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Krok 2: declaracja niekaralności (podpis) -->
+                    <div class="card border-0 shadow-sm mt-3">
+                        <div class="card-header bg-light fw-semibold">
+                            Krok 2 — Oświadczenie o niekaralności
+                        </div>
+                        <div class="card-body">
+                            <t t-if="staff.declaration_signed">
+                                <div class="alert alert-success mb-0">
+                                    ✓ Oświadczenie podpisane
+                                    <t t-if="staff.declaration_date">
+                                        (<t t-esc="staff.declaration_date" t-options='{"widget": "datetime"}'/>)
+                                    </t>.
+                                    Czeka na decyzję kierownika o dopuszczeniu.
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <p class="text-muted small mb-3">
+                                    Oświadczam, że nie byłem(am) prawomocnie skazany(a)
+                                    za przestępstwa wykluczające pracę z małoletnimi
+                                    oraz że nie figuruję w Rejestrze Sprawców Przestępstw
+                                    na Tle Seksualnym (art. 21 ustawy z dnia 13 maja 2016 r.).
+                                    Oświadczenie nie zastępuje wyciągu z KRK — jest jego
+                                    uzupełnieniem. Podpis i jego data zostaną utrwalone.
+                                </p>
+                                <form action="/my/candidate/declaration" method="post">
+                                    <input type="hidden" name="csrf_token"
+                                           t-att-value="request.csrf_token()"/>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox"
+                                               name="accept" id="declAccept" required="required"/>
+                                        <label class="form-check-label" for="declAccept">
+                                            Potwierdzam prawdziwość powyższego oświadczenia.
+                                        </label>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-sm">
+                                        Podpisz oświadczenie
+                                    </button>
+                                </form>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- Зворотній лінк -->
+                <div class="mt-4">
+                    <a href="/my/home" class="btn btn-outline-secondary btn-sm">
+                        ← Mój portal
+                    </a>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

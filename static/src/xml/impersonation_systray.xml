@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="fayna_camp_portal.ImpersonationSystray">
+        <t t-if="state.impersonating">
+            <li class="o_fayna_impersonation o_dropdown d-flex align-items-center">
+                <button type="button"
+                        class="btn btn-danger btn-sm d-flex align-items-center fw-bold"
+                        t-on-click="onStop"
+                        title="Повернутися до власного облікового запису організатора">
+                    <i class="fa fa-user-secret me-1" role="img" aria-label="Impersonation"/>
+                    <span class="d-none d-md-inline">
+                        Ви переглядаєте як
+                        <t t-esc="state.currentName"/>
+                        (адмін:
+                        <t t-esc="state.adminName"/>)
+                        —
+                    </span>
+                    <span class="ms-1 text-decoration-underline">Повернутися</span>
+                </button>
+            </li>
+        </t>
+    </t>
+
+</templates>

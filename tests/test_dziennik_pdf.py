@@ -1,5 +1,4 @@
 # Copyright 2026 Fayna Digital — Volodymyr Shevchenko
-# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl-3.0).
 """Tests — Dziennik Zajęć PDF report (Załącznik 5 Rozp. MEN 30.03.2016).
 
 Smoke test: the report action referenced by FaynaCampDziennik.action_submit
@@ -33,7 +32,7 @@ class TestDziennikPdf(TransactionCase):
             {
                 "event_id": cls.event.id,
                 "name": "Adam Kierowniczy",
-                "role": "leader",
+                "role": "kierownik",
                 "date_from": "2026-07-01",
                 "date_to": "2026-07-14",
             }
@@ -42,7 +41,7 @@ class TestDziennikPdf(TransactionCase):
             {
                 "event_id": cls.event.id,
                 "name": "Maria Wychowawcza",
-                "role": "counselor",
+                "role": "wychowawca",
                 "date_from": "2026-07-01",
                 "date_to": "2026-07-14",
             }

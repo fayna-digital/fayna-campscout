@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """Extend camp.staff with the action that opens the SMS broadcast wizard.
 
 Used by the form-view button '📨 Send SMS to my group'. The wizard pre-fills

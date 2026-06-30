@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """Wizard: wychowawca / kierownik broadcast SMS to all children in their group.
 
 Flow:
@@ -23,11 +25,12 @@ _logger = logging.getLogger(__name__)
 
 
 # Maps camp.staff.role → key in ir.config_parameter for monthly limit.
+# ADR-22 canon keys.
 ROLE_LIMIT_PARAMS = {
-    "leader": "fayna_camp_portal.sms_kierownik_monthly_limit",
-    "counselor": "fayna_camp_portal.sms_wychowawca_monthly_limit",
+    "kierownik": "fayna_camp_portal.sms_kierownik_monthly_limit",
+    "wychowawca": "fayna_camp_portal.sms_wychowawca_monthly_limit",
 }
-DEFAULT_LIMIT_BY_ROLE = {"leader": 300, "counselor": 100}
+DEFAULT_LIMIT_BY_ROLE = {"kierownik": 300, "wychowawca": 100}
 
 
 class CampStaffSmsComposer(models.TransientModel):
@@ -182,7 +185,7 @@ class CampStaffSmsComposer(models.TransientModel):
         key = ROLE_LIMIT_PARAMS.get(staff.role)
         if not key:
             # Roles outside wychowawca/kierownik default to wychowawca limit.
-            key = ROLE_LIMIT_PARAMS["counselor"]
+            key = ROLE_LIMIT_PARAMS["wychowawca"]
         default = DEFAULT_LIMIT_BY_ROLE.get(staff.role, 100)
         param = self.env["ir.config_parameter"].sudo().get_param(key, str(default))
         try:

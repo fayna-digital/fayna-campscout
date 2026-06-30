@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — Camp & Event models
 import logging
 import os
@@ -198,6 +200,23 @@ class CampEvent(models.Model):
         ),
     )
 
+    # --- Structured program (ADR Фаза A §1) ----------------------------------
+
+    structured_program_ids = fields.One2many(
+        "camp.program.structured",
+        "event_id",
+        string=_("Structured programs"),
+        help=_("Day-by-day structured programs (normal + rain plan) for this shift."),
+    )
+
+    # --- Camp groups (reverse of camp.group.event_id) — needed for record rules
+    camp_group_ids = fields.One2many(
+        "camp.group",
+        "event_id",
+        string=_("Camp groups"),
+        help=_("Participant groups for this shift (used in record rules for wychowawca access)."),
+    )
+
     # --- Dziennik zajęć (daily activity register) ----------------------------
 
     dziennik_ids = fields.One2many(
@@ -237,6 +256,356 @@ class CampEvent(models.Model):
             "domain": [("event_id", "=", self.id)],
             "context": {"default_event_id": self.id},
         }
+
+    # --- Approval workflow (ADR-13, TZ §6) ----------------------------------
+    # State lives on native event.event — no mirror model.
+
+    camp_approval_state = fields.Selection(
+        selection=[
+            ("draft", "Чернетка"),
+            ("pending_approval", "На погодженні"),
+            ("approved", "Погоджено"),
+            ("rejected", "Відхилено"),
+        ],
+        string="Стан погодження",
+        default="draft",
+        tracking=True,
+        copy=False,
+        index=True,
+        help=_(
+            "Lifecycle approval state for this camp shift. "
+            "draft → pending_approval (kierownik submits) → approved/rejected (organizator)."
+        ),
+    )
+    approved_by_id = fields.Many2one(
+        "res.users",
+        string="Погоджено користувачем",
+        readonly=True,
+        copy=False,
+        tracking=True,
+    )
+    approved_date = fields.Datetime(
+        string="Дата погодження",
+        readonly=True,
+        copy=False,
+    )
+    rejection_reason = fields.Text(
+        string="Причина відхилення",
+        copy=False,
+        help=_("Mandatory when rejecting a pending camp shift."),
+    )
+
+    def _post_note(self, body):
+        """Post an internal chatter note resiliently — a mail/email-config
+        failure must NEVER block the approval workflow (TZ §0b reliability)."""
+        try:
+            self.message_post(
+                body=body,
+                message_type="notification",
+                subtype_xmlid="mail.mt_note",
+            )
+        except Exception:  # noqa: BLE001
+            _logger.warning(
+                "fayna_camp_portal: chatter note skipped for event=%s (non-blocking)",
+                self.id,
+            )
+
+    def action_submit_for_approval(self):
+        """Kierownik submits the shift to organizator for approval.
+        Event stays unpublished (website_published=False, sale_ok=False on ticket).
+        """
+        self.ensure_one()
+        if self.camp_approval_state != "draft":
+            raise UserError(
+                _("Тільки чернетку можна надіслати на погодження (поточний стан: %s).")
+                % self.camp_approval_state
+            )
+        self.sudo().write({"camp_approval_state": "pending_approval"})
+        self._post_note(_("Табір надіслано на погодження організатора."))
+
+    def action_approve(self):
+        """Organizator approves the shift → publish event + ticket products."""
+        self.ensure_one()
+        if not self.env.user.has_group("fayna_camp_portal.group_camp_organizator"):
+            raise UserError(_("Тільки Organizator може погоджувати табори."))
+        if self.camp_approval_state == "approved":
+            raise UserError(_("Цей табір вже погоджено."))
+        if self.camp_approval_state != "pending_approval":
+            raise UserError(
+                _("Погодити можна лише табір зі статусом «На погодженні» (поточний: %s).")
+                % self.camp_approval_state
+            )
+        self.sudo().write(
+            {
+                "camp_approval_state": "approved",
+                "approved_by_id": self.env.uid,
+                "approved_date": fields.Datetime.now(),
+                "website_published": True,
+            }
+        )
+        # Publish linked camp program product if set (website_sale)
+        if self.camp_program_id:
+            self.camp_program_id.sudo().write({"website_published": True, "sale_ok": True})
+        # F-generator: populate product card from structured program data (TZ §8)
+        try:
+            self._generate_product_card()
+        except Exception:  # noqa: BLE001
+            # Graceful skip: card generation must never block approval/publish.
+            # Failure is logged; operator can re-trigger manually.
+            _logger.exception(
+                "fayna_camp_portal: _generate_product_card failed for event=%s — "
+                "approval continues, card must be filled manually.",
+                self.id,
+            )
+        self._post_note(_("Табір погоджено та опубліковано організатором %s.") % self.env.user.name)
+
+    # F-GENERATOR (TZ §8) ─────────────────────────────────────────────────────
+
+    def _generate_product_card(self):
+        """Populate the linked product.template (camp program card) from this
+        event's structured program data.
+
+        Mapping (TZ §8 F-generator):
+          structured_program_ids (Plan A, non-rain) → camp_daily_routine  (Html)
+          activity_line_ids category=activity       → camp_activities_ids (m2m)
+          activity_line_ids category=activity       → camp_highlights      (Html)
+          budget_id.price_per_child                 → list_price           (native)
+
+        Rules:
+          - Only Plan A (is_rain_plan=False), published preferred, first found.
+          - Idempotent: skips each target field if already non-empty (operator
+            content is never overwritten). Pass force=True to override.
+          - Graceful: missing budget / no structured program → skip that field,
+            log at INFO level. Never raises.
+          - Never blocks approval (caller wraps in try/except BLE001).
+        """
+        self.ensure_one()
+        product = self.camp_program_id
+        if not product:
+            _logger.info(
+                "fayna_camp_portal._generate_product_card: event=%s has no camp_program_id — skip.",
+                self.id,
+            )
+            return
+
+        vals = {}
+
+        # ── 1. Structured program days → camp_daily_routine (Html) ─────────
+        if not product.camp_daily_routine:
+            routine_html = self._build_daily_routine_html()
+            if routine_html:
+                vals["camp_daily_routine"] = routine_html
+
+        # ── 2. Activity lines → camp_activities_ids (m2m existing records) ─
+        if not product.camp_activities_ids:
+            activity_ids = self._collect_activity_ids()
+            if activity_ids:
+                vals["camp_activities_ids"] = [(6, 0, activity_ids)]
+
+        # ── 3. Activity lines → camp_highlights (Html bullet points) ───────
+        if not product.camp_highlights:
+            highlights_html = self._build_highlights_html()
+            if highlights_html:
+                vals["camp_highlights"] = highlights_html
+
+        # ── 4. Budget price_per_child → list_price ──────────────────────────
+        if not product.list_price:
+            price = self._get_price_per_child()
+            if price:
+                vals["list_price"] = price
+
+        if vals:
+            product.sudo().write(vals)
+            _logger.info(
+                "fayna_camp_portal._generate_product_card: event=%s product=%s updated fields=%s",
+                self.id,
+                product.id,
+                list(vals.keys()),
+            )
+        else:
+            _logger.info(
+                "fayna_camp_portal._generate_product_card: event=%s product=%s "
+                "— all target fields already populated, nothing to update.",
+                self.id,
+                product.id,
+            )
+
+    def _get_plan_a_program(self):
+        """Return the first Plan A (non-rain) structured program for this event.
+
+        Prefers published records; falls back to any draft if none published.
+        Returns empty recordset if none found.
+        """
+        programs = self.structured_program_ids.filtered(lambda p: not p.is_rain_plan)
+        published = programs.filtered(lambda p: p.state == "published")
+        return published[:1] if published else programs[:1]
+
+    @staticmethod
+    def _float_to_hhmm(value):
+        """Convert float hour (e.g. 9.5) to 'HH:MM' string (e.g. '09:30')."""
+        hours = int(value)
+        minutes = round((value - hours) * 60)
+        return f"{hours:02d}:{minutes:02d}"
+
+    def _build_daily_routine_html(self):
+        """Build Html for camp_daily_routine from structured program days.
+
+        Format: one <h4> per day, <ul> of time-boxed activity slots.
+        Only non-sleep/free lines are shown (meals, rest, activities).
+        Returns empty string if no structured program or no days.
+        """
+        program = self._get_plan_a_program()
+        if not program or not program.day_ids:
+            return ""
+
+        # Rамковий день header (meal/rest anchor times from program)
+        ramowy_parts = []
+        anchor_map = [
+            ("Pobudka", program.wake_time),
+            ("Śniadanie", program.breakfast),
+            ("Obiad", program.lunch),
+            ("Cisza poobiednia", program.afternoon_rest),
+            ("Podwieczorek", program.snack),
+            ("Kolacja", program.dinner),
+            ("Cisza nocna", program.lights_out),
+        ]
+        for label, t in anchor_map:
+            ramowy_parts.append(f"<li><strong>{self._float_to_hhmm(t)}</strong> — {label}</li>")
+        ramowy_html = "<h4>Ramowy dzień obozu</h4><ul>" + "".join(ramowy_parts) + "</ul>"
+
+        # Per-day detail (from activity lines, skip sleep/free)
+        day_blocks = []
+        for day in program.day_ids.sorted("date"):
+            lines = day.activity_line_ids.filtered(
+                lambda ln: ln.category not in ("sleep", "free")
+            ).sorted("time_from")
+            if not lines:
+                continue
+            items = []
+            for line in lines:
+                time_str = self._float_to_hhmm(line.time_from)
+                items.append(f"<li><strong>{time_str}</strong> — {line.title}</li>")
+            day_label = day.display_name or str(day.date)
+            day_blocks.append(f"<h4>{day_label}</h4><ul>" + "".join(items) + "</ul>")
+
+        if not day_blocks:
+            # No per-day detail available — return ramowy only
+            return ramowy_html
+
+        return ramowy_html + "\n" + "\n".join(day_blocks)
+
+    def _collect_activity_ids(self):
+        """Return list of camp.activity IDs matched by name from activity lines.
+
+        Only matches EXISTING camp.activity records by case-insensitive name.
+        Does NOT create new records (sellable-ready: no org-specific data).
+        Source: Plan A lines with category='activity', non-skeleton titles.
+        """
+        program = self._get_plan_a_program()
+        if not program:
+            return []
+
+        activity_lines = program.day_ids.mapped("activity_line_ids").filtered(
+            lambda ln: (
+                ln.category == "activity" and ln.title and ln.title != "Czas wolny — do wypełnienia"
+            )
+        )
+        names = list({line.title.strip() for line in activity_lines if line.title.strip()})
+        if not names:
+            return []
+
+        matched = self.env["camp.activity"].sudo().search([("name", "in", names)])
+        if not matched:
+            # Try case-insensitive fallback (ilike search per name)
+            matched_ids = []
+            for name in names:
+                rec = self.env["camp.activity"].sudo().search([("name", "=ilike", name)], limit=1)
+                if rec:
+                    matched_ids.append(rec.id)
+            return matched_ids
+
+        return matched.ids
+
+    def _build_highlights_html(self):
+        """Build Html bullet list of camp highlights from activity lines.
+
+        Logic: collect unique activity titles (category=activity, non-free,
+        non-skeleton-only names) from Plan A, deduplicate, return as <ul>.
+        Returns empty string if nothing found.
+        """
+        program = self._get_plan_a_program()
+        if not program:
+            return ""
+
+        _SKIP_TITLES = {
+            "Czas wolny — do wypełnienia",
+            "Śniadanie",
+            "Obiad",
+            "Kolacja",
+            "Podwieczorek",
+            "Cisza poobiednia",
+            "Cisza nocna",
+            "Sen (noc)",
+        }
+
+        seen = set()
+        items = []
+        for day in program.day_ids.sorted("date"):
+            for line in day.activity_line_ids.filtered(
+                lambda ln: ln.category == "activity" and ln.title
+            ).sorted("time_from"):
+                title = line.title.strip()
+                if title in _SKIP_TITLES or title in seen:
+                    continue
+                seen.add(title)
+                items.append(f"<li>{title}</li>")
+
+        if not items:
+            return ""
+        return "<ul>" + "".join(items) + "</ul>"
+
+    def _get_price_per_child(self):
+        """Return price_per_child from the linked camp budget, or 0.0 if absent.
+
+        budget.py adds `camp_budget_id` (Many2one computed from camp_budget_ids
+        One2many, UNIQUE(event_id)) on event.event via _inherit.
+        """
+        try:
+            budget = self.camp_budget_id  # set by budget.py _inherit on event.event
+        except AttributeError:
+            # camp_budget_id not yet available (module load order) — fallback search
+            try:
+                budget = (
+                    self.env["camp.budget"].sudo().search([("event_id", "=", self.id)], limit=1)
+                )
+            except Exception:  # noqa: BLE001
+                return 0.0
+        if not budget:
+            return 0.0
+        price = budget.price_per_child if hasattr(budget, "price_per_child") else 0.0
+        return price or 0.0
+
+    def action_reject(self):
+        """Organizator rejects the shift. rejection_reason must be filled."""
+        self.ensure_one()
+        if not self.env.user.has_group("fayna_camp_portal.group_camp_organizator"):
+            raise UserError(_("Тільки Organizator може відхиляти табори."))
+        if self.camp_approval_state not in ("pending_approval", "approved"):
+            raise UserError(
+                _("Відхилити можна лише табір зі статусом «На погодженні» або «Погоджено».")
+            )
+        if not self.rejection_reason:
+            raise UserError(_("Вкажіть причину відхилення перед збереженням."))
+        self.sudo().write(
+            {
+                "camp_approval_state": "rejected",
+                "website_published": False,
+            }
+        )
+        # Unpublish linked camp program product if set
+        if self.camp_program_id:
+            self.camp_program_id.sudo().write({"website_published": False})
+        self._post_note(_("Табір відхилено: %s") % self.rejection_reason)
 
     # --- Kuratorium notifications -------------------------------------------
 
@@ -291,7 +660,7 @@ class CampProduct(models.Model):
         string="Camp Status",
         tracking=True,
         copy=False,
-        help=_("Lifecycle state of the camp program. " "Controls visibility on the website."),
+        help=_("Lifecycle state of the camp program. Controls visibility on the website."),
     )
 
     def action_publish(self):
@@ -414,7 +783,7 @@ class CampProduct(models.Model):
         string="Daily routine (legacy HTML)",
         translate=True,
         sanitize=True,
-        help=_("Free-text HTML fallback. " "Prefer the structured Plan A/B schedule below."),
+        help=_("Free-text HTML fallback. Prefer the structured Plan A/B schedule below."),
     )
     schedule_ids = fields.One2many(
         "camp.schedule.entry",
@@ -547,7 +916,7 @@ class CampProduct(models.Model):
         "product_tmpl_id",
         "attachment_id",
         string="Gallery",
-        help=_("Extra photos for the camp gallery " "— in addition to the main product images."),
+        help=_("Extra photos for the camp gallery — in addition to the main product images."),
     )
     camp_program_pdf_id = fields.Many2one(
         "ir.attachment",
@@ -561,15 +930,14 @@ class CampProduct(models.Model):
         string="TOP rendered",
         compute="_compute_camp_rendered_html",
         sanitize=False,
-        help=_("Preview of the top banner of the camp page " "— auto-built from the fields above."),
+        help=_("Preview of the top banner of the camp page — auto-built from the fields above."),
     )
     camp_bot_html = fields.Html(
         string="BOT rendered",
         compute="_compute_camp_rendered_html",
         sanitize=False,
         help=_(
-            "Preview of the main content block of the camp page "
-            "— auto-built from the fields above."
+            "Preview of the main content block of the camp page — auto-built from the fields above."
         ),
     )
 

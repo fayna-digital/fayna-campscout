@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # populate_step3_money_vacancies.py — MIGRATION_BACK 4.4 + автоштат:
 #  (1) posted-фактури → analytic табору (реальні оплати у план-vs-факт бюджету);
 #  (2) _sync_staff_vacancies по всіх заїздах (кадри=0 → вакансії = потреба §2);

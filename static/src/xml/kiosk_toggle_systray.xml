@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Systray template for KioskOdooToggle (TZ §4 — toggle ↔ Odoo).
+    Visible only when state.visible (set by /camp/kiosk/toggle_visible
+    which checks base.group_system | group_camp_organizator).
+-->
+<templates xml:space="preserve">
+
+    <t t-name="fayna_camp_portal.KioskOdooToggle">
+        <t t-if="state.visible">
+            <li class="o_camp_kiosk_toggle o_dropdown d-flex align-items-center">
+                <button type="button"
+                        class="btn btn-outline-secondary btn-sm d-flex
+                               align-items-center gap-1"
+                        t-on-click="onToggle"
+                        title="Перейти до повного Odoo (залишити кіоск)">
+                    <i class="fa fa-exchange" role="img" aria-label="Toggle Odoo"/>
+                    <span class="d-none d-md-inline">&#x2194; Odoo</span>
+                </button>
+            </li>
+        </t>
+    </t>
+
+</templates>

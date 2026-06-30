@@ -1,5 +1,4 @@
 # Copyright 2026 Fayna Digital — Volodymyr Shevchenko
-# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl-3.0).
 """Camp transport — one transport trip record per camp shift.
 
 Migrated from the standalone ``fayna_camp_transport`` module into
@@ -156,6 +155,7 @@ class CampTransport(models.Model):
     is_overdue = fields.Boolean(
         string="Overdue",
         compute="_compute_is_overdue",
+        search="_search_is_overdue",
         help="Arrival datetime passed but trip is still in planned state",
     )
 
@@ -166,6 +166,13 @@ class CampTransport(models.Model):
             rec.is_overdue = bool(
                 rec.arrival_datetime and rec.arrival_datetime < now and rec.state == "planned"
             )
+
+    def _search_is_overdue(self, operator, value):
+        """Make the computed flag searchable (для фільтра «Spóźnione»)."""
+        now = fields.Datetime.now()
+        overdue = ["&", ("arrival_datetime", "<", now), ("state", "=", "planned")]
+        positive = (operator == "=" and value) or (operator == "!=" and not value)
+        return overdue if positive else ["!"] + overdue
 
     # ── Portal mixin: signed access URL for /my/transport/<id> ─────────────
     def _compute_access_url(self):
@@ -198,7 +205,7 @@ class CampTransport(models.Model):
             if rec.state not in ("planned",):
                 raise UserError(
                     _(
-                        "Only planned trips can be confirmed. " "Current state: %(state)s",
+                        "Only planned trips can be confirmed. Current state: %(state)s",
                         state=rec.state,
                     )
                 )

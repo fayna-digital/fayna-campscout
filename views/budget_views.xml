@@ -19,6 +19,19 @@
                                 class="btn-secondary"
                                 invisible="analytic_account_id"
                                 help="Creates the CAMP/{event} analytic account used for plan-vs-fact."/>
+                        <button name="action_print_evidence"
+                                type="object"
+                                string="Podgląd ewidencji (PDF)"
+                                class="btn-secondary"
+                                groups="fayna_camp_portal.group_camp_finance,fayna_camp_portal.group_camp_organizator,fayna_camp_portal.group_camp_kierownik"
+                                help="Podgląd ewidencji finansowej turnusu (przychody / koszty / saldo / VAT) — bez danych dzieci."/>
+                        <button name="action_send_evidence_to_ksiegowa"
+                                type="object"
+                                string="Wyślij ewidencję do księgowej"
+                                class="btn-primary"
+                                groups="fayna_camp_portal.group_camp_finance,fayna_camp_portal.group_camp_organizator,fayna_camp_portal.group_camp_kierownik"
+                                confirm="Wysłać ewidencję finansową turnusu na adres księgowej? Dokument zawiera tylko kwoty zbiorcze, bez danych dzieci."
+                                help="Renderuje ewidencję (PDF) i wysyła e-mailem na adres księgowej (RODO art.9 — bez danych uczestników)."/>
                         <field name="fill_vs_bep" widget="badge"
                                decoration-success="fill_vs_bep == 'ok'"
                                decoration-warning="fill_vs_bep == 'warning'"
@@ -31,19 +44,23 @@
                         </div>
 
                         <!-- ── BEP — найбільша цифра дашборду ─────────────── -->
-                        <div class="alert alert-danger" role="alert" invisible="not bep_warning">
-                            <strong>BEP nieosiągalny:</strong> cena za dziecko ≤ koszt zmienny na dziecko —
+                        <div class="alert alert-danger" role="alert" invisible="not bep_warning"
+                             title="BEP = próg rentowności (Break-Even Point).">
+                            <strong>BEP (próg rentowności) nieosiągalny:</strong> cena za dziecko ≤ koszt zmienny na dziecko —
                             każde dziecko powiększa stratę. Popraw cenę lub koszty zmienne.
                         </div>
                         <group>
                             <group string="Break-even">
-                                <label for="bep_children" string="BEP — min. dzieci"/>
+                                <label for="bep_children" string="BEP — min. dzieci"
+                                       help="Próg rentowności (BEP, Break-Even Point) — minimalna liczba dzieci, przy której obóz wychodzi na zero."/>
                                 <div>
                                     <field name="bep_children" readonly="1"
+                                           title="Próg rentowności (BEP) — minimalna liczba dzieci, przy której przychód pokrywa koszty."
                                            style="font-size: 2.5rem; font-weight: bold;"/>
                                 </div>
                                 <field name="registered_children" readonly="1"/>
-                                <label for="fill_vs_bep_pct" string="Wypełnienie vs BEP"/>
+                                <label for="fill_vs_bep_pct" string="Wypełnienie vs BEP"
+                                       help="Stopień wypełnienia względem progu rentowności (BEP)."/>
                                 <field name="fill_vs_bep_pct" widget="progressbar" nolabel="1"/>
                                 <field name="contribution_margin" readonly="1"/>
                                 <field name="bep_warning" invisible="1"/>
@@ -91,6 +108,20 @@
                             </group>
                         </group>
 
+                        <!-- ── Ewidencja dla księgowej (§10/§4c) ──────────── -->
+                        <group string="Ewidencja dla księgowej (faktury — bez danych dzieci, RODO art.9)">
+                            <group string="Przychody / koszty (faktury)">
+                                <field name="ksiegowa_email"
+                                       placeholder="ksiegowa@biuro.pl"
+                                       help="Domyślnie z parametru systemu; można nadpisać dla turnusu."/>
+                                <field name="evidence_revenue_net" readonly="1"/>
+                                <field name="evidence_revenue_vat" readonly="1"/>
+                                <field name="evidence_costs_net" readonly="1"/>
+                                <field name="evidence_costs_vat" readonly="1"/>
+                                <field name="evidence_balance" readonly="1"/>
+                            </group>
+                        </group>
+
                         <notebook>
                             <page string="Koszty" name="lines">
                                 <field name="line_ids">
@@ -103,7 +134,8 @@
                                         <field name="qty"/>
                                         <field name="subtotal_planned" sum="Razem"/>
                                         <field name="vat_marza" optional="show"
-                                               string="VAT-marża (art. 119)"/>
+                                               string="VAT-marża (art. 119)"
+                                               help="Procedura VAT marża (art. 119 ustawy o VAT) — usługi turystyczne opodatkowane od marży, nie od obrotu."/>
                                         <field name="is_salary" column_invisible="1"/>
                                         <field name="currency_id" column_invisible="1"/>
                                     </tree>

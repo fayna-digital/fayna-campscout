@@ -262,13 +262,70 @@
             <field name="model">event.event</field>
             <field name="inherit_id" ref="event.view_event_form"/>
             <field name="arch" type="xml">
+
+                <!-- statusbar approval state — before existing statusbar or at top of header -->
+                <xpath expr="//header" position="inside">
+                    <!-- Kierownik: submit draft for approval -->
+                    <button name="action_submit_for_approval"
+                            string="Надіслати на погодження"
+                            type="object"
+                            class="btn-primary"
+                            invisible="camp_approval_state != 'draft'"/>
+                    <!-- Organizator: approve -->
+                    <button name="action_approve"
+                            string="Погодити"
+                            type="object"
+                            class="btn-success"
+                            groups="fayna_camp_portal.group_camp_organizator"
+                            invisible="camp_approval_state != 'pending_approval'"/>
+                    <!-- Organizator: reject (fills rejection_reason first) -->
+                    <button name="action_reject"
+                            string="Відхилити"
+                            type="object"
+                            class="btn-danger"
+                            groups="fayna_camp_portal.group_camp_organizator"
+                            invisible="camp_approval_state not in ('pending_approval', 'approved')"/>
+                    <field name="camp_approval_state"
+                           widget="statusbar"
+                           statusbar_visible="draft,pending_approval,approved"
+                           readonly="1"/>
+                </xpath>
+
+                <!-- Camp Settings group -->
                 <xpath expr="//sheet" position="inside">
                     <group string="Camp Settings" name="camp_settings">
                         <field name="camp_program_id"/>
                         <field name="camp_shift_color"/>
                         <field name="camp_season_id"/>
                     </group>
+                    <!-- Approval details — visible when relevant -->
+                    <group string="Погодження" name="camp_approval_details"
+                           invisible="camp_approval_state == 'draft'">
+                        <field name="approved_by_id" readonly="1"/>
+                        <field name="approved_date" readonly="1"/>
+                        <field name="rejection_reason"
+                               readonly="camp_approval_state != 'pending_approval'"
+                               placeholder="Вкажіть причину відхилення…"/>
+                    </group>
                 </xpath>
+
+            </field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- event.event tree — «На погодженні» list                         -->
+        <!-- ================================================================ -->
+
+        <record id="action_events_pending_approval" model="ir.actions.act_window">
+            <field name="name">Табори на погодженні</field>
+            <field name="res_model">event.event</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('camp_approval_state', '=', 'pending_approval')]</field>
+            <field name="context">{'search_default_camp_approval_state': 'pending_approval'}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Немає таборів, що очікують на погодження.
+                </p>
             </field>
         </record>
 

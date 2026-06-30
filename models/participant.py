@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — Participant & Qualification Card models
 import logging
 import re
@@ -212,7 +214,7 @@ class CampParticipant(models.Model):
 
     allergies = fields.Text(
         string=_("Allergies"),
-        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        groups="fayna_camp_portal.group_medical_access,base.group_portal",
         tracking=True,
         help=_(
             "RODO art. 9 — list of known allergies (food, medication, environmental). "
@@ -221,7 +223,7 @@ class CampParticipant(models.Model):
     )
     medications = fields.Text(
         string=_("Regular medications"),
-        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        groups="fayna_camp_portal.group_medical_access,base.group_portal",
         tracking=True,
         help=_(
             "RODO art. 9 — list of medications the child takes regularly during the camp. "
@@ -246,7 +248,7 @@ class CampParticipant(models.Model):
     )
     chronic_conditions = fields.Text(
         string=_("Chronic conditions"),
-        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        groups="fayna_camp_portal.group_medical_access,base.group_portal",
         tracking=True,
         help=_(
             "RODO art. 9 — chronic health conditions the camp staff should know about "
@@ -268,7 +270,7 @@ class CampParticipant(models.Model):
     )
     doctor_notes = fields.Html(
         string=_("Doctor / medical notes"),
-        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        groups="fayna_camp_portal.group_medical_access,base.group_portal",
         help=_(
             "RODO art. 9 — free-form medical notes from the child's physician. "
             "Attach relevant certificates or diagnoses. Medical Officers only."
@@ -297,19 +299,19 @@ class CampParticipant(models.Model):
     )
     allergy_meds = fields.Boolean(
         string=_("Allergy: medications"),
-        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        groups="fayna_camp_portal.group_medical_access,base.group_portal",
         tracking=True,
         help=_("RODO art. 9 — pkt 9 wzór 2026: uczulenie na leki. Details in Allergies."),
     )
     allergy_pollen = fields.Boolean(
         string=_("Allergy: pollen"),
-        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        groups="fayna_camp_portal.group_medical_access,base.group_portal",
         tracking=True,
         help=_("RODO art. 9 — pkt 9 wzór 2026: uczulenie na pyłki."),
     )
     allergy_food = fields.Boolean(
         string=_("Allergy: food"),
-        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        groups="fayna_camp_portal.group_medical_access,base.group_portal",
         tracking=True,
         help=_(
             "RODO art. 9 — pkt 9 wzór 2026: uczulenie na pokarmy. Kitchen sees diet profile, not this flag."
@@ -317,7 +319,7 @@ class CampParticipant(models.Model):
     )
     allergy_insect_venom = fields.Boolean(
         string=_("Allergy: insect venom"),
-        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        groups="fayna_camp_portal.group_medical_access,base.group_portal",
         tracking=True,
         help=_(
             "RODO art. 9 — pkt 9 wzór 2026: uczulenie na jad owadów. Critical outdoors — first-aid plan required."
@@ -325,49 +327,49 @@ class CampParticipant(models.Model):
     )
     motion_sickness = fields.Boolean(
         string=_("Motion sickness"),
-        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        groups="fayna_camp_portal.group_medical_access,base.group_portal",
         help=_("pkt 9: choroba lokomocyjna — relevant for transport planning (§5)."),
     )
     orthodontic_appliance = fields.Boolean(
         string=_("Orthodontic appliance"),
-        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        groups="fayna_camp_portal.group_medical_access,base.group_portal",
         help=_("pkt 9: noszenie aparatu ortodontycznego."),
     )
     wears_glasses = fields.Boolean(
         string=_("Wears glasses"),
-        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        groups="fayna_camp_portal.group_medical_access,base.group_portal",
         help=_("pkt 9: noszenie okularów."),
     )
     wears_contact_lenses = fields.Boolean(
         string=_("Wears contact lenses"),
-        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        groups="fayna_camp_portal.group_medical_access,base.group_portal",
         help=_("pkt 9 wzór 2026 (new): noszenie soczewek kontaktowych — hygiene/water relevance."),
     )
     diet_low_calorie = fields.Boolean(
         string=_("Low-calorie diet"),
-        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        groups="fayna_camp_portal.group_medical_access,base.group_portal",
         help=_("pkt 9 wzór 2026 (new): dieta niskokaloryczna — feeds nutrition planning (§1)."),
     )
     diet_vegetarian = fields.Boolean(
         string=_("Vegetarian diet"),
-        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        groups="fayna_camp_portal.group_medical_access,base.group_portal",
         help=_("pkt 9 wzór 2026 (new): wegetarianizm — feeds nutrition planning (§1)."),
     )
     emotional_expression_issues = fields.Boolean(
         string=_("Issues expressing emotions"),
-        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        groups="fayna_camp_portal.group_medical_access,base.group_portal",
         tracking=True,
         help=_("RODO art. 9 — pkt 9 wzór 2026 (new): problemy z wyrażaniem emocji."),
     )
     group_functioning_issues = fields.Boolean(
         string=_("Issues functioning in a group"),
-        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        groups="fayna_camp_portal.group_medical_access,base.group_portal",
         tracking=True,
         help=_("RODO art. 9 — pkt 9 wzór 2026 (new): problemy z funkcjonowaniem w grupie."),
     )
     fear_of_heights = fields.Boolean(
         string=_("Fear of heights (lęk wysokości)"),
-        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        groups="fayna_camp_portal.group_medical_access,base.group_portal",
         tracking=True,
         help=_(
             "RODO art. 9 — pkt 9 wzór 2026 (new). HARD BLOCK: a child with this flag "
@@ -376,7 +378,7 @@ class CampParticipant(models.Model):
     )
     hydrophobia = fields.Boolean(
         string=_("Hydrophobia (fear of water)"),
-        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        groups="fayna_camp_portal.group_medical_access,base.group_portal",
         tracking=True,
         help=_(
             "RODO art. 9 — pkt 9 wzór 2026 (new). HARD BLOCK: a child with this flag "
@@ -385,28 +387,28 @@ class CampParticipant(models.Model):
     )
     psycho_behavioral_notes = fields.Text(
         string=_("Psycho-behavioral notes"),
-        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        groups="fayna_camp_portal.group_medical_access,base.group_portal",
         help=_("RODO art. 9 — parent's narrative for the pkt 9 psycho-behavioral flags."),
     )
     vacc_tetanus_year = fields.Char(
         string=_("Vaccination: tetanus (year)"),
-        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        groups="fayna_camp_portal.group_medical_access,base.group_portal",
         help=_("pkt 9: szczepienie tężec — rok (wzór field)."),
     )
     vacc_diphtheria_year = fields.Char(
         string=_("Vaccination: diphtheria (year)"),
-        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        groups="fayna_camp_portal.group_medical_access,base.group_portal",
         help=_("pkt 9: szczepienie błonica — rok (wzór field)."),
     )
     vacc_other = fields.Text(
         string=_("Vaccination: other"),
-        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        groups="fayna_camp_portal.group_medical_access,base.group_portal",
         help=_("pkt 9: inne szczepienia wraz z rokiem."),
     )
     health_risk_flags = fields.Char(
         compute="_compute_health_risk_flags",
         string=_("Risk flags"),
-        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        groups="fayna_camp_portal.group_medical_access,base.group_portal",
         help=_("Kierownik red-flag summary: water/heights blocks + critical allergies."),
     )
 
@@ -578,7 +580,7 @@ class CampParticipant(models.Model):
     )
     iii_health_events = fields.Text(
         string=_("Zdarzenia zdrowotne"),
-        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        groups="fayna_camp_portal.group_medical_access,base.group_portal",
         tracking=True,
         help=_(
             "RODO art. 9 — zdarzenia zdrowotne uczestnika podczas wypoczynku: "
@@ -588,7 +590,7 @@ class CampParticipant(models.Model):
     )
     iii_medication_given = fields.Text(
         string=_("Podane leki w czasie wypoczynku"),
-        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        groups="fayna_camp_portal.group_medical_access,base.group_portal",
         tracking=True,
         help=_(
             "RODO art. 9 — lista leków podanych uczestnikowi podczas wypoczynku "
@@ -677,7 +679,7 @@ class CampParticipant(models.Model):
 
     v_health_notes = fields.Text(
         string=_("V. Notatki zdrowotne (kierownik)"),
-        groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik",
+        groups="fayna_camp_portal.group_medical_access,base.group_portal",
         tracking=True,
         help=_(
             "RODO art. 9 — notatki kierownika o stanie zdrowia uczestnika podczas "
@@ -708,9 +710,7 @@ class CampParticipant(models.Model):
     v_kierownik_signature = fields.Binary(
         string=_("Podpis kierownika (Sekcja V)"),
         attachment=True,
-        help=_(
-            "Podpis kierownika przechwycony przez wizard Sekcji IV-V. " "Zamraża pola Sekcji V."
-        ),
+        help=_("Podpis kierownika przechwycony przez wizard Sekcji IV-V. Zamraża pola Sekcji V."),
     )
     v_signed_by = fields.Many2one(
         "res.users",
@@ -1426,12 +1426,11 @@ class CampParticipant(models.Model):
         # LOOP-E: birth_date більше не required на create (чернетки з голих
         # реєстрацій), але юридично картка БЕЗ дати народження не підписується.
         for rec in self:
-            if rec.qualification_signed and not rec.birth_date:
+            # migration_needs_review: підпис історичний (PDF з checkout існує),
+            # дата не розпарсилась — гейт пропускає, дату дозаповнить людина
+            if rec.qualification_signed and not rec.birth_date and not rec.migration_needs_review:
                 raise ValidationError(
-                    _(
-                        "Date of birth is required before the qualification card is signed. "
-                        "Потрібна дата народження для підпису."
-                    )
+                    _("Date of birth is required before the qualification card is signed.")
                 )
 
     # --- res.partner core-plumbing overrides -----------------------------
@@ -1515,10 +1514,17 @@ class CampParticipant(models.Model):
         rodo_purpose="transactional",
         signature=None,
         signer_name=None,
+        signed_by_id=None,
     ):
         """Atomically marks participant as signed + links RODO consent.
 
         Raises UserError if already signed; ValidationError if prerequisites unmet.
+
+        NB: портал-флоу зве цей метод через .sudo() ПІСЛЯ ownership-check у
+        контролері (portal ACL read-only + portal не має read на res.partner
+        дитини). Особу підписанта передаємо явно signed_by_id, щоб юр-доказ
+        у qualification_signed_by = справжній батько, а не SUPERUSER/sudo-user.
+        Дефолт None зберігає сумісність з наявними backend-викликами.
         """
         self.ensure_one()
         if self.qualification_signed:
@@ -1547,7 +1553,7 @@ class CampParticipant(models.Model):
             "qualification_signed": True,
             "qualification_signed_date": fields.Datetime.now(),
             "qualification_signed_ip": ip_address or "",
-            "qualification_signed_by": self.env.user.id,
+            "qualification_signed_by": signed_by_id or self.env.user.id,
             "rodo_consent_id": consent.id,
         }
         if signature:
@@ -1877,11 +1883,11 @@ class CampParticipant(models.Model):
         audit trail in mail.thread and populates cleared_by/cleared_reason
         so the reason is preserved even if the user is deleted later.
 
-        Security: requires group_camp_leader (checked in view via groups=).
+        Security: requires group_camp_kierownik (checked in view via groups=).
         """
         self.ensure_one()
-        if not self.env.user.has_group("fayna_camp_portal.group_camp_leader"):
-            raise UserError(_("Only camp leaders can clear auto-refusal holds."))
+        if not self.env.user.has_group("fayna_camp_portal.group_camp_kierownik"):
+            raise UserError(_("Only camp directors (kierownik) can clear auto-refusal holds."))
         if self.auto_refusal_state == "refused":
             raise UserError(
                 _(

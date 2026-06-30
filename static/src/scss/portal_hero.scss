@@ -754,6 +754,73 @@ $cs-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.1);
     }
 }
 
+// ────────────────────────────────────────────────────────────────
+// /my/participants/<id> — card body wrapper, form labels, signature pad
+// ────────────────────────────────────────────────────────────────
+
+.cs-participant-card {
+    .form-label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: $cs-ink-soft;
+        margin-bottom: 0.3rem;
+    }
+
+    .form-control {
+        border-color: $cs-border;
+        border-radius: 8px;
+
+        &:focus {
+            border-color: $cs-orange;
+            box-shadow: 0 0 0 0.2rem rgba(255, 122, 0, 0.12);
+        }
+    }
+}
+
+// Signature pad — framed block with a baseline label
+.cs-sign-pad-wrap {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+    border: 1px dashed $cs-border;
+    border-radius: $cs-card-radius;
+    background: $cs-bg;
+    padding: 0.5rem;
+
+    .cs-sign-pad {
+        display: block;
+        background: #fff;
+        border: 1px solid $cs-border;
+        border-radius: 8px;
+        touch-action: none;
+        max-width: 100%;
+        cursor: crosshair;
+    }
+
+    .cs-sign-pad-label {
+        position: absolute;
+        left: 1rem;
+        bottom: 0.85rem;
+        font-size: 0.75rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: $cs-muted;
+        pointer-events: none;
+    }
+}
+
+// Chatter heading on detail pages — align with section titles
+.cs-participant-chatter,
+.cs-support-chatter,
+.cs-story-chatter,
+.cs-loyalty-chatter {
+    h4 {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: $cs-ink;
+    }
+}
+
 // Status badges
 .cs-reg-badge {
     display: inline-block;
@@ -1018,6 +1085,20 @@ $cs-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.1);
         flex-direction: column;
         align-items: flex-start;
         gap: 0.5rem;
+    }
+
+    // Signature pad: full-width frame; footer buttons stack and span the row
+    .cs-sign-pad-wrap {
+        display: block;
+        width: 100%;
+    }
+
+    .cs-participant-card .cs-section-footer {
+        .cs-btn-primary,
+        .cs-btn-secondary {
+            flex: 1 1 100%;
+            text-align: center;
+        }
     }
 
     .cs-dl {

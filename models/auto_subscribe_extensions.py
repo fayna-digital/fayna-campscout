@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """Auto-subscribe extensions — relevant followers added on create/write.
 
 Each model below overrides ``_message_auto_subscribe_followers`` to push

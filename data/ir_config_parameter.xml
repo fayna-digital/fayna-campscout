@@ -13,6 +13,16 @@
         </record>
 
         <!--
+          Q9 (СТО-рішення 2026-06-23): обов'язковість супроводу.
+          Default False = опційний (ніколи не блокує старт заїзду). Бізнес-власник
+          вмикає гейт за рішенням. Див. camp.escort._escort_required().
+        -->
+        <record id="cfg_escort_required" model="ir.config_parameter">
+            <field name="key">fayna_camp_portal.escort_required</field>
+            <field name="value">False</field>
+        </record>
+
+        <!--
           Wychowawca / kierownik staff-broadcast SMS — cost guard parameters.
           Defaults align with PL market pricing 2026 (TurboSMS PL ≈ 0.05 PLN/segment).
         -->
@@ -39,6 +49,26 @@
         <record id="cfg_salary_kierownik_default" model="ir.config_parameter">
             <field name="key">fayna_camp_portal.salary_kierownik_default</field>
             <field name="value">0</field>
+        </record>
+
+        <!-- Domyślny e-mail delegatury Kuratorium Oświaty — odbiorca teczki
+             kontrolnej (camp.teczka.ko). Pusty = organizator uzupełnia
+             realny adres swojej delegatury w Ustawieniach (nasza = Kalisz).
+             RODO art.9: dane dzieci tylko na adres urzędowy. -->
+        <record id="cfg_kuratorium_delegatura_email" model="ir.config_parameter">
+            <field name="key">fayna_camp_portal.kuratorium_delegatura_email</field>
+            <field name="value"></field>
+        </record>
+
+        <!-- E-mail zewnętrznej księgowej — odbiorca ewidencji finansowej
+             obozu (§10/§4c). Księgowa jest POZA systemem: faktury dostaje
+             przez KSeF, a 1 ewidencję na turnus (przychody / koszty / saldo /
+             VAT) na e-mail. RODO art.9: ewidencja zawiera WYŁĄCZNIE kwoty
+             zbiorcze — żadnych danych dzieci. Pusty = organizator uzupełnia
+             realny adres swojej księgowej w Ustawieniach. -->
+        <record id="cfg_ksiegowa_email" model="ir.config_parameter">
+            <field name="key">fayna_camp_portal.ksiegowa_email</field>
+            <field name="value"></field>
         </record>
 
     </data>

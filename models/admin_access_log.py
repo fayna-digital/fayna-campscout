@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """Organizator (admin) impersonation log — RODO art.30 register of processing.
 
 Each entry records when a top-level Organizator (group_camp_organizator) views
@@ -41,6 +43,8 @@ class CampAdminAccessLog(models.Model):
             ("wychowawca", _("Wychowawca")),
             ("instructor", _("Instructor")),
             ("parent", _("Parent")),
+            ("login_as", _("Login-as (full session)")),
+            ("stop", _("Stop impersonation")),
         ],
         required=True,
         readonly=True,

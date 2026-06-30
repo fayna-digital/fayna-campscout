@@ -1,6 +1,7 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 from . import (  # noqa: I001 — preserve historical order; new imports appended below
     camp,
-    campscout_portal,
     commercial,
     operations,
     emergency,
@@ -67,3 +68,14 @@ from . import regulamin, teczka_ko  # noqa: E402,I001
 
 # Автоштат §2 + вакансії (R13) — sprint 2026-06-10 §6.
 from . import staffing  # noqa: E402,I001
+
+# camp.escort — Indywidualna asysta/konwój, міграція супроводу (TZ 2026-06-23 §5).
+from . import camp_escort  # noqa: E402,I001
+
+# Фаза B — рекрутація + онбординг виховника (ADR 09-ADR-FAZA-B-build.md).
+# camp.staff.application: new→reviewing→accepted→rejected + _ensure_portal_user.
+from . import recruitment  # noqa: E402,I001
+
+# RODO art.9 — ORM-level masking of children medical data (read-override +
+# ir.attachment scope). MUST import after participant. TZ §6j/6l/6n.
+from . import art9_security  # noqa: E402,I001

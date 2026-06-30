@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- 3 akcje raportów RODO transportu (TZ §5.4). Współdzielą paperformat
+             paperformat_dozwola_konwoj zdefiniowany w escort_reports.xml. -->
+
+        <record id="action_report_rodo_escort_data" model="ir.actions.report">
+            <field name="name">RODO — klauzula informacyjna art. 13 (PDF)</field>
+            <field name="model">camp.escort</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">fayna_camp_portal.report_rodo_escort_data</field>
+            <field name="report_file">fayna_camp_portal.report_rodo_escort_data</field>
+            <field name="binding_model_id" ref="model_camp_escort"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="paperformat_dozwola_konwoj"/>
+            <field name="print_report_name">'RODO_art13_%s' % (object.participant_id.display_name or '').replace(' ', '_')</field>
+        </record>
+
+        <record id="action_report_rodo_medical_consent" model="ir.actions.report">
+            <field name="name">RODO — zgoda na dane medyczne art. 9 (PDF)</field>
+            <field name="model">camp.escort</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">fayna_camp_portal.report_rodo_medical_consent</field>
+            <field name="report_file">fayna_camp_portal.report_rodo_medical_consent</field>
+            <field name="binding_model_id" ref="model_camp_escort"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="paperformat_dozwola_konwoj"/>
+            <field name="print_report_name">'RODO_med_%s' % (object.participant_id.display_name or '').replace(' ', '_')</field>
+        </record>
+
+        <record id="action_report_rodo_escort_person" model="ir.actions.report">
+            <field name="name">RODO — dane osoby upoważnionej (PDF)</field>
+            <field name="model">camp.escort</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">fayna_camp_portal.report_rodo_escort_person</field>
+            <field name="report_file">fayna_camp_portal.report_rodo_escort_person</field>
+            <field name="binding_model_id" ref="model_camp_escort"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="paperformat_dozwola_konwoj"/>
+            <field name="print_report_name">'RODO_konwojent_%s' % (object.participant_id.display_name or '').replace(' ', '_')</field>
+        </record>
+
+    </data>
+</odoo>

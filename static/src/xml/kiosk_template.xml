@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    OWL template for CampKiosk root component (TZ §4 — kiosk shell).
+    Renders a responsive tile grid loaded from /camp/kiosk/layout.
+    No PIN, no anonymous screen — roles are known from Odoo session.
+
+    Tile grid: 3 columns on desktop, 2 on tablet, 1 on mobile.
+    Each tile: icon (FA class) + label + optional description.
+    Colors: Bootstrap primary/success/warning/danger/info via tile.color.
+-->
+<templates xml:space="preserve">
+
+    <t t-name="fayna_camp_portal.CampKiosk" owl="1">
+        <div class="o_camp_kiosk_app d-flex flex-column align-items-center
+                    justify-content-center min-vh-100 bg-light p-3 p-md-5">
+
+            <!-- Header — w-100 гарантує центрування навіть без parent flex -->
+            <div class="text-center w-100 mb-4 mb-md-5">
+                <h1 class="display-5 fw-bold text-primary mb-1">
+                    Portal CampScout
+                </h1>
+                <p class="text-muted fs-5 mb-0">Wybierz działanie</p>
+            </div>
+
+            <!-- Loading spinner -->
+            <t t-if="state.isLoading">
+                <div class="spinner-border text-primary" role="status"
+                     style="width: 3rem; height: 3rem;">
+                    <span class="visually-hidden">Завантаження...</span>
+                </div>
+            </t>
+
+            <!-- Error state -->
+            <t t-elif="state.error">
+                <div class="alert alert-warning fs-5 p-4 shadow-sm text-center"
+                     role="alert" style="max-width: 500px;">
+                    <i class="fa fa-exclamation-triangle me-2" role="img"
+                       aria-label="Увага"/>
+                    <t t-esc="state.error"/>
+                </div>
+            </t>
+
+            <!-- Tile grid -->
+            <t t-else="">
+                <div class="o_camp_kiosk_grid row row-cols-1 row-cols-sm-2
+                            row-cols-lg-3 g-3 g-md-4 w-100"
+                     style="max-width: 960px;">
+
+                    <t t-foreach="state.tiles" t-as="tile" t-key="tile.action">
+                        <div class="col">
+                            <button
+                                class="o_camp_kiosk_tile btn w-100 h-100 d-flex
+                                       flex-column align-items-center
+                                       justify-content-center gap-2 p-4 shadow-sm
+                                       rounded-4"
+                                t-att-class="'btn-' + (tile.color or 'primary')"
+                                t-on-click="() => this.onTileClick(tile)"
+                                type="button">
+
+                                <!-- Icon -->
+                                <i t-att-class="'fa fa-' + tile.icon + ' fa-2x'"
+                                   role="img"
+                                   t-att-aria-label="tile.label"/>
+
+                                <!-- Label — окремий блок, жирний, зверху -->
+                                <span class="o_camp_kiosk_tile_label d-block w-100 fw-bold fs-5 text-center lh-sm">
+                                    <t t-esc="tile.label"/>
+                                </span>
+
+                                <!-- Optional description — окремий блок, дрібніший, знизу -->
+                                <t t-if="tile.description">
+                                    <small class="o_camp_kiosk_tile_desc d-block w-100 opacity-75 text-center mt-1">
+                                        <t t-esc="tile.description"/>
+                                    </small>
+                                </t>
+
+                            </button>
+                        </div>
+                    </t>
+
+                </div>
+            </t>
+
+        </div>
+    </t>
+
+</templates>

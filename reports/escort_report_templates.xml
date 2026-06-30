@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- =================================================================
+             Upoważnienie do konwoju/odbioru + Zgoda na pomoc medyczną.
+             Dwujęzyczny PL/UA (audiencja mieszana). Sekcja RODO art. 13 na dole.
+             Podpis rodzica renderowany przez image_data_uri(o.parent_signature)
+             (ten sam wzorzec co karta — qualification_signature).
+             TZ §5.4. Migracja suproводu 2026-06-23.
+        ================================================================== -->
+
+        <template id="report_dozwola_konwoj">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="fayna_camp_portal.report_dozwola_konwoj_document"/>
+                </t>
+            </t>
+        </template>
+
+        <template id="report_dozwola_konwoj_document">
+            <t t-call="web.external_layout">
+                <div class="page" style="font-size:12px;">
+                    <h3 class="text-center">Upoważnienie do konwoju / odbioru dziecka<br/>
+                        <span style="font-weight:normal; font-size:11px;">Уповноваження на супровід / отримання дитини</span>
+                    </h3>
+
+                    <table class="table table-sm table-borderless mt-3">
+                        <tr>
+                            <td style="width:50%;"><strong>Uczestnik / Учасник:</strong>
+                                <span t-field="o.participant_id.display_name"/></td>
+                            <td><strong>Turnus / Заїзд:</strong>
+                                <span t-field="o.registration_id.display_name"/></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Kierunek / Напрямок:</strong>
+                                <span t-out="dict(o._fields['direction'].selection).get(o.direction)"/></td>
+                            <td><strong>Środek transportu / Транспорт:</strong>
+                                <span t-out="dict(o._fields['transport_mode'].selection).get(o.transport_mode)"/></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Miasto / Місто:</strong> <span t-field="o.home_city"/></td>
+                            <td><strong>Stacja PKP / Станція:</strong> <span t-field="o.pkp_station"/></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Wyjazd / Виїзд:</strong> <span t-field="o.departure_datetime"/></td>
+                            <td><strong>Przyjazd / Прибуття:</strong> <span t-field="o.arrival_datetime"/></td>
+                        </tr>
+                    </table>
+
+                    <p><strong>Osoba upoważniona do odbioru / konwoju (Уповноважена особа):</strong></p>
+                    <ul>
+                        <li>Imię i nazwisko / ПІБ: <span t-field="o.escort_person_name"/></li>
+                        <li>Telefon / Телефон: <span t-field="o.escort_person_phone"/></li>
+                        <li>Dokument / Документ: <span t-field="o.escort_person_doc"/></li>
+                    </ul>
+
+                    <div t-if="o.medical_help_consent" class="mt-2"
+                         style="border:1px solid #888; padding:8px;">
+                        <strong>Zgoda na udzielenie pomocy medycznej / Згода на медичну допомогу:</strong>
+                        <p style="margin:4px 0;">Wyrażam zgodę na udzielenie mojemu dziecku pomocy medycznej
+                            oraz wezwanie pogotowia ratunkowego w razie potrzeby.
+                            (Даю згоду на надання моїй дитині медичної допомоги та виклик швидкої за потреби.)</p>
+                        <small>Data zgody / Дата: <span t-field="o.medical_help_consent_date"/></small>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-6">
+                            <p>Podpis rodzica / Підпис батька:</p>
+                            <img t-if="o.parent_signature"
+                                 t-att-src="image_data_uri(o.parent_signature)"
+                                 style="max-height:80px; border-bottom:1px solid #333;"/>
+                            <div t-if="not o.parent_signature" style="border-bottom:1px solid #333; height:40px;"/>
+                            <small>Data / Дата: <span t-field="o.signed_date"/></small>
+                        </div>
+                    </div>
+
+                    <hr/>
+                    <div style="font-size:9px; color:#555;">
+                        <strong>Informacja RODO (art. 13 RODO):</strong>
+                        Administratorem danych jest organizator wypoczynku (CampScout / Fundacja).
+                        Dane przetwarzane są w celu organizacji transportu i opieki nad uczestnikiem
+                        (art. 6 ust. 1 lit. b oraz art. 9 ust. 2 lit. a RODO — zgoda na dane medyczne),
+                        przechowywane zgodnie z ustawą o wypoczynku, nieprzekazywane podmiotom trzecim
+                        poza realizacją usługi. Przysługuje prawo dostępu, sprostowania i wycofania zgody.
+                        <br/>(Інформація відповідно до ст. 13 GDPR — адміністратор даних: організатор;
+                        мета: організація транспорту й опіки; підстава: ст. 6(1)(b) і 9(2)(a) GDPR.)
+                    </div>
+                </div>
+            </t>
+        </template>
+
+    </data>
+</odoo>

@@ -47,19 +47,9 @@
             </field>
         </record>
 
-        <!-- Camp Leader — alias for kierownik used in qualification card ACL.
-             Grants ability to sign/approve the qualification card (Section V). -->
-
-        <record id="group_camp_leader" model="res.groups">
-            <field name="name">Camp Leader</field>
-            <field name="category_id" ref="module_category_fayna_camp_portal"/>
-            <field name="implied_ids" eval="[(4, ref('group_camp_kierownik'))]"/>
-            <field name="comment">
-                Camp leader — extends Kierownik with sign-off rights:
-                can invoke sign_qualification() and complete_section_iii()
-                on camp.participant. Required by PL law (Rozp. MEN 2016 §5).
-            </field>
-        </record>
+        <!-- Camp Leader ЗЛИТО в Kierownik (рішення власника 2026-06-24): дубль
+             однакової назви. Право sign/clear-auto-refusal перенесено в
+             group_camp_kierownik. Leader-група прибрана (0 користувачів). -->
 
         <!-- ═══════════════════════════════════════════════════════════════
              Camp HR Manager — certification record management.
@@ -186,6 +176,22 @@
             </field>
         </record>
 
+        <!-- 📋 Candidate — applicant for a wychowawca/instructor position.
+             Implied: base.group_portal (NOT group_user — no backend access).
+             Can see own staff record (draft), upload own certs, track own application.
+             §13 RSPTS gate stays intact: candidate cannot confirm own camp.staff. -->
+        <record id="group_camp_candidate" model="res.groups">
+            <field name="name">Camp Candidate (Applicant)</field>
+            <field name="category_id" ref="module_category_fayna_camp_portal"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="comment">
+                Portal-only group for wychowawca/instructor applicants. Sees own
+                camp.staff (draft) + own camp.staff.cert + own application via
+                record rules. No access to camp.participant (children) whatsoever.
+                §13 RSPTS gate (operations.py:217) blocks any confirmation attempt.
+            </field>
+        </record>
+
         <!-- 🎯 Instructor — activity specialist -->
         <record id="group_camp_instructor" model="res.groups">
             <field name="name">Camp Instructor (Activity Specialist)</field>
@@ -240,6 +246,91 @@
                 Finance cabinet — budgets (BEP, marża VAT art.119 vs business
                 margin incl. advertising), zestawienia for the accountant.
             </field>
+        </record>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             RODO Art.9 Medical Access — field-level gate (§6j / §6l-final)
+             TZ §5: field-level (live forms) protection for health/allergy/
+             medications/diet (special-category data under RODO art. 9).
+
+             WHO gets this group (§6l final table — ✅ art.9):
+               * group_medical_officer  — medic (all camp)
+               * group_camp_kierownik   — camp director (whole shift)
+               * group_camp_wychowawca  — counselor (own group via record-rule)
+               * group_camp_sales       — sales/manager (own clients, QA role)
+               * base.group_portal      — parent (own child via record-rule)
+
+             WHO does NOT get this group (§6l — ❌ art.9):
+               * group_camp_finance     — bookkeeper: financial data only
+               * group_camp_hr          — cert admin: no medical data
+               * group_camp_instructor  — sees safety flags only (not full art.9)
+               * group_camp_candidate   — applicant: no children access
+               * any user without the above groups
+
+             Note: group_camp_organizator already implies group_medical_officer
+             (via groups.xml implied chain), so organizator inherits this group
+             automatically through group_medical_officer membership.
+
+             Implementation: all art.9 fields on camp.participant carry
+               groups="fayna_camp_portal.group_medical_access"
+             Attachment-level: record rule on ir.attachment enforces the same
+             boundary for karta-PDFs (§6j — PDF ≠ field-security bypass).
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <record id="group_medical_access" model="res.groups">
+            <field name="name">Camp Medical Access (RODO Art.9)</field>
+            <field name="category_id" ref="module_category_fayna_camp_portal"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">
+                RODO Art.9 field-level gate — read/write access to special-category
+                health data on camp.participant (allergies, medications,
+                chronic_conditions, doctor_notes, vaccination fields, psycho-behavioral
+                flags, all pkt-9 wzor-2026 booleans, sections III/V health fields).
+
+                Granted via implied_ids on: group_medical_officer, group_camp_kierownik,
+                group_camp_wychowawca, group_camp_sales.
+                Portal parents also receive it directly (implied by base.group_portal
+                on those groups); access scope is limited by the portal record rule
+                (own children only — rule_portal_participant_own_children).
+
+                NOT granted to: group_camp_finance, group_camp_hr, group_camp_instructor,
+                group_camp_candidate — those roles never see raw art.9 data.
+            </field>
+        </record>
+
+        <!-- ─── Wire group_medical_access into each qualifying role ──────
+             Update implied_ids AFTER group_medical_access is defined above.
+             These records patch the existing role groups to also imply the
+             medical-access gate, completing the two-way association.
+             noupdate=0 (outer data tag) so upgrades always re-apply.
+        ──────────────────────────────────────────────────────────────── -->
+
+        <record id="group_medical_officer" model="res.groups">
+            <field name="implied_ids" eval="[
+                (4, ref('base.group_user')),
+                (4, ref('group_medical_access'))
+            ]"/>
+        </record>
+
+        <record id="group_camp_kierownik" model="res.groups">
+            <field name="implied_ids" eval="[
+                (4, ref('base.group_user')),
+                (4, ref('group_medical_access'))
+            ]"/>
+        </record>
+
+        <record id="group_camp_wychowawca" model="res.groups">
+            <field name="implied_ids" eval="[
+                (4, ref('base.group_user')),
+                (4, ref('group_medical_access'))
+            ]"/>
+        </record>
+
+        <record id="group_camp_sales" model="res.groups">
+            <field name="implied_ids" eval="[
+                (4, ref('base.group_user')),
+                (4, ref('group_medical_access'))
+            ]"/>
         </record>
 
     </data>

@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """Camp reports & analytics models (migrated from fayna_camp_reports).
 
 Consolidates three models that capture or render camp performance data:
@@ -565,6 +567,6 @@ class CampMarketingReport(models.TransientModel):
         # Fallback — keep wizard usable even without a PDF template.
         raise UserError(
             _(
-                "PDF report template is not installed. " "Live metrics are visible above.",
+                "PDF report template is not installed. Live metrics are visible above.",
             ),
         )

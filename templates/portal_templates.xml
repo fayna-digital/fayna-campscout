@@ -6,13 +6,70 @@
      Replaces the 3 separate docs_entry cards with one structured block.
      ============================================================================ -->
 
-<!-- Rename "My account" → "Panel Klienta" / "Кабінет клієнта" per legal
+<!-- Rename "My account" → "Panel Klienta" / "Кабінет батьків" per legal
      documents (regulamin-panelu-klienta.html). Match by structure, not
      text — the 'My account' string is already translated at render
      time in some locales, so text() XPath would fail. -->
+<!-- ============================================================================
+     Impersonation banner on the /my portal.
+     [ПРИПУЩЕННЯ] request.session in the website/portal QWeb context is not a
+     reliable way to read impersonator_uid across Odoo 17 render paths, so we
+     fetch the existing JSON route (/admin/impersonation-status) from a tiny
+     inline script and reveal the banner only when impersonating. Minimal,
+     no model/session coupling. The banner links to /admin/stop-impersonation.
+     Injected into portal.frontend_layout so it shows on every /my page.
+     ============================================================================ -->
+<template id="portal_impersonation_banner_campscout" inherit_id="portal.frontend_layout" priority="25">
+    <xpath expr="//div[@id='wrapwrap']" position="inside">
+        <div id="cs_impersonation_banner" class="alert alert-danger text-center mb-0 d-none"
+             role="alert" style="border-radius:0;position:sticky;top:0;z-index:1080;">
+            <i class="fa fa-user-secret me-1"/>
+            <span id="cs_impersonation_text">Ви переглядаєте кабінет в режимі імперсонації.</span>
+            <a href="/admin/stop-impersonation" class="alert-link ms-2 fw-bold">
+                Повернутися до адміністратора →
+            </a>
+        </div>
+        <script type="text/javascript">
+            (function () {
+                fetch("/admin/impersonation-status", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ jsonrpc: "2.0", method: "call", params: {} }),
+                })
+                    .then(function (r) { return r.json(); })
+                    .then(function (data) {
+                        var res = data &amp;&amp; data.result;
+                        if (res &amp;&amp; res.impersonating) {
+                            var box = document.getElementById("cs_impersonation_banner");
+                            var txt = document.getElementById("cs_impersonation_text");
+                            if (txt) {
+                                txt.textContent =
+                                    "Ви переглядаєте кабінет як " + (res.current_name || "") +
+                                    " (адмін: " + (res.admin_name || "") + ").";
+                            }
+                            if (box) { box.classList.remove("d-none"); }
+                        }
+                    })
+                    .catch(function () { /* best-effort; stay hidden on error */ });
+            })();
+        </script>
+    </xpath>
+</template>
+
+<!-- Role-aware cabinet title (G1/G0, TZ §G 2026-06-24): the «Кабінет батьків»
+     heading must reflect WHO is logged in. A wychowawca/kierownik/instructor
+     landing on a portal page must not read «Кабінет батьків». We branch on the
+     user's CampScout role groups; parent (portal-only) keeps the default. -->
 <template id="portal_layout_title_campscout" inherit_id="portal.portal_layout" priority="25">
     <xpath expr="//div[hasclass('wrapper')]/h3[hasclass('my-3')]" position="replace">
-        <h3 class="my-3">Кабінет клієнта</h3>
+        <h3 class="my-3">
+            <t t-if="user_id.has_group('fayna_camp_portal.group_camp_organizator')">Panel organizatora</t>
+            <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_kierownik')">Panel kierownika obozu</t>
+            <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_wychowawca')">Panel wychowawcy</t>
+            <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_instructor')">Panel instruktora</t>
+            <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_finance')">Panel księgowego</t>
+            <t t-else="">Panel rodzica</t>
+        </h3>
     </xpath>
 </template>
 
@@ -35,13 +92,13 @@
                                 <div class="flex-grow-1">
                                     <strong>
                                         <t t-if="reg.participant_id" t-esc="reg.participant_id.display_name"/>
-                                        <t t-else="">Ваш учасник</t>
+                                        <t t-else="">Twoje dziecko</t>
                                     </strong>
-                                    зараз у таборі
+                                    jest teraz na obozie
                                     <strong t-esc="reg.event_id.name"/>.
                                     <br/>
                                     <small class="text-muted">
-                                        Повернення: <t t-esc="reg.event_id.date_end.strftime('%d.%m.%Y')"/>
+                                        Powrót: <t t-esc="reg.event_id.date_end.strftime('%d.%m.%Y')"/>
                                     </small>
                                 </div>
                             </div>
@@ -51,7 +108,7 @@
 
                 <!-- Children strip -->
                 <div class="cs-children-strip mb-3">
-                    <h5 class="mb-2">Учасники</h5>
+                    <h5 class="mb-2">Twoje dzieci</h5>
                     <div class="row g-2">
                         <t t-foreach="cs_participants" t-as="child">
                             <div class="col-md-4 col-sm-6">
@@ -79,7 +136,7 @@
                                                 <small class="text-muted">
                                                     <t t-if="child.birth_date">
                                                         <t t-esc="(cs_today - child.birth_date).days // 365"/>
-                                                        років
+                                                        lat
                                                     </t>
                                                 </small>
                                             </div>
@@ -92,15 +149,19 @@
                              same grid as existing children so the «family
                              grows here» metaphor stays intact. -->
                         <div class="col-md-4 col-sm-6">
-                            <a href="/my/participants/new" class="d-block text-decoration-none text-reset">
+                            <!-- No self-service participant-create flow exists in this module:
+                                 a child is created during booking. Open the booking modal
+                                 instead of the dead /my/participants/new route. -->
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#csBookCampModal"
+                               class="d-block text-decoration-none text-reset">
                                 <div class="card h-100 cs-child-card cs-child-card-add">
                                     <div class="card-body py-2 px-3 d-flex align-items-center gap-3">
                                         <div class="cs-child-avatar">
                                             <span class="cs-child-emoji" data-gender="add">➕</span>
                                         </div>
                                         <div class="flex-grow-1 min-w-0">
-                                            <div class="fw-semibold">Додати учасника</div>
-                                            <small class="text-muted">Окрема картка + документи</small>
+                                            <div class="fw-semibold">Dodaj dziecko</div>
+                                            <small class="text-muted">Przez rezerwację obozu</small>
                                         </div>
                                     </div>
                                 </div>
@@ -112,7 +173,7 @@
                 <!-- Upcoming camps -->
                 <t t-if="cs_upcoming_regs">
                     <div class="cs-upcoming mb-3">
-                        <h6 class="mb-2 text-muted">Наступні табори</h6>
+                        <h6 class="mb-2 text-muted">Najbliższe obozy</h6>
                         <ul class="list-unstyled mb-0">
                             <t t-foreach="cs_upcoming_regs" t-as="reg">
                                 <li class="mb-1">
@@ -129,27 +190,77 @@
                     </div>
                 </t>
 
-                <!-- Nav blocks (same card style as /my/documents grid) -->
+                <!-- ============================================================
+                     Nav blocks — kabinet RODZICA (PL).
+                     Główne kafelki pokazują encje OBOZU językiem rodzica
+                     (recognition-not-recall), nie metaforę sklepu. Standardowe
+                     karty Odoo (Zamówienia / Faktury / Bezpieczeństwo) są
+                     ukryte dla rodzica przez CSS [data-cs-parent-only].
+                     Ten sam styl kart co siatka /my/documents.
+                     ============================================================ -->
                 <div class="cs-doc-grid mt-4">
+                    <!-- Cztery główne encje obozu dla rodzica -->
                     <div class="row g-3">
-                        <div class="col-md-4">
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#csBookCampModal"
-                               class="cs-doc-card cs-doc-card-accent">
-                                <span class="cs-doc-icon">🏕️</span>
+                        <div class="col-md-6">
+                            <!-- Karta dziecka — dane + karta kwalifikacyjna.
+                                 Route /my/participants (verified controllers/portal.py). -->
+                            <a href="/my/participants" class="cs-doc-card cs-doc-card-accent">
+                                <span class="cs-doc-icon">🧒</span>
                                 <div class="cs-doc-body">
-                                    <h5 class="cs-doc-title">Забронювати табір</h5>
-                                    <p class="cs-doc-desc">Переглянути доступні заїзди та зареєструвати учасника</p>
-                                    <span class="cs-doc-cta">Обрати табір →</span>
+                                    <h5 class="cs-doc-title">Karta dziecka</h5>
+                                    <p class="cs-doc-desc">Dane dziecka i karta kwalifikacyjna do podpisu</p>
+                                    <span class="cs-doc-cta">Otwórz →</span>
                                 </div>
                             </a>
                         </div>
-                        <div class="col-md-4">
-                            <a href="/my/bookings" class="cs-doc-card">
-                                <span class="cs-doc-icon">📋</span>
+                        <div class="col-md-6">
+                            <!-- Płatności i faktury — standardowy portal Odoo
+                                 account (/my/invoices, moduł zależy od `account`). -->
+                            <a href="/my/invoices" class="cs-doc-card">
+                                <span class="cs-doc-icon">💳</span>
                                 <div class="cs-doc-body">
-                                    <h5 class="cs-doc-title">Мої замовлення</h5>
-                                    <p class="cs-doc-desc">Активні бронювання та архів</p>
-                                    <span class="cs-doc-cta">Переглянути →</span>
+                                    <h5 class="cs-doc-title">Płatności i faktury</h5>
+                                    <p class="cs-doc-desc">Rachunki za obóz, opłaty i zwroty</p>
+                                    <span class="cs-doc-cta">Zobacz →</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <!-- Wiadomości — czat z kadrą obozu.
+                                 Route /my/support (camp.support.request + mail.thread). -->
+                            <a href="/my/support" class="cs-doc-card">
+                                <span class="cs-doc-icon">💬</span>
+                                <div class="cs-doc-body">
+                                    <h5 class="cs-doc-title">Wiadomości</h5>
+                                    <p class="cs-doc-desc">Pisz do kadry obozu i śledź odpowiedzi</p>
+                                    <span class="cs-doc-cta">Napisz →</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <!-- Dokumenty / Zgody — regulaminy + zgody RODO.
+                                 Route /my/documents (legal.document.version). -->
+                            <a href="/my/documents" class="cs-doc-card">
+                                <span class="cs-doc-icon">📄</span>
+                                <div class="cs-doc-body">
+                                    <h5 class="cs-doc-title">Dokumenty / Zgody</h5>
+                                    <p class="cs-doc-desc">Regulaminy, polityki i zgody RODO</p>
+                                    <span class="cs-doc-cta">Zobacz →</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Dodatkowe akcje obozowe (drugorzędne) -->
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-4">
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#csBookCampModal"
+                               class="cs-doc-card">
+                                <span class="cs-doc-icon">🏕️</span>
+                                <div class="cs-doc-body">
+                                    <h5 class="cs-doc-title">Zarezerwuj obóz</h5>
+                                    <p class="cs-doc-desc">Wolne turnusy i zapis dziecka</p>
+                                    <span class="cs-doc-cta">Wybierz obóz →</span>
                                 </div>
                             </a>
                         </div>
@@ -157,9 +268,9 @@
                             <a href="/my/stories" class="cs-doc-card">
                                 <span class="cs-doc-icon">📖</span>
                                 <div class="cs-doc-body">
-                                    <h5 class="cs-doc-title">Щоденні історії</h5>
-                                    <p class="cs-doc-desc">Звіти вожатих з табору</p>
-                                    <span class="cs-doc-cta">Переглянути →</span>
+                                    <h5 class="cs-doc-title">Historie z obozu</h5>
+                                    <p class="cs-doc-desc">Codzienne relacje wychowawców</p>
+                                    <span class="cs-doc-cta">Czytaj →</span>
                                 </div>
                             </a>
                         </div>
@@ -167,29 +278,9 @@
                             <a href="/my/loyalty" class="cs-doc-card">
                                 <span class="cs-doc-icon">🏆</span>
                                 <div class="cs-doc-body">
-                                    <h5 class="cs-doc-title">Лояльність</h5>
-                                    <p class="cs-doc-desc">Рівні та знижки</p>
-                                    <span class="cs-doc-cta">Переглянути →</span>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-4">
-                            <a href="/my/documents" class="cs-doc-card">
-                                <span class="cs-doc-icon">📄</span>
-                                <div class="cs-doc-body">
-                                    <h5 class="cs-doc-title">Юридичні документи</h5>
-                                    <p class="cs-doc-desc">Умови, політики, згоди</p>
-                                    <span class="cs-doc-cta">Переглянути →</span>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-4">
-                            <a href="/my/invoices" class="cs-doc-card">
-                                <span class="cs-doc-icon">💳</span>
-                                <div class="cs-doc-body">
-                                    <h5 class="cs-doc-title">Фінансові документи</h5>
-                                    <p class="cs-doc-desc">Рахунки, оплати, повернення</p>
-                                    <span class="cs-doc-cta">Переглянути →</span>
+                                    <h5 class="cs-doc-title">Program lojalnościowy</h5>
+                                    <p class="cs-doc-desc">Twój poziom i zniżki</p>
+                                    <span class="cs-doc-cta">Zobacz →</span>
                                 </div>
                             </a>
                         </div>
@@ -201,8 +292,8 @@
                     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
                         <div class="modal-content cs-book-modal">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="csBookCampLabel">Оберіть табір для бронювання</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрити"/>
+                                <h5 class="modal-title" id="csBookCampLabel">Wybierz obóz do rezerwacji</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"/>
                             </div>
                             <div class="modal-body">
                                 <t t-if="cs_upcoming_camps">
@@ -218,7 +309,7 @@
                                                         </span>
                                                         <t t-if="camp.seats_available">
                                                             <span class="cs-camp-option-seats">
-                                                                вільно: <t t-esc="camp.seats_available"/>
+                                                                wolne: <t t-esc="camp.seats_available"/>
                                                             </span>
                                                         </t>
                                                     </div>
@@ -230,15 +321,15 @@
                                 <t t-else="">
                                     <div class="cs-empty-state">
                                         <div class="cs-empty-icon">🏕️</div>
-                                        <h4>Поки немає відкритих заїздів</h4>
+                                        <h4>Brak otwartych turnusów</h4>
                                         <p class="text-muted">
-                                            Перевірте пізніше — графік наступного сезону зʼявиться тут одразу як відкриємо продажі.
+                                            Zajrzyj później — harmonogram kolejnego sezonu pojawi się tutaj, gdy tylko otworzymy zapisy.
                                         </p>
                                     </div>
                                 </t>
                             </div>
                             <div class="modal-footer">
-                                <a href="/shop" class="cs-btn-ghost">Переглянути всі табори в магазині →</a>
+                                <a href="/shop" class="cs-btn-ghost">Zobacz wszystkie obozy w sklepie →</a>
                             </div>
                         </div>
                     </div>
@@ -293,13 +384,19 @@
      ============================================================================ -->
 
 <template id="portal_breadcrumbs_campscout" inherit_id="portal.portal_breadcrumbs" priority="20">
-    <!-- Replace the icon-only home link with an explicit «Кабінет клієнта»
+    <!-- Replace the icon-only home link with an explicit «Кабінет батьків»
          text so parents always see the way back, even on stock Odoo pages
          (/my/invoices, /my/orders) where we don't render our own back link. -->
     <xpath expr="//li[hasclass('breadcrumb-item') and hasclass('ms-1')]" position="replace">
         <li class="breadcrumb-item ms-1">
             <a href="/my/home" class="cs-crumb-home">
-                <i class="fa fa-home me-1"/>Кабінет клієнта
+                <i class="fa fa-home me-1"/>
+                <t t-if="user_id.has_group('fayna_camp_portal.group_camp_organizator')">Кабінет організатора</t>
+                <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_kierownik')">Кабінет керівника табору</t>
+                <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_wychowawca')">Кабінет виховника</t>
+                <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_instructor')">Кабінет інструктора</t>
+                <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_finance')">Кабінет бухгалтера</t>
+                <t t-else="">Кабінет батьків</t>
             </a>
         </li>
     </xpath>
@@ -528,9 +625,10 @@
                     <div class="cs-empty-icon">&#128104;&#8205;&#128102;</div>
                     <h4>Учасників ще немає</h4>
                     <p class="text-muted">
-                        Додайте першого учасника, щоб розпочати реєстрацію на табір.
+                        Учасник створюється під час бронювання табору.
+                        Оберіть заїзд — і картка дитини зʼявиться тут.
                     </p>
-                    <a href="/my/participants/new" class="btn btn-primary mt-2">Додати учасника</a>
+                    <a href="/shop" class="btn btn-primary mt-2">Обрати табір</a>
                 </div>
             </t>
 
@@ -565,11 +663,13 @@
                     </div>
                 </t>
                 <div class="col-md-6">
-                    <a href="/my/participants/new" class="cs-doc-card cs-doc-card-add text-decoration-none">
+                    <!-- Participant is created during booking — point to the camp catalog
+                         instead of the dead /my/participants/new route. -->
+                    <a href="/shop" class="cs-doc-card cs-doc-card-add text-decoration-none">
                         <span class="cs-doc-icon">&#10133;</span>
                         <div class="cs-doc-body">
                             <h5 class="cs-doc-title">Додати учасника</h5>
-                            <p class="cs-doc-desc">Окрема картка + документи</p>
+                            <p class="cs-doc-desc">Через бронювання табору</p>
                         </div>
                     </a>
                 </div>

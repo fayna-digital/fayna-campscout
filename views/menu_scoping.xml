@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Menu scoping for operational roles (TZ §G, G1 — 2026-06-24)
+    ============================================================
+    Problem: kierownik/wychowawca/instructor are internal users
+    (base.group_user). In stock Odoo 17 almost every default app tile
+    (Website, Sales, Discuss, Contacts, Calendar, To-do, Dashboards,
+    Employees, Time Off, Zadarma) is gated ONLY on base.group_user — so
+    EVERY internal user sees them, regardless of role. Not granting an
+    app-specific group does NOT help: the gate is base.group_user itself.
+
+    Fix: re-gate the raw default app tiles to base.group_system. Then:
+      * Organizator (has base.group_system) keeps the full raw backend — we
+        do NOT touch the organizator experience (per TZ: raw backend is OK
+        for the top-level admin).
+      * Operational roles (only base.group_user) no longer see these tiles —
+        they see ONLY «Portal CampScout» (menu_campscout_root stays gated on
+        base.group_user) plus their own scoped views.
+
+    Overriding an existing menuitem by its external id only changes the
+    `groups` attribute; it errors at install if the xmlid is wrong (so a
+    typo can never silently no-op). We only touch tiles whose module is a
+    guaranteed dependency (website, sale, mail) or reliably present in v17
+    (contacts). Apps NOT in our depends (hr, hr_holidays, project_todo /
+    To-do, spreadsheet_dashboard / Dashboards, calendar, zadarma_odoo) are
+    intentionally left for the CTO to scope the same way once their presence
+    on staging/prod is confirmed — see docs note.
+-->
+<odoo>
+    <data noupdate="0">
+
+        <!-- Website backend app tile -->
+        <menuitem id="website.menu_website_configuration"
+            groups="base.group_system"/>
+
+        <!-- Sales app tile -->
+        <menuitem id="sale.sale_menu_root"
+            groups="base.group_system"/>
+
+        <!-- Discuss НЕ ховаємо: чат потрібен операційним ролям (епік E). -->
+
+        <!-- Contacts app tile -->
+        <menuitem id="contacts.menu_contacts"
+            groups="base.group_system"/>
+
+    </data>
+</odoo>

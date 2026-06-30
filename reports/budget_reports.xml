@@ -15,6 +15,19 @@
             <field name="binding_type">report</field>
         </record>
 
+        <!-- Ewidencja finansowa dla zewnętrznej księgowej (§10/§4c) — bez danych dzieci. -->
+        <record id="action_report_camp_budget_evidence" model="ir.actions.report">
+            <field name="name">Ewidencja dla księgowej</field>
+            <field name="model">camp.budget</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">fayna_camp_portal.report_camp_budget_evidence</field>
+            <field name="report_file">fayna_camp_portal.report_camp_budget_evidence</field>
+            <field name="print_report_name">'Ewidencja - %s' % (object.event_id.name)</field>
+            <field name="binding_model_id" ref="model_camp_budget"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="base.paperformat_euro"/>
+        </record>
+
         <record id="action_report_season_budgets" model="ir.actions.report">
             <field name="name">Zestawienie obozów (sezon)</field>
             <field name="model">fayna.camp.season</field>

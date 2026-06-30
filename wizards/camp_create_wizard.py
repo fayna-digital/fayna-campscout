@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — майстер «Новий табір» (TZ_SPRINT_2026-06-10 §6, R11/R12)
 #
 # One wizard run generates the full shift skeleton in NATIVE tables
@@ -18,6 +20,7 @@
 #   fayna_camp_portal.salary_wychowawca_default / salary_kierownik_default
 #   (ті самі ключі читає двигун автоштату).
 import logging
+import math
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
@@ -29,10 +32,115 @@ _TICKET_NAME = "Udział w obozie"
 _SALARY_WYCHOWAWCA_PARAM = "fayna_camp_portal.salary_wychowawca_default"
 _SALARY_KIEROWNIK_PARAM = "fayna_camp_portal.salary_kierownik_default"
 
+# §7 — VAT mode is a CONSEQUENCE of the chosen account.fiscal.position, not a
+# hard-coded default. We classify a fiscal position into one of three camp VAT
+# modes from explicit XML-id markers (data/fiscal_positions.xml) first, then by
+# name keywords (covers fiscal positions the accountant set up by hand). If a
+# position carries no signal, we fall back to the safe 'zw' (TZ §7: default zw.
+# is justified; final certainty = interpretacja indywidualna).
+_FISCAL_XMLID_VAT_MODE = {
+    "fiscal_position_camp_zw": "zw",
+    "fiscal_position_camp_marza": "marza",
+    "fiscal_position_camp_standard": "standard",
+}
+# Keyword → vat_mode, checked in order (most specific first).
+_FISCAL_NAME_KEYWORDS = (
+    ("marża", "marza"),
+    ("marza", "marza"),
+    ("art.119", "marza"),
+    ("art. 119", "marza"),
+    ("turyst", "marza"),  # firma turystyczna / rejestr turystyki
+    ("zwoln", "zw"),
+    ("zw.", "zw"),
+    ("art.43", "zw"),
+    ("art. 43", "zw"),
+    ("zwolni", "zw"),
+)
+_VAT_MODE_DEFAULT = "zw"
+
 
 class CampCreateWizard(models.TransientModel):
     _name = "camp.create.wizard"
     _description = "Майстер «Новий табір» (event + квиток + бюджет + teczka + групи)"
+
+    # ── ADR Фаза A §4 — multi-step ────────────────────────────────────────
+    step = fields.Selection(
+        [
+            ("type", "1. Typ obozu"),
+            ("basics", "2. Podstawowe dane"),
+            ("logo", "3. Logo"),
+            ("dates", "4. Daty i miejscowość"),
+            ("accommodation", "5. Obiekt"),
+            ("frame_day", "6. Plan dnia"),
+            ("program", "7. Program"),
+            ("capacity", "8. Miejsca i finanse"),
+        ],
+        default="type",
+        required=True,
+        string=_("Krok"),
+        help=_("Current step in the multi-step wizard."),
+    )
+
+    # Step 1 — typ obozu (mirrors camp.program.wypoczynku)
+    vacation_form = fields.Selection(
+        [
+            ("kolonia", "Kolonia"),
+            ("oboz", "Obóz"),
+            ("biwak", "Biwak"),
+            ("zimowisko", "Zimowisko"),
+            ("inne", "Inne"),
+        ],
+        default="oboz",
+        string=_("Forma wypoczynku"),
+        help=_("Formal form of leisure as classified by MEN regulation."),
+    )
+    camp_type = fields.Selection(
+        [
+            ("kolonijny", "Kolonijny"),
+            ("obozowy", "Obozowy"),
+            ("inne", "Inne"),
+        ],
+        string=_("Typ obozu"),
+        help=_("Camp type classification for Kuratorium filing."),
+    )
+    accommodation_type = fields.Selection(
+        [
+            ("hotel", "Hotel / pensjonat"),
+            ("occasional", "Obiekt okazjonalny"),
+            ("tent", "Pole namiotowe"),
+            ("school", "Szkoła / placówka"),
+            ("other", "Inne"),
+        ],
+        default="hotel",
+        string=_("Rodzaj obiektu"),
+        help=_("Type of accommodation used."),
+    )
+
+    # Step 3 — logo
+    logo_image = fields.Image(
+        string=_("Logo obozu"),
+        max_width=512,
+        max_height=512,
+        help=_("Camp logo — will be set on the camp product template (image_1920)."),
+    )
+
+    # Step 6 — рамковий день (mirrors CampProgramStructured)
+    fd_wake_time = fields.Float(default=7.0, string=_("Pobudka"))
+    fd_breakfast = fields.Float(default=8.0, string=_("Śniadanie"))
+    fd_lunch = fields.Float(default=13.0, string=_("Obiad"))
+    fd_afternoon_rest = fields.Float(default=14.0, string=_("Cisza poobiednia"))
+    fd_snack = fields.Float(default=16.0, string=_("Podwieczorek"))
+    fd_dinner = fields.Float(default=18.0, string=_("Kolacja"))
+    fd_lights_out = fields.Float(default=22.0, string=_("Cisza nocna"))
+    fd_meal_duration = fields.Float(default=0.75, string=_("Czas posiłku (h)"))
+    fd_rest_duration = fields.Float(default=1.0, string=_("Czas ciszy poobiedniej (h)"))
+
+    # Step 7 — program options
+    also_generate_rain_plan = fields.Boolean(
+        default=False,
+        string=_("Generuj też plan B (deszczowy)"),
+        help=_("If True, a second CampProgramStructured (is_rain_plan=True) is generated."),
+    )
 
     name = fields.Char(
         required=True,
@@ -64,7 +172,7 @@ class CampCreateWizard(models.TransientModel):
     )
     currency_id = fields.Many2one(
         "res.currency",
-        default=lambda self: self.env.company.currency_id,
+        default=lambda self: self._default_currency(),
         string=_("Currency"),
     )
     price_per_child = fields.Monetary(
@@ -102,6 +210,389 @@ class CampCreateWizard(models.TransientModel):
             "budget line (kadra / is_salary)."
         ),
     )
+
+    # ── §7 КАЛЬКУЛЯТОР ЦІНИ ───────────────────────────────────────────────
+    # Cost-buildup поля (на дитину або на весь табір — позначено в help)
+    # ------- кадра -------
+    salary_instructor_per_turnus = fields.Monetary(
+        currency_field="currency_id",
+        default=300.0,
+        string=_("Stawka instruktora / turnus"),
+        help=_("Per-shift instructor salary (300 zł default per TZ §7). Divided by seats in calc."),
+    )
+    # ------- інші витрати на дитину/день -------
+    cost_insurance_per_child_day = fields.Float(
+        string=_("Ubezpieczenie / dziecko / dobę [zł]"),
+        digits=(10, 2),
+        default=0.0,
+        help=_("NNW insurance cost per child per day (e.g. 1.50 zł)."),
+    )
+    # ------- одноразові на дитину -------
+    cost_merch_per_child = fields.Float(
+        string=_("Gadżety / dziecko [zł]"),
+        digits=(10, 2),
+        default=0.0,
+        help=_(
+            "Merch cost per child. Note: merch is a physical good (VAT 23%)"
+            " and should be invoiced as a separate line item."
+        ),
+    )
+    cost_stationery_per_child = fields.Float(
+        string=_("Materiały / dziecko [zł]"),
+        digits=(10, 2),
+        default=0.0,
+        help=_("Stationery / consumables per child for the whole shift."),
+    )
+    cost_operational_per_child = fields.Float(
+        string=_("Operacyjne / dziecko [zł]"),
+        digits=(10, 2),
+        default=0.0,
+        help=_("Venue rent, activities, other per-child operational costs for the whole shift."),
+    )
+    # ------- реклама (загальний бюджет, constrain ≤20% суми витрат) -------
+    cost_advertising_total = fields.Float(
+        string=_("Reklama (ogółem) [zł]"),
+        digits=(10, 2),
+        default=0.0,
+        help=_(
+            "Total advertising/marketing budget for the shift."
+            " Constrained to ≤ 20% of total cost budget (§7). Spread per child."
+        ),
+    )
+    # ------- VAT — наслідок account.fiscal.position (§7) -------
+    # §7: VAT-режим = НАСЛІДОК fiscal.position за формою організатора
+    # (sp. z o.o. → marża art.119 / fundacja → zw. art.43 / JDG-standard → 23%),
+    # НЕ зашитий дефолт. fiscal_position_id — джерело істини; vat_mode —
+    # читабельна класифікація, виведена з неї (з ручним override як страховка).
+    fiscal_position_id = fields.Many2one(
+        "account.fiscal.position",
+        string=_("Pozycja fiskalna (forma organizatora)"),
+        default=lambda self: self._default_fiscal_position(),
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
+        help=_(
+            "Fiscal position of the organizer's form. The VAT mode of the camp"
+            " price is DERIVED from this (TZ §7) — not a hard-coded default:\n"
+            "• fundacja / NGO → zwolniona (art.43 ust.1 pkt 24)\n"
+            "• sp. z o.o. / firma turystyczna → VAT-marża (art.119)\n"
+            "• JDG / standard → 23%\n"
+            "Default = the company's own fiscal position. Change the form here"
+            " and the VAT verdict follows automatically."
+        ),
+    )
+    company_id = fields.Many2one(
+        "res.company",
+        string=_("Spółka"),
+        default=lambda self: self.env.company,
+    )
+    vat_mode = fields.Selection(
+        [
+            ("zw", "Zwolniona art.43 ust.1 pkt 24 (opieka nad dziećmi)"),
+            ("marza", "VAT-marża 23% (art.119, firma turystyczna)"),
+            ("standard", "Standard 23%"),
+        ],
+        compute="_compute_vat_mode",
+        store=True,
+        readonly=False,  # organizer-overridable (human-in-the-loop, §7)
+        string=_("Tryb VAT (wynik pozycji fiskalnej)"),
+        help=_(
+            "VAT regime — DERIVED from the chosen account.fiscal.position (TZ §7),"
+            " editable as a manual override only after consulting a księgowa.\n"
+            "• zw — default safe; organizer = fundacja/NGO (art.43).\n"
+            "• marza — registered tourism firm (rejestr turystyki); VAT only on margin.\n"
+            "• standard — full 23%.\n"
+            "[UWAGA] Final zw. vs marża qualification is a grey-zone (TZ §7) —"
+            " requires interpretacja indywidualna / księgowa. NOT legally final."
+        ),
+    )
+    markup_percent = fields.Float(
+        string=_("Marża [%]"),
+        digits=(5, 2),
+        default=5.0,
+        help=_("Markup percentage added on top of total cost. Must be ≥ 0."),
+    )
+    # ------- результат калькулятора -------
+    computed_price_per_child = fields.Monetary(
+        currency_field="currency_id",
+        string=_("Obliczona cena / dziecko"),
+        compute="_compute_price_per_child",
+        store=True,
+        readonly=True,
+        help=_(
+            "Calculated price per child (cost-buildup + markup + VAT).\n"
+            "Use 'Zastosuj jako cenę' to copy this value to the actual ticket price."
+        ),
+    )
+    vat_note = fields.Char(
+        string=_("Uwaga VAT"),
+        compute="_compute_price_per_child",
+        store=True,
+        readonly=True,
+        help=_("Human-readable note on VAT treatment for the chosen vat_mode."),
+    )
+
+    # ── compute ───────────────────────────────────────────────────────────
+
+    @api.depends(
+        "cost_lodging_per_day",
+        "cost_food_per_child_day",
+        "salary_wychowawca_per_turnus",
+        "salary_kierownik_per_turnus",
+        "salary_instructor_per_turnus",
+        "cost_insurance_per_child_day",
+        "cost_merch_per_child",
+        "cost_stationery_per_child",
+        "cost_operational_per_child",
+        "cost_advertising_total",
+        "markup_percent",
+        "vat_mode",
+        "seats",
+        "date_begin",
+        "date_end",
+    )
+    def _compute_price_per_child(self):
+        """§7 cost-buildup formula (per child):
+
+        days = date_end - date_begin (full calendar days, min 1)
+        children = seats (min 1 to avoid ZeroDivisionError)
+
+        per_child_day costs → × days:
+            lodging   = cost_lodging_per_day × days
+            food      = cost_food_per_child_day × days
+            insurance = cost_insurance_per_child_day × days
+
+        per_child lump-sum costs:
+            merch, stationery, operational
+
+        per_camp costs → ÷ children:
+            wychowawca salary  (total for all wychowawcy is assumed to be
+                               salary_wychowawca_per_turnus; staffing engine
+                               multiplies this later — here we take it as-is)
+            kierownik salary
+            instructor salary
+            advertising_total
+
+        cost_sum = sum of all above
+        base = cost_sum × (1 + markup_percent / 100)
+        price:
+            zw       → base  (no VAT added; 0% effective rate)
+            marza    → base  (VAT only on the margin portion = not in price calc;
+                              vat_note explains; gross = base)
+            standard → base × 1.23
+
+        Rounded to 2 decimal places.
+        """
+        for rec in self:
+            # ── guard ──────────────────────────────────────────────────
+            children = max(rec.seats or 1, 1)
+            if rec.date_begin and rec.date_end and rec.date_end > rec.date_begin:
+                delta = rec.date_end - rec.date_begin
+                days = max(math.ceil(delta.total_seconds() / 86400), 1)
+            else:
+                days = 1
+
+            # ── per-child-day costs ────────────────────────────────────
+            lodging = (rec.cost_lodging_per_day or 0.0) * days
+            food = (rec.cost_food_per_child_day or 0.0) * days
+            insurance = (rec.cost_insurance_per_child_day or 0.0) * days
+
+            # ── per-camp costs spread per child ────────────────────────
+            salary_wych = (rec.salary_wychowawca_per_turnus or 0.0) / children
+            salary_kier = (rec.salary_kierownik_per_turnus or 0.0) / children
+            salary_instr = (rec.salary_instructor_per_turnus or 0.0) / children
+            advertising = (rec.cost_advertising_total or 0.0) / children
+
+            # ── per-child lump-sum ─────────────────────────────────────
+            merch = rec.cost_merch_per_child or 0.0
+            stationery = rec.cost_stationery_per_child or 0.0
+            operational = rec.cost_operational_per_child or 0.0
+
+            cost_sum = (
+                lodging
+                + food
+                + insurance
+                + salary_wych
+                + salary_kier
+                + salary_instr
+                + advertising
+                + merch
+                + stationery
+                + operational
+            )
+
+            markup = max(rec.markup_percent or 0.0, 0.0)
+            base = cost_sum * (1.0 + markup / 100.0)
+
+            vat_mode = rec.vat_mode or "zw"
+            if vat_mode == "standard":
+                price = base * 1.23
+                note = _("Cena brutto ze stawką VAT 23% (standard).")
+            elif vat_mode == "marza":
+                price = base
+                note = _(
+                    "VAT-marża (art.119): VAT 23% naliczany TYLKO od marży"
+                    " (marża = cena – koszt usług nabytych). Kwota powyżej"
+                    " = podstawa kalkulacji; rzeczywisty VAT do marży liczy księgowa."
+                )
+            else:  # zw
+                price = base
+                note = _(
+                    "Zwolniona z VAT (art.43 ust.1 pkt 24 lit.a) — opieka nad dziećmi i młodzieżą."
+                )
+
+            rec.computed_price_per_child = round(price, 2)
+            rec.vat_note = note
+
+    # ── §7 — VAT mode derived from account.fiscal.position ────────────────
+
+    @api.depends("fiscal_position_id")
+    def _compute_vat_mode(self):
+        """Derive vat_mode from the chosen fiscal position (TZ §7).
+
+        readonly=False + store=True → the value is recomputed whenever the
+        organizer changes the fiscal position, but the organizer can still
+        override it manually afterwards (human-in-the-loop, §7 grey-zone).
+        Empty fiscal position → safe default 'zw'.
+        """
+        for rec in self:
+            if rec.fiscal_position_id:
+                rec.vat_mode = rec._classify_fiscal_position(rec.fiscal_position_id)
+            elif not rec.vat_mode:
+                rec.vat_mode = _VAT_MODE_DEFAULT
+
+    @api.model
+    def _classify_fiscal_position(self, fiscal_position):
+        """Map an account.fiscal.position → camp vat_mode (zw / marza / standard).
+
+        Priority:
+          1. Explicit XML-id marker (data/fiscal_positions.xml example records).
+          2. Name keywords (covers accountant-defined positions).
+          3. Safe fallback 'zw' (TZ §7).
+        """
+        if not fiscal_position:
+            return _VAT_MODE_DEFAULT
+        # 1. XML-id marker (only matches our own example data records)
+        for xmlid, mode in _FISCAL_XMLID_VAT_MODE.items():
+            ref = self.env.ref(f"fayna_camp_portal.{xmlid}", raise_if_not_found=False)
+            if ref and ref.id == fiscal_position.id:
+                return mode
+        # 2. Name keywords
+        name = (fiscal_position.name or "").lower()
+        for keyword, mode in _FISCAL_NAME_KEYWORDS:
+            if keyword in name:
+                return mode
+        # 3. Safe fallback
+        return _VAT_MODE_DEFAULT
+
+    @api.model
+    def _default_fiscal_position(self):
+        """Default = the company's own fiscal position (NOT a hard-coded VAT mode).
+
+        Resolution order (native-first):
+          1. The fiscal position auto-applied for the company's own partner
+             (account.fiscal.position._get_fiscal_position — the native resolver).
+          2. The first auto_apply position scoped to this company.
+          3. Any fiscal position for this company.
+        Returns an empty recordset if none exists (vat_mode then falls to 'zw').
+        """
+        fp_model = self.env["account.fiscal.position"]
+        company = self.env.company
+        partner = company.partner_id
+        # 1. Native resolver against the company's own partner.
+        try:
+            fp = fp_model.with_company(company)._get_fiscal_position(partner)
+        except Exception:  # noqa: BLE001 — never block wizard open on tax setup
+            fp = fp_model.browse()
+        if fp:
+            return fp
+        domain = ["|", ("company_id", "=", False), ("company_id", "=", company.id)]
+        # 2. First auto_apply position for this company.
+        fp = fp_model.search(domain + [("auto_apply", "=", True)], limit=1)
+        if fp:
+            return fp
+        # 3. Any position for this company.
+        return fp_model.search(domain, limit=1)
+
+    def action_apply_computed_price(self):
+        """Copy computed_price_per_child → price_per_child."""
+        self.ensure_one()
+        self.write({"price_per_child": self.computed_price_per_child})
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": self._name,
+            "res_id": self.id,
+            "view_mode": "form",
+            "target": "new",
+        }
+
+    # ── constrains ────────────────────────────────────────────────────────
+
+    @api.constrains("markup_percent")
+    def _check_markup(self):
+        for rec in self:
+            if (rec.markup_percent or 0.0) < 0:
+                raise ValidationError(_("Marża musi być ≥ 0%."))
+
+    @api.constrains(
+        "cost_advertising_total",
+        "cost_lodging_per_day",
+        "cost_food_per_child_day",
+        "salary_wychowawca_per_turnus",
+        "salary_kierownik_per_turnus",
+        "salary_instructor_per_turnus",
+        "cost_insurance_per_child_day",
+        "cost_merch_per_child",
+        "cost_stationery_per_child",
+        "cost_operational_per_child",
+        "seats",
+        "date_begin",
+        "date_end",
+    )
+    def _check_advertising_cap(self):
+        """Advertising ≤ 20% of total cost budget (excl. advertising itself)."""
+        for rec in self:
+            adv = rec.cost_advertising_total or 0.0
+            if adv <= 0:
+                continue
+            children = max(rec.seats or 1, 1)
+            if rec.date_begin and rec.date_end and rec.date_end > rec.date_begin:
+                delta = rec.date_end - rec.date_begin
+                days = max(math.ceil(delta.total_seconds() / 86400), 1)
+            else:
+                days = 1
+            cost_excl_adv = (
+                (rec.cost_lodging_per_day or 0.0) * days * children
+                + (rec.cost_food_per_child_day or 0.0) * days * children
+                + (rec.cost_insurance_per_child_day or 0.0) * days * children
+                + (rec.salary_wychowawca_per_turnus or 0.0)
+                + (rec.salary_kierownik_per_turnus or 0.0)
+                + (rec.salary_instructor_per_turnus or 0.0)
+                + (rec.cost_merch_per_child or 0.0) * children
+                + (rec.cost_stationery_per_child or 0.0) * children
+                + (rec.cost_operational_per_child or 0.0) * children
+            )
+            cap = cost_excl_adv * 0.20
+            if adv > cap:
+                raise ValidationError(
+                    _(
+                        "Budżet reklamowy (%(adv).2f zł) przekracza 20%% sumy"
+                        " pozostałych kosztów (max %(cap).2f zł). Zmniejsz kwotę"
+                        " reklamy lub zwiększ inne koszty.",
+                        adv=adv,
+                        cap=cap,
+                    )
+                )
+
+    @api.model
+    def _default_currency(self):
+        """Robust currency default: never return False (MonetaryField would crash
+        in OWL). Fall back to PLN, then any active currency."""
+        company = self.env.company
+        if company.currency_id:
+            return company.currency_id
+        pln = self.env["res.currency"].search([("name", "=", "PLN")], limit=1)
+        if pln:
+            return pln
+        return self.env["res.currency"].search([("active", "=", True)], limit=1)
 
     @api.model
     def _default_salary(self, param):
@@ -186,12 +677,16 @@ class CampCreateWizard(models.TransientModel):
         self.ensure_one()
 
         # 1. event.event — the camp shift itself (R11: tickets = capacity layer).
+        #    §6 ADR-13: created immediately as unpublished + pending_approval.
+        #    website_published=False → not on website until organizator approves.
         event_vals = {
             "name": self.name,
             "date_begin": self.date_begin,
             "date_end": self.date_end,
             "seats_limited": True,
             "seats_max": self.seats,
+            "website_published": False,
+            "camp_approval_state": "pending_approval",
         }
         venue = self._get_or_create_venue()
         if venue:
@@ -199,6 +694,8 @@ class CampCreateWizard(models.TransientModel):
         event = self.env["event.event"].create(event_vals)
 
         # 2. Ticket «Udział w obozie» (event_sale layer, native table).
+        #    Event is website_published=False → ticket not visible/buyable on site
+        #    until organizator approves (action_approve sets website_published=True).
         product = self._get_or_create_event_product()
         self.env["event.event.ticket"].create(
             {
@@ -236,6 +733,13 @@ class CampCreateWizard(models.TransientModel):
         # 6. Group skeleton — one empty group; auto-split takes over later
         #    (camp.group.action_auto_split distributes children by age).
         self.env["camp.group"].create({"name": _("Grupa 1"), "event_id": event.id})
+
+        # 7. Structured program skeleton (ADR Фаза A §4)
+        self._create_structured_skeleton(event)
+
+        # 8. Logo → product.template.image_1920 if camp_program_id is set
+        if self.logo_image and event.camp_program_id:
+            event.camp_program_id.sudo().write({"image_1920": self.logo_image})
 
         _logger.info(
             "[camp_create_wizard] Camp shift created: event=%s seats=%s budget=%s",
@@ -307,4 +811,88 @@ class CampCreateWizard(models.TransientModel):
                     "amount": amount,
                 }
             )
+        return True
+
+    # ── ADR Фаза A §4 — step navigation ───────────────────────────────────
+
+    _STEP_ORDER = [
+        "type",
+        "basics",
+        "logo",
+        "dates",
+        "accommodation",
+        "frame_day",
+        "program",
+        "capacity",
+    ]
+
+    def action_next(self):
+        self.ensure_one()
+        idx = self._STEP_ORDER.index(self.step)
+        if idx < len(self._STEP_ORDER) - 1:
+            self.write({"step": self._STEP_ORDER[idx + 1]})
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": self._name,
+            "res_id": self.id,
+            "view_mode": "form",
+            "target": "new",
+        }
+
+    def action_back(self):
+        self.ensure_one()
+        idx = self._STEP_ORDER.index(self.step)
+        if idx > 0:
+            self.write({"step": self._STEP_ORDER[idx - 1]})
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": self._name,
+            "res_id": self.id,
+            "view_mode": "form",
+            "target": "new",
+        }
+
+    # ── ADR Фаза A §4 — skeleton generator call ────────────────────────────
+
+    def _create_structured_skeleton(self, event):
+        """Create structured program(s) and generate skeleton days.
+
+        Always creates the normal plan. If also_generate_rain_plan=True,
+        creates a second structured record with is_rain_plan=True.
+        """
+        self.ensure_one()
+        structured_model = self.env["camp.program.structured"]
+        frame_day_vals = {
+            "wake_time": self.fd_wake_time,
+            "breakfast": self.fd_breakfast,
+            "lunch": self.fd_lunch,
+            "afternoon_rest": self.fd_afternoon_rest,
+            "snack": self.fd_snack,
+            "dinner": self.fd_dinner,
+            "lights_out": self.fd_lights_out,
+            "meal_duration": self.fd_meal_duration,
+            "rest_duration": self.fd_rest_duration,
+        }
+
+        # Normal plan
+        structured_normal = structured_model.create(
+            dict(
+                event_id=event.id,
+                is_rain_plan=False,
+                **frame_day_vals,
+            )
+        )
+        structured_model._generate_skeleton(event, structured_normal)
+
+        # Rain plan
+        if self.also_generate_rain_plan:
+            structured_rain = structured_model.create(
+                dict(
+                    event_id=event.id,
+                    is_rain_plan=True,
+                    **frame_day_vals,
+                )
+            )
+            structured_model._generate_skeleton(event, structured_rain)
+
         return True

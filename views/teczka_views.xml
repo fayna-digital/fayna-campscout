@@ -16,6 +16,7 @@
                     <field name="dziennik_ready" widget="boolean_toggle" readonly="1"/>
                     <field name="wypadki_ready" widget="boolean_toggle" readonly="1"/>
                     <field name="program_ready" widget="boolean_toggle" readonly="1"/>
+                    <field name="zgloszenie_ready" widget="boolean_toggle" readonly="1"/>
                     <field name="overall_ready" widget="boolean_toggle" readonly="1"/>
                 </tree>
             </field>
@@ -30,6 +31,11 @@
                         <button name="action_print_checklist" type="object"
                                 string="Drukuj checklistę (PDF)" class="oe_highlight"
                                 icon="fa-print"/>
+                        <button name="action_send_teczka_to_kuratorium" type="object"
+                                string="Wyślij teczkę do Kuratorium" class="oe_highlight"
+                                icon="fa-envelope"
+                                confirm="Wysłać teczkę kontrolną na adres delegatury Kuratorium Oświaty?"
+                                help="Wysyła PDF teczki na e-mail delegatury i loguje wysyłkę w chatterze. Ostrzega, jeśli są niekompletne pozycje."/>
                         <button name="action_export_pdf_pack" type="object"
                                 string="Eksport pełnego pakietu PDF"
                                 help="TODO: dostępne po integracji wszystkich raportów."/>
@@ -49,7 +55,9 @@
                         </div>
                         <group>
                             <field name="event_id"/>
-                            <field name="overall_ready" widget="boolean_toggle" readonly="1"/>
+                            <field name="overall_ready" widget="boolean_toggle" readonly="1"
+                                   string="Gotowe do kontroli KO"
+                                   help="KO = Kuratorium Oświaty. Cała dokumentacja turnusu gotowa do kontroli."/>
                         </group>
                         <group string="1. Karty kwalifikacyjne uczestników">
                             <field name="karty_percent" widget="progressbar"/>
@@ -57,8 +65,9 @@
                             <field name="karty_total"/>
                             <field name="karty_ready" widget="boolean_toggle" readonly="1"/>
                         </group>
-                        <group string="2. Kadra — KRK / RSPTS / kursy (Ustawa Kamilka)">
-                            <field name="kadra_eligible"/>
+                        <group string="2. Kadra — KRK / RPS / kursy (Ustawa Kamilka)">
+                            <field name="kadra_eligible"
+                                   help="Kadra z ważnym KRK (Zaświadczenie o niekaralności) oraz sprawdzeniem w RPS (Rejestr Sprawców Przestępstw na tle seksualnym) — wymóg Ustawy Kamilka 2024."/>
                             <field name="kadra_total"/>
                             <field name="kadra_ready" widget="boolean_toggle" readonly="1"/>
                         </group>
@@ -80,7 +89,22 @@
                             <field name="program_count"/>
                             <field name="program_ready" widget="boolean_toggle" readonly="1"/>
                         </group>
+                        <group string="7. Zgłoszenie wypoczynku do Kuratorium (Załącznik 1)">
+                            <field name="zgloszenie_filed"/>
+                            <field name="zgloszenie_count"/>
+                            <field name="zgloszenie_ready" widget="boolean_toggle" readonly="1"/>
+                        </group>
+                        <group string="Wysyłka do Kuratorium Oświaty">
+                            <field name="delegatura_email"
+                                   placeholder="np. kalisz@ko.poznan.pl"
+                                   help="Oficjalny e-mail delegatury KO — odbiorca teczki. Dane dzieci tylko na adres urzędowy."/>
+                        </group>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
                 </form>
             </field>
         </record>

@@ -100,6 +100,31 @@
             </field>
         </record>
 
+        <record id="camp_transport_search" model="ir.ui.view">
+            <field name="name">camp.transport.search</field>
+            <field name="model">camp.transport</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="event_id"/>
+                    <field name="departure_location"/>
+                    <field name="arrival_location"/>
+                    <field name="driver_name"/>
+                    <filter name="overdue" string="Spóźnione" domain="[('is_overdue','=',True)]"/>
+                    <separator/>
+                    <filter name="planned" string="Zaplanowane" domain="[('state','=','planned')]"/>
+                    <filter name="confirmed" string="Potwierdzone" domain="[('state','=','confirmed')]"/>
+                    <filter name="completed" string="Zrealizowane" domain="[('state','=','completed')]"/>
+                    <filter name="cancelled" string="Anulowane" domain="[('state','=','cancelled')]"/>
+                    <group expand="0" string="Grupuj wg">
+                        <filter name="by_event" string="Turnus" context="{'group_by':'event_id'}"/>
+                        <filter name="by_trip_type" string="Typ przejazdu" context="{'group_by':'trip_type'}"/>
+                        <filter name="by_state" string="Status" context="{'group_by':'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
         <record id="camp_transport_action" model="ir.actions.act_window">
             <field name="name">Camp Transport</field>
             <field name="res_model">camp.transport</field>

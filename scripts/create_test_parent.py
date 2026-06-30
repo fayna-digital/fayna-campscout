@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """
 Create test parent user with test child and test data for CampScout.
 

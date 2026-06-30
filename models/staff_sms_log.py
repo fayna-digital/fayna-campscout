@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """Immutable audit log for wychowawca SMS broadcasts.
 
 RODO + cost audit. Records every SMS broadcast a staff member sends to

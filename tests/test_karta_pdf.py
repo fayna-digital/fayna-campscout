@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — smoke tests for the Karta Kwalifikacyjna PDF report
 # (§10 TZ_SPRINT — wzór 2026 Dz.U. 2026/704 / wzór 2021 Dz.U. 2021/1548).
 #

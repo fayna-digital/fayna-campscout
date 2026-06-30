@@ -159,7 +159,7 @@
         <record id="action_camp_group" model="ir.actions.act_window">
             <field name="name">Grupy wychowawcze</field>
             <field name="res_model">camp.group</field>
-            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_mode">kanban,list,form</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     Create a wychowawca group

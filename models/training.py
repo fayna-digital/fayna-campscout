@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """Staff training — Odoo eLearning (slide.channel) extension for MEN compliance.
 
 Extends slide.channel with:

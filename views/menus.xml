@@ -13,6 +13,19 @@
             sequence="50"
             groups="base.group_user"/>
 
+        <!-- Клікабельний вхід у кабінет організатора (dashboard /admin/dashboard) -->
+        <record id="action_admin_dashboard_url" model="ir.actions.act_url">
+            <field name="name">Кабінет організатора</field>
+            <field name="url">/admin/dashboard</field>
+            <field name="target">self</field>
+        </record>
+        <menuitem id="menu_admin_dashboard"
+            name="Кабінет організатора"
+            parent="menu_campscout_root"
+            action="action_admin_dashboard_url"
+            sequence="1"
+            groups="fayna_camp_portal.group_camp_organizator"/>
+
         <!-- ═══════════════════════════════════════════════════════════════
              Camp Management
         ═══════════════════════════════════════════════════════════════ -->
@@ -28,8 +41,15 @@
             action="event.action_event_view"
             sequence="10"/>
 
+        <menuitem id="menu_camp_pending_approval"
+            name="Na pogodzenniu (do zatwierdzenia)"
+            parent="menu_camp_management"
+            action="action_events_pending_approval"
+            sequence="11"
+            groups="fayna_camp_portal.group_camp_organizator,fayna_camp_portal.group_fayna_camp_manager"/>
+
         <menuitem id="menu_camp_products"
-            name="Programy (Products)"
+            name="Oferta / Produkty"
             parent="menu_camp_management"
             action="product.product_template_action_all"
             sequence="20"/>
@@ -39,6 +59,12 @@
             parent="menu_camp_management"
             action="action_camp_category"
             sequence="30"/>
+
+        <menuitem id="menu_camp_seasons"
+            name="Sezony (Lato/Zima)"
+            parent="menu_camp_management"
+            action="action_fayna_camp_season"
+            sequence="25"/>
 
         <menuitem id="menu_camp_activities"
             name="Aktywności"
@@ -83,22 +109,42 @@
             sequence="10"/>
 
         <menuitem id="menu_camp_journal"
-            name="Dziennik dnia"
+            name="Dziennik wydarzeń / Log dnia"
             parent="menu_operations"
             action="action_camp_journal"
             sequence="20"/>
 
         <menuitem id="menu_camp_dziennik"
-            name="Dziennik zajęć"
+            name="Dziennik Zajęć (Załącznik 5)"
             parent="menu_operations"
             action="action_fayna_camp_dziennik"
             sequence="30"/>
 
         <menuitem id="menu_camp_program_wypoczynku"
-            name="Program Wypoczynku (Załącznik 9)"
+            name="Program wypoczynku"
             parent="menu_operations"
             action="action_camp_program_wypoczynku"
             sequence="40"/>
+
+        <menuitem id="menu_camp_program_structured"
+            name="Program strukturalny (dzień po dniu)"
+            parent="menu_operations"
+            action="action_camp_program_structured"
+            sequence="41"/>
+
+        <!-- Phase C: wychowawca entry point — own published programs only -->
+        <menuitem id="menu_camp_program_wychowawca"
+            name="Mój program"
+            parent="menu_operations"
+            action="action_camp_program_structured_wychowawca"
+            sequence="42"
+            groups="fayna_camp_portal.group_camp_wychowawca"/>
+
+        <menuitem id="menu_camp_daily_report"
+            name="Raport dzienny (§2.11)"
+            parent="menu_operations"
+            action="action_camp_daily_report"
+            sequence="22"/>
 
         <menuitem id="menu_camp_kuratorium"
             name="Kuratorium"
@@ -109,7 +155,7 @@
         <!-- ── sprint 2026-06-10: §2/§4/§11/§12 ─────────────────────── -->
 
         <menuitem id="menu_camp_groups"
-            name="Grupy wychowawcze (§2)"
+            name="Grupy wychowawcze"
             parent="menu_operations"
             action="action_camp_group"
             sequence="15"/>
@@ -143,6 +189,12 @@
             parent="menu_operations"
             action="camp_teczka_ko_action"
             sequence="80"/>
+
+        <menuitem id="menu_camp_stories"
+            name="Stories / Kronika obozu"
+            parent="menu_operations"
+            action="camp_story_action"
+            sequence="90"/>
 
         <!-- ── Фінанси (кабінет №7, sprint 2026-06-10) ──────────────── -->
 
@@ -208,6 +260,15 @@
             action="action_camp_incident_report"
             sequence="10"/>
 
+        <!-- Ustawa Kamilka 2024: niezmienny dziennik powiadomień (audyt KO).
+             Widoczny dla ról z dostępem do logu (organizator/kierownik). -->
+        <menuitem id="menu_incident_notification_log"
+            name="Dziennik powiadomień (audyt Kuratorium)"
+            parent="menu_emergency"
+            action="action_camp_incident_notification_log"
+            sequence="20"
+            groups="fayna_camp_portal.group_camp_organizator,fayna_camp_portal.group_camp_kierownik"/>
+
         <!-- ═══════════════════════════════════════════════════════════════
              Commercial
         ═══════════════════════════════════════════════════════════════ -->
@@ -223,6 +284,14 @@
             action="action_camp_loyalty_participant"
             sequence="10"/>
 
+        <!-- Sierota: action_camp_loyalty_history istniała bez menu — historia
+             punktów lojalnościowych była nieosiągalna z UI. -->
+        <menuitem id="menu_loyalty_history"
+            name="Historia punktów lojalnościowych"
+            parent="menu_commercial"
+            action="action_camp_loyalty_history"
+            sequence="15"/>
+
         <menuitem id="menu_support_requests"
             name="Zgłoszenia rodziców"
             parent="menu_commercial"
@@ -234,6 +303,12 @@
             parent="menu_commercial"
             action="action_fayna_payment_installment_plan"
             sequence="30"/>
+
+        <menuitem id="menu_installment_monitor"
+            name="Raty — monitoring (zaległe)"
+            parent="menu_commercial"
+            action="action_fayna_payment_installment"
+            sequence="35"/>
 
         <menuitem id="menu_reviews"
             name="Opinie"

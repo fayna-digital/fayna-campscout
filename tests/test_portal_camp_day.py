@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """HttpCase tests for /my/camp-day/<event_id> — «Dzień w obozie».
 
 Covers TZ_SPRINT_2026-06-10 §7:

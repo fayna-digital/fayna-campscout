@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """Organizator (admin) dashboard + view-as routes.
 
 Top-level Organizator (group_camp_organizator per PL law, Rozp. MEN
@@ -20,12 +22,31 @@ import logging
 from datetime import datetime, timedelta
 
 from odoo import _, http
+from odoo.addons.web.controllers.home import Home
 from odoo.exceptions import AccessError, MissingError, UserError
 from odoo.http import request
 
 _logger = logging.getLogger(__name__)
 
 ORGANIZATOR_GROUP = "fayna_camp_portal.group_camp_organizator"
+
+
+class CampHome(Home):
+    """Login redirect: Organizator → server-rendered /admin/dashboard.
+
+    Root cause (TZ §20 R1): the organizator home action was an `act_url` to
+    /admin/dashboard, but the web client does NOT auto-execute an act_url home
+    action → blank /web (stuck "Pobieranie"). Redirect at the HTTP login level
+    so they land straight on the dashboard. Kiosk roles fall through to default
+    (web client → camp_kiosk_action via res.users._get_login_action).
+    """
+
+    def _login_redirect(self, uid, redirect=None):
+        if not redirect:
+            user = request.env["res.users"].sudo().browse(uid)
+            if user.has_group(ORGANIZATOR_GROUP):
+                return "/admin/dashboard"
+        return super()._login_redirect(uid, redirect=redirect)
 
 
 class CampscoutAdmin(http.Controller):
@@ -134,7 +155,69 @@ class CampscoutAdmin(http.Controller):
             [], order="accessed_at desc", limit=10
         )
 
+        # 8) Impersonation — users the Organizator may log in as (login-as)
+        values["impersonable_users"] = self._build_impersonable_users(env_sudo)
+
         return request.render("fayna_camp_portal.admin_dashboard", values)
+
+    def _build_impersonable_users(self, env_sudo):
+        """Return camp-role/parent users that login-as may target, grouped by role.
+
+        Mirrors the backend guard in /admin/login-as: never list admins or
+        organizators (no privilege escalation). Internal camp roles
+        (kierownik/wychowawca/instructor) plus portal parents are eligible.
+        Returns a list of dicts ordered by role for a grouped QWeb render.
+        """
+        groups = {
+            "kierownik": "fayna_camp_portal.group_camp_kierownik",
+            "wychowawca": "fayna_camp_portal.group_camp_wychowawca",
+            "instructor": "fayna_camp_portal.group_camp_instructor",
+            "parent": "base.group_portal",
+        }
+        # Labels shown in the UI (Ukrainian, per CLAUDE.md).
+        labels = {
+            "kierownik": _("Kierownik"),
+            "wychowawca": _("Wychowawca"),
+            "instructor": _("Instruktor"),
+            "parent": _("Батьки"),
+        }
+        try:
+            system_group = env_sudo.ref("base.group_system")
+            organizator_group = env_sudo.ref(ORGANIZATOR_GROUP)
+        except (ValueError, KeyError):
+            return []
+
+        sections = []
+        seen_ids = set()
+        for role, xmlid in groups.items():
+            try:
+                group = env_sudo.ref(xmlid)
+            except (ValueError, KeyError):
+                continue
+            try:
+                users = env_sudo["res.users"].search(
+                    [
+                        ("active", "=", True),
+                        ("groups_id", "in", group.id),
+                        ("groups_id", "not in", system_group.id),
+                        ("groups_id", "not in", organizator_group.id),
+                    ],
+                    order="name asc",
+                    limit=100,
+                )
+            except (AccessError, MissingError, KeyError):
+                continue
+            rows = []
+            for user in users:
+                # A user may hold several role groups — show them once, under
+                # the first (most privileged) role we encounter.
+                if user.id in seen_ids:
+                    continue
+                seen_ids.add(user.id)
+                rows.append({"id": user.id, "name": user.name})
+            if rows:
+                sections.append({"role": role, "label": labels.get(role, role), "users": rows})
+        return sections
 
     # --- KPI helpers -------------------------------------------------
 
@@ -183,7 +266,7 @@ class CampscoutAdmin(http.Controller):
                 kierownik = False
                 try:
                     staff = env_sudo["camp.staff"].search(
-                        [("event_id", "=", ev.id), ("role", "in", ("director", "leader"))],
+                        [("event_id", "=", ev.id), ("role", "=", "kierownik")],
                         limit=1,
                     )
                     kierownik = staff.name or (staff.user_id and staff.user_id.name) or False
@@ -465,3 +548,111 @@ class CampscoutAdmin(http.Controller):
             "impersonated_role": "parent",
         }
         return request.render("fayna_camp_portal.admin_as_parent", values)
+
+    # ------------------------------------------------------------------
+    # TRUE login-as: switch the WHOLE session to the target user, so the
+    # Organizator uses that role's real backend/portal. RODO-logged on
+    # start AND stop, no escalation (cannot impersonate admin/organizator),
+    # fully reversible via /admin/stop-impersonation.
+    # ------------------------------------------------------------------
+    @http.route("/admin/login-as", type="http", auth="user", website=True)
+    def admin_login_as(self, user_id=None, reason=None, **kw):
+        self._check_admin()
+        if request.session.get("impersonator_uid"):
+            raise UserError(_("Już trwa impersonacja — najpierw wróć do siebie."))
+        if not user_id:
+            raise UserError(_("user_id is required."))
+        try:
+            target = request.env["res.users"].sudo().browse(int(user_id)).exists()
+        except (ValueError, TypeError) as e:
+            raise UserError(_("Invalid user_id.")) from e
+        if not target:
+            raise UserError(_("User not found."))
+        if target.id == request.env.user.id:
+            raise UserError(_("Nie można impersonować samego siebie."))
+        # No privilege escalation — never become an admin / organizator.
+        if target.has_group("base.group_system") or target.has_group(ORGANIZATOR_GROUP):
+            raise UserError(_("Nie można impersonować administratora/organizatora."))
+
+        original_uid = request.env.user.id
+        self._log_access("login_as", target_user=target, reason=reason or "login-as")
+
+        # Switch session + recompute token (else Odoo invalidates next request).
+        request.session["impersonator_uid"] = original_uid
+        request.session.uid = target.id
+        request.session.login = target.login
+        request.session.session_token = target._compute_session_token(request.session.sid)
+        request.update_env(user=target.id)
+
+        return request.redirect(self._login_as_landing(target))
+
+    def _login_as_landing(self, target):
+        """Choose the landing URL for a freshly-impersonated user.
+
+        G1 (TZ §G, 2026-06-24): operational internal roles
+        (kierownik/wychowawca/instructor and any other camp role that is a
+        base.group_user) must NOT land in the raw Odoo apps-grid (/web). They
+        land directly inside the «Portal CampScout» root menu so the cabinet
+        is the first thing they see — not a wall of Sales/Website/Employees
+        apps. Portal-only parents keep landing on /my.
+
+        We deep-link via /web#menu_id=<root> (the Odoo 17 web client reads the
+        menu_id from the URL fragment and opens that application directly
+        instead of the apps grid), and fall back to plain /web only if the menu
+        record cannot be resolved (e.g. module half-installed).
+        """
+        if not target.has_group("base.group_user"):
+            # Portal-only (parent) — their cabinet is /my.
+            return "/my"
+        try:
+            root_menu = request.env.ref(
+                "fayna_camp_portal.menu_campscout_root", raise_if_not_found=False
+            )
+        except (ValueError, KeyError):
+            root_menu = None
+        if root_menu:
+            # Odoo 17 web client reads the menu_id from the URL fragment and
+            # opens that application's menu directly instead of the apps grid.
+            return f"/web#menu_id={root_menu.id}"
+        return "/web"
+
+    @http.route("/admin/impersonation-status", type="json", auth="user")
+    def admin_impersonation_status(self):
+        """JSON: чи поточна сесія в режимі імперсонації (для systray/банера)."""
+        imp = request.session.get("impersonator_uid")
+        if not imp:
+            return {"impersonating": False}
+        admin = request.env["res.users"].sudo().browse(int(imp)).exists()
+        return {
+            "impersonating": True,
+            "admin_name": admin.name if admin else "",
+            "current_name": request.env.user.name,
+        }
+
+    @http.route("/admin/stop-impersonation", type="http", auth="user", website=True)
+    def admin_stop_impersonation(self, **kw):
+        original_uid = request.session.get("impersonator_uid")
+        if not original_uid:
+            return request.redirect("/admin/dashboard")
+        orig_user = request.env["res.users"].sudo().browse(int(original_uid)).exists()
+        if not orig_user:
+            request.session.logout(keep_db=True)
+            return request.redirect("/web/login")
+
+        # Audit the stop AS the original admin (not the impersonated user).
+        request.env["camp.admin.access.log"].sudo().create(
+            {
+                "user_id": original_uid,
+                "impersonated_role": "stop",
+                "target_user_id": request.env.user.id,
+                "ip_address": request.httprequest.remote_addr or False,
+                "session_id": getattr(request.session, "sid", False) or False,
+                "reason": "stop-impersonation",
+            }
+        )
+        request.session.uid = original_uid
+        request.session.login = orig_user.login
+        request.session.session_token = orig_user._compute_session_token(request.session.sid)
+        request.session.pop("impersonator_uid", None)
+        request.update_env(user=original_uid)
+        return request.redirect("/admin/dashboard")

@@ -1,5 +1,4 @@
 # Copyright 2026 Fayna Digital — Volodymyr Shevchenko
-# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl-3.0).
 """Karta Wypadku (§11) + Rejestr Wypadków (§12) — TZ_SPRINT_2026-06-10.
 
 Models:
@@ -575,7 +574,7 @@ class CampIncidentRegister(models.Model):
         if not (
             self.env.is_system() or self.env.user.has_group("fayna_camp_portal.group_camp_admin")
         ):
-            raise UserError(_("Only a Camp Administrator may unlock a closed " "Rejestr Wypadków."))
+            raise UserError(_("Only a Camp Administrator may unlock a closed Rejestr Wypadków."))
 
     def action_lock(self):
         """Lock the register — call when the turnus is closed."""

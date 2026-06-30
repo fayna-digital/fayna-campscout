@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """Auto-create staff ``discuss.channel`` for each ``event.event`` (camp shift).
 
 When a camp shift is created (or its kierownik / staff line-up changes),

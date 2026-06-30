@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """``res.partner`` extension — SMS opt-in flags (RODO art.7 compliant).
 
 Two independent toggles:
@@ -33,7 +35,6 @@ class ResPartner(models.Model):
         string=_("Receive marketing SMS"),
         default=False,
         help=_(
-            "Marketing/promotional SMS — explicit opt-in required per "
-            "RODO art.7. Never overridden."
+            "Marketing/promotional SMS — explicit opt-in required per RODO art.7. Never overridden."
         ),
     )

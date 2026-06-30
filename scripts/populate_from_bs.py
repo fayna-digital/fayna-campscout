@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # populate_from_bs.py — MIGRATION_BACK крок 4.3: bs_* (sale_order) → camp.participant
 #
 # Запуск НА STAGING (odoo shell, БД вже нейтралізована):
@@ -66,8 +68,12 @@ orders = SO.search(
 )
 print(f"SO з даними дитини (bs_child_name): {len(orders)}")
 
-created = skipped_done = no_reg = errors = 0
+created = skipped_done = no_reg = errors = skipped_2025 = 0
 report = []
+
+# Scope нового модуля = сезон 2026+ (торішні табори = архів, не мігруємо).
+# Критерій = дата ТАБОРУ (event), не замовлення: SO 2025 на табір 2026 — в scope.
+SEASON_CUTOFF = date(2026, 1, 1)
 
 for so in orders:
     # реєстрація цього замовлення (event_sale зв'язує через sale_order_id)
@@ -80,6 +86,16 @@ for so in orders:
     for reg in regs:
         if reg.participant_id:
             skipped_done += 1
+            continue
+
+        # Scope 2026: торішні табори (event до 2026) — архів, у новий модуль НЕ йдуть.
+        ev = reg.event_id
+        if ev and ev.date_begin and ev.date_begin.date() < SEASON_CUTOFF:
+            skipped_2025 += 1
+            report.append(
+                f"SKIP-2025 SO {so.name}: '{so.bs_child_name}' — "
+                f"табір {ev.name} ({ev.date_begin.date()}) поза scope 2026"
+            )
             continue
 
         # ПІБ: останнє слово = прізвище (польська конвенція 'Imię Nazwisko')
@@ -115,12 +131,16 @@ for so in orders:
             # savepoint: SQL-помилка однієї ітерації не ламає всю транзакцію
             # (InFailedSqlTransaction — INC staging 11.06)
             with env.cr.savepoint():  # noqa: F821
-                if not birth and so.bs_birth_date:
-                    # дата не розпарсилась — зберегти сирий текст, не губити
-                    vals["special_needs"] = (
-                        (vals.get("special_needs") or "")
-                        + f"\n[migracja] data urodzenia (raw): {so.bs_birth_date}"
-                    ).strip()
+                if not birth:
+                    # дата відсутня/не розпарсилась — НЕ вигадувати: прапорець
+                    # на ручну перевірку (гейт підпису його пропускає)
+                    vals["migration_needs_review"] = True
+                    if so.bs_birth_date:
+                        # сирий текст зберегти, не губити
+                        vals["special_needs"] = (
+                            (vals.get("special_needs") or "")
+                            + f"\n[migracja] data urodzenia (raw): {so.bs_birth_date}"
+                        ).strip()
                 child = Participant.create(vals)
                 # bs_qualification_form_pdf = Many2one ir.attachment (integer!)
                 # → копія attachment на учасника (оригінал лишається на SO)
@@ -154,6 +174,7 @@ for so in orders:
 print("\n".join(report[:60]))
 print(
     f"\nПІДСУМОК: created={created} skipped(вже є)={skipped_done} "
+    f"skipped(2025 поза scope)={skipped_2025} "
     f"no_reg={no_reg} errors={errors} | DRY_RUN={DRY_RUN}"
 )
 if not DRY_RUN:

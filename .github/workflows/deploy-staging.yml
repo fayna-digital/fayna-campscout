@@ -1,0 +1,83 @@
+name: Deploy Staging
+
+# CD: повна автоматизація того ж безпечного сценарію, що в tools/deploy-staging.sh.
+# Дзеркалить анти-казус механізми (clear .pyc / гейт міграції / wait-for-green / rollback / перми).
+# Runner GitHub НЕ бачить ~/.ssh/config — тому host/user/key з secrets, а port 2222 — явно.
+#
+# ПОТРІБНІ SECRETS (Repo → Settings → Secrets → Actions):
+#   STAGING_SSH_HOST = 178.104.186.74
+#   STAGING_SSH_USER = deploy
+#   STAGING_SSH_KEY  = <приватний CI-ключ, авторизований ЛИШЕ на staging>
+# Порт 2222 — не секрет, заданий явно нижче.
+#
+# Передумова: staging authorized_keys має бути persistent (інакше pubkey злітає — Hetzner Console).
+# Активація: push у гілку `staging` АБО ручний запуск (workflow_dispatch).
+
+on:
+  workflow_dispatch:
+    inputs:
+      module:
+        description: "Odoo module to upgrade"
+        default: "fayna_camp_portal"
+  push:
+    branches: [staging]
+
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: false   # деплій не переривати на півдорозі
+
+jobs:
+  deploy:
+    name: Safe staging deploy (clear .pyc + gated migration + wait-for-green + rollback)
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH safe-deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.STAGING_SSH_HOST }}
+          username: ${{ secrets.STAGING_SSH_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          port: 2222
+          command_timeout: 10m
+          script: |
+            set -euo pipefail
+            MODULE="${{ github.event.inputs.module || 'fayna_camp_portal' }}"
+            ADDON="/opt/campscout/custom-addons/${MODULE}"
+            CONT="campscout_web"; DB="campscout"; CONF="/etc/odoo/odoo.conf"
+            URL="https://staging.campscout.eu/web/health"   # GET-safe 200; version_info=POST-only→GET 400 хибний rollback
+            cd "$ADDON"
+
+            echo "[a] rollback-point + pull"
+            PREV=$(git rev-parse HEAD); echo "    prev=$PREV"
+            git fetch origin && git checkout "${{ github.ref_name }}" && git pull
+
+            echo "[b] perms (landmine 660 → o+rX)"
+            sudo chmod -R o+rX .
+
+            echo "[c] clear .pyc (казус 25.06)"
+            find . -name '*.pyc' -delete 2>/dev/null || true
+            find . -name __pycache__ -type d -exec rm -rf {} + 2>/dev/null || true
+
+            echo "[d] МІГРАЦІЯ one-off — ГЕЙТ за exit"
+            if ! docker exec "$CONT" odoo -c "$CONF" -d "$DB" -u "$MODULE" --stop-after-init --no-http > /tmp/mig.log 2>&1; then
+              echo "❌ міграція впала — НЕ свопимо"; grep -iE 'ERROR|CRITICAL|Traceback' /tmp/mig.log | tail -8
+              git checkout "$PREV" >/dev/null 2>&1; sudo chmod -R o+rX .; exit 1
+            fi
+            echo "    міграція exit=0"
+
+            echo "[e] restart"
+            docker restart "$CONT" >/dev/null 2>&1
+
+            echo "[f] WAIT-FOR-GREEN (200 OK, 5с×24=2хв)"
+            ok=0
+            for i in $(seq 1 24); do
+              code=$(curl -s -o /dev/null -w '%{http_code}' -k "$URL" || echo 000)
+              if [ "$code" = "200" ]; then echo "    green за $((i*5))с"; ok=1; break; fi
+              echo "    ...$code ($i/24)"; sleep 5
+            done
+            if [ "$ok" != "1" ]; then
+              echo "❌ не green за 2хв → ROLLBACK"
+              git checkout "$PREV" >/dev/null 2>&1; sudo chmod -R o+rX .; docker restart "$CONT" >/dev/null 2>&1
+              echo "↩ відкочено на $PREV. ⚠️ перевір БД вручну (Expand-Contract!)"; exit 1
+            fi
+            echo "✅ DEPLOY OK — staging green."

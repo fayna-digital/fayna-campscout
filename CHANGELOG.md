@@ -2,6 +2,33 @@
 
 All notable changes to `fayna_camp_portal` are documented here.
 
+## [17.0.3.0.0] — 2026-06-23 … 2026-06-25 — Native parent signoff + escort + kiosk + relicense
+
+### Added
+- **camp.escort** — Indywidualna asysta / konwój: модель, кабінет `/my/escort` (форма+canvas-підпис), двомовні PL/UA звіти dozwoła+RODO (art.13), zgoda na pomoc medyczną. Q9 `escort_required` конфіг.
+- **Нативний підпис картки батьками** — `/my/participants/<id>` (detail+submit+sign), canvas signature pad → `sign_qualification`, read-only+PDF після підпису. Виводить стару bs-форму (Strangler).
+- **Підпис організатора** — `res.company.camp_organizer_signature` + рендер у karta-звіті.
+- **Тести критичних шляхів** — 26 requirement-driven (signed_by=real-parent, ACL write=0, ownership, immutability, RODO-лог, escort). `tests/test_signoff_rodo.py` + escort/registration/rodo.
+- **Kiosk shell (TZ §4)** — повноекранний кіоск-режим (`views/kiosk_views.xml`, `kiosk_app.js`, `kiosk.scss`, systray-перемикачі kiosk↔Odoo + back) для роботи кадри на турнусі з планшета.
+- **Тултіпи абревіатур (UX recognition-not-recall)** — PL-розшифровки в views: KRK → «Zaświadczenie o niekaralności (KRK)», RPS → «Rejestr Sprawców Przestępstw na tle seksualnym (RPS)», BEP → «Próg rentowności (BEP)», KO → «Kuratorium Oświaty», VAT-marża → «procedura VAT marża art. 119».
+
+### Changed
+- **Перехід на OPL-1** — `LICENSE` переписано на Odoo Proprietary License v1.0 (модуль bespoke для CampScout, без redistribution/SaaS). Manifest `license="OPL-1"` + © Fayna Digital / Volodymyr Shevchenko у заголовках. README/Tech Stack/badge приведено до OPL-1, прибрано застарілі version-рядки (17.0.2.0.0 → 17.0.3.0.0).
+- **i18n pl_PL** — оновлено польські переклади (374+ рядків), заголовки кабінету батьків `/my/*` польською.
+
+### Fixed
+- **Юр-доказ підпису:** `signed_by` = справжній батько (не superuser) через `signed_by_id` + controlled-sudo після ownership-check. Латентний баг (підпис не працював для portal-user через ACL write=0 + read на res.partner дитини).
+- **/my/documents 500** → graceful guard на `KeyError` (legal.document.version може бути не встановлено, Strangler).
+- **Дашборд організатора** — фікс рендеру `/admin/dashboard` (KPI-карти + drill-down).
+- Биті лінки кабінету: `/my/bookings`→`/my/orders`, `/my/participants/new`→бронювання, +`/my/support` routes.
+- Картка переведена на `cs-*` візуальні патерни кабінету + mobile-first.
+
+### Notes
+- Верифіковано end-to-end на staging (прод-копія): підпис як portal-user, рендер обох станів, усі 9 /my/* routes=200, 26 тестів PASS, ruff clean.
+- ADR-2: seats-from-sales НЕ реплікуємо (нативні реєстрації покривають; verified 209 open regs).
+- Migration scripts (lossless, rehearsed): populate_from_bs / migrate_bs_signatures / populate_escort_from_204 / detach_campscout_management.
+
+
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html) — Odoo `17.0.MAJOR.MINOR.PATCH`.
 

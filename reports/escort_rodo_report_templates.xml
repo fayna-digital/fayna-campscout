@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- =================================================================
+             3 dokumenty RODO transportu / supровиду (TZ §5.4).
+             Język: polski (dokumenty do sprawy PL). Renderowane na modelu
+             camp.escort. Wzorzec QWeb zgodny z report_dozwola_konwoj.
+             Używają wyłącznie istniejących pól camp.escort + participant_id.
+        ================================================================== -->
+
+        <!-- (a) Informacja art. 13 RODO dla osoby-konwojenta -->
+        <template id="report_rodo_escort_data">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="fayna_camp_portal.report_rodo_escort_data_document"/>
+                </t>
+            </t>
+        </template>
+
+        <template id="report_rodo_escort_data_document">
+            <t t-call="web.external_layout">
+                <div class="page" style="font-size:12px;">
+                    <h3 class="text-center">Klauzula informacyjna RODO (art. 13)<br/>
+                        <span style="font-weight:normal; font-size:11px;">
+                            dotycząca przetwarzania danych w związku z transportem uczestnika</span>
+                    </h3>
+
+                    <table class="table table-sm table-borderless mt-3">
+                        <tr>
+                            <td style="width:50%;"><strong>Uczestnik:</strong>
+                                <span t-field="o.participant_id.display_name"/></td>
+                            <td><strong>Turnus:</strong>
+                                <span t-field="o.registration_id.display_name"/></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Środek transportu:</strong>
+                                <span t-out="dict(o._fields['transport_mode'].selection).get(o.transport_mode)"/></td>
+                            <td><strong>Miasto:</strong> <span t-field="o.home_city"/></td>
+                        </tr>
+                    </table>
+
+                    <ol style="font-size:11px;">
+                        <li>Administratorem Pani/Pana danych osobowych jest organizator wypoczynku
+                            (CampScout / Fundacja).</li>
+                        <li>Dane przetwarzane są w celu organizacji i realizacji transportu oraz
+                            opieki nad uczestnikiem wypoczynku.</li>
+                        <li>Podstawą prawną przetwarzania jest art. 6 ust. 1 lit. b RODO
+                            (wykonanie umowy) oraz art. 6 ust. 1 lit. c RODO (obowiązek prawny
+                            wynikający z ustawy o wypoczynku).</li>
+                        <li>Dane przechowywane są przez okres wymagany przepisami prawa
+                            (m.in. ustawa o systemie oświaty / o wypoczynku) oraz przez okres
+                            przedawnienia roszczeń.</li>
+                        <li>Dane nie są przekazywane podmiotom trzecim poza zakresem niezbędnym
+                            do realizacji usługi i wypełnienia obowiązków prawnych.</li>
+                        <li>Przysługuje prawo dostępu do danych, ich sprostowania, ograniczenia
+                            przetwarzania, a także prawo wniesienia skargi do Prezesa UODO.</li>
+                    </ol>
+
+                    <div class="row mt-4">
+                        <div class="col-6">
+                            <p>Podpis rodzica / opiekuna:</p>
+                            <img t-if="o.parent_signature"
+                                 t-att-src="image_data_uri(o.parent_signature)"
+                                 style="max-height:80px; border-bottom:1px solid #333;"/>
+                            <div t-if="not o.parent_signature" style="border-bottom:1px solid #333; height:40px;"/>
+                            <small>Data: <span t-field="o.signed_date"/></small>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- (b) Zgoda na przetwarzanie danych medycznych art. 9 ust. 2 lit. a (RODO) -->
+        <template id="report_rodo_medical_consent">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="fayna_camp_portal.report_rodo_medical_consent_document"/>
+                </t>
+            </t>
+        </template>
+
+        <template id="report_rodo_medical_consent_document">
+            <t t-call="web.external_layout">
+                <div class="page" style="font-size:12px;">
+                    <h3 class="text-center">Zgoda na przetwarzanie danych o stanie zdrowia<br/>
+                        <span style="font-weight:normal; font-size:11px;">
+                            art. 9 ust. 2 lit. a RODO — dane szczególnej kategorii</span>
+                    </h3>
+
+                    <table class="table table-sm table-borderless mt-3">
+                        <tr>
+                            <td style="width:50%;"><strong>Uczestnik:</strong>
+                                <span t-field="o.participant_id.display_name"/></td>
+                            <td><strong>Turnus:</strong>
+                                <span t-field="o.registration_id.display_name"/></td>
+                        </tr>
+                    </table>
+
+                    <p style="font-size:11px;">
+                        Wyrażam zgodę na przetwarzanie danych dotyczących stanu zdrowia mojego dziecka
+                        (dane szczególnej kategorii w rozumieniu art. 9 ust. 1 RODO) w zakresie
+                        niezbędnym do zapewnienia opieki, udzielenia pomocy medycznej oraz
+                        wezwania pomocy w razie potrzeby podczas transportu i pobytu na wypoczynku.
+                        Zgoda jest dobrowolna i może zostać wycofana w dowolnym momencie,
+                        co nie wpływa na zgodność z prawem przetwarzania dokonanego przed
+                        jej wycofaniem.
+                    </p>
+
+                    <div t-if="o.medical_help_consent" class="mt-2"
+                         style="border:1px solid #888; padding:8px;">
+                        <strong>Status zgody:</strong> wyrażona.
+                        <br/>
+                        <small>Data zgody: <span t-field="o.medical_help_consent_date"/></small>
+                    </div>
+                    <div t-if="not o.medical_help_consent" class="mt-2"
+                         style="border:1px solid #888; padding:8px;">
+                        <strong>Status zgody:</strong> niewyrażona / oczekuje na podpis.
+                    </div>
+
+                    <hr/>
+                    <div style="font-size:9px; color:#555;">
+                        Administratorem danych jest organizator wypoczynku.
+                        Podstawą przetwarzania danych o zdrowiu jest art. 9 ust. 2 lit. a RODO
+                        (wyraźna zgoda). Dane przechowywane są wyłącznie przez okres realizacji
+                        opieki oraz okres przedawnienia roszczeń.
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-6">
+                            <p>Podpis rodzica / opiekuna:</p>
+                            <img t-if="o.parent_signature"
+                                 t-att-src="image_data_uri(o.parent_signature)"
+                                 style="max-height:80px; border-bottom:1px solid #333;"/>
+                            <div t-if="not o.parent_signature" style="border-bottom:1px solid #333; height:40px;"/>
+                            <small>Data: <span t-field="o.signed_date"/></small>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- (c) Przetwarzanie danych osoby trzeciej-konwojenta -->
+        <template id="report_rodo_escort_person">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="fayna_camp_portal.report_rodo_escort_person_document"/>
+                </t>
+            </t>
+        </template>
+
+        <template id="report_rodo_escort_person_document">
+            <t t-call="web.external_layout">
+                <div class="page" style="font-size:12px;">
+                    <h3 class="text-center">Oświadczenie o przetwarzaniu danych osoby upoważnionej<br/>
+                        <span style="font-weight:normal; font-size:11px;">
+                            (osoba trzecia — konwojent / odbierający dziecko)</span>
+                    </h3>
+
+                    <table class="table table-sm table-borderless mt-3">
+                        <tr>
+                            <td style="width:50%;"><strong>Uczestnik:</strong>
+                                <span t-field="o.participant_id.display_name"/></td>
+                            <td><strong>Turnus:</strong>
+                                <span t-field="o.registration_id.display_name"/></td>
+                        </tr>
+                    </table>
+
+                    <p><strong>Dane osoby upoważnionej do konwoju / odbioru:</strong></p>
+                    <ul>
+                        <li>Imię i nazwisko: <span t-field="o.escort_person_name"/></li>
+                        <li>Telefon: <span t-field="o.escort_person_phone"/></li>
+                        <li>Dokument tożsamości: <span t-field="o.escort_person_doc"/></li>
+                    </ul>
+
+                    <p style="font-size:11px;">
+                        Oświadczam, że jako rodzic / opiekun prawny przekazuję organizatorowi
+                        dane osobowe wyżej wskazanej osoby trzeciej w celu umożliwienia jej
+                        konwoju lub odbioru dziecka. Oświadczam, że posiadam podstawę do
+                        przekazania tych danych i poinformowałem(-am) tę osobę o przetwarzaniu
+                        jej danych przez organizatora w tym celu.
+                    </p>
+
+                    <hr/>
+                    <div style="font-size:9px; color:#555;">
+                        Administratorem danych osoby upoważnionej jest organizator wypoczynku.
+                        Dane przetwarzane są na podstawie art. 6 ust. 1 lit. f RODO (prawnie
+                        uzasadniony interes — bezpieczeństwo transportu uczestnika), wyłącznie
+                        w zakresie weryfikacji tożsamości przy odbiorze / konwoju i usuwane po
+                        zakończeniu turnusu. Osobie tej przysługuje prawo dostępu do danych
+                        oraz wniesienia skargi do Prezesa UODO.
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-6">
+                            <p>Podpis rodzica / opiekuna:</p>
+                            <img t-if="o.parent_signature"
+                                 t-att-src="image_data_uri(o.parent_signature)"
+                                 style="max-height:80px; border-bottom:1px solid #333;"/>
+                            <div t-if="not o.parent_signature" style="border-bottom:1px solid #333; height:40px;"/>
+                            <small>Data: <span t-field="o.signed_date"/></small>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+    </data>
+</odoo>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ewidencja finansowa turnusu dla zewnętrznej księgowej (TZ §10/§4c).
+     RODO art.9: WYŁĄCZNIE kwoty zbiorcze — przychody / koszty / saldo / VAT.
+     ŻADNYCH danych uczestników (imię / PESEL / nazwisko). -->
+<odoo>
+    <data>
+
+        <template id="report_camp_budget_evidence">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+
+                            <!-- Header -->
+                            <div style="text-align:center; margin-bottom:24px;">
+                                <h2 style="margin-bottom:4px;">Ewidencja finansowa turnusu</h2>
+                                <h3 style="color:#555; font-weight:normal;">
+                                    <t t-esc="o.event_id.name"/>
+                                </h3>
+                                <p style="font-size:10pt; color:#777;">
+                                    Turnus:
+                                    <span t-field="o.event_id.date_begin" t-options='{"format": "dd.MM.yyyy"}'/>
+                                    —
+                                    <span t-field="o.event_id.date_end" t-options='{"format": "dd.MM.yyyy"}'/>
+                                    · Wygenerowano: <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d.%m.%Y %H:%M')"/>
+                                </p>
+                            </div>
+
+                            <!-- RODO note -->
+                            <div style="border:1px solid #1B4332; background:#e8f5ee; color:#1B4332;
+                                        padding:8px; font-size:9pt; margin-bottom:18px;">
+                                Dokument zawiera wyłącznie kwoty zbiorcze (przychody, koszty, saldo, VAT).
+                                Nie zawiera danych osobowych uczestników (RODO art. 9). Faktury źródłowe —
+                                przez KSeF.
+                            </div>
+
+                            <!-- Saldo summary -->
+                            <table class="table table-sm" style="width:100%; font-size:11pt; margin-bottom:18px;">
+                                <thead>
+                                    <tr style="border-bottom:2px solid #1B4332;">
+                                        <th style="width:46%;">Pozycja</th>
+                                        <th style="width:18%; text-align:right;">Netto</th>
+                                        <th style="width:18%; text-align:right;">VAT</th>
+                                        <th style="width:18%; text-align:right;">Brutto</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Przychody (faktury sprzedaży)</td>
+                                        <td style="text-align:right;">
+                                            <span t-esc="'%.2f' % o.evidence_revenue_net"/>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <span t-esc="'%.2f' % o.evidence_revenue_vat"/>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <span t-esc="'%.2f' % o.evidence_revenue_gross"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Koszty (faktury zakupu)</td>
+                                        <td style="text-align:right;">
+                                            <span t-esc="'%.2f' % o.evidence_costs_net"/>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <span t-esc="'%.2f' % o.evidence_costs_vat"/>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <span t-esc="'%.2f' % o.evidence_costs_gross"/>
+                                        </td>
+                                    </tr>
+                                    <tr style="border-top:2px solid #1B4332; font-weight:bold;">
+                                        <td>Saldo (wynik turnusu, netto)</td>
+                                        <td style="text-align:right;"
+                                            t-attf-style="text-align:right; color:#{'1B4332' if o.evidence_balance &gt;= 0 else 'a4262c'};">
+                                            <span t-esc="'%.2f' % o.evidence_balance"/>
+                                            <span t-esc="o.currency_id.symbol or o.currency_id.name"/>
+                                        </td>
+                                        <td/>
+                                        <td/>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- VAT breakdown -->
+                            <h4 style="margin-top:12px;">Rozbicie VAT wg stawek</h4>
+                            <table class="table table-sm" style="width:100%; font-size:10pt;">
+                                <thead>
+                                    <tr style="border-bottom:1px solid #1B4332;">
+                                        <th style="width:34%;">Rodzaj</th>
+                                        <th style="width:22%; text-align:right;">Stawka</th>
+                                        <th style="width:22%; text-align:right;">Podstawa (netto)</th>
+                                        <th style="width:22%; text-align:right;">Kwota VAT</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-if="o.evidence_vat_lines">
+                                        <tr t-foreach="o.evidence_vat_lines" t-as="vl">
+                                            <td>
+                                                <t t-if="vl['kind'] == 'revenue'">VAT należny (sprzedaż)</t>
+                                                <t t-else="">VAT naliczony (zakup)</t>
+                                            </td>
+                                            <td style="text-align:right;">
+                                                <span t-esc="'%.0f' % vl['rate']"/>%
+                                            </td>
+                                            <td style="text-align:right;">
+                                                <span t-esc="'%.2f' % vl['base']"/>
+                                            </td>
+                                            <td style="text-align:right;">
+                                                <span t-esc="'%.2f' % vl['vat']"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <t t-else="">
+                                        <tr>
+                                            <td colspan="4" style="color:#777; text-align:center;">
+                                                Brak zaksięgowanych faktur powiązanych z kontem analitycznym obozu.
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+
+                            <!-- Plan reference (context only) -->
+                            <p style="font-size:9pt; color:#777; margin-top:16px;">
+                                Dla porównania — plan turnusu (BEP):
+                                BEP min. dzieci <t t-esc="o.bep_children"/>,
+                                zapisanych <t t-esc="o.registered_children"/>.
+                                Wartości ewidencji pochodzą z zaksięgowanych faktur (konto analityczne
+                                <t t-esc="o.analytic_account_id.name or '—'"/>).
+                            </p>
+
+                            <!-- Signature line -->
+                            <div style="margin-top:40px; display:flex; justify-content:space-between;">
+                                <div style="width:45%; border-top:1px solid #333; padding-top:4px;
+                                            text-align:center; font-size:9pt; color:#555;">
+                                    Organizator wypoczynku (data, podpis)
+                                </div>
+                                <div style="width:45%; border-top:1px solid #333; padding-top:4px;
+                                            text-align:center; font-size:9pt; color:#555;">
+                                    Księgowa (data, podpis)
+                                </div>
+                            </div>
+
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</odoo>

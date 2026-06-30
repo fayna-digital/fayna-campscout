@@ -1,9 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_campscout_portal_session_admin,campscout.portal.session admin,model_campscout_portal_session,base.group_system,1,1,1,1
-access_campscout_portal_session_portal,campscout.portal.session portal,model_campscout_portal_session,base.group_portal,1,0,0,0
-access_campscout_portal_session_user,campscout.portal.session user,model_campscout_portal_session,base.group_user,1,0,0,0
-access_campscout_portal_menu_admin,campscout.portal.menu admin,model_campscout_portal_menu,base.group_system,1,1,1,1
-access_campscout_portal_menu_user,campscout.portal.menu user,model_campscout_portal_menu,base.group_user,1,0,0,0
+access_camp_escort_kierownik,camp.escort kierownik,model_camp_escort,fayna_camp_portal.group_camp_kierownik,1,1,1,1
+access_camp_escort_wychowawca,camp.escort wychowawca,model_camp_escort,fayna_camp_portal.group_medical_officer,1,1,0,0
+access_camp_escort_portal,camp.escort portal,model_camp_escort,base.group_portal,1,0,0,0
 access_camp_category_admin,camp.category admin,model_camp_category,base.group_system,1,1,1,1
 access_camp_category_user,camp.category user,model_camp_category,base.group_user,1,0,0,0
 access_camp_activity_admin,camp.activity admin,model_camp_activity,base.group_system,1,1,1,1
@@ -15,7 +13,8 @@ access_camp_faq_user,camp.faq user,model_camp_faq,base.group_user,1,0,0,0
 access_camp_schedule_entry_admin,camp.schedule.entry admin,model_camp_schedule_entry,base.group_system,1,1,1,1
 access_camp_schedule_entry_user,camp.schedule.entry user,model_camp_schedule_entry,base.group_user,1,0,0,0
 access_camp_participant_admin,camp.participant admin,model_camp_participant,base.group_system,1,1,1,1
-access_camp_participant_user,camp.participant user,model_camp_participant,base.group_user,1,0,0,0
+access_camp_participant_kierownik,camp.participant kierownik,model_camp_participant,fayna_camp_portal.group_camp_kierownik,1,1,0,0
+access_camp_participant_medical_access,camp.participant medical-access read,model_camp_participant,fayna_camp_portal.group_medical_access,1,0,0,0
 access_camp_participant_portal,camp.participant portal,model_camp_participant,base.group_portal,1,0,0,0
 access_camp_participant_medical_officer,camp.participant medical officer,model_camp_participant,fayna_camp_portal.group_medical_officer,1,1,1,0
 access_camp_presence_interval_admin,camp.presence.interval admin,model_camp_presence_interval,base.group_system,1,1,1,1
@@ -99,6 +98,12 @@ access_camp_activity_template_admin,camp.activity.template admin,model_camp_acti
 access_camp_activity_template_user,camp.activity.template user,model_camp_activity_template,base.group_user,1,0,0,0
 access_camp_program_structured_admin,camp.program.structured admin,model_camp_program_structured,base.group_system,1,1,1,1
 access_camp_program_structured_user,camp.program.structured user,model_camp_program_structured,base.group_user,1,0,0,0
+access_camp_program_structured_kierownik,camp.program.structured kierownik,model_camp_program_structured,fayna_camp_portal.group_camp_kierownik,1,1,1,1
+access_camp_program_structured_wychowawca,camp.program.structured wychowawca,model_camp_program_structured,fayna_camp_portal.group_camp_wychowawca,1,0,0,0
+access_camp_program_day_kierownik,camp.program.day kierownik,model_camp_program_day,fayna_camp_portal.group_camp_kierownik,1,1,1,1
+access_camp_program_day_wychowawca,camp.program.day wychowawca,model_camp_program_day,fayna_camp_portal.group_camp_wychowawca,1,0,0,0
+access_camp_program_activity_line_kierownik,camp.program.activity.line kierownik,model_camp_program_activity_line,fayna_camp_portal.group_camp_kierownik,1,1,1,1
+access_camp_program_activity_line_wychowawca,camp.program.activity.line wychowawca,model_camp_program_activity_line,fayna_camp_portal.group_camp_wychowawca,1,1,0,0
 access_camp_kuratorium_notification_admin,camp.kuratorium.notification admin,model_camp_kuratorium_notification,base.group_system,1,1,1,1
 access_camp_kuratorium_notification_user,camp.kuratorium.notification user,model_camp_kuratorium_notification,base.group_user,1,0,0,0
 access_camp_kuratorium_notification_camp_admin,camp.kuratorium.notification camp admin,model_camp_kuratorium_notification,fayna_camp_portal.group_camp_admin,1,1,1,1
@@ -155,6 +160,8 @@ access_vozhatyi_training_record_user,vozhatyi.training.record user,model_vozhaty
 access_vozhatyi_training_record_portal,vozhatyi.training.record portal,model_vozhatyi_training_record,base.group_portal,1,0,0,0
 access_vozhatyi_training_record_hr,vozhatyi.training.record hr,model_vozhatyi_training_record,fayna_camp_portal.group_camp_hr,1,1,1,0
 access_camp_story_admin,camp.story admin,model_camp_story,base.group_system,1,1,1,1
+access_camp_create_wizard_kierownik,camp.create.wizard kierownik,model_camp_create_wizard,fayna_camp_portal.group_camp_kierownik,1,1,1,1
+access_camp_create_wizard_organizator,camp.create.wizard organizator,model_camp_create_wizard,fayna_camp_portal.group_camp_organizator,1,1,1,1
 access_camp_story_kierownik,camp.story kierownik,model_camp_story,fayna_camp_portal.group_camp_kierownik,1,1,1,1
 access_camp_story_wychowawca,camp.story wychowawca,model_camp_story,fayna_camp_portal.group_camp_wychowawca,1,1,1,0
 access_camp_story_portal,camp.story portal,model_camp_story,base.group_portal,1,0,0,0
@@ -212,3 +219,12 @@ access_camp_staff_vacancy_kierownik,camp.staff.vacancy kierownik,model_camp_staf
 access_camp_staff_vacancy_organizator,camp.staff.vacancy organizator,model_camp_staff_vacancy,fayna_camp_portal.group_camp_organizator,1,1,1,1
 access_camp_staff_vacancy_admin,camp.staff.vacancy admin,model_camp_staff_vacancy,fayna_camp_portal.group_camp_admin,1,1,1,1
 access_camp_staff_vacancy_hr,camp.staff.vacancy hr,model_camp_staff_vacancy,fayna_camp_portal.group_camp_hr,1,1,1,0
+access_camp_staff_application_organizator,camp.staff.application organizator,model_camp_staff_application,fayna_camp_portal.group_camp_organizator,1,1,1,1
+access_camp_staff_application_admin,camp.staff.application admin,model_camp_staff_application,fayna_camp_portal.group_camp_admin,1,1,1,1
+access_camp_staff_application_hr,camp.staff.application hr,model_camp_staff_application,fayna_camp_portal.group_camp_hr,1,1,1,0
+access_camp_staff_application_kierownik,camp.staff.application kierownik,model_camp_staff_application,fayna_camp_portal.group_camp_kierownik,1,0,0,0
+access_camp_staff_candidate,camp.staff candidate,model_camp_staff,fayna_camp_portal.group_camp_candidate,1,1,0,0
+access_camp_staff_cert_candidate,camp.staff.cert candidate,model_camp_staff_cert,fayna_camp_portal.group_camp_candidate,1,1,1,0
+access_camp_staff_application_candidate,camp.staff.application candidate,model_camp_staff_application,fayna_camp_portal.group_camp_candidate,1,0,0,0
+access_event_stage_camp_read,event.stage camp read,event.model_event_stage,base.group_user,1,0,0,0
+access_event_type_camp_read,event.type camp read,event.model_event_type,base.group_user,1,0,0,0

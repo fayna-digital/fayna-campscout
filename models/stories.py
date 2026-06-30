@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """Camp stories — daily logs / adventures / team moments published to parents.
 
 Migrated 2026-04-30 from the standalone ``fayna_camp_stories`` module
@@ -150,10 +152,7 @@ class CampStory(models.Model):
         for record in self:
             if record.state != "draft":
                 raise UserError(
-                    _(
-                        "Cannot publish a story in state '%s'. "
-                        "Only draft stories can be published."
-                    )
+                    _("Cannot publish a story in state '%s'. Only draft stories can be published.")
                     % record.state
                 )
             record.write({"state": "published", "publish_date": fields.Datetime.now()})

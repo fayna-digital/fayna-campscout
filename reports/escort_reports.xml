@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="paperformat_dozwola_konwoj" model="report.paperformat">
+            <field name="name">Dozwoła konwój A4</field>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">12</field>
+            <field name="margin_bottom">12</field>
+            <field name="margin_left">12</field>
+            <field name="margin_right">12</field>
+            <field name="header_line" eval="False"/>
+            <field name="dpi">90</field>
+        </record>
+
+        <record id="action_report_dozwola_konwoj" model="ir.actions.report">
+            <field name="name">Upoważnienie do konwoju (PDF)</field>
+            <field name="model">camp.escort</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">fayna_camp_portal.report_dozwola_konwoj</field>
+            <field name="report_file">fayna_camp_portal.report_dozwola_konwoj</field>
+            <field name="binding_model_id" ref="model_camp_escort"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="paperformat_dozwola_konwoj"/>
+            <field name="print_report_name">'Dozwola_konwoj_%s' % (object.participant_id.display_name or '').replace(' ', '_')</field>
+        </record>
+
+    </data>
+</odoo>

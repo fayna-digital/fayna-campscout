@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # loope_fix_data.py — LOOP-E ітерація 1, фіксери даних F1/F2/F4.
 #   F1: PESEL у passport_number → поле pesel + СПРАВЖНЯ дата народження + стать.
 #   F2: транслітерація імен КМУ-2010 (урядові документи — ЛИШЕ латинкою, вимога user).

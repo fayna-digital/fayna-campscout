@@ -1,3 +1,5 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — tests for camp.budget (TZ_SPRINT_2026-06-10 §5, decision R8)
 from odoo.tests.common import TransactionCase, tagged
 
