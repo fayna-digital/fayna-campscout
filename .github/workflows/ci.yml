@@ -42,12 +42,12 @@ jobs:
     # Провалений Odoo-тест → червоний job → merge у main заблоковано
     # (за умови branch protection «require status check: test»).
     #
-    # ⚠️ ПОТРІБЕН СЕКРЕТ: CI_DEPS_TOKEN
-    #   Вбудований GITHUB_TOKEN бачить ЛИШЕ цей репозиторій. Приватні
-    #   dep-репо (fayna-rodo-compliance, fayna-sms-base) чекаутимо через
-    #   окремий PAT-секрет CI_DEPS_TOKEN (read-only на ці два репо).
-    #   Settings → Secrets and variables → Actions → New repository secret.
-    #   Без нього обидва checkout кроки впадуть → job червоний.
+    # Приватні dep-репо чекаутимо через read-only SSH deploy keys
+    # (least-privilege: лише читання, лише ці два репо):
+    #   secrets.CI_DEPS_KEY_RODO  → deploy key на VladSh77/fayna-rodo-compliance
+    #   secrets.CI_DEPS_KEY_SMS   → deploy key на VladSh77/fayna-sms-base
+    # Вбудований GITHUB_TOKEN бачить лише цей репозиторій, тому deps — окремими ключами.
+    # Без секретів обидва SSH-checkout впадуть → job червоний.
 
     services:
       postgres:
@@ -76,7 +76,7 @@ jobs:
         with:
           repository: VladSh77/fayna-rodo-compliance
           ref: main
-          token: ${{ secrets.CI_DEPS_TOKEN }}
+          ssh-key: ${{ secrets.CI_DEPS_KEY_RODO }}
           path: addons/deps/fayna_rodo_compliance
 
       - name: Checkout dep — fayna_sms_base
@@ -84,7 +84,7 @@ jobs:
         with:
           repository: VladSh77/fayna-sms-base
           ref: main
-          token: ${{ secrets.CI_DEPS_TOKEN }}
+          ssh-key: ${{ secrets.CI_DEPS_KEY_SMS }}
           path: addons/deps/fayna_sms_base
 
       - name: Run Odoo tests inside odoo:17 (Community)
