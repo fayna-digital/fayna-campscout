@@ -505,10 +505,15 @@ class EventRegistrationStaffing(models.Model):
                     "[camp_staffing] Vacancy sync failed after registration write %s",
                     self.ids,
                 )
-        # D2 — on cancellation promote earliest reserve participant.
+        # D2 — on cancellation free the child's group slot, then promote the
+        # earliest reserve participant into the slot that just opened. Without
+        # releasing the cancelled child the group stays full and nobody moves up.
         if vals.get("state") == "cancel":
             for reg in self:
                 try:
+                    participant = reg.participant_id
+                    if participant and participant.group_id:
+                        participant.write({"group_id": False})
                     if reg.event_id and hasattr(reg.event_id, "_promote_from_reserve"):
                         reg.event_id._promote_from_reserve()
                 except Exception:  # noqa: BLE001 — never block a registration cancel on promotion
