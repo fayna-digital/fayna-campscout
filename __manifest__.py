@@ -51,6 +51,7 @@ License: OPL-1 (Odoo Proprietary License v1.0)
         "contacts",
         "portal",
         "website",
+        "website_slides",
         "sale",
         "event",
         "event_sale",
