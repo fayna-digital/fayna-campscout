@@ -56,6 +56,7 @@ License: OPL-1 (Odoo Proprietary License v1.0)
         "event",
         "event_sale",
         "website_event",
+        "website_sale",
         "account",
         "loyalty",
         "sms",
