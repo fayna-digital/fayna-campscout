@@ -137,7 +137,6 @@ access_camp_participant_wychowawca,camp.participant wychowawca,model_camp_partic
 access_camp_participant_instructor,camp.participant instructor,model_camp_participant,fayna_camp_portal.group_camp_instructor,1,0,0,0
 access_camp_journal_wychowawca,camp.journal wychowawca,model_camp_journal,fayna_camp_portal.group_camp_wychowawca,1,1,1,0
 access_camp_journal_kierownik,camp.journal kierownik,model_camp_journal,fayna_camp_portal.group_camp_kierownik,1,1,1,0
-access_camp_daily_report_kierownik,camp.daily.report kierownik,model_camp_daily_report,fayna_camp_portal.group_camp_kierownik,1,1,1,0
 access_camp_staff_kierownik,camp.staff kierownik,model_camp_staff,fayna_camp_portal.group_camp_kierownik,1,1,1,0
 access_camp_staff_wychowawca,camp.staff wychowawca,model_camp_staff,fayna_camp_portal.group_camp_wychowawca,1,0,0,0
 access_camp_staff_instructor,camp.staff instructor,model_camp_staff,fayna_camp_portal.group_camp_instructor,1,0,0,0
