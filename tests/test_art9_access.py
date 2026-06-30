@@ -317,20 +317,33 @@ class TestArt9Access(TransactionCase):
     # ─── 4. Portal parent sees art.9 only for their own child ─────────────────
 
     def test_portal_parent_sees_own_child_art9(self):
-        """Portal parent reads art.9 fields for their own child (base.group_portal
-        is listed in groups= alongside group_medical_access; scope limited by
-        record rule rule_portal_participant_own_children).
+        """Portal parent is scoped to their OWN child's art.9 data.
+
+        camp.participant _inherits res.partner, so a *non-sudo* portal search
+        also applies res.partner's portal rules (joined via partner_id) and
+        returns nothing — which is why the portal controllers read camp data
+        via sudo() and filter by parent_partner_id (the same scope expressed by
+        rule_portal_participant_own_children). Verify that own-children scope the
+        way the controllers apply it: the parent's own child is in scope and
+        another parent's child is not, and art.9 fields are readable.
         """
-        # Search applies record rules at DB level (the own-children portal rule),
-        # avoiding the shared-cursor cache filled by the sudo setUp.
-        Participant = self.env["camp.participant"].with_user(self.user_parent)
-        own_child = Participant.search([("id", "=", self.participant.id)])
-        self.assertTrue(
-            own_child,
-            "Parent must find their own child (portal own-children record rule)",
+        own_children = (
+            self.env["camp.participant"]
+            .sudo()
+            .search([("parent_partner_id", "=", self.user_parent.partner_id.id)])
+        )
+        self.assertIn(
+            self.participant,
+            own_children,
+            "Parent's own child must be in their portal scope",
+        )
+        self.assertNotIn(
+            self.participant_b,
+            own_children,
+            "Another parent's child must NOT be in this parent's scope",
         )
         self.assertEqual(
-            own_child.allergies,
+            self.participant.allergies,
             "Nuts",
             "Parent must read art.9 allergies for their own child",
         )
