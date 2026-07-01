@@ -11,6 +11,7 @@ produces a NEW log row, immutable audit trail); invalid decision rejected.
 Perspective: independent QA engineer verifying the parent cabinet against the
 corrected TZ, not the code author.
 """
+
 from odoo.exceptions import ValidationError
 from odoo.tests.common import TransactionCase, tagged
 
@@ -45,9 +46,7 @@ class TestParentImageConsent(TransactionCase):
 
     def test_sign_yes_stores_state_ip_signature_and_rodo_log(self):
         """decision='yes' → state/ip/date/signature on participant + RODO log row."""
-        self.participant.sign_image_consent(
-            "yes", ip_address="10.0.0.5", signature=b"c2lnbmF0dXJl"
-        )
+        self.participant.sign_image_consent("yes", ip_address="10.0.0.5", signature=b"c2lnbmF0dXJl")
         p = self.participant
         self.assertEqual(p.image_consent_state, "yes")
         self.assertEqual(p.image_consent_signed_ip, "10.0.0.5")
