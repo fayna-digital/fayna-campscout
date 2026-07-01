@@ -124,12 +124,23 @@ class TestPhaseDSplit(TransactionCase):
             }
         )
         group = self.env["camp.group"].create({"name": "Solo Group", "event_id": event.id})
-        # Fill the group to the legal limit (20 for ≥10 kids).
+        # Fill the group to the legal limit (20 for ≥10 kids). Children must be
+        # registered to the shift before they may join a group of that shift
+        # (_validate_composition); the registration hook auto-assigns them.
         for i in range(20):
             p = self.env["camp.participant"].create(
                 {"first_name": f"Filler{i}", "last_name": "Full", "birth_date": "2014-01-01"}
             )
-            p.write({"group_id": group.id})
+            self.env["event.registration"].create(
+                {
+                    "event_id": event.id,
+                    "partner_id": self.partner.id,
+                    "participant_id": p.id,
+                    "state": "open",
+                }
+            )
+            if not p.group_id:
+                p.write({"group_id": group.id})
         self.assertEqual(group.participant_count, 20)
 
         # Register one more older child — camp is full.
@@ -147,12 +158,22 @@ class TestPhaseDSplit(TransactionCase):
             }
         )
         group = self.env["camp.group"].create({"name": "One Slot Group", "event_id": event.id})
-        # Fill to exactly 19 (one slot left).
+        # Fill to exactly 19 (one slot left). Register each child to the shift
+        # first (composition rule); the registration hook auto-assigns them.
         for i in range(19):
             p = self.env["camp.participant"].create(
                 {"first_name": f"F{i}", "last_name": "P", "birth_date": "2014-01-01"}
             )
-            p.write({"group_id": group.id})
+            self.env["event.registration"].create(
+                {
+                    "event_id": event.id,
+                    "partner_id": self.partner.id,
+                    "participant_id": p.id,
+                    "state": "open",
+                }
+            )
+            if not p.group_id:
+                p.write({"group_id": group.id})
 
         # First extra → goes into last slot.
         child1, reg1 = self._make_child(801, "2014-06-01", event=event)
@@ -235,7 +256,9 @@ class TestPhaseDSplit(TransactionCase):
                     }
                 )
             )
-            # Grant certs so state→confirmed passes Kamilka check.
+            # Grant certs so state→confirmed passes Kamilka check. is_valid is a
+            # computed field (verification_status == 'verified' AND not expired);
+            # set the status at create time (the verifier gate is only on write).
             today = "2026-06-24"
             for cert_type in ("krk", "rps", "wychowawca_course"):
                 self.env["camp.staff.cert"].sudo().create(
@@ -244,7 +267,7 @@ class TestPhaseDSplit(TransactionCase):
                         "cert_type": cert_type,
                         "issue_date": today,
                         "expiry_date": "2027-06-24",
-                        "is_valid": True,
+                        "verification_status": "verified",
                     }
                 )
             staff.sudo().write({"state": "confirmed"})
@@ -308,16 +331,28 @@ class TestPhaseDSplit(TransactionCase):
         group = self.env["camp.group"].create({"name": "D4 Group", "event_id": event.id})
         group.write({"wychowawca_ids": [(4, self.user_w1.id)]})
 
-        # Create child with medical data in own group.
+        # Create child with medical data, register to the shift, then place in
+        # own group (a child may only join a group of a shift they are
+        # registered to — _validate_composition). The registration hook
+        # auto-assigns into the only compatible group (this one).
         child = self.env["camp.participant"].create(
             {
                 "first_name": "Healthy",
                 "last_name": "Kid",
                 "birth_date": "2014-06-01",
                 "allergies": "nuts",
-                "group_id": group.id,
             }
         )
+        self.env["event.registration"].create(
+            {
+                "event_id": event.id,
+                "partner_id": self.partner.id,
+                "participant_id": child.id,
+                "state": "open",
+            }
+        )
+        if child.group_id != group:
+            child.write({"group_id": group.id})
 
         # Read allergies as user_w1 (wychowawca of this group).
         child_as_wych = child.with_user(self.user_w1)

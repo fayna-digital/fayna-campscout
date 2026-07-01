@@ -168,6 +168,10 @@ class TestCampGroup(TransactionCase):
             }
         )
         loose = self._make_children(3, "2012-01-01", offset=71)
+        # The registration hook (D2) may auto-assign newly registered children
+        # into the existing group; explicitly leave them ungrouped so this test
+        # exercises auto-split on loose children only.
+        loose.write({"group_id": False})
         created = self.Group.action_auto_split(self.event)
         self.assertEqual(assigned.group_id, existing)
         self.assertEqual(len(created), 1)

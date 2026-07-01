@@ -9,7 +9,7 @@
 #   fill_progress compute: 0 → 100
 from datetime import date
 
-from odoo.exceptions import AccessError, UserError, ValidationError
+from odoo.exceptions import AccessError, UserError
 from odoo.tests.common import TransactionCase, tagged
 
 
@@ -173,7 +173,11 @@ class TestPhaseCWychowawca(TransactionCase):
 
     def test_constrain_locked_blocks_wychowawca(self):
         """Wychowawca writing is_locked=True line → blocked (rule AccessError or constrain ValidationError)."""
-        with self.assertRaises((AccessError, ValidationError)):
+        # Odoo's TransactionCase.assertRaises does not accept a tuple of
+        # exception classes (issubclass(tuple, ...) → TypeError). Both
+        # AccessError (record rule) and ValidationError (constrain) subclass
+        # UserError, so assert on the common base.
+        with self.assertRaises(UserError):
             self.line_locked.with_user(self.user_wychowawca).write({"title": "Własny obiad"})
 
     def test_constrain_free_allows_wychowawca(self):
@@ -217,7 +221,11 @@ class TestPhaseCWychowawca(TransactionCase):
 
     def test_rule_wychowawca_cannot_write_locked_via_rule(self):
         """Record rule blocks wychowawca from writing a locked (kierownik-owned) line."""
-        with self.assertRaises((AccessError, ValidationError)):
+        # Odoo's TransactionCase.assertRaises does not accept a tuple of
+        # exception classes (issubclass(tuple, ...) → TypeError). Both
+        # AccessError (record rule) and ValidationError (constrain) subclass
+        # UserError, so assert on the common base.
+        with self.assertRaises(UserError):
             self.line_locked.with_user(self.user_wychowawca).write({"notes": "Próba edycji"})
 
     def test_rule_wychowawca_cannot_create_line(self):

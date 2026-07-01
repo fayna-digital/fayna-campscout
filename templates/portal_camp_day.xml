@@ -109,28 +109,28 @@
                             </div>
                         </t>
 
-                        <!-- Photo gallery of the day: 2 cols mobile / 4 desktop -->
+                        <!-- Published story of the day (title always shown; the
+                             photo gallery, 2 cols mobile / 4 desktop, only when
+                             the story has photos). -->
                         <t t-foreach="day['stories']" t-as="story_item">
-                            <t t-if="story_item['photos']">
-                                <h6 class="mb-2">
-                                    &#128247;
-                                    <a t-attf-href="/my/stories/#{story_item['id']}"
-                                       class="text-reset text-decoration-none">
-                                        <t t-esc="story_item['title']"/>
-                                    </a>
-                                </h6>
-                                <div class="row g-2 mb-3">
-                                    <t t-foreach="story_item['photos']" t-as="photo">
-                                        <div class="col-6 col-md-3">
-                                            <img t-att-src="photo['url']"
-                                                 t-att-alt="photo['name'] or story_item['title']"
-                                                 loading="lazy"
-                                                 class="w-100 rounded"
-                                                 style="aspect-ratio: 1 / 1; object-fit: cover;"/>
-                                        </div>
-                                    </t>
-                                </div>
-                            </t>
+                            <h6 class="mb-2">
+                                &#128247;
+                                <a t-attf-href="/my/stories/#{story_item['id']}"
+                                   class="text-reset text-decoration-none">
+                                    <t t-esc="story_item['title']"/>
+                                </a>
+                            </h6>
+                            <div t-if="story_item['photos']" class="row g-2 mb-3">
+                                <t t-foreach="story_item['photos']" t-as="photo">
+                                    <div class="col-6 col-md-3">
+                                        <img t-att-src="photo['url']"
+                                             t-att-alt="photo['name'] or story_item['title']"
+                                             loading="lazy"
+                                             class="w-100 rounded"
+                                             style="aspect-ratio: 1 / 1; object-fit: cover;"/>
+                                    </div>
+                                </t>
+                            </div>
                         </t>
 
                     </div>

@@ -2,6 +2,7 @@
 # License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 from . import (
     test_art9_access,  # noqa: E402,F401
+    test_art9_http_isolation,  # noqa: E402,F401
     test_budget,  # noqa: E402,F401
     test_camp_group,
     test_campscout,

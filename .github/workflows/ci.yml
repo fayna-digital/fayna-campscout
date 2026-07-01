@@ -34,3 +34,75 @@ jobs:
 
       - name: Run pre-commit hooks
         uses: pre-commit/action@v3.0.1
+
+  test:
+    name: Odoo unit tests (test-gate)
+    runs-on: ubuntu-latest
+
+    # Провалений Odoo-тест → червоний job → merge у main заблоковано
+    # (за умови branch protection «require status check: test»).
+    #
+    # Приватні dep-репо чекаутимо через read-only SSH deploy keys
+    # (least-privilege: лише читання, лише ці два репо):
+    #   secrets.CI_DEPS_KEY_RODO  → deploy key на VladSh77/fayna-rodo-compliance
+    #   secrets.CI_DEPS_KEY_SMS   → deploy key на VladSh77/fayna-sms-base
+    # Вбудований GITHUB_TOKEN бачить лише цей репозиторій, тому deps — окремими ключами.
+    # Без секретів обидва SSH-checkout впадуть → job червоний.
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: odoo
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        # health-check — Odoo стартує лише коли БД готова приймати з'єднання
+        options: >-
+          --health-cmd "pg_isready -U odoo"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - name: Checkout portal (this repo)
+        uses: actions/checkout@v4
+        with:
+          path: addons/fayna_camp_portal
+
+      - name: Checkout dep — fayna_rodo_compliance
+        uses: actions/checkout@v4
+        with:
+          repository: VladSh77/fayna-rodo-compliance
+          ref: main
+          ssh-key: ${{ secrets.CI_DEPS_KEY_RODO }}
+          path: addons/deps/fayna_rodo_compliance
+
+      - name: Checkout dep — fayna_sms_base
+        uses: actions/checkout@v4
+        with:
+          repository: VladSh77/fayna-sms-base
+          ref: main
+          ssh-key: ${{ secrets.CI_DEPS_KEY_SMS }}
+          path: addons/deps/fayna_sms_base
+
+      - name: Run Odoo tests inside odoo:17 (Community)
+        # odoo:17 — офіційний образ Community. Бере native-модулі з образу
+        # (base, mail, contacts, portal, website, sale, event, event_sale,
+        # account, loyalty, sms), а портал+deps монтуємо в addons-path.
+        # Гейт (греп логу + exit code) — у tools/run_odoo_tests.sh.
+        run: |
+          docker run --rm \
+            --network host \
+            -e PGHOST=127.0.0.1 \
+            -e PGPORT=5432 \
+            -e PGUSER=odoo \
+            -e PGPASSWORD=odoo \
+            -e DB=test_camp \
+            -e MODULE=fayna_camp_portal \
+            -e ADDONS=/mnt/addons,/mnt/addons/deps \
+            -e LOG=/tmp/odoo-test.log \
+            -v "${{ github.workspace }}/addons:/mnt/addons:ro" \
+            --entrypoint bash \
+            odoo:17 /mnt/addons/fayna_camp_portal/tools/run_odoo_tests.sh
