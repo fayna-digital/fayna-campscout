@@ -161,9 +161,7 @@ class TestArt9HttpIsolation(HttpCase):
         self.authenticate("art9_http_parent_a@campscout.test", "Art9HttpA-1234!")
 
         # (a) Raw response must be a redirect, not a 200 card render.
-        raw = self.url_open(
-            f"/my/participants/{self.child_b.id}", allow_redirects=False
-        )
+        raw = self.url_open(f"/my/participants/{self.child_b.id}", allow_redirects=False)
         self.assertIn(
             raw.status_code,
             (301, 302, 303, 307, 308),
