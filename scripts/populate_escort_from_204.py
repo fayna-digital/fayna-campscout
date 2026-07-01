@@ -33,7 +33,18 @@ def run(env):
         ]
     )
     orders = lines.mapped("order_id")
+    print(f"Order-lines з product_tmpl_id={PRODUCT_204_TMPL}: {len(lines)}")
     print(f"Замовлень з продуктом 204 (sale/done): {len(orders)}")
+    if not lines:
+        # Fail-loud: якщо жодного рядка — 204 майже напевно НЕ той продукт на цій БД
+        # (id product_template відрізняється між середовищами). Не мовчати.
+        tmpl = env["product.template"].browse(PRODUCT_204_TMPL)
+        tmpl_name = tmpl.name if tmpl.exists() else "<не існує>"
+        print(
+            f"⚠️ УВАГА: 0 order-lines з product_tmpl_id={PRODUCT_204_TMPL}. Перевір реальний "
+            f"id продукту «Indywidualna asysta» на цій БД перед прогоном. "
+            f"product_template[{PRODUCT_204_TMPL}].name={tmpl_name!r}"
+        )
 
     created = skipped = no_match = 0
     for order in orders:
