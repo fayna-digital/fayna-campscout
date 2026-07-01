@@ -63,6 +63,7 @@ class RecruitmentPortal(CustomerPortal):
         ["/camp/vacancy/<int:vacancy_id>/apply"],
         type="http",
         auth="public",
+        methods=["GET"],
         website=True,
     )
     def public_vacancy_apply_form(self, vacancy_id, **kw):

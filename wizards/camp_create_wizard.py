@@ -691,7 +691,20 @@ class CampCreateWizard(models.TransientModel):
         venue = self._get_or_create_venue()
         if venue:
             event_vals["address_id"] = venue.id
-        event = self.env["event.event"].create(event_vals)
+        # ``mail_create_nosubscribe=True`` prevents mail_thread.create from
+        # auto-INSERTing followers during event creation.  In a shared-transaction
+        # test environment (TransactionCase) the Odoo ORM may have flushed a zombie
+        # mail.followers new-record from a rolled-back savepoint just before this
+        # create, leaving a stale (partner, event_id, 'event.event') row in the DB.
+        # If the new event receives the same DB id as the rolled-back event (the
+        # sequence is never reset by ROLLBACK TO SAVEPOINT), the auto-follow INSERT
+        # hits the UNIQUE constraint and aborts the entire create call.
+        # Using nosubscribe + explicit message_subscribe is idempotent and produces
+        # the same follower list in production — message_subscribe ignores duplicates.
+        event = (
+            self.env["event.event"].with_context(mail_create_nosubscribe=True).create(event_vals)
+        )
+        event.message_subscribe(partner_ids=[self.env.user.partner_id.id])
 
         # 2. Ticket «Udział w obozie» (event_sale layer, native table).
         #    Event is website_published=False → ticket not visible/buyable on site

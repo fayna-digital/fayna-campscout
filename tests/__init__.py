@@ -22,6 +22,14 @@ from . import (
     test_regulamin_teczka,  # noqa: E402,F401
     test_rodo_consent_immutable,  # noqa: E402,F401
     test_role_canon,  # noqa: E402,F401
+    test_role_instructor,  # noqa: E402,F401
+    test_role_kierownik_dziennik,  # noqa: E402,F401
+    test_role_organizator_create_camp,  # noqa: E402,F401
+    test_role_parent_cabinet,  # noqa: E402,F401
+    test_role_parent_portal,  # noqa: E402,F401
+    test_role_public_vacancies,  # noqa: E402,F401
+    test_role_wychowawca_day_note,  # noqa: E402,F401
+    test_role_wychowawca_note,  # noqa: E402,F401
     test_scaffold,
     test_signoff_rodo,  # noqa: E402,F401
     test_staffing,  # noqa: E402,F401

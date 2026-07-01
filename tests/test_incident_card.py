@@ -11,8 +11,6 @@ Covers:
 
 from odoo.exceptions import UserError
 from odoo.tests.common import TransactionCase, tagged
-from odoo.tools import mute_logger
-from psycopg2 import IntegrityError
 
 
 @tagged("post_install", "-at_install", "fayna_camp_portal")
@@ -207,13 +205,19 @@ class TestIncidentCard(TransactionCase):
         self.assertIn(self.event.name, register.display_name)
 
     def test_register_unique_per_event(self):
-        self.env["camp.incident.register"].create({"event_id": self.event.id})
-        with (
-            mute_logger("odoo.sql_db"),
-            self.assertRaises(IntegrityError),
-            self.env.cr.savepoint(),
-        ):
-            self.env["camp.incident.register"].create({"event_id": self.event.id})
+        """A second create for the same event returns the existing register (idempotent).
+
+        The idempotent guard in CampIncidentRegister.create() silently returns the
+        existing record instead of hitting the SQL UNIQUE(event_id) constraint, so
+        the database transaction stays clean across test-class boundaries.
+        """
+        first = self.env["camp.incident.register"].create({"event_id": self.event.id})
+        second = self.env["camp.incident.register"].create({"event_id": self.event.id})
+        self.assertEqual(
+            first.id,
+            second.id,
+            "creating a second register for the same event must return the existing one",
+        )
 
     # ------------------------------------------------------------------
     # Register — lock after turnus closing
