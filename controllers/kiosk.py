@@ -17,6 +17,13 @@ skipped so a partial install never crashes the kiosk (Reliability §0b).
 import logging
 
 from odoo import _, http
+
+# Single source of truth for the accepted UI languages (defined in hooks.py).
+# Importing keeps the kiosk switcher and the language-setup hook in lockstep —
+# no risk of the endpoint accepting a locale the module never activates. Safe
+# from circular import: controllers is imported before hooks in __init__.py and
+# hooks.py imports nothing from this package.
+from odoo.addons.fayna_camp_portal.hooks import _BILINGUAL_LANGS
 from odoo.http import request
 from odoo.tools.translate import _lt
 
@@ -310,6 +317,16 @@ class CampKioskController(http.Controller):
         if not lang:
             return {"ok": False, "error": _("No language specified.")}
 
+        # Only the module's own bilingual set (pl_PL / uk_UA) is switchable from
+        # the kiosk — never an arbitrary active locale the deployment happens to
+        # have enabled (R2). This gate runs first, before the DB round-trip.
+        if lang not in _BILINGUAL_LANGS:
+            _logger.warning("camp kiosk: rejected set_lang to non-bilingual lang %r", lang)
+            return {"ok": False, "error": _("Unsupported language: %s") % lang}
+
+        # Belt-and-braces: the language must also be active in this DB (it is
+        # activated by _setup_bilingual_languages on install/upgrade), so the
+        # client can never park a user on an inactive/uninstalled locale.
         is_active = request.env["res.lang"].sudo().search_count(
             [("code", "=", lang), ("active", "=", True)]
         )

@@ -31,19 +31,22 @@
                         t-on-click="() => this.setLang('uk_UA')">UA</button>
             </div>
 
-            <!-- Header — w-100 гарантує центрування навіть без parent flex -->
+            <!-- Header — w-100 гарантує центрування навіть без parent flex.
+                 Text comes from JS getters routed through _t() so it is
+                 exported to the .pot and rendered in the active language (R2);
+                 static template text would not be translatable. -->
             <div class="text-center w-100 mb-4 mb-md-5">
                 <h1 class="display-5 fw-bold text-primary mb-1">
-                    Portal CampScout
+                    <t t-esc="headerTitle"/>
                 </h1>
-                <p class="text-muted fs-5 mb-0">Wybierz działanie</p>
+                <p class="text-muted fs-5 mb-0"><t t-esc="headerSubtitle"/></p>
             </div>
 
             <!-- Loading spinner -->
             <t t-if="state.isLoading">
                 <div class="spinner-border text-primary" role="status"
                      style="width: 3rem; height: 3rem;">
-                    <span class="visually-hidden">Завантаження...</span>
+                    <span class="visually-hidden"><t t-esc="loadingText"/></span>
                 </div>
             </t>
 

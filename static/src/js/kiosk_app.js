@@ -40,6 +40,31 @@ export class CampKiosk extends Component {
     }
 
     /**
+     * Header/spinner labels (R2 — bilingual PL/UA).
+     *
+     * Static text placed directly in an OWL .xml template is NOT picked up by
+     * Odoo's translation export (the JS term extractor scans .js for `_t(...)`
+     * calls, not template text nodes), so it can never be translated. Routing
+     * these strings through `_t()` in JS getters is the Odoo-native fix: the
+     * literals land in the .pot, and because a getter is evaluated on every
+     * render, `_t()` resolves against the translation bundle of the language
+     * currently loaded in the page. setLang() does a full reload on switch, so
+     * the new bundle is loaded and the getter returns the translated term.
+     * The template binds these via `t-esc` (see kiosk_template.xml).
+     */
+    get headerTitle() {
+        return _t("Portal CampScout");
+    }
+
+    get headerSubtitle() {
+        return _t("Wybierz działanie");
+    }
+
+    get loadingText() {
+        return _t("Завантаження...");
+    }
+
+    /**
      * Fetch the per-role tile grid from the server.
      * Response: [{label, icon, action, description?}, ...]
      * action is either an xmlid string ("fayna_camp_portal.action_camp_staff")

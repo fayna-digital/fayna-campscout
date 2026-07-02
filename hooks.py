@@ -105,6 +105,33 @@ def _setup_bilingual_languages(env):
         company_partner.lang = _DEFAULT_LANG
         _logger.info("fayna_camp_portal: company partner language aligned to %s", _DEFAULT_LANG)
 
+    # R2 — expose PL/UA in the website frontend language selector.
+    # ``portal.language_selector`` (the /my switcher parents use) renders itself
+    # only when ``len(website.language_ids) > 1``; a stock DB ships a single
+    # ``language_ids`` (en_US), so without this the selector stays invisible even
+    # though PL/UA are active. Add every activated bilingual language to each
+    # website's set so the deploy — not a manual backend click — makes it appear.
+    #
+    # Idempotent: only the languages MISSING from a website are added, so a
+    # re-run / ``-u`` writes nothing once the set is complete. ``(4, id)`` is the
+    # ORM "link" command (add to m2m without touching existing members). Guarded
+    # by ``if "website" in env`` so a deployment without the website module is a
+    # clean no-op.
+    if "website" in env:
+        # Default active_test=True → only activated languages are returned, so a
+        # language that failed to activate above is never linked to a website.
+        bilingual_langs = env["res.lang"].search([("code", "in", _BILINGUAL_LANGS)])
+        if bilingual_langs:
+            for website in env["website"].search([]):
+                missing = bilingual_langs - website.language_ids
+                if missing:
+                    website.write({"language_ids": [(4, lang.id) for lang in missing]})
+                    _logger.info(
+                        "fayna_camp_portal: added languages %s to website %r language_ids",
+                        missing.mapped("code"),
+                        website.name,
+                    )
+
 
 def post_init_hook(env):
     """Transfer ir.model.data ownership from absorbed modules to fayna_camp_portal.
