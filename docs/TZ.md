@@ -68,8 +68,7 @@ fayna_camp_portal/
 │   └── *_inherit.py / *_extensions.py  # res.partner/res.users/event.event розширення
 ├── controllers/
 │   ├── portal.py              # /my, /my/home, /my/counters (parent, group_portal)
-│   ├── admin.py               # /admin/dashboard + /admin/as-* (organizator-only)
-│   └── api.py                 # /api/v1/* JSON endpoints
+│   └── admin.py               # /admin/dashboard + /admin/as-* (organizator-only)
 ├── wizards/staff_sms_composer.py     # SMS broadcast wizard (cost-guard + audit)
 ├── security/  groups.xml (13 груп) · ir.model.access.csv (170+) · record_rules.xml
 ├── data/      cron.xml · cron_kamilka_escalation.xml · sms_*templates.xml · ir_config_parameter.xml
@@ -122,9 +121,9 @@ fayna_camp_portal/
 ## Open Questions
 
 - **CHANGELOG биті посилання:** записи 17.0.x посилаються на дорефакторні імена файлів (`camp_participant.py`, `sms_dispatcher.py`, `camp_incident.py`, `admin_dashboard.py`, `sms_broadcast_wizard.py`), яких уже немає (реальні: `participant.py`, `sms.py`, `incident_kamilka.py`, `admin.py`, `staff_sms_composer.py`). Виправити посилання чи лишити як історичний знімок? (поки додано нотатку в CHANGELOG).
-- **`api.py` /api/v1/* (6 endpoints)** — у CHANGELOG 17.0.1.0.0, але роль/споживач у 17.0.2 не задокументовані. Жива чи legacy?
+- ~~**`api.py` /api/v1/***~~ — ЗАКРИТО 2026-07-02: прибрано (P4.3). Споживачів нуль (портал JS/XML, Astro-сайт, тести — все 0), мобільного застосунку нема; `story_detail` мав IDOR повз consent-gate. Native Odoo: portal `/my/*` покриває батьківські сценарії. Відновлення — з git-історії, коли з'явиться реальний споживач.
 - **GitHub репо vs модуль:** remote = `VladSh77/fayna-campscout`, модуль = `fayna_camp_portal`. Лишаємо розбіжність назв чи перейменувати репо?
-- **`campscout.portal.session/.menu`** — лишається scaffold чи має конкретну роль? `active_camps()` повертає 0.
+- ~~**`campscout.portal.session/.menu`**~~ — ЗАКРИТО 2026-07-02: у коді вже не існують (повний grep py/xml/csv — 0 збігів); прибрані попередніми рефакторами.
 
 ---
 

@@ -69,7 +69,7 @@ PROD-GATE (ЗАКОН): P1-виконання + human QA green  ⇒  тільк�
 
 - [x/🟡] **P4.1** UA локалізація — значно розширена (`i18n/uk_UA.po` ~23k рядків, pl_PL.po ~23k); точний % покриття не зведено.
 - [ ] **P4.2** Portal `/my/*` mobile audit (обов'язковий перед go-live).
-- [ ] **P4.3** Прибрати/задокументувати scaffold: `campscout.portal.session/.menu`, `api.py /api/v1/*`.
+- [x] **P4.3** ✅ 2026-07-02: `api.py /api/v1/*` прибрано (0 споживачів + IDOR у story_detail повз consent-gate; ADR: native portal `/my/*` покриває); `campscout.portal.session/.menu` — уже не існували в коді (grep 0 збігів).
 
 ## Фаза P5 — Prod-gate 🔴 (єдине плече, що лишилось)
 
