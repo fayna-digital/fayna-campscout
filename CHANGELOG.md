@@ -52,22 +52,22 @@ Major release: hotel-pattern consolidation + 6-role RBAC + native chat + SMS thr
 
 ### Added
 - Module renamed from `fayna_campscout` to `fayna_camp_portal` ([TZ §9](../fayna-digital-docs/contributing/FAYNA_CAMPSCOUT_TZ.md))
-- 6 role groups: Organizator (top-level PL Rozp. MEN 30.03.2016), Sales, Kierownik, Wychowawca, Instructor, Parent — plus orthogonal Medical Officer opt-in ([security/security.xml](security/security.xml))
+- 6 role groups: Organizator (top-level PL Rozp. MEN 30.03.2016), Sales, Kierownik, Wychowawca, Instructor, Parent — plus orthogonal Medical Officer opt-in ([security/groups.xml](security/groups.xml))
 - Record rules per model (~15 rules) for fine-grained access scope ([security/record_rules.xml](security/record_rules.xml))
-- Field-level `groups=` on medical fields (allergies, medications, doctor_notes) ([models/camp_participant.py](models/camp_participant.py))
+- Field-level `groups=` on medical fields (allergies, medications, doctor_notes) ([models/participant.py](models/participant.py))
 - Auto-subscribers on 6 models via `_message_auto_subscribe_followers` ([models/](models/))
-- `discuss.channel` auto-create per `event.event` (camp shift staff team chat) ([models/event_event.py](models/event_event.py))
-- SMS three-tier (CRITICAL/IMPORTANT/INFO) via `fayna_sms_base.dispatcher` -> `fayna_sms_turbosms` ([models/sms_dispatcher.py](models/sms_dispatcher.py))
+- `discuss.channel` auto-create per `event.event` (camp shift staff team chat) ([models/event_channel_create.py](models/event_channel_create.py))
+- SMS three-tier (CRITICAL/IMPORTANT/INFO) via `fayna_sms_base.dispatcher` -> `fayna_sms_turbosms` ([models/sms.py](models/sms.py))
 - 12 SMS templates (6 staff + 6 child broadcast) ([data/sms_templates.xml](data/sms_templates.xml))
-- Wychowawca SMS broadcast wizard with cost guard (100/300 monthly limits) ([wizards/sms_broadcast_wizard.py](wizards/sms_broadcast_wizard.py))
-- `camp.staff.sms.log` immutable broadcast audit (7y retention) ([models/camp_staff_sms_log.py](models/camp_staff_sms_log.py))
-- Ustawa Kamilka 2024 special handling: `severity='kamilka'` bypasses opt-in, 5-min escalation cron, immutable `camp.incident.notification.log` ([models/camp_incident.py](models/camp_incident.py), [data/cron_data.xml](data/cron_data.xml))
-- `event.event.deputy_kierownik_id` backup contact for escalation ([models/event_event.py](models/event_event.py))
-- `camp.participant.child_mobile` + `sms_consent` (RODO art.7 explicit consent) ([models/camp_participant.py](models/camp_participant.py))
-- `/admin/dashboard` with 7 KPI sections ([controllers/admin_dashboard.py](controllers/admin_dashboard.py))
-- 4 view-as routes (`/admin/as-{kierownik,wychowawca,instructor,parent}`) ([controllers/admin_view_as.py](controllers/admin_view_as.py))
-- `camp.admin.access.log` immutable RODO art.30 audit (7y retention) ([models/camp_admin_access_log.py](models/camp_admin_access_log.py))
-- `res.users._get_login_action()` override -> organizator lands on dashboard ([models/res_users.py](models/res_users.py))
+- Wychowawca SMS broadcast wizard with cost guard (100/300 monthly limits) ([wizards/staff_sms_composer.py](wizards/staff_sms_composer.py))
+- `camp.staff.sms.log` immutable broadcast audit (7y retention) ([models/staff_sms_log.py](models/staff_sms_log.py))
+- Ustawa Kamilka 2024 special handling: `severity='kamilka'` bypasses opt-in, 5-min escalation cron, immutable `camp.incident.notification.log` ([models/incident_card.py](models/incident_card.py), [data/cron.xml](data/cron.xml))
+- `event.event.deputy_kierownik_id` backup contact for escalation ([models/event_backup_contact.py](models/event_backup_contact.py))
+- `camp.participant.child_mobile` + `sms_consent` (RODO art.7 explicit consent) ([models/participant.py](models/participant.py))
+- `/admin/dashboard` with 7 KPI sections ([controllers/admin.py](controllers/admin.py))
+- 4 view-as routes (`/admin/as-{kierownik,wychowawca,instructor,parent}`) ([controllers/admin.py](controllers/admin.py))
+- `camp.admin.access.log` immutable RODO art.30 audit (7y retention) ([models/admin_access_log.py](models/admin_access_log.py))
+- `res.users._get_login_action()` override -> organizator lands on dashboard ([models/res_users_inherit.py](models/res_users_inherit.py))
 - Portal chatter on `/my/participants/<id>`, `/my/stories/<id>`, `/my/loyalty`, `/my/support/<id>` ([controllers/portal.py](controllers/portal.py))
 - Migrated 4 absorbed models: `camp.story` (from `fayna_camp_stories`), `camp.transport` (from `fayna_camp_transport`), `camp.analytics.snapshot` + `camp.marketing.report` + `camp.stats.snapshot` (from `fayna_camp_reports`), 4 vozhatyi models (from `fayna_camp_vozhatyi_school`) ([models/](models/))
 - Polish translation `pl_PL.po` (374 msgids, ~100% coverage) ([i18n/pl_PL.po](i18n/pl_PL.po))
@@ -77,13 +77,13 @@ Major release: hotel-pattern consolidation + 6-role RBAC + native chat + SMS thr
 ### Changed
 - Manifest `name` -> "Портал CampScout" (was "Fayna CampScout") ([__manifest__.py](__manifest__.py))
 - Manifest `version` -> `17.0.2.0.0` (was `17.0.1.0.0`) ([__manifest__.py](__manifest__.py))
-- Wizard SMS broadcast routes via `fayna.sms.dispatcher` (our wrapper) instead of native Odoo `sms.api` — replaces dependency on third-party `kw_sms_turbosms` ([wizards/sms_broadcast_wizard.py](wizards/sms_broadcast_wizard.py))
+- Wizard SMS broadcast routes via `fayna.sms.dispatcher` (our wrapper) instead of native Odoo `sms.api` — replaces dependency on third-party `kw_sms_turbosms` ([wizards/staff_sms_composer.py](wizards/staff_sms_composer.py))
 - New manifest depend: `fayna_sms_base` (our multi-provider SMS layer) ([__manifest__.py](__manifest__.py))
 
 ### Fixed
 - INC-014: model load order — `operations` before `emergency` in `models/__init__.py` (`camp.staff` must exist before emergency `_inherit`) ([models/__init__.py](models/__init__.py))
 - INC-015: `post_init_hook` idempotent — DELETE source rows before UPDATE to prevent `UniqueViolation` on `ir_model_data` ([hooks.py](hooks.py))
-- INC-016: `selection_add` `ondelete='cascade'` for kamilka severity (was invalid `'set default'` / `'severe'`) ([models/camp_incident.py](models/camp_incident.py))
+- INC-016: `selection_add` `ondelete='cascade'` for kamilka severity (was invalid `'set default'` / `'severe'`) ([models/incident_card.py](models/incident_card.py))
 - INC-017: `camp.journal` field is `author_id` (was incorrectly `staff_id` in record rule) ([security/record_rules.xml](security/record_rules.xml))
 - INC-018: `is_published` -> `website_published` in `event.event` domain (Odoo 17 stored field name) ([controllers/portal.py](controllers/portal.py))
 - Removed orphan reference to deleted `fayna_camp_qualification.portal_participant_detail` template ([templates/](templates/))
@@ -93,10 +93,10 @@ Major release: hotel-pattern consolidation + 6-role RBAC + native chat + SMS thr
 - 16 absorbed `fayna_camp_*` modules (consolidated into single hotel-pattern module per [TZ §9](../fayna-digital-docs/contributing/FAYNA_CAMPSCOUT_TZ.md))
 
 ### Security
-- Audit logs `camp.admin.access.log` and `camp.staff.sms.log` are IMMUTABLE (override `write` and `unlink` to raise `UserError`) ([models/camp_admin_access_log.py](models/camp_admin_access_log.py), [models/camp_staff_sms_log.py](models/camp_staff_sms_log.py))
-- View-as uses `with_user()` (preserves ACL/record rules) — NOT `sudo()` (would bypass RODO controls) ([controllers/admin_view_as.py](controllers/admin_view_as.py))
-- Ustawa Kamilka SMS bypass `sms_opt_in` — legal basis GDPR art. 6.1.d (vital interest) ([models/camp_incident.py](models/camp_incident.py))
-- Field-level access on RODO art. 9 special-category health data (allergies, medications, doctor_notes, chronic_conditions) ([models/camp_participant.py](models/camp_participant.py))
+- Audit logs `camp.admin.access.log` and `camp.staff.sms.log` are IMMUTABLE (override `write` and `unlink` to raise `UserError`) ([models/admin_access_log.py](models/admin_access_log.py), [models/staff_sms_log.py](models/staff_sms_log.py))
+- View-as uses `with_user()` (preserves ACL/record rules) — NOT `sudo()` (would bypass RODO controls) ([controllers/admin.py](controllers/admin.py))
+- Ustawa Kamilka SMS bypass `sms_opt_in` — legal basis GDPR art. 6.1.d (vital interest) ([models/incident_card.py](models/incident_card.py))
+- Field-level access on RODO art. 9 special-category health data (allergies, medications, doctor_notes, chronic_conditions) ([models/participant.py](models/participant.py))
 
 ---
 
