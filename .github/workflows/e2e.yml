@@ -29,4 +29,9 @@ jobs:
           E2E_BASE_URL: ${{ secrets.E2E_BASE_URL }}
           E2E_ADMIN_LOGIN: ${{ secrets.E2E_ADMIN_LOGIN }}
           E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
-        run: pytest tests/e2e -v --tb=short
+        # cd + importlib: корінь репо = Odoo-модуль з __init__.py — pytest із кореня
+        # тягне його як пакет (from . import controllers...) і падає ще на setup
+        # (перший прогін 2026-07-02, run 28571137440). Запуск із теки e2e відв'язує
+        # collection від батьківських __init__.py; -o addopts="" глушить кореневий
+        # pyproject addopts (--strict-markers там доречний, тут зайвий rootdir-звязок).
+        run: cd tests/e2e && pytest . -v --tb=short --import-mode=importlib -o addopts=""
