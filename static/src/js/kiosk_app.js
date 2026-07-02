@@ -16,11 +16,18 @@
 import { Component, useState, onWillStart } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
+import { browser } from "@web/core/browser/browser";
+import { _t } from "@web/core/l10n/translation";
+import { session } from "@web/session";
 
 export class CampKiosk extends Component {
     setup() {
         this.rpc = useService("rpc");
         this.action = useService("action");
+        // Current UI language (e.g. "pl_PL" / "uk_UA") — drives the active
+        // state of the PL/UA switcher in the header. Does not change without a
+        // reload, so a plain property (not reactive state) is enough.
+        this.lang = session.user_context.lang;
         this.state = useState({
             tiles: [],
             isLoading: true,
@@ -44,13 +51,38 @@ export class CampKiosk extends Component {
             if (result && result.tiles) {
                 this.state.tiles = result.tiles;
             } else {
-                this.state.error = "Немає дозволених дій для вашої ролі.";
+                this.state.error = _t("Немає дозволених дій для вашої ролі.");
             }
         } catch (err) {
             console.error("[CampKiosk] layout load error:", err);
-            this.state.error = "Помилка завантаження кіоска. Зверніться до організатора.";
+            this.state.error = _t("Помилка завантаження кіоска. Зверніться до організатора.");
         } finally {
             this.state.isLoading = false;
+        }
+    }
+
+    /**
+     * Switch the UI language (PL/UA header switcher, R2).
+     * Persists res.users.lang via /camp/kiosk/set_lang, then does a full
+     * page reload so the whole client-action (and all lazy-translated tiles)
+     * re-render in the chosen language. No-op if the language is unchanged.
+     */
+    async setLang(lang) {
+        if (!lang || lang === this.lang) {
+            return;
+        }
+        try {
+            const result = await this.rpc("/camp/kiosk/set_lang", { lang });
+            if (result && result.ok) {
+                browser.location.reload();
+            } else {
+                this.state.error =
+                    (result && result.error) ||
+                    _t("Nie udało się zmienić języka.");
+            }
+        } catch (err) {
+            console.error("[CampKiosk] set_lang error:", lang, err);
+            this.state.error = _t("Nie udało się zmienić języka.");
         }
     }
 
