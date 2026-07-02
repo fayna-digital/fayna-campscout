@@ -26,6 +26,7 @@ from . import (
     test_role_kierownik_dziennik,  # noqa: E402,F401
     test_role_organizator_create_camp,  # noqa: E402,F401
     test_role_parent_cabinet,  # noqa: E402,F401
+    test_role_parent_image_consent,  # noqa: E402,F401
     test_role_parent_portal,  # noqa: E402,F401
     test_role_public_vacancies,  # noqa: E402,F401
     test_role_wychowawca_day_note,  # noqa: E402,F401
