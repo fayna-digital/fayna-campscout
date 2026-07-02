@@ -27,8 +27,11 @@ def _login(page: Page):
     page.fill("input[name='login']", LOGIN)
     page.fill("input[name='password']", PW)
     page.click("button[type='submit']")
-    # після успіху Odoo редіректить на /web або /odoo
-    page.wait_for_load_state("networkidle", timeout=30000)
+    # після успіху Odoo редіректить на /web або /odoo. НЕ networkidle: бекенд Odoo
+    # тримає постійний /websocket (bus), тож networkidle не настає ніколи
+    # (run 28609515164: load fired, networkidle timeout). Детермінований критерій —
+    # пішли зі сторінки логіну; невдалий логін перезавантажує /web/login → timeout.
+    page.wait_for_url(lambda url: "/login" not in url, timeout=30000)
 
 
 def test_login_smoke(page: Page):
