@@ -69,6 +69,9 @@
                         <notebook>
                             <page string="Photos">
                                 <field name="photo_ids" widget="many2many_tags"/>
+                                <separator string="Tagged children (photo consent-gated — RODO wizerunek)"/>
+                                <field name="tagged_participant_ids" widget="many2many_tags"
+                                       help="On publish, each tagged child must have signed Dodatek 4a (image consent = yes)."/>
                             </page>
                         </notebook>
                     </sheet>

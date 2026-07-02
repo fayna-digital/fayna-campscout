@@ -824,6 +824,35 @@ class EventEventBudget(models.Model):
         for event in self:
             event.camp_budget_id = event.camp_budget_ids[:1]
 
+    @api.onchange("website_published")
+    def _onchange_website_published_bep_warning(self):
+        """Non-blocking BEP warning at activation (owner decision: WARN, do
+        NOT hard-block — the organizer may knowingly run a below-BEP shift).
+        Surfaces when a shift is published while its budget shows the
+        registered head-count below break-even."""
+        for event in self:
+            if not event.website_published:
+                continue
+            budget = event.camp_budget_id
+            if not budget or budget.bep_children <= 0:
+                continue
+            if budget.registered_children < budget.bep_children:
+                return {
+                    "warning": {
+                        "title": _("Poniżej progu rentowności (BEP)"),
+                        "message": _(
+                            "Publikujesz turnus poniżej progu rentowności: "
+                            "zapisanych %(reg)s z %(bep)s potrzebnych do wyjścia "
+                            "na zero. Publikacja jest dozwolona (decyzja "
+                            "organizatora), ale turnus może przynieść stratę."
+                        )
+                        % {
+                            "reg": budget.registered_children,
+                            "bep": budget.bep_children,
+                        },
+                    }
+                }
+
     def action_open_budget(self):
         """Open the shift budget; create it (+ analytic account) on first use."""
         self.ensure_one()

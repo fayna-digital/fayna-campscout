@@ -17,7 +17,7 @@ Notes on the migration:
 """
 
 from odoo import _, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 
 class CampStory(models.Model):
@@ -88,7 +88,15 @@ class CampStory(models.Model):
 
     featured_participants = fields.Char(
         string="Featured participants",
-        help="Names or IDs of children mentioned in story",
+        help="Names or IDs of children mentioned in story (free-text caption)",
+    )
+
+    tagged_participant_ids = fields.Many2many(
+        "camp.participant",
+        string="Tagged children (photo consent-gated)",
+        help="Children shown/identified in this story's photos. On publish each "
+        "must have signed image consent (Dodatek 4a = 'yes'); enforces RODO "
+        "wizerunek — a tagged child without consent cannot be published.",
     )
 
     # Media
@@ -155,7 +163,29 @@ class CampStory(models.Model):
                     _("Cannot publish a story in state '%s'. Only draft stories can be published.")
                     % record.state
                 )
+            record._check_image_consent_before_publish()
             record.write({"state": "published", "publish_date": fields.Datetime.now()})
+
+    def _check_image_consent_before_publish(self):
+        """RODO wizerunek gate: every tagged child must have signed image
+        consent ('yes') before a public story is published. Publishing a
+        child's image without consent violates RODO (art. 6/9) and prawo do
+        wizerunku (art. 81 pr. aut.). Non-public stories are not shown to
+        parents, so the gate applies only when ``public`` is set."""
+        self.ensure_one()
+        if not self.public:
+            return
+        missing = self.tagged_participant_ids.filtered(lambda p: p.image_consent_state != "yes")
+        if missing:
+            raise ValidationError(
+                _(
+                    "Cannot publish: %s lack(s) signed image consent (Dodatek 4a "
+                    "— zgoda na wizerunek). Publishing a child's image without "
+                    "consent violates RODO and prawo do wizerunku (art. 81 pr. "
+                    "aut.). Collect consent or untag the child."
+                )
+                % ", ".join(missing.mapped("display_name"))
+            )
 
     def action_archive(self):
         """Archive story.
