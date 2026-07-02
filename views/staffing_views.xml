@@ -232,7 +232,7 @@
 
                     <!-- Krok 2: Podstawowe dane -->
                     <group string="2. Nazwa i organizator" invisible="step != 'basics'">
-                        <field name="name" placeholder="Obóz NWŚ — turnus 2 (2026)"/>
+                        <field name="name" placeholder="Obóz NWŚ — turnus 2 (2026)" required="step == 'basics'"/>
                     </group>
 
                     <!-- Krok 3: Logo -->
@@ -242,8 +242,8 @@
 
                     <!-- Krok 4: Daty i lokalizacja -->
                     <group string="4. Daty i miejscowość" invisible="step != 'dates'">
-                        <field name="date_begin"/>
-                        <field name="date_end"/>
+                        <field name="date_begin" required="step == 'dates'"/>
+                        <field name="date_end" required="step == 'dates'"/>
                         <field name="location" placeholder="Ośrodek Leśna Polana, Drołtowice 12"/>
                     </group>
 
@@ -277,7 +277,7 @@
                     <!-- Krok 8: Miejsca i finanse -->
                     <group string="8. Miejsca i finanse" invisible="step != 'capacity'">
                         <group string="Miejsca">
-                            <field name="seats"/>
+                            <field name="seats" required="step == 'capacity'"/>
                         </group>
                         <group string="Koszty bazowe (plan)">
                             <field name="cost_lodging_per_day" widget="monetary"/>
