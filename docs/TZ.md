@@ -9,6 +9,16 @@
 
 ---
 
+## 0. Business / Product (пише CEO/власник — область стандарту, дод. 2026-07-02)
+
+- **Проблема + цінність:** організатор табору веде MEN-документацію (картки, dziennik, teczka KO), RODO, Kamilka-протоколи вручну — довго, дорого, ризиковано (штрафи/кураторіум). Портал автоматизує весь цикл: створення табору → продаж → кадра → проведення → звіти. Цінність = менше ручної роботи + юр-відповідність + прозорий фінрезультат (BEP/маржа).
+- **Ринок/сегмент:** організатори дитячих таборів у Польщі (JDG/фундації); наша власна операція CampScout — перший клієнт-еталон; далі — продаж як SaaS-модуль іншим.
+- **⚠️ Успіх БІЗНЕСУ (ЗАПОВНИТИ CEO — не «coverage»):** ціль продажів / кількість таборів на порталі / готовність до піку сезону [___]; ROI від автоматизації [___].
+- **⚠️ Терміни (ЗАПОВНИТИ):** prod-cutover ДО [дата піку сезону]; зараз staging✅/prod❌.
+- **⚠️ Відповідальний + бюджет cutover:** [___].
+- **🔴 Головний бізнес-ризик:** проґавити 2-й сезон поспіль — 95% готово, але 0 у проді → 0 доходу; кожен тиждень зволікання = вартість двох систем + втрачені продажі.
+- **UX-DoD:** кожен екран самозрозумілий без інструкції (recognition-not-recall); двомовний UA/PL (аудиторія — укр-діти в Польщі). ⚠️ тест 2026-07-02 показав: UI ще НЕ відповідає (нема перемикача мови, desktop сирий) — [REPAIR_TZ](../../../DevJournal/projects/campscout-e2e-test-2026-07/REPAIR_TZ.md).
+
 ## 1. Objective
 
 Єдиний Odoo-17 модуль управління дитячими таборами CampScout під польське право (Rozp. MEN 30.03.2016, Ustawa Kamilka 2024, RODO, EU 1169/2011). Будується на нативних Odoo-фічах (`mail.thread`, `portal`, `event`, `sale`, `loyalty`, `sms`) замість 21 окремого `fayna_camp_*` модуля.
@@ -49,7 +59,7 @@ docker exec campscout_web odoo -c /etc/odoo/odoo.conf -d campscout \
 
 ```
 fayna_camp_portal/
-├── __manifest__.py            # 17.0.2.0.0; depends: ...+ fayna_rodo_compliance, fayna_sms_base
+├── __manifest__.py            # 17.0.4.0.0; depends: ...+ fayna_rodo_compliance, fayna_sms_base
 ├── hooks.py                   # post_init_hook — міграція ir.model.data з absorbed-модулів
 ├── models/                    # 27 файлів, ~27 моделей (1000+ полів)
 │   ├── camp.py                # camp.camp + категорії/активності/FAQ/housing (ядро)
@@ -75,7 +85,7 @@ fayna_camp_portal/
 ├── views/     16 XML (backend UI всіх ролей) + menus.xml
 ├── templates/ portal_templates · portal_chatter · website_templates · admin_dashboard
 ├── static/    scss/ css/ js/ (portal hero, chat-window fix)
-├── i18n/       pl_PL.po · uk_UA.po (374 рядки кожна)
+├── i18n/       pl_PL.po · uk_UA.po (~23k рядків кожна, станом на 2026-06-30)
 ├── tests/      test_scaffold · test_campscout · test_campscout_extended
 └── docs/       TZ.md · PLAN.md · CHANGELOG.md · LEGAL_REQUIREMENTS.md · CABINET_STATUS.md
 ```
