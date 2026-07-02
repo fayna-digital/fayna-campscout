@@ -62,8 +62,8 @@ PROD-GATE (ЗАКОН): P1-виконання + human QA green  ⇒  тільк�
 - [x] **P3.2** SMS / staffing / registration seats — `test_staffing.py`, `test_registration_seats.py`.
 - [x] **P3.3** Immutability — `test_rodo_consent_immutable.py`.
 - [x] **P3.4** RODO field-level art.9 — `test_art9_access.py`; роль-канон — `test_role_canon.py`.
-- [ ] **P3.5** 🟡 Формальний coverage ≥70% — тести є, але `QUALITY_AUDIT_*.md` зі звітом покриття перед gate ще треба згенерувати.
-- **Checkpoint:** критичні правові інваріанти під тестом ✅; coverage-число — перед prod-gate.
+- [x] **P3.5** ✅ 2026-07-02: coverage ЗМІРЯНО — **59%** (6958 stmts; 207 тестів 0 failed, docker-харнес 1:1 з CI) → [QUALITY_AUDIT_2026-07-02.md](QUALITY_AUDIT_2026-07-02.md). Рішення CTO: 70% = мета, не CI-блокер; найбільша діра controllers/admin.py 13%.
+- **Checkpoint:** критичні правові інваріанти під тестом ✅; coverage-число зафіксовано (59%).
 
 ## Фаза P4 — i18n + polish (паралельно) 🟡
 
@@ -73,9 +73,9 @@ PROD-GATE (ЗАКОН): P1-виконання + human QA green  ⇒  тільк�
 
 ## Фаза P5 — Prod-gate 🔴 (єдине плече, що лишилось)
 
-- [🟡] **P5.1** CD-інфра — ✅ `ci.yml` (lint/security гейт), `deploy-staging.yml` (safe deploy: clear .pyc / gated migration / wait-for-green / rollback), `e2e.yml` (Playwright), усі 6 secrets задані. ❌ Лишилось: перший живий прогон deploy+E2E; persistence staging SSH-key (Hetzner Console); юніт-тести Odoo в CI-гейт (зараз тільки lint); прод-стадія в конвеєрі.
+- [🟡] **P5.1** CD-інфра — ✅ `ci.yml` lint + **Odoo unit-тести в CI-гейті (PR#5, 2026-07-01)**; ✅ `deploy-staging.yml` живі прогони: 2026-06-30 (c4ae31a) + 2×2026-07-02 (6357b09, 5ad6802) — усі success; 🟡 `e2e.yml` — два перші прогони впали на collection (pytest × Odoo-пакет), структурний фікс у **PR#12** (e2e/ поза tests/), після мерджу — повторний dispatch; очікування: 1 passed login-smoke + 2 skipped (калібрувальні). ❌ Лишилось: persistence staging SSH-key (Hetzner Console); прод-стадія в конвеєрі.
 - [ ] **P5.2** Виконати P1.4 (міграція на проді) + human QA green по всіх ролях.
-- [ ] **P5.3** Виправити биті посилання в CHANGELOG (див. Open Questions TZ).
+- [x] **P5.3** ✅ 2026-07-02 (PR#9): 21 битий лінк CHANGELOG → 0 (машинний гейт link-checker).
 - **Checkpoint (ЗАКОН):** P1.4 виконано + QA green → deploy prod.
 
 ---
