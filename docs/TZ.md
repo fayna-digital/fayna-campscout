@@ -37,6 +37,7 @@
 - **13.** Команди (запуск, тести, деплой)
 - **14.** Структура коду
 - **15.** Traceability: джерела → розділи; реєстр архівів
+- **16.** Глосарій · **17.** C4-контекст · **18.** API та зовнішні контракти
 
 ---
 
@@ -48,7 +49,7 @@
 
 **[B-2] Ринок і етапи.** Етап 1 — власна операція CampScout (клієнт-еталон): усі табори сезону 2027 (базлайн 2025 = **5 напрямків / 11 заїздів**) ведуться через портал, моноліт `campscout_management` вимкнено. Етап 2 — SaaS для малих організацій, що роблять табори час від часу: **OSP (Ochotnicza Straż Pożarna)**, парафії, спортклуби, ZHP-подібні. · ✅ зафіксовано (a029124).
 
-**[B-3] Терміни (критичний шлях).** Реєстрація сезону 2027 стартує **серпень–вересень 2026** (~1–2 міс від фіксації); пік літа-2027 — травень 2027. Мін. prod-cutover — до серпня-вересня 2026; крайній — до травня 2027 (тоді зимовиська підуть повз портал). · ✅ зафіксовано; 🔴 сам cutover не виконано (розділ 7).
+**[B-3] Терміни (критичний шлях).** Реєстрація сезону 2027 стартує **серпень–вересень 2026** (~1–2 міс від фіксації); пік літа-2027 — травень 2027. Мін. prod-cutover — до серпня-вересня 2026; крайній — до травня 2027 (тоді зимовиська підуть повз портал). · ✅ зафіксовано; 🔴 сам cutover не виконано (розділ 7). **Критерій (EARS):** портал ПОВНІСТЮ розгорнутий на проді і приймає реєстрації сезону-2027 не пізніше **01.09.2026** (жорсткий дедлайн; цільова дата 01.08.2026). · Верифікація: inspect (запис у CHANGELOG + перша жива реєстрація).
 
 **[B-4] Головний бізнес-ризик.** Проґавити вікно реєстрації → сезон 2027 не на порталі → ще рік «95% готово, 0 у проді, 0 доходу». · Мітигація: розділ 7 (cutover) — найвищий пріоритет після ремонту R2.
 
@@ -80,7 +81,7 @@
 
 **[P-1] Комплект поставки** = `fayna_camp_portal` + `fayna_rodo_compliance` + `l10n_pl_ksef_margin` + `fayna_sms_base` (+`fayna_sms_turbosms`) + `zadarma_odoo` + стандартні Odoo (base/mail/sale/event/account/website/portal/sms/loyalty). Деплой КОМПЛЕКТОМ (Odoo не качає depends з інтернету — код мусить бути в addons_path). · ✅ зафіксовано; NOTICE.md у 6 модулях (гілка `chore/sellable-license-cleanup`).
 
-**[P-2] Ліцензія OPL-1** (пропрієтарна, «справжній продаж») у manifest усіх 5 наших модулів + © Fayna Digital. AGPL у дереві depends = 0 (звірено). Co-Authored-By: Claude — зупинено going-forward, історія не переписується (продаж чистим релізом — скрипт `DevJournal/scripts/make-release.sh`, чернетка). · 🟡 ЗНАЙДЕНО НЕВІДПОВІДНІСТЬ: `fayna_rodo_compliance/LICENSE` і `fayna_sms_base/LICENSE` містять LGPL-текст при manifest=OPL-1 → **як зробити:** замінити текст LICENSE на OPL-1 у двох репо (потребує окремого «ок» — #BOUNDARY, чужі репо). · ⚪ рішення: гілка sellable-cleanup досі не merged — коли зливати.
+**[P-2] Ліцензія OPL-1** (пропрієтарна, «справжній продаж») у manifest усіх 5 наших модулів + © Fayna Digital. AGPL у дереві depends = 0 (звірено). Co-Authored-By: Claude — зупинено going-forward, історія не переписується (продаж чистим релізом — скрипт `DevJournal/scripts/make-release.sh`, чернетка). · 🟡 ЗНАЙДЕНО НЕВІДПОВІДНІСТЬ: `fayna_rodo_compliance/LICENSE` і `fayna_sms_base/LICENSE` містять LGPL-текст при manifest=OPL-1 → **як зробити:** замінити текст LICENSE на OPL-1 у двох репо (потребує окремого «ок» — #BOUNDARY, чужі репо). · ⚪ рішення: гілка sellable-cleanup досі не merged — коли зливати. **Критерій (EARS):** WHEN модуль релізиться, THEN вміст LICENSE ПОБАЙТНО відповідає OPL-1 в усіх 5 модулях (вкл. fayna_rodo_compliance, fayna_sms_base); нові коміти НЕ містять AI-співавторства. · Верифікація: inspect (hash-порівняння LICENSE; grep трейлерів у нових комітах = 0).
 
 **[P-3] SMS провайдер-агностичність.** `fayna_sms_base` вже має абстракт `sms.provider.base` + config + чергу + лог + 1 адаптер TurboSMS. · 🔴 доробити: розширити `provider_type`, адаптери generic HTTP/REST + SMSAPI.pl / SerwerSMS.pl (PL-ринок; TurboSMS = UA), роутинг + баланс per адаптер. **Як зробити:** новий клас-адаптер на модель provider_type за патерном turbosms; тест — mock HTTP; не блокер сезону.
 
@@ -163,7 +164,7 @@
 
 **[F-KKW-5] Згоди 4a (wizerunek) + 4b (marketing)** з canvas-підписом, IP, RODO-log; фото дитини в stories лише за image-consent (consent-gate). Розрізняти ДВІ цілі фото: внутрішній показ у кабінеті ≠ публічний маркетинг (Dodatek 4a) — окремі згоди; 4b — toggle з можливістю ВІДКЛИКАННЯ будь-коли (не лише first-time), відкликання → RODO-log. Тексти згод — HTML-body на res.company (setup-чеклист перед запуском порталу). · ✅ Тести: `test_role_parent_image_consent.py`, `test_story_photo_consent_gate.py`.
 
-**[F-KKW-6] Auto-refusal.** Реєстрація без підписаної карти/RODO за 24 год до старту → cron скасовує + refund + RODO log, місце звільняється (нагадування батькам за 14/3 дні — SMS CRITICAL). · 🟡 інваріант описаний (master §2.6.2d.1), нагадування є в SMS-шаблонах; cron auto-refusal не верифіковано. **Як довести:** знайти cron у data/cron.xml; якщо нема — додати + тест; ~1 день. ⚠️ life-critical для сезону.
+**[F-KKW-6] Auto-refusal.** Реєстрація без підписаної карти/RODO за 24 год до старту → cron скасовує + refund + RODO log, місце звільняється (нагадування батькам за 14/3 дні — SMS CRITICAL). · 🟡 інваріант описаний (master §2.6.2d.1), нагадування є в SMS-шаблонах; cron auto-refusal не верифіковано. **Як довести:** знайти cron у data/cron.xml; якщо нема — додати + тест; ~1 день. ⚠️ life-critical для сезону. **Критерій (EARS):** WHEN за <24 год до старту заїзду реєстрація без підписаної карти АБО без RODO-згоди, THEN система АВТОМАТИЧНО скасовує реєстрацію + повний refund + запис у RODO-лог; існує щоденний cron, що це виконує. · Верифікація: test (тест-фікстура з непідписаною картою → cancel+refund+log) + inspect (cron у data/).
 
 **[F-KKW-7] Картка-еталон фірми.** PDF має виглядати як фірмовий еталон (гарніший за MEN-дефолт), res.company з брендом/лого/реквізитами (не «YourCompany»). · 🔴 еталон не знайдено/не застосовано (знахідка тесту 02.07). **Як зробити:** знайти еталон у репо camp / fayna_camp_qualification / Dokumenty → QWeb-стилізація karta_report; конфіг res.company на staging уже виправлено частково; ~1 день.
 
@@ -173,9 +174,9 @@
 
 **[F-RODO-1] Журнал згод + HMAC (append-only).** `fayna_rodo_consent_log`: partner, consent_type (marketing/image/rodo/art9-access/declaracja), action (granted/revoked/accessed/erased/unsubscribed/declared), timestamp, IP, user-agent, location, hmac_hash, source. · ✅ існує і використовується порталом · Тести: `test_rodo_consent_immutable.py`, `test_signoff_rodo.py`.
 
-**[F-RODO-2] Art.9 — ДВА механізми разом.** (1) field-level groups на медполях (живі форми) — ✅ (`test_art9_access.py`); (2) attachment-ACL на PDF (PDF = плоский файл, field-security його не захищає!) — 🟡 record-rule на ir.attachment з медвмістом не підтверджено тестом. **Як довести/зробити:** тест «бухгалтер/чужий батько не відкриє karta-PDF по прямому URL»; якщо діри — record rule на ir.attachment (res_model='camp.participant' + медичний res_field) для art.9-груп; ~1 день. ⚠️ **HTTP-ізоляція:** `test_art9_http_isolation.py` — 3 тести ЧЕРВОНІ у PR #15 (URl-префікс /pl/ після активації мов). ПЕРШИМ КРОКОМ з'ясувати: реальна діра чи застарілі тести (розділ 8, R2-блокер).
+**[F-RODO-2] Art.9 — ДВА механізми разом.** (1) field-level groups на медполях (живі форми) — ✅ (`test_art9_access.py`); (2) attachment-ACL на PDF (PDF = плоский файл, field-security його не захищає!) — 🟡 record-rule на ir.attachment з медвмістом не підтверджено тестом. **Як довести/зробити:** тест «бухгалтер/чужий батько не відкриє karta-PDF по прямому URL»; якщо діри — record rule на ir.attachment (res_model='camp.participant' + медичний res_field) для art.9-груп; ~1 день. ⚠️ **HTTP-ізоляція:** `test_art9_http_isolation.py` — 3 тести ЧЕРВОНІ у PR #15 (URl-префікс /pl/ після активації мов). ПЕРШИМ КРОКОМ з'ясувати: реальна діра чи застарілі тести (розділ 8, R2-блокер). **Критерій (EARS):** WHEN користувач БЕЗ art.9-прав відкриває karta-PDF за прямим URL, THEN доступ заборонено (0 успішних спроб); test_art9_http_isolation = 100% pass; корінь кожного червоного тесту задокументований (діра чи застарілий тест). · Верифікація: test (симуляція прямого URL чужим юзером) + analyze (RCA червоних тестів).
 
-**[F-RODO-3] Declaracja-гейт §13 (RSTPO).** КОЖЕН (вкл. організатора) перед першим доступом до карток підтверджує declaracja про несудимість (правова рамка: art.92p ustawy o oświacie + RSTPO; текст у data/, не в Python; prefilled поля з hr-запису: miejscowość, dnia, imię i nazwisko, data urodzenia, adres). Текст verbatim (Dokumenty 9-009, Załącznik 2): «Ja niżej podpisany/a oświadczam pod rygorem odpowiedzialności karnej za składanie fałszywych zeznań stosownie do art. 233 §1 Kodeksu Karnego, że nie figuruję w bazie danych Rejestru Sprawców Przestępstw na Tle Seksualnym z dostępem ograniczonym i nie zostałem/am skazany/a prawomocnym wyrokiem za inne przestępstwo umyślne.» (+опц. zobowiązanie подати zaświadczenie з Rejestru, видане ≤3 міс перед роботою). Блокуючий модал (cookie-style, без «закрити й пропустити»); раз на сезон (KRK 12 міс); лог: хто+коли+IP+місце+user-agent+HMAC (потенційний кримінальний доказ). · ✅ Доказ: declaracja/RSTPO у `models/operations.py` [ПЕРЕВІРЕНО: grep] · 🟡 тесту на блокування нема. **Як довести:** тест «без declaracji act_window карток недоступний»; ~0.5 дня.
+**[F-RODO-3] Declaracja-гейт §13 (RSTPO).** КОЖЕН (вкл. організатора) перед першим доступом до карток підтверджує declaracja про несудимість (правова рамка: art.92p ustawy o oświacie + RSTPO; текст у data/, не в Python; prefilled поля з hr-запису: miejscowość, dnia, imię i nazwisko, data urodzenia, adres). Текст verbatim (Dokumenty 9-009, Załącznik 2): «Ja niżej podpisany/a oświadczam pod rygorem odpowiedzialności karnej za składanie fałszywych zeznań stosownie do art. 233 §1 Kodeksu Karnego, że nie figuruję w bazie danych Rejestru Sprawców Przestępstw na Tle Seksualnym z dostępem ograniczonym i nie zostałem/am skazany/a prawomocnym wyrokiem za inne przestępstwo umyślne.» (+опц. zobowiązanie подати zaświadczenie з Rejestru, видане ≤3 міс перед роботою). Блокуючий модал (cookie-style, без «закрити й пропустити»); раз на сезон (KRK 12 міс); лог: хто+коли+IP+місце+user-agent+HMAC (потенційний кримінальний доказ). · ✅ Доказ: declaracja/RSTPO у `models/operations.py` [ПЕРЕВІРЕНО: grep] · 🟡 тесту на блокування нема. **Як довести:** тест «без declaracji act_window карток недоступний»; ~0.5 дня. **Критерій (EARS):** WHEN користувач вперше за 12 міс відкриває картки без підтвердженої declaracji, THEN блокуючий модал забороняє доступ до підтвердження; після підтвердження — доступ і append-only лог. · Верифікація: test (обидві гілки).
 
 **[F-RODO-4] Erasure (право на забуття).** Wizard на res.partner → анонімізація + лог action='erased' + SendPulse sync; юридичні дані (account.move/sale.order, retention 5-7 р.) НЕ видаляються — анонімізація; медичні/інцидентні — не erased (art.17(3)(e), art.89 anonimizacja). · ✅ Доказ: erasure/anonymi у `participant.py`, `commercial.py` [ПЕРЕВІРЕНО: grep] · 🟡 тесту нема; SendPulse-sync не верифіковано.
 
@@ -183,7 +184,7 @@
 
 **[F-RODO-6] UODO audit-export.** Кнопка «Завантажити RODO-звіт» (organizator): хто/коли дав згоду, відписався, кого забуто; PDF+XLSX; фільтри per-partner/per-camp/дата. · 🔴 не збудовано. **Як зробити:** QWeb+XLSX report по consent_log (аналог евіденції [F-FIN-2]); ~1 день.
 
-**[F-RODO-7] Мандат максимального захисту (DoD-БЛОКЕР ПРОДА).** Для art.9 + declaracji: (а) шифрування at-rest (filestore + Postgres); (б) бекап filestore+DB разом, офсайт, retention; (в) строгий доступ (повний пакет [F-RODO-2,3]); (г) повний audit art.30; (д) ротація секретів. Без пакету прод таких даних НЕ запускати. · 🔴 інфра-частина (а, б-офсайт, д) не зроблена. **Як зробити:** окремий infra-ADR у campscout-infra (LUKS/pgcrypto або volume-шифрування Hetzner, borg/restic офсайт, ротація) + «ок» власника; ~2-3 дні. Входить у prod-gate (розділ 10).
+**[F-RODO-7] Мандат максимального захисту (DoD-БЛОКЕР ПРОДА).** Для art.9 + declaracji: (а) шифрування at-rest (filestore + Postgres); (б) бекап filestore+DB разом, офсайт, retention; (в) строгий доступ (повний пакет [F-RODO-2,3]); (г) повний audit art.30; (д) ротація секретів. Без пакету прод таких даних НЕ запускати. · 🔴 інфра-частина (а, б-офсайт, д) не зроблена. **Як зробити:** окремий infra-ADR у campscout-infra (LUKS/pgcrypto або volume-шифрування Hetzner, borg/restic офсайт, ротація) + «ок» власника; ~2-3 дні. Входить у prod-gate (розділ 10). **Критерії (EARS, атомарно):** (а) filestore прода шифрується at-rest (LUKS/volume); (б) Postgres шифрується at-rest (volume/pgcrypto, AES-256); (в) бекап filestore+DB разом, офсайт, retention ≥30 днів; (г) секрети ротуються ≤90 днів; (д) audit-лог art.30 append-only. · Верифікація: inspect (конфіг інфри + журнал ротації) per пункт.
 
 ## 4.6 Kamilka + інциденти
 
@@ -191,7 +192,7 @@
 
 **[F-KAM-1] Kamilka override.** `camp.incident.report` severity='kamilka': SMS на ВСІХ subscribers навіть при opt-out (GDPR art.6.1.d), ескалація через 5 хв без прочитання → резервний контакт; immutable notification log для Kuratorium. · ✅ Доказ: `incident_kamilka.py`, `incident_notification_log.py`, cron_kamilka_escalation.xml · Тести: `test_native_approval.py`/`test_signoff_rodo.py` (суміжно); прямий тест ескалації — 🟡 у переліку відомих боргів P3.
 
-**[F-KAM-2] Karta Wypadku §11 (16 пунктів, не 7!) + Rejestr Wypadków §12** (10 колонок, авто-агрегація, Lp., immutable після закриття турнусу, PDF для KO). · ✅ Доказ: `models/incident_card.py:49` (карта), `:494` (реєстр), PLAN P2.2-2.3 · Тести: `test_incident_card.py`. 🔴 Знахідка тесту 02.07: п.9 opis у згенерованому документі порожній — поле опису називається не «description». **Як зробити:** grep реальну назву поля в camp.incident.card → мапнути у QWeb; ~1 год.
+**[F-KAM-2] Karta Wypadku §11 (16 пунктів, не 7!) + Rejestr Wypadków §12** (10 колонок, авто-агрегація, Lp., immutable після закриття турнусу, PDF для KO). · ✅ Доказ: `models/incident_card.py:49` (карта), `:494` (реєстр), PLAN P2.2-2.3 · Тести: `test_incident_card.py`. 🔴 Знахідка тесту 02.07: п.9 opis у згенерованому документі порожній — поле опису називається не «description». **Як зробити:** grep реальну назву поля в camp.incident.card → мапнути у QWeb; ~1 год. **Критерій (EARS):** WHEN генерується Karta Wypadku, THEN п.9 (opis) заповнений даними camp.incident.card (ніколи не порожній) і документ містить рівно 16 пунктів §11. · Верифікація: test (рендер з фікстурою → перевірка 16 полів і непорожнього opis).
 
 **[F-KAM-3] SLA-протокол інциденту (BP-006, AHA+Rozp. MEN):** 0-10с scene safety; 0-2хв CPR; 2-15хв безпечне місце+швидка+перший контакт батьків; 15-30хв батьки повністю поінформовані+kierownik на місці; 30хв-24г organizer+kurator+sanepid/prokurator; 24г-7д свідки; 7-21д protokół у 3 копіях. Реалізація: SLA computed booleans + sla_breaches + червоний бейдж у дашборді. · 🟡 workflow 7-state/18 дій є (`emergency.py`); SLA-таймери зі списком порушень не верифіковано. **Як довести/зробити:** перевірити поля sla_* у emergency.py; додати відсутні computed + тест; ~1 день.
 ## 4.7 Kiosk + кабінети + панель керівника
@@ -266,7 +267,7 @@
 
 **[F-FIN-2] Евіденція для зовнішнього бухгалтера:** кнопка «Скачати евіденцію» (PDF+XLSX: доходи/витрати/сальдо/VAT по табору) + авто-надсилання на пошту; фактури бухгалтер бере в KSeF (шлемо через `l10n_pl_ksef_margin`); бухгалтер НЕ має Odoo-доступу → архітектурно зникає art.9-ризик. · 🔴 export-звіт не збудовано. **Як:** QWeb+XLSX по analytic (account.move+sale.order+payments); кнопка на панелі [F-KSK-3]; ~1-2 дні.
 
-**[F-FIN-3] BEP-сигналізатор:** формула коректна (`budget.py:373`: denominator=price−variable, guard price unset); динаміка: збитково→перетин→прибутково; недобір → рішення організатора (автоскасування+повідомлення+повернення — вимога власника). · ✅ формула+guard · Тести: `test_bep_activation_warning.py` · 🔴 розрив: 69 sale.order із przychód=0 — продажі НЕ живлять price_per_child/przychód автоматично (знахідка 02.07). **Як:** прогнати повний флоу через майстер+ціну; якщо розрив підтвердиться — compute przychód з sale.order по event; ~1 день. ⚠️ без цього BEP-панель бреше.
+**[F-FIN-3] BEP-сигналізатор:** формула коректна (`budget.py:373`: denominator=price−variable, guard price unset); динаміка: збитково→перетин→прибутково; недобір → рішення організатора (автоскасування+повідомлення+повернення — вимога власника). · ✅ формула+guard · Тести: `test_bep_activation_warning.py` · 🔴 розрив: 69 sale.order із przychód=0 — продажі НЕ живлять price_per_child/przychód автоматично (знахідка 02.07). **Як:** прогнати повний флоу через майстер+ціну; якщо розрив підтвердиться — compute przychód з sale.order по event; ~1 день. ⚠️ без цього BEP-панель бреше. **Критерій (EARS):** WHEN sale.order підтверджено і прив'язано до event, THEN przychód і price_per_child події оновлюються автоматично; sale.order з przychód=0 при підтверджених продажах = 0 записів. · Верифікація: analyze (SQL-аудит: 69→0) + test (новий SO → BEP-панель оновилась).
 
 **[F-FIN-4] Дві маржі (рішення R8 спринту):** VAT-маржа (art.119, лише koszty «dla bezpośredniej korzyści turysty») ≠ бізнес-маржа (з рекламою/кадрою/overhead); довідник категорій витрат з прапорцями stały/zmienny + «до VAT-маржі»: ośrodek, transport, wyżywienie/доба, кадра (ставки [F-VAT-1]), ubezpieczenie NNW, atrakcje, reklama (лише бізнес-маржа), gadżety COGS, inne. Звіти для księgowej: **Zestawienie obozów** (przychód/koszty/обидві маржі) + **Rejestr faktur за місяць** (numer, kontrahent, obóz, data zapłaty, kwota marża / kwota gadżety) — стик l10n_pl_ksef_margin (поле P_PMarzy). · 🟡 категорії+BEP є; два-маржові звіти — разом з [F-FIN-2].
 
@@ -302,7 +303,7 @@
 
 *Пояснення: аудиторія — українські діти в Польщі; дефолт PL (рішення власника), повне перемикання UA всюди (kiosk + /my). Джерела: REPAIR R2-R3, R2_STATUS.*
 
-**[F-I18N-1] Перемикач мови:** kiosk (OWL langbar + endpoint `/camp/kiosk/set_lang`, persist на res.users.lang, звужено до PL/UA) + portal (`portal.language_selector` у шапці /my); вибір зберігається після перезаходу. · ✅ код (PR #15: a696ee0+f802a68+1ed0df8); обидва гейти PASS (reviewer high: upgrade-gap закрито migration `17.0.4.1.0`; QA: kiosk 9/9 UA, кабінет 100% UA bidirectional) · Доказ grep: set_lang у `controllers/kiosk.py` · **АЛЕ 🟡 НЕ merged: CI червоний** — 3 блокери: (1) ‼️ `test_art9_http_isolation` ×3 (URL-префікс /pl/ — з'ясувати діра/застарілі тести ПЕРШИМ); (2) 26 .po-дублів (msgmerge/python-дедуп); (3) ruff format 2 файли. Після зеленого → merge #15 → staging deploy.
+**[F-I18N-1] Перемикач мови:** kiosk (OWL langbar + endpoint `/camp/kiosk/set_lang`, persist на res.users.lang, звужено до PL/UA) + portal (`portal.language_selector` у шапці /my); вибір зберігається після перезаходу. · ✅ код (PR #15: a696ee0+f802a68+1ed0df8); обидва гейти PASS (reviewer high: upgrade-gap закрито migration `17.0.4.1.0`; QA: kiosk 9/9 UA, кабінет 100% UA bidirectional) · Доказ grep: set_lang у `controllers/kiosk.py` · **АЛЕ 🟡 НЕ merged: CI червоний** — 3 блокери: (1) ‼️ `test_art9_http_isolation` ×3 (URL-префікс /pl/ — з'ясувати діра/застарілі тести ПЕРШИМ); (2) 26 .po-дублів (msgmerge/python-дедуп); (3) ruff format 2 файли. Після зеленого → merge #15 → staging deploy. **Критерій (EARS):** WHEN користувач обирає мову в kiosk або /my, THEN UI перемикається PL↔UA, вибір зберігається на res.users.lang і переживає relogin; PR #15: 0 падінь art9-тестів, 0 .po-дублів, 0 ruff-порушень. · Верифікація: test (e2e перемикання+persist) + CI green.
 
 **[F-I18N-2] Нуль хардкоду мов у шаблонах (R3):** всі UI-рядки через `_()`/`_lt` з перекладом; `.pot` регенерований (code-ref!); 281/281 рядків UA/PL перекладено (gemini під msgfmt-гейт); пастка: model_terms-переклад без code:-reference невидимий для `_lt()`. · ✅ у PR #15 · Тести: msgfmt clean; DoD-grep: хардкод у templates/ = 0.
 
@@ -352,11 +353,11 @@
 
 **[M-2b] Залишкова BonSens-parity перед uninstall:** 🔴 product↔event лінки перенесено 42/59 (решту домапити); 🔴 bs_organizer_signature (res.company) → звірити з джерелом підпису організатора у портал-karta (=Q5). **Як:** дописати мапінг у detach/populate + контрольна звірка 59/59; ~0.5 дня; ДО uninstall-вікна (не блокує install/detach).
 
-**[M-3] 🔴 RODO-extract скрипт — ПЕРЕД detach (GOTCHA §6p).** Витягти згоди з `bs_client_consent` (~122) і prod-only `rodo_consent.py`/`res_partner_consent.py` (campscout_management, НЕ в git; бекап коду почато 22.06 в ops/). **Як зробити:** скрипт консолідації у fayna_rodo_consent_log (source='bs'/'legacy') + звірка counts; вставити у послідовність кроком 4. Без нього uninstall = втрата згод назавжди.
+**[M-3] 🔴 RODO-extract скрипт — ПЕРЕД detach (GOTCHA §6p).** Витягти згоди з `bs_client_consent` (~122) і prod-only `rodo_consent.py`/`res_partner_consent.py` (campscout_management, НЕ в git; бекап коду почато 22.06 в ops/). **Як зробити:** скрипт консолідації у fayna_rodo_consent_log (source='bs'/'legacy') + звірка counts; вставити у послідовність кроком 4. Без нього uninstall = втрата згод назавжди. **Критерій (EARS):** WHEN виконується detach legacy, THEN усі RODO-згоди з bs_client_consent (~122) і prod-only rodo_consent/res_partner_consent ПОПЕРЕДНЬО зконсолідовані у fayna_rodo_consent_log; counts джерело=ціль. · Верифікація: inspect (SQL-звірка counts до/після).
 
-**[M-4] Послідовність прода (M3, нічне вікно, лише за явним «ок»):** backup (pg_dump -Fc + filestore checksum) → install portal+rodo (`-i --no-http`, без нейтралізації — прод живий) → populate_from_bs (dry→commit) → **RODO-extract** → migrate_signatures → escort → detach (dry→commit) → verify §M-5 → uninstall legacy = ОКРЕМЕ вікно пізніше (на сезон — Strangler «поруч»). Стратегія: портал ПОРУЧ зі старим, без uninstall до feature-parity. · 🔴 НЕ виконано (P1.4 — головне плече, що лишилось). Передумови: свіжа репетиція на СВІЖІЙ прод-копії (staging = фото 23.06, застаріле) + завершені [F-RODO-7] інфра-мандат + чисті CI.
+**[M-4] Послідовність прода (M3, нічне вікно, лише за явним «ок»):** backup (pg_dump -Fc + filestore checksum) → install portal+rodo (`-i --no-http`, без нейтралізації — прод живий) → populate_from_bs (dry→commit) → **RODO-extract** → migrate_signatures → escort → detach (dry→commit) → verify §M-5 → uninstall legacy = ОКРЕМЕ вікно пізніше (на сезон — Strangler «поруч»). Стратегія: портал ПОРУЧ зі старим, без uninstall до feature-parity. **Критерії (EARS, атомарно):** (а) WHILE портал розгорнутий, THEN legacy працює паралельно без жодного збою своїх функцій; (б) uninstall legacy дозволений ЛИШЕ після 100% feature-parity, підтвердженого UAT. · Верифікація: analyze (моніторинг обох) + demo/UAT. · 🔴 НЕ виконано (P1.4 — головне плече, що лишилось). Передумови: свіжа репетиція на СВІЖІЙ прод-копії (staging = фото 23.06, застаріле) + завершені [F-RODO-7] інфра-мандат + чисті CI.
 
-**[M-5] Критерії приймання cutover (gate):** row-count ДО=ПІСЛЯ по 8 таблицях (product/event/ticket/SO/SOL/registration/partner) + 9 перевірок: PDF-карти 81=81; підписи 107=107; згоди ≈ (різниця → CSV); ir_model_data legacy=0 після detach; uninstall не змінює product-count; grep назв таборів у data/ = 0; escort 81 draft; RODO-log append-only; migration_needs_review → CSV. + smoke 7 кабінетів + /shop 200. Будь-який розрив на staging = СТОП, не на прод. · ✅ визначено; виконання = P1.4.
+**[M-5] Критерії приймання cutover (gate):** row-count ДО=ПІСЛЯ по 8 таблицях (product/event/ticket/SO/SOL/registration/partner) + 9 перевірок: PDF-карти 81=81; підписи 107=107; згоди ≈ (різниця → CSV); ir_model_data legacy=0 після detach; uninstall не змінює product-count; grep назв таборів у data/ = 0; escort 81 draft; RODO-log append-only; migration_needs_review → CSV. + smoke 7 кабінетів + /shop 200. Будь-який розрив на staging = СТОП, не на прод. · ✅ визначено; виконання = P1.4. **Критерії (EARS):** row-count 8 таблиць ДО=ПІСЛЯ (точна рівність); PDF 81=81; підписи 107=107; smoke-логін+базова дія у 7 кабінетах = 7/7 pass. · Верифікація: inspect (SQL-порівняння) + test (smoke-скрипт).
 
 **[M-6] Rollback:** L1 git revert (код) / L2 revert+`-u` (manifest) / L3 pg_restore (schema; ≤15 хв) / L4 повний DR. Бекап ≤1 год перед деплоєм. · ✅ практика; 🔴 DR-drill (відпрацювання відновлення) жодного разу не проведено — [GAP-6].
 
@@ -444,17 +445,17 @@
 
 *Пояснення розділу (вимога власника): чесний список підсистем, яких НЕ існує (не «частково» — взагалі), щоб вони не губилися за оптимізмом. Кожен пункт — з рецептом.*
 
-**[GAP-1] Observability-стек прода (метрики/дашборди/алерти).** Є лише Sentry на staging (fayna_sentry, ловить помилки — доведено end-to-end 01.07) і CI-нотифікації. НЕМА: Grafana/LGTM, 6 дашбордів (infra/PG/Odoo/business/security/deploy), алерт-рівнів (odoo_down>2min page; disk>85% warn), log-retention 30д/1р/7р. **Як зробити:** мінімально достатнє до cutover — Sentry на ПРОД + uptime-моніторинг (healthcheck cron + Telegram) + disk/backup-age алерти (~1 день); повний LGTM — окремий infra-проєкт після сезону (~1 тиждень, IaC у campscout-infra).
+**[GAP-1] Observability-стек прода (метрики/дашборди/алерти).** Є лише Sentry на staging (fayna_sentry, ловить помилки — доведено end-to-end 01.07) і CI-нотифікації. НЕМА: Grafana/LGTM, 6 дашбордів (infra/PG/Odoo/business/security/deploy), алерт-рівнів (odoo_down>2min page; disk>85% warn), log-retention 30д/1р/7р. **Як зробити:** мінімально достатнє до cutover — Sentry на ПРОД + uptime-моніторинг (healthcheck cron + Telegram) + disk/backup-age алерти (~1 день); повний LGTM — окремий infra-проєкт після сезону (~1 тиждень, IaC у campscout-infra). **Критерій мінімуму (EARS):** WHILE прод живий, THEN логи застосунку зберігаються ≥30 днів, а падіння Odoo >2 хв / backup_age >25 год / disk >85% генерують алерт у Telegram. · Верифікація: inspect (конфіг) + test (штучний тригер алерту).
 
 **[GAP-2] Звена (підгрупи) + дитячі лідери.** `is_subgroup_leader`/camp.subgroup у коді немає [ПЕРЕВІРЕНО: grep 0]. Вимога: виховник ділить ~20 дітей на ~3 звена, діти обирають лідерів (0 документів — вони учасники); піраміда +рівень. **Як:** легка модель camp.subgroup (або self-ref на camp.group) + прапорець на participant + вкладка у кіоску виховника; ~1-2 дні.
 
-**[GAP-3] UAT з живими користувачами.** Жодного формального UAT-циклу з реальними kierownik/батьками не було (тільки агенти+власник). **Як:** usability-test-plan скіл → 3-5 задач на staging (створити табір; заповнити карту з телефона; знайти документ на «контролі») → sign-off у docs/TESTING.md; 0.5 дня підготовка + 1-2 сесії; ДО prod-gate.
+**[GAP-3] UAT з живими користувачами.** Жодного формального UAT-циклу з реальними kierownik/батьками не було (тільки агенти+власник). **Як:** usability-test-plan скіл → 3-5 задач на staging (створити табір; заповнити карту з телефона; знайти документ на «контролі») → sign-off у docs/TESTING.md; 0.5 дня підготовка + 1-2 сесії; ДО prod-gate. **Критерій (EARS):** BEFORE прод-деплой, THEN проведено UAT з 3-5 живими користувачами (kierownik/батьки) на staging; результати і sign-off у docs/TESTING.md; 0 критичних блокерів. · Верифікація: inspect (sign-off документ).
 
 **[GAP-4] Регулярний security-скан прода.** Разові аудити були (IDOR закрито, ACL-аудит); систематичного OWASP ZAP weekly / зовнішнього пентесту нема. **Як:** ZAP baseline-scan у cron CI на staging URL (~0.5 дня); зовнішній пентест — за бюджетом перед SaaS-етапом.
 
 **[GAP-5] Performance-бенчмарки.** Цілі є ([N-3]), вимірів нема. **Як:** k6/locust сценарій checkout+/my на staging + фіксація p95 у CI-артефакт; ~1 день; перед піком продажів.
 
-**[GAP-6] Backup DR-drill.** Бекапи є, відновлення жодного разу не репетирувано end-to-end. **Як:** відновити прод-дамп у чистий контейнер + smoke; задокументувати час у RUNBOOK; ~0.5 дня; ДО cutover.
+**[GAP-6] Backup DR-drill.** Бекапи є, відновлення жодного разу не репетирувано end-to-end. **Як:** відновити прод-дамп у чистий контейнер + smoke; задокументувати час у RUNBOOK; ~0.5 дня; ДО cutover. **Критерій (EARS):** WHEN проводиться DR-drill, THEN прод-БД+застосунок відновлені в чисте середовище за ≤4 год (RTO) із втратою даних ≤1 год (RPO), smoke зелений. · Верифікація: inspect (звіт drill з таймінгами).
 
 **[GAP-7] Standardy Ochrony Małoletnich (pisemne).** Юр-вимога переліку SELLABLE §2.2 п.4 — документ-політика не знайдений у репо. **Як:** юр-текст (власник/юрист) → data/regulamin-тип + підписи кадри через [F-OPS-6]-механізм regulamin acknowledgment; переважно юридична, не кодова робота.
 
@@ -507,6 +508,59 @@ fayna_camp_portal/
 └── docs/                      # TZ.md (ЦЕЙ КАНОН) · PLAN.md · CHANGELOG · LEGAL_REQUIREMENTS ·
                                # CABINET_STATUS · ROLES · MIGRATION_MAP/BACK · archive/
 ```
+
+# 16. Глосарій (словник термінів)
+
+*Пояснення: доменна мова однозначна — вимога сеньйорського ТЗ (блок 8). Польські юридичні терміни не перекладаються в коді.*
+
+| Термін | Значення |
+|---|---|
+| **Organizator** | юрособа-власник таборів (CampScout / майбутній SaaS-клієнт); найширші права |
+| **Kierownik (wypoczynku)** | керівник конкретного заїзду; юридично відповідальний (Rozp. MEN); ≠ wychowawca |
+| **Wychowawca** | виховник групи ≤15/20 дітей; веде dziennik; бачить art.9 лише своєї групи |
+| **Instructor** | інструктор профільних (зокрема high-risk) активностей; ліцензія обов'язкова для лиж/води |
+| **Turnus / заїзд** | конкретна зміна табору = `event.event`; табір-бренд = `product.template` |
+| **Karta kwalifikacyjna** | юр-картка дитини (Dz.U.2026/704, Zał.6), 5 секцій + pkt 9 (медичне, art.9) |
+| **Teczka KO** | тека документів заїзду для контролю Kuratorium Oświaty; view-агрегатор, не копія файлів |
+| **Zgłoszenie wypoczynku** | реєстрація заїзду в кураторіумі: 21 дн (krajowy) / 14 дн (zagraniczny) до старту |
+| **KRK / RSPTS (RSTPO)** | довідка про несудимість / реєстр сексуальних злочинців; гейт §13 перед допуском до дітей; KRK дійсний 12 міс |
+| **Declaracja** | заява про несудимість (art.233 §1 KK) перед першим доступом до карток; раз на сезон |
+| **Escort / konwój (asysta)** | індивідуальний супровід дитини (продукт 204): dozwoła + zgoda medyczna + підпис |
+| **Kamilka (Ustawa)** | закон 2024 про захист дітей: SMS повз opt-out (vital interest), 5-хв ескалація, immutable лог |
+| **BEP** | break-even point заїзду: мін. дітей для беззбитковості; живиться з продажів (F-FIN-3) |
+| **VAT zw. / VAT-marża** | звільнення art.43 ust.1 pkt 24a (default) / режим маржі art.119 23% — перемикач per заїзд |
+| **Kiosk** | плитковий інтерфейс однієї ролі (home_action) замість сирого Odoo-бекенда |
+| **Strangler Fig** | міграційний патерн: портал росте ПОРУЧ з legacy, uninstall лише після parity |
+| **Cutover (P1.4)** | виконання міграції на проді за розділом 7; головне відкрите плече проєкту |
+| **Звено** | підгрупа ~6-7 дітей всередині групи з дитиною-лідером (GAP-2, не збудовано) |
+
+# 17. Архітектурний контекст (C4, рівень 1)
+
+*Пояснення: діаграма контексту — хто і що взаємодіє з системою (сеньйорський блок 7). Рівні 2-3 (контейнери/компоненти) — розділи 14 і 4; окремих діаграм свідомо не ведемо, поки команда = 1 власник + агенти.*
+
+```
+  [Батько]──/my/*──┐                        ┌──SMS──[TurboSMS API]──▶ телефони
+  [Wychowawca]─kiosk┤                       ├──дзвінки/SMS──[Zadarma АТС]
+  [Kierownik]──kiosk┤   ┌────────────────┐  ├──e-фактури──[KSeF (держ. API)]
+  [Organizator]─Odoo┼──▶│ fayna_camp_    │──┤
+  [Sales]──CRM/sale─┤   │ portal (Odoo17)│  ├──розсилки──[SendPulse]
+  [Кандидат]──/jobs─┘   │  + fayna_rodo  │  └──журнал згод──(fayna_rodo_compliance)
+                        │  + fayna_sms   │
+  [Бухгалтер (зовн.)]◀──│  + l10n_ksef   │──оплати──[банк/Przelewy24 — вручну/imported]
+   email-евіденція+KSeF └──────┬─────────┘
+                               │ git push → GitHub → CI (Lint+test-gate+e2e)
+  [Kuratorium Oświaty]◀─ PDF/паперово ─ teczka │ deploy: staging (Hetzner) → prod (#4ZONES)
+```
+
+# 18. API та зовнішні контракти
+
+*Пояснення: сеньйорський блок 4. Позиція проєкту — свідома ВІДМОВА від публічного REST API.*
+
+**[API-1] Публічного REST API НЕМАЄ — свідоме рішення (ADR 2026-07-02).** `/api/v1/*` повністю видалено: 0 споживачів (портал JS/XML, Astro-сайт, тести — все 0), мобільного застосунку нема, а `story_detail` мав IDOR повз consent-gate. Батьківські сценарії покриває нативний портал `/my/*`. Відновлення — з git-історії, лише коли з'явиться реальний споживач + OpenAPI-контракт + токен-авторизація. · ✅ Верифікація: grep `/api/v1` у коді = 0.
+
+**[API-2] Внутрішні HTTP-контракти** (auth=user, не публічні): портал `/my/*` (QWeb, session), kiosk `/camp/kiosk/*` + `/camp/kiosk/set_lang` (json-RPC, валідація active-мов), `/admin/dashboard` + login-as (organizator-only, audit-лог). Контракти живуть у коді контролерів; OpenAPI не ведеться свідомо (немає зовнішніх споживачів). · ✅.
+
+**[API-3] Вихідні інтеграції (клієнтські контракти):** KSeF (e-фактури, через `l10n_pl_ksef_margin`), TurboSMS (адаптер `fayna_sms_base`; PL-провайдери SMSAPI/SerwerSMS — беклог P-3), Zadarma (АТС, окремий модуль), SendPulse (розсилки; консолідація журналу згод — F-RODO-5). Кожна інтеграція в try/except — збій зовнішнього API не блокує продаж ([A-4]). · ✅ архітектура; контракти = документація вендорів.
 
 # 15. Traceability: джерела → розділи канону; реєстр архівів
 
