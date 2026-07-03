@@ -283,7 +283,7 @@
 
 **[F-OPS-4] Тренінги кадри:** MEN 36h/10h + школа вожатого (4 моделі vozhatyi + /my/training + сертифікати QWeb); курс через website_slides — Phase 9 (відкладено). · ✅ база; слайди ⏸.
 
-**[F-OPS-5] Звіти/снапшоти:** camp.analytics/marketing/stats.snapshot + `/admin/dashboard` KPI (7 секцій: бізнес, тривоги, активні табори, команда, комунікації, маркетинг+SMS-costs, audit) + view-as (with_user, НЕ sudo; immutable `camp.admin.access.log` RODO art.30, 7 років). · ✅ дашборд+view-as+лог · 🔴 R10: compute_sudo inconsistency `camp.marketing.report` (total_registrations/revenue/occupancy/avg_age) + `camp.regulamin` (signed_count) — warning ламає odoo shell context_get. **Як:** узгодити compute_sudo/store; DoD: старт без warning; ~2 год.
+**[F-OPS-5] Звіти/снапшоти:** camp.analytics/marketing/stats.snapshot + `/admin/dashboard` KPI (7 секцій: бізнес, тривоги, активні табори, команда, комунікації, маркетинг+SMS-costs, audit) + view-as (with_user, НЕ sudo; immutable `camp.admin.access.log` RODO art.30, 7 років). · ✅ дашборд+view-as+лог · ✅ R10 закрито 2026-07-04: `compute_sudo=True` на всю групу `_compute_metrics` (marketing.report) і `_compute_ack_stats` (regulamin; корінь — stored all_signed мав дефолт True, non-stored сусіди False). Верифікація: test ✅ `test_compute_sudo_consistency.py` (модуль-wide гард груп compute) + старт без warning (харнес-лог).
 
 **[F-OPS-6] Dziennik zajęć (Zał.5)** per camp.group (учасники ≤20; тижневі плани; щоденні записи; uwagi kierownika/KO) + activate/submit workflow + PDF. · ✅ Доказ: 04-TZ Тир 1-2 (форми+workflow), ADR «3 dziennik-моделі — РІЗНІ сутності, НЕ дубль» (⛔ злиття відхилено) · Тести: `test_role_kierownik_dziennik.py`, `test_dziennik_pdf.py`.
 
@@ -378,7 +378,7 @@
 1. R4 desktop kiosk + R5 бренд + R8 кольори + R9 заголовок/контекст + «Powrót do kiosku»/селектор табору — пакет [F-KSK-2], ~3-5 дн.
 2. R6 форми wypoczynku (+2 опції MEN) — ~1 год.
 3. R7 мікрокопі — дочистити, ~0.5 дн.
-4. R10 compute_sudo — ~2 год.
+4. ~~R10 compute_sudo~~ ✅ 2026-07-04 (test_compute_sudo_consistency, модуль-wide гард).
 5. BEP-розрив продажі→ціна [F-FIN-3] — ~1 дн. (перевірити флоу через майстер).
 6. Karta wypadku п.9 opis-поле [F-KAM-2] — ~1 год.
 7. Auto-refusal cron верифікація [F-KKW-6] — ~1 дн.
