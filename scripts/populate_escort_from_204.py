@@ -119,8 +119,8 @@ def run(env):
 
         if child_name:
             matches = children.filtered(
-                lambda p: _norm(f"{p.first_name} {p.last_name}") == child_name
-                or _tokens(f"{p.first_name} {p.last_name}") == _tokens(child_name)
+                lambda p, cn=child_name: _norm(f"{p.first_name} {p.last_name}") == cn
+                or _tokens(f"{p.first_name} {p.last_name}") == _tokens(cn)
             )
         elif len(children) == 1:
             matches = children  # єдина дитина батька — детерміновано і без імені
