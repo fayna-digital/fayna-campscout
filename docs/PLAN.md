@@ -84,4 +84,4 @@ PROD-GATE (ЗАКОН): P1-виконання + human QA green  ⇒  тільк�
 
 - [TZ.md](TZ.md) · [LEGAL_REQUIREMENTS.md](LEGAL_REQUIREMENTS.md) · [CABINET_STATUS.md](CABINET_STATUS.md)
 - Kanban: [[projects/kanban]] §🟠 CampScout ядро · §🔵 перенесення Групи B
-- [CAMPSCOUT_MASTER_TZ.md](../../fayna-digital-docs/contributing/CAMPSCOUT_MASTER_TZ.md) §16
+- [TZ.md](TZ.md) — єдиний канон (архів master-spec: ../../fayna-digital-docs/contributing/archive/2026-04-22-campscout-master-spec.md §16)
