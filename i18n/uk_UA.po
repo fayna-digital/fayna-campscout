@@ -2280,7 +2280,6 @@ msgstr "Призначено"
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/operations.py:0
-#: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_staff__assigned_groups
 #, python-format
 msgid "Assigned groups"
 msgstr "Призначені групи"
@@ -4625,7 +4624,6 @@ msgstr "Дата народження дитини — зберігається 
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/participant.py:0
-#: model:ir.model.fields,help:fayna_camp_portal.field_camp_participant__birth_date
 #, python-format
 msgid ""
 "Child's date of birth. Required for age calculation and PL legal compliance."
@@ -5657,7 +5655,6 @@ msgstr "Кредитний ліміт для цього партнера."
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/operations.py:0
-#: model:ir.model.fields,help:fayna_camp_portal.field_camp_staff__krk_attachment
 #, python-format
 msgid "Criminal record extract (Krajowy Rejestr Karny) — required by PL law."
 msgstr "Витяг про несудимість (KRK) — вимога польського законодавства."
@@ -5769,7 +5766,6 @@ msgstr "Поточне замовлення"
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/operations.py:0
-#: model:ir.model.fields,help:fayna_camp_portal.field_camp_staff__state
 #, python-format
 msgid "Current participation status of this staff member."
 msgstr "Поточний статус участі цього працівника."
@@ -13288,11 +13284,6 @@ msgstr ""
 "Ім'я, введене батьками поруч із намальованим підписом під час підписання."
 
 #. module: fayna_camp_portal
-#: model:ir.model.fields,help:fayna_camp_portal.field_camp_story__featured_participants
-msgid "Names or IDs of children mentioned in story"
-msgstr "Імена або ID дітей, згаданих в історії"
-
-#. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/.claude/worktrees/agent-a3edac6f39eabebd3/models/emergency.py:0
 #: code:addons/fayna_camp_portal/.claude/worktrees/agent-aa7f85cf4eb0f17b4/models/emergency.py:0
@@ -14720,7 +14711,6 @@ msgstr "Оперативний чат заїзду табору %s. Створе
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/operations.py:0
-#: model:ir.model.fields,help:fayna_camp_portal.field_camp_staff__role
 #, python-format
 msgid "Operational role of this staff member in the shift."
 msgstr "Операційна роль цього працівника в заїзді."
@@ -18827,7 +18817,6 @@ msgstr "Очищений номер"
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/operations.py:0
-#: model:ir.model.fields,help:fayna_camp_portal.field_camp_staff_cert__attachment_id
 #, python-format
 msgid "Scanned copy of the certificate (stored as ir.attachment)."
 msgstr "Скан-копія сертифіката (зберігається як ir.attachment)."
@@ -20595,11 +20584,6 @@ msgstr "Вулиця та номер будинку."
 #: model:ir.model.fields,field_description:fayna_camp_portal.field_camp_participant__street2
 msgid "Street2"
 msgstr "Вулиця 2"
-
-#. module: fayna_camp_portal
-#: model:ir.actions.act_window,name:fayna_camp_portal.action_camp_program_structured
-msgid "Structured Programs"
-msgstr "Структуровані програми"
 
 #. module: fayna_camp_portal
 #. odoo-python
@@ -22758,7 +22742,6 @@ msgstr ""
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/operations.py:0
-#: model:ir.model.fields,help:fayna_camp_portal.field_camp_staff_cert__is_valid
 #, python-format
 msgid ""
 "True when the certificate has no expiry date or expiry is today or in the "
@@ -24616,7 +24599,6 @@ msgstr "напр. 'Група A', 'Група C' або 'Всі'."
 #. module: fayna_camp_portal
 #. odoo-python
 #: code:addons/fayna_camp_portal/models/operations.py:0
-#: model:ir.model.fields,help:fayna_camp_portal.field_camp_staff__assigned_groups
 #, python-format
 msgid "e.g. 'Group A, Group C' or 'Entire shift'."
 msgstr "напр. 'Група A, Група C' або 'Весь заїзд'."
@@ -25930,11 +25912,6 @@ msgid "Turnusy (Events)"
 msgstr "Заїзди (Events)"
 
 #. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_products
-msgid "Programy (Products)"
-msgstr "Програми (Products)"
-
-#. module: fayna_camp_portal
 #: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_categories
 msgid "Kategorie"
 msgstr "Категорії"
@@ -25970,16 +25947,6 @@ msgstr "Кваліфікаційні картки"
 #: model:ir.ui.menu,name:fayna_camp_portal.menu_operations
 msgid "Operacje"
 msgstr "Операції"
-
-#. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_journal
-msgid "Dziennik dnia"
-msgstr "Журнал дня"
-
-#. module: fayna_camp_portal
-#: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_groups
-msgid "Grupy wychowawcze (§2)"
-msgstr "Виховні групи (§2)"
 
 #. module: fayna_camp_portal
 #: model:ir.ui.menu,name:fayna_camp_portal.menu_camp_incident_card

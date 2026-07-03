@@ -327,8 +327,10 @@ class CampKioskController(http.Controller):
         # Belt-and-braces: the language must also be active in this DB (it is
         # activated by _setup_bilingual_languages on install/upgrade), so the
         # client can never park a user on an inactive/uninstalled locale.
-        is_active = request.env["res.lang"].sudo().search_count(
-            [("code", "=", lang), ("active", "=", True)]
+        is_active = (
+            request.env["res.lang"]
+            .sudo()
+            .search_count([("code", "=", lang), ("active", "=", True)])
         )
         if not is_active:
             _logger.warning("camp kiosk: rejected set_lang to inactive/unknown lang %r", lang)
