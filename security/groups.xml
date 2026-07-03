@@ -216,6 +216,7 @@
             <field name="category_id" ref="module_category_fayna_camp_portal"/>
             <field name="implied_ids" eval="[
                 (4, ref('base.group_system')),
+                (4, ref('event.group_event_manager')),
                 (4, ref('group_fayna_camp_manager')),
                 (4, ref('group_emergency_manager')),
                 (4, ref('group_nutrition_officer')),

@@ -143,17 +143,14 @@ class CampCreateWizard(models.TransientModel):
     )
 
     name = fields.Char(
-        required=True,
         string=_("Camp shift name"),
         help=_("e.g. 'Obóz NWŚ — turnus 2 (2026)'."),
     )
     date_begin = fields.Datetime(
-        required=True,
         string=_("Start"),
         help=_("Shift start — also the age anchor for art. 92c group limits."),
     )
     date_end = fields.Datetime(
-        required=True,
         string=_("End"),
         help=_("Shift end — per_child_day budget lines multiply by the day count."),
     )
@@ -165,7 +162,6 @@ class CampCreateWizard(models.TransientModel):
         ),
     )
     seats = fields.Integer(
-        required=True,
         default=40,
         string=_("Seats (місткість)"),
         help=_("Capacity of the shift: event.seats_max AND the ticket seats_max (R11)."),
@@ -676,6 +672,12 @@ class CampCreateWizard(models.TransientModel):
     def action_create_camp(self):
         self.ensure_one()
 
+        required_final = ["name", "date_begin", "date_end", "seats"]
+        missing = [f for f in required_final if not self[f]]
+        if missing:
+            labels = ", ".join(self._fields[f].string for f in missing)
+            raise UserError(_("Nie można utworzyć obozu — brakuje pól: %s") % labels)
+
         # 1. event.event — the camp shift itself (R11: tickets = capacity layer).
         #    §6 ADR-13: created immediately as unpublished + pending_approval.
         #    website_published=False → not on website until organizator approves.
@@ -691,7 +693,20 @@ class CampCreateWizard(models.TransientModel):
         venue = self._get_or_create_venue()
         if venue:
             event_vals["address_id"] = venue.id
-        event = self.env["event.event"].create(event_vals)
+        # ``mail_create_nosubscribe=True`` prevents mail_thread.create from
+        # auto-INSERTing followers during event creation.  In a shared-transaction
+        # test environment (TransactionCase) the Odoo ORM may have flushed a zombie
+        # mail.followers new-record from a rolled-back savepoint just before this
+        # create, leaving a stale (partner, event_id, 'event.event') row in the DB.
+        # If the new event receives the same DB id as the rolled-back event (the
+        # sequence is never reset by ROLLBACK TO SAVEPOINT), the auto-follow INSERT
+        # hits the UNIQUE constraint and aborts the entire create call.
+        # Using nosubscribe + explicit message_subscribe is idempotent and produces
+        # the same follower list in production — message_subscribe ignores duplicates.
+        event = (
+            self.env["event.event"].with_context(mail_create_nosubscribe=True).create(event_vals)
+        )
+        event.message_subscribe(partner_ids=[self.env.user.partner_id.id])
 
         # 2. Ticket «Udział w obozie» (event_sale layer, native table).
         #    Event is website_published=False → ticket not visible/buyable on site
@@ -826,8 +841,18 @@ class CampCreateWizard(models.TransientModel):
         "capacity",
     ]
 
+    _STEP_REQUIRED = {
+        "basics": ["name"],
+        "dates": ["date_begin", "date_end"],
+        "capacity": ["seats"],
+    }
+
     def action_next(self):
         self.ensure_one()
+        missing = [f for f in self._STEP_REQUIRED.get(self.step, []) if not self[f]]
+        if missing:
+            labels = ", ".join(self._fields[f].string for f in missing)
+            raise UserError(_("Uzupełnij wymagane pola tego kroku: %s") % labels)
         idx = self._STEP_ORDER.index(self.step)
         if idx < len(self._STEP_ORDER) - 1:
             self.write({"step": self._STEP_ORDER[idx + 1]})

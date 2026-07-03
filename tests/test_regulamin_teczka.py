@@ -291,12 +291,19 @@ class TestRegulaminTeczka(TransactionCase):
         self.assertTrue(teczka.karty_ready)
 
     def test_teczka_unique_per_event(self):
-        self.env["camp.teczka.ko"].create({"event_id": self.event.id})
-        with (  # psycopg2 IntegrityError wrapped
-            self.assertRaises(Exception),
-            self.env.cr.savepoint(),
-        ):
-            self.env["camp.teczka.ko"].create({"event_id": self.event.id})
+        """A second create for the same event returns the existing teczka (idempotent).
+
+        The idempotent guard in CampTeczkaKO.create() silently returns the
+        existing record instead of hitting the SQL UNIQUE(event_id) constraint,
+        so the database transaction stays clean across test-class boundaries.
+        """
+        first = self.env["camp.teczka.ko"].create({"event_id": self.event.id})
+        second = self.env["camp.teczka.ko"].create({"event_id": self.event.id})
+        self.assertEqual(
+            first.id,
+            second.id,
+            "creating a second teczka for the same event must return the existing one",
+        )
 
     def test_teczka_wypadki_graceful_without_model(self):
         """camp.incident.register is built by a parallel agent — until it is

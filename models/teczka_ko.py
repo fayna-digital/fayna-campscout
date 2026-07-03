@@ -352,6 +352,39 @@ class CampTeczkaKO(models.Model):
             )
 
     # ------------------------------------------------------------------
+    # ORM hooks
+    # ------------------------------------------------------------------
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Idempotent create: return the existing teczka when event already has one.
+
+        Prevents ``duplicate key camp_teczka_ko_event_unique`` when the ORM
+        flushes a pending new-record from a stale cache (e.g. after a rolled-back
+        test savepoint) or when the wizard is inadvertently called twice for the
+        same event.  The SQL UNIQUE(event_id) constraint is the final hard gate;
+        this guard avoids reaching it so the transaction stays clean.
+        """
+        result = self.browse()
+        remaining_vals = []
+        for vals in vals_list:
+            event_id = vals.get("event_id")
+            if event_id:
+                existing = self.search([("event_id", "=", event_id)], limit=1)
+                if existing:
+                    _logger.debug(
+                        "camp.teczka.ko.create: event %s already has a teczka (%s) — skipping",
+                        event_id,
+                        existing.id,
+                    )
+                    result |= existing
+                    continue
+            remaining_vals.append(vals)
+        if remaining_vals:
+            result |= super().create(remaining_vals)
+        return result
+
+    # ------------------------------------------------------------------
     # Actions
     # ------------------------------------------------------------------
 

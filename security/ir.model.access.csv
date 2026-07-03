@@ -117,6 +117,10 @@ access_fayna_camp_dziennik_activity_admin,fayna.camp.dziennik.activity admin,mod
 access_fayna_camp_dziennik_activity_user,fayna.camp.dziennik.activity user,model_fayna_camp_dziennik_activity,base.group_user,1,0,0,0
 access_fayna_camp_dziennik_note_admin,fayna.camp.dziennik.note admin,model_fayna_camp_dziennik_note,base.group_system,1,1,1,1
 access_fayna_camp_dziennik_note_user,fayna.camp.dziennik.note user,model_fayna_camp_dziennik_note,base.group_user,1,0,0,0
+access_fayna_camp_dziennik_kierownik,fayna.camp.dziennik kierownik,model_fayna_camp_dziennik,fayna_camp_portal.group_camp_kierownik,1,1,1,0
+access_fayna_camp_dziennik_note_kierownik,fayna.camp.dziennik.note kierownik,model_fayna_camp_dziennik_note,fayna_camp_portal.group_camp_kierownik,1,1,1,0
+access_fayna_camp_dziennik_wychowawca,fayna.camp.dziennik wychowawca,model_fayna_camp_dziennik,fayna_camp_portal.group_camp_wychowawca,1,0,0,0
+access_fayna_camp_dziennik_note_wychowawca,fayna.camp.dziennik.note wychowawca,model_fayna_camp_dziennik_note,fayna_camp_portal.group_camp_wychowawca,1,1,1,0
 access_fayna_camp_dziennik_plan_line_admin,fayna.camp.dziennik.plan.line admin,model_fayna_camp_dziennik_plan_line,base.group_system,1,1,1,1
 access_fayna_camp_dziennik_plan_line_user,fayna.camp.dziennik.plan.line user,model_fayna_camp_dziennik_plan_line,base.group_user,1,0,0,0
 access_camp_report_admin,camp.report admin,model_camp_report,base.group_system,1,1,1,1

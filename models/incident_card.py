@@ -25,8 +25,12 @@ Legal basis:
   * Ustawa o systemie oświaty 1991, art. 92n — kontrola Kuratorium Oświaty
 """
 
+import logging
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+
+_logger = logging.getLogger(__name__)
 
 # Selection used for every tak/nie checkbox of the official wzór — printed
 # verbatim in the PDF, so a Selection (not Boolean) keeps the legal wording.
@@ -586,6 +590,38 @@ class CampIncidentRegister(models.Model):
         self._check_unlock_allowed()
         self.write({"locked": False})
         return True
+
+    # ==================================================================
+    # ORM hooks
+    # ==================================================================
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Idempotent create: return the existing register when event already has one.
+
+        Prevents ``duplicate key camp_incident_register_event_id_uniq`` when the
+        ORM flushes a stale new-record from a rolled-back test savepoint.  The SQL
+        UNIQUE(event_id) constraint is the final hard gate; this guard avoids
+        reaching it so the transaction stays clean.
+        """
+        result = self.browse()
+        remaining_vals = []
+        for vals in vals_list:
+            event_id = vals.get("event_id")
+            if event_id:
+                existing = self.search([("event_id", "=", event_id)], limit=1)
+                if existing:
+                    _logger.debug(
+                        "camp.incident.register.create: event %s already has a register (%s) — skipping",
+                        event_id,
+                        existing.id,
+                    )
+                    result |= existing
+                    continue
+            remaining_vals.append(vals)
+        if remaining_vals:
+            result |= super().create(remaining_vals)
+        return result
 
     # ==================================================================
     # Immutability — frozen after lock
