@@ -36,4 +36,5 @@ from . import (
     test_signoff_rodo,  # noqa: E402,F401
     test_staffing,  # noqa: E402,F401
     test_story_photo_consent_gate,  # noqa: E402,F401
+    test_vacation_forms,  # noqa: E402,F401
 )

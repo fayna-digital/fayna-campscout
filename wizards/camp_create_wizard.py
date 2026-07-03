@@ -88,6 +88,8 @@ class CampCreateWizard(models.TransientModel):
             ("oboz", "Obóz"),
             ("biwak", "Biwak"),
             ("zimowisko", "Zimowisko"),
+            ("polkolonia", "Półkolonia"),
+            ("zielona_szkola", "Zielona szkoła"),
             ("inne", "Inne"),
         ],
         default="oboz",
