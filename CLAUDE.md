@@ -11,7 +11,7 @@
 **Єдиний** модуль управління таборами CampScout (архітектурний pivot 2026-06-07).
 Hotel-pattern: весь camp-specific код в одному модулі замість 21 окремих `fayna_camp_*`.
 
-**Версія:** `17.0.2.0.0` | **GitHub:** `VladSh77/fayna-campscout` (branch: main)
+**Версія:** `17.0.4.1.0` | **GitHub:** `VladSh77/fayna-campscout` (branch: main)
 **Staging:** `/opt/campscout/custom-addons/fayna_camp_portal/` — встановлено ✅
 **Prod:** НЕ задеплоєний (staging-only на 2026-06-07)
 
