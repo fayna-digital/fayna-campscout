@@ -376,7 +376,7 @@
 
 **Черга (пріоритет: перед демо клієнту → перед cutover → сезонні):**
 1. R4 desktop kiosk + R5 бренд + R8 кольори + R9 заголовок/контекст + «Powrót do kiosku»/селектор табору — пакет [F-KSK-2], ~3-5 дн.
-2. R6 форми wypoczynku (+2 опції MEN) — ~1 год.
+2. R6 форми wypoczynku (+2 опції MEN) — ~1 год. (2 опції → PR#20). 2b. ~~R6.1 wizard губив vacation_form при створенні~~ ✅ 2026-07-04: лендинг на event.vacation_form (нове поле, повний каталог MEN) + onchange-префіл kuratorium notification з гардом каталогу; тест у test_role_organizator_create_camp (PR#24).
 3. R7 мікрокопі — дочистити, ~0.5 дн.
 4. R10 compute_sudo — ~2 год.
 5. BEP-розрив продажі→ціна [F-FIN-3] — ~1 дн. (перевірити флоу через майстер).
