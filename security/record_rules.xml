@@ -173,28 +173,9 @@
             <field name="perm_unlink" eval="False"/>
         </record>
 
-        <!-- ─── camp.journal (dziennik) ───────────────────────────────── -->
-        <record id="rule_journal_wychowawca_own" model="ir.rule">
-            <field name="name">Wychowawca: own journal entries</field>
-            <field name="model_id" ref="model_camp_journal"/>
-            <field name="groups" eval="[(4, ref('group_camp_wychowawca'))]"/>
-            <field name="domain_force">[('author_id', '=', user.id)]</field>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="False"/>
-        </record>
 
-        <record id="rule_journal_kierownik_own_camp" model="ir.rule">
-            <field name="name">Kierownik: all journals of own camp</field>
-            <field name="model_id" ref="model_camp_journal"/>
-            <field name="groups" eval="[(4, ref('group_camp_kierownik'))]"/>
-            <field name="domain_force">['|', ('event_id.user_id', '=', user.id), ('event_id.staff_ids.user_id', '=', user.id)]</field>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="False"/>
-        </record>
+
+
 
         <!-- ─── camp.daily.report ─────────────────────────────────────── -->
         <record id="rule_daily_report_kierownik_own" model="ir.rule">
@@ -608,16 +589,7 @@
             <field name="perm_create" eval="True"/>
             <field name="perm_unlink" eval="False"/>
         </record>
-        <record id="rule_camp_journal_organizator_all" model="ir.rule">
-            <field name="name">Organizator: all camp_journal (see everything)</field>
-            <field name="model_id" ref="model_camp_journal"/>
-            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
-            <field name="domain_force">[(1, '=', 1)]</field>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="False"/>
-        </record>
+
         <record id="rule_camp_participant_organizator_all" model="ir.rule">
             <field name="name">Organizator: all camp_participant (see everything)</field>
             <field name="model_id" ref="model_camp_participant"/>

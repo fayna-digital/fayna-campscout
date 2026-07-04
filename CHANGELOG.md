@@ -2,6 +2,9 @@
 
 All notable changes to `fayna_camp_portal` are documented here.
 
+## 17.0.4.1.3 — 2026-07-04
+- Reuse S1 пара 2: camp.journal злито в camp.daily.report (active+7р retention-cron перенесені й ПІДКЛЮЧЕНІ — у журналі архів-метод був мертвий без ir.cron; autofill camp.report → з денних рапортів; migrations/: записи → kierownik_notes, вкладення перепідвішені; model/views/ACL/rules/menu видалені, сиріт 0).
+
 ## 17.0.4.1.2 — 2026-07-04
 - Reuse S1 пара 1: camp.stats.snapshot злито в camp.analytics.snapshot (total_capacity перенесено, migrations/-перенос даних, cron/ACL/views видалені, git grep сиріт = 0).
 - FIX: щоденний analytics-cron мовчки падав 100% (домен по неіснуючих полях camp.participant.event_id/qualification_state; ValueError ковтався try/except) — знайдено новим тестом keeper'а.

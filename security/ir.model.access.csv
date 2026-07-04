@@ -77,8 +77,6 @@ access_camp_staff_cert_user,camp.staff.cert user,model_camp_staff_cert,base.grou
 access_camp_staff_cert_hr,camp.staff.cert hr,model_camp_staff_cert,fayna_camp_portal.group_camp_hr,1,1,1,1
 access_camp_staff_medical_admin,camp.staff.medical admin,model_camp_staff_medical,base.group_system,1,1,1,1
 access_camp_staff_medical_medical,camp.staff.medical medical officer,model_camp_staff_medical,fayna_camp_portal.group_medical_officer,1,1,1,0
-access_camp_journal_admin,camp.journal admin,model_camp_journal,base.group_system,1,1,1,1
-access_camp_journal_user,camp.journal user,model_camp_journal,base.group_user,1,0,0,0
 access_camp_daily_report_admin,camp.daily.report admin,model_camp_daily_report,base.group_system,1,1,1,1
 access_camp_daily_report_user,camp.daily.report user,model_camp_daily_report,base.group_user,1,0,0,0
 access_camp_daily_report_kierownik,camp.daily.report kierownik,model_camp_daily_report,fayna_camp_portal.group_camp_kierownik,1,1,1,0
@@ -139,8 +137,6 @@ access_camp_incident_notification_log_kierownik,camp.incident.notification.log k
 access_camp_participant_sales,camp.participant sales,model_camp_participant,fayna_camp_portal.group_camp_sales,1,0,0,0
 access_camp_participant_wychowawca,camp.participant wychowawca,model_camp_participant,fayna_camp_portal.group_camp_wychowawca,1,1,0,0
 access_camp_participant_instructor,camp.participant instructor,model_camp_participant,fayna_camp_portal.group_camp_instructor,1,0,0,0
-access_camp_journal_wychowawca,camp.journal wychowawca,model_camp_journal,fayna_camp_portal.group_camp_wychowawca,1,1,1,0
-access_camp_journal_kierownik,camp.journal kierownik,model_camp_journal,fayna_camp_portal.group_camp_kierownik,1,1,1,0
 access_camp_staff_kierownik,camp.staff kierownik,model_camp_staff,fayna_camp_portal.group_camp_kierownik,1,1,1,0
 access_camp_staff_wychowawca,camp.staff wychowawca,model_camp_staff,fayna_camp_portal.group_camp_wychowawca,1,0,0,0
 access_camp_staff_instructor,camp.staff instructor,model_camp_staff,fayna_camp_portal.group_camp_instructor,1,0,0,0

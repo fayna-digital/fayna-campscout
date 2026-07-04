@@ -108,12 +108,6 @@
             action="action_camp_staff"
             sequence="10"/>
 
-        <menuitem id="menu_camp_journal"
-            name="Dziennik wydarzeń / Log dnia"
-            parent="menu_operations"
-            action="action_camp_journal"
-            sequence="20"/>
-
         <menuitem id="menu_camp_dziennik"
             name="Dziennik Zajęć (Załącznik 5)"
             parent="menu_operations"

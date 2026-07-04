@@ -818,127 +818,6 @@ class CampStaffMedical(models.Model):
 
 
 # ---------------------------------------------------------------------------
-# Camp Journal (Dziennik wpisów — daily event log)
-# ---------------------------------------------------------------------------
-
-
-class CampJournal(models.Model):
-    _name = "camp.journal"
-    _description = "Daily camp activity journal"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _order = "event_id, date desc, create_date desc"
-
-    event_id = fields.Many2one(
-        "event.event",
-        required=True,
-        ondelete="cascade",
-        string=_("Camp shift (event)"),
-        help=_("The specific shift/заїзд this journal entry is for."),
-        index=True,
-    )
-
-    date = fields.Date(
-        required=True,
-        string=_("Date"),
-        help=_("Date of the journal entry."),
-    )
-    time = fields.Float(
-        string=_("Time (hours)"),
-        help=_("Time of the entry (optional; e.g. 14.5 for 14:30)."),
-    )
-
-    category = fields.Selection(
-        [
-            ("activity", "Activity"),
-            ("incident", "Incident/accident"),
-            ("medical", "Medical event"),
-            ("weather", "Weather"),
-            ("schedule_change", "Schedule change"),
-            ("supply", "Supply/logistics"),
-            ("note", "General note"),
-        ],
-        default="note",
-        required=True,
-        string=_("Category"),
-        tracking=True,
-        help=_("Category of the journal entry."),
-    )
-
-    title = fields.Char(
-        required=True,
-        string=_("Title"),
-        help=_("Short summary of the journal entry."),
-    )
-    content = fields.Html(
-        required=True,
-        string=_("Description"),
-        help=_("Detailed description of the event/activity."),
-    )
-
-    author_id = fields.Many2one(
-        "res.users",
-        required=True,
-        default=lambda self: self.env.user,
-        string=_("Author"),
-        help=_("Staff member who created the entry."),
-        index=True,
-    )
-
-    group_ids = fields.Char(
-        string=_("Involved groups"),
-        help=_("e.g. 'Group A', 'Group C' or 'All'."),
-    )
-    participant_count = fields.Integer(
-        string=_("Participant count"),
-        help=_("How many children were involved."),
-    )
-
-    severity = fields.Selection(
-        [
-            ("low", "Low (minor issue)"),
-            ("medium", "Medium (moderate concern)"),
-            ("high", "High (serious)"),
-        ],
-        string=_("Severity"),
-        help=_("For incidents: severity level."),
-    )
-
-    attachment_ids = fields.Many2many(
-        "ir.attachment",
-        string=_("Photos/files"),
-        help=_("Photos or supporting documents."),
-    )
-
-    active = fields.Boolean(
-        default=True,
-        string=_("Active"),
-        help=_("Inactive entries are hidden from lists but kept for archival."),
-    )
-
-    state = fields.Selection(
-        [
-            ("draft", "Draft"),
-            ("published", "Published"),
-        ],
-        default="draft",
-        string=_("Status"),
-        tracking=True,
-        help=_("Draft entries are only visible to staff; published entries feed into reports."),
-    )
-
-    @api.model
-    def cron_archive_old_records(self):
-        """Archive journal records from events that ended more than 7 years ago."""
-        cutoff = fields.Date.today() - timedelta(days=7 * 365)
-        old_records = self.search([("event_id.date_end", "<", cutoff), ("active", "=", True)])
-        old_records.write({"active": False})
-        _logger.info(
-            "[camp_operations] Archived %d old journal records (7y cutoff)", len(old_records)
-        )
-        return True
-
-
-# ---------------------------------------------------------------------------
 # Camp Daily Report (Dzienny Raport Obozu — §2.11)
 # ---------------------------------------------------------------------------
 
@@ -949,6 +828,15 @@ class CampDailyReport(models.Model):
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "event_id, report_date desc"
     _rec_name = "name"
+
+    active = fields.Boolean(
+        default=True,
+        string=_("Active"),
+        help=_(
+            "Inactive reports are hidden from lists but kept for archival "
+            "(перенесено з camp.journal, reuse S1 пара 2; RODO-retention)."
+        ),
+    )
 
     _sql_constraints = [
         (
@@ -1233,10 +1121,25 @@ class CampDailyReport(models.Model):
         )
         return True
 
+    # ---------------------------------------------------------------------------
+    # Camp Report — Sprawozdanie Kierownika
+    # ---------------------------------------------------------------------------
 
-# ---------------------------------------------------------------------------
-# Camp Report — Sprawozdanie Kierownika
-# ---------------------------------------------------------------------------
+    @api.model
+    def cron_archive_old_reports(self):
+        """Archive daily reports of events that ended more than 7 years ago.
+
+        Перенесено з camp.journal (reuse S1 пара 2). У журналі метод був
+        МЕРТВИЙ — жоден ir.cron його не викликав; тут cron-запис додано в
+        data/cron.xml (retention-зріз F-DOC-4).
+        """
+        cutoff = fields.Date.today() - timedelta(days=7 * 365)
+        old_records = self.search([("event_id.date_end", "<", cutoff), ("active", "=", True)])
+        old_records.write({"active": False})
+        _logger.info(
+            "[camp_operations] Archived %d old daily reports (7y cutoff)", len(old_records)
+        )
+        return True
 
 
 class CampReport(models.Model):
@@ -1540,100 +1443,83 @@ class CampReport(models.Model):
             _logger.debug("[camp.report] event.registration not available for auto-fill")
 
         try:
-            entries = self.env["camp.journal"].search(
-                [("event_id", "=", self.event_id.id), ("state", "=", "published")],
-                order="date, create_date",
-            )
-            activities = entries.filtered(lambda e: e.category == "activity")
-            adverse = entries.filtered(lambda e: e.category in ("incident", "medical"))
-
-            if activities:
-                lines = Markup("").join(
-                    Markup("<li><strong>{date} — {title}</strong>{content}</li>").format(
-                        date=str(e.date),
-                        title=e.title or "",
-                        content=Markup("<br/>") + Markup(e.content) if e.content else Markup(""),
-                    )
-                    for e in activities
-                )
-                vals["section_program"] = Markup("<ul>") + lines + Markup("</ul>")
-
-            if adverse:
-                lines = Markup("").join(
-                    Markup("<li><strong>{date} — {title}</strong>{content}</li>").format(
-                        date=str(e.date),
-                        title=e.title or "",
-                        content=Markup("<br/>") + Markup(e.content) if e.content else Markup(""),
-                    )
-                    for e in adverse
-                )
-                vals["section_events"] = Markup("<ul>") + lines + Markup("</ul>")
+            # Reuse S1 пара 2: джерело авто-заповнення = camp.daily.report
+            # (submitted), а не видалений camp.journal.
+            program_html, events_html = self._collect_daily_report_sections()
+            if program_html:
+                vals["section_program"] = program_html
+            if events_html:
+                vals["section_events"] = events_html
         except Exception:  # noqa: BLE001
-            _logger.debug("[camp.report] camp.journal not available for auto-fill")
+            _logger.debug("[camp.report] daily reports not available for auto-fill")
 
         if vals:
             self.write(vals)
         return True
 
-    def action_autofill_from_journal(self):
-        """Auto-fill section_program and section_events from published journal entries."""
+    def _collect_daily_report_sections(self):
+        """HTML-секції для кінцевого звіту з ПОДАНИХ денних рапортів.
+
+        Reuse S1 пара 2: замінює збір із видаленого camp.journal. Програма =
+        rano/popołudnie/wieczór кожного рапорту; події = непорожні
+        health_incidents (staff-only поле лишається staff-only: кінцевий звіт
+        camp.report — внутрішній документ, не портал).
+        """
+        reports = self.env["camp.daily.report"].search(
+            [("event_id", "=", self.event_id.id), ("state", "=", "submitted")],
+            order="report_date",
+        )
+        program_html = Markup("")
+        events_html = Markup("")
+        prog_items = []
+        for r in reports:
+            parts = [
+                (label, val)
+                for label, val in (
+                    ("Rano", r.morning_activities),
+                    ("Popołudnie", r.afternoon_activities),
+                    ("Wieczór", r.evening_activities),
+                )
+                if val
+            ]
+            if parts:
+                body = Markup("<br/>").join(
+                    Markup("<em>{}</em>: {}").format(label, val) for label, val in parts
+                )
+                prog_items.append(
+                    Markup("<li><strong>{}</strong><br/>{}</li>").format(str(r.report_date), body)
+                )
+        if prog_items:
+            program_html = Markup("<ul>") + Markup("").join(prog_items) + Markup("</ul>")
+
+        adverse = reports.filtered(lambda r: r.health_incidents)
+        if adverse:
+            events_html = (
+                Markup("<ul>")
+                + Markup("").join(
+                    Markup("<li><strong>{}</strong><br/>{}</li>").format(
+                        str(r.report_date), r.health_incidents
+                    )
+                    for r in adverse
+                )
+                + Markup("</ul>")
+            )
+        return program_html, events_html
+
+    def action_autofill_from_daily_reports(self):
+        """Auto-fill section_program / section_events із поданих денних рапортів."""
         self.ensure_one()
         if self.state == "submitted":
             raise UserError(_("Cannot autofill a submitted report."))
-
-        entries = self.env["camp.journal"].search(
-            [("event_id", "=", self.event_id.id), ("state", "=", "published")],
-            order="date, create_date",
-        )
-        activities = entries.filtered(lambda e: e.category == "activity")
-        adverse = entries.filtered(lambda e: e.category in ("incident", "medical"))
-
+        program_html, events_html = self._collect_daily_report_sections()
         vals = {}
-        if activities:
-            lines = Markup("").join(
-                Markup("<li><strong>{date} — {title}</strong>{content}</li>").format(
-                    date=str(e.date),
-                    title=e.title or "",
-                    content=Markup("<br/>") + Markup(e.content) if e.content else Markup(""),
-                )
-                for e in activities
-            )
-            vals["section_program"] = Markup("<ul>") + lines + Markup("</ul>")
-
-        if adverse:
-            lines = Markup("").join(
-                Markup("<li><strong>{date} — {title}</strong>{content}</li>").format(
-                    date=str(e.date),
-                    title=e.title or "",
-                    content=Markup("<br/>") + Markup(e.content) if e.content else Markup(""),
-                )
-                for e in adverse
-            )
-            vals["section_events"] = Markup("<ul>") + lines + Markup("</ul>")
-
+        if program_html:
+            vals["section_program"] = program_html
+        if events_html:
+            vals["section_events"] = events_html
         if vals:
             self.write(vals)
         return True
-
-    # ------------------------------------------------------------------
-    # Immutability after submit
-    # ------------------------------------------------------------------
-
-    _SUBMITTED_WRITABLE_FIELDS = frozenset(
-        {
-            "state",
-            "submitted_pdf",
-            "submitted_date",
-            "kierownik_signed_date",
-            "kierownik_signed_by",
-            "approved_by_id",
-            "message_ids",
-            "message_follower_ids",
-            "message_partner_ids",
-            "activity_ids",
-            "message_main_attachment_id",
-        }
-    )
 
     def write(self, vals):
         if vals:

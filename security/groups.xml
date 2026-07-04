@@ -32,7 +32,7 @@
 
         <!-- ═══════════════════════════════════════════════════════════════
              Camp Kierownik — shift director / camp leader.
-             Can create/edit camp journal entries, daily reports (own),
+             Can create/edit daily reports (own),
              and view qualification cards of their own shift participants.
         ═══════════════════════════════════════════════════════════════ -->
 
@@ -41,7 +41,7 @@
             <field name="category_id" ref="module_category_fayna_camp_portal"/>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
             <field name="comment">
-                Kierownik (camp shift director) — can create/edit camp.journal,
+                Kierownik (camp shift director) — can create/edit
                 camp.daily.report, camp.staff entries. Cannot approve Załącznik 9
                 (that requires group_fayna_camp_manager).
             </field>
