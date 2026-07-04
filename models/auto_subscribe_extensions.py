@@ -49,25 +49,6 @@ class CampParticipantAutoSubscribe(models.Model):
 
 
 # ===========================================================================
-# camp.journal — dziennik (daily activity log)
-# ===========================================================================
-class CampJournalAutoSubscribe(models.Model):
-    _inherit = "camp.journal"
-
-    def _message_auto_subscribe_followers(self, updated_values, default_subtype_ids):
-        res = super()._message_auto_subscribe_followers(updated_values, default_subtype_ids)
-        for rec in self:
-            # Author (wychowawca who wrote the entry). camp.journal uses
-            # ``author_id`` (Many2one to res.users), not ``staff_id``.
-            if rec.author_id and rec.author_id.partner_id:
-                res.append((rec.author_id.partner_id.id, default_subtype_ids, False))
-            # Kierownik (event responsible).
-            if rec.event_id and rec.event_id.user_id and rec.event_id.user_id.partner_id:
-                res.append((rec.event_id.user_id.partner_id.id, default_subtype_ids, False))
-        return res
-
-
-# ===========================================================================
 # camp.daily.report
 # ===========================================================================
 class CampDailyReportAutoSubscribe(models.Model):

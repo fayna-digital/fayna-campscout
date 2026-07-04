@@ -22,8 +22,7 @@ Key facts pinned from code (models/operations.py):
     → FINDING: if this test fails with AccessError on create, it reveals a
       real ACL gap — wychowawca cannot write notes without group_system/sudo.
 
-  * wychowawca ACL reference: access_camp_journal_wychowawca (camp.journal
-    create=1) but fayna.camp.dziennik.note has NO wychowawca-specific ACL row.
+  * (історичний контраст із camp.journal вилучено — журнал злито в daily.report, reuse S1 пара 2.)
 
 The test seeds the dziennik as admin (owner-env), assigns the wychowawca to
 it, then attempts create as the wychowawca user.  A failure = FINDING.

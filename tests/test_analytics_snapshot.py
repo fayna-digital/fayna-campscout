@@ -41,3 +41,39 @@ class TestAnalyticsSnapshot(TransactionCase):
         clean = self.env["camp.analytics.snapshot"].browse(snap.id)
         with self.assertRaises(UserError):
             clean.write({"registered_count": 99})
+
+
+@tagged("post_install", "-at_install", "fayna_camp_portal")
+class TestDailyReportArchive(TransactionCase):
+    """Reuse S1 пара 2: 7-річний retention-архів денних рапортів.
+
+    У видаленого camp.journal метод був мертвий (без ir.cron); тут cron
+    підключений у data/cron.xml, а логіка — під тестом.
+    """
+
+    def test_cron_archives_seven_year_old_reports(self):
+        now = fields.Datetime.now()
+        old_event = self.env["event.event"].create(
+            {
+                "name": "Oboz Archiwum QA",
+                "date_begin": now - timedelta(days=8 * 365),
+                "date_end": now - timedelta(days=8 * 365 - 10),
+            }
+        )
+        fresh_event = self.env["event.event"].create(
+            {
+                "name": "Oboz Swiezy QA",
+                "date_begin": now - timedelta(days=10),
+                "date_end": now - timedelta(days=3),
+            }
+        )
+        Report = self.env["camp.daily.report"]
+        old_report = Report.create(
+            {"event_id": old_event.id, "report_date": fields.Date.today() - timedelta(days=8 * 365)}
+        )
+        fresh_report = Report.create(
+            {"event_id": fresh_event.id, "report_date": fields.Date.today() - timedelta(days=5)}
+        )
+        Report.cron_archive_old_reports()
+        self.assertFalse(old_report.active, "8-річний рапорт мусить піти в архів")
+        self.assertTrue(fresh_report.active, "свіжий рапорт лишається активним")

@@ -71,6 +71,20 @@
             <field name="user_id" ref="base.user_root"/>
         </record>
 
+        <!-- Daily reports — 7y RODO-retention archive (reuse S1 пара 2:
+             у camp.journal метод був мертвий без ir.cron; тут підключено) -->
+        <record id="ir_cron_daily_report_archive" model="ir.cron">
+            <field name="name">CampScout: Archive 7y-old daily reports</field>
+            <field name="model_id" ref="model_camp_daily_report"/>
+            <field name="state">code</field>
+            <field name="code">model.cron_archive_old_reports()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+
         <!-- Camp Reports — daily KPI snapshot for dashboard -->
         <record id="cron_daily_analytics_snapshot" model="ir.cron">
             <field name="name">Camp Reports: Daily Analytics Snapshot</field>
