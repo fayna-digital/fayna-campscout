@@ -8,9 +8,17 @@ draft camp.escort на кожну дитину+заїзд. Ідемпотент�
     --no-http < scripts/populate_escort_from_204.py
 
 TZ §5.2/§7. Патерн — scripts/populate_from_bs.py.
-⚠️ [ПРИПУЩЕННЯ] точний звʼязок event.registration ↔ camp.participant звіряється
-   на staging (M0): нижче використано registration.partner_id == participant.partner_id.
-   Перед commit-прогоном підтвердити реальні поля.
+
+ЧОМУ ДВА ШЛЯХИ МАТЧИНГУ (урок write-репетиції 2026-07-01, 26/69 no_match):
+escort часто продається ОКРЕМИМ замовленням, а реєстрація дитини живе на
+замовленні ТАБОРУ того ж батька. Матчити лише через реєстрації самого
+escort-замовлення = пропустити ~38%. Тому:
+  1) ПРЯМИЙ шлях — реєстрації escort-замовлення з participant_id (як раніше);
+  2) FALLBACK за ДИТИНОЮ — по батькові (order.partner_id) + bs_child_name
+     знайти camp.participant серед УСІХ замовлень батька, взяти його
+     реєстрацію; якщо в батька рівно одна дитина з однією реєстрацією —
+     детермінований матч і без імені.
+Кожен no_match друкується З ПРИЧИНОЮ — «непояснених» бути не повинно.
 """
 
 import logging
@@ -21,9 +29,19 @@ PRODUCT_204_TMPL = 204
 _logger = logging.getLogger("populate_escort_from_204")
 
 
+def _norm(s):
+    return " ".join((s or "").strip().lower().split())
+
+
+def _tokens(s):
+    return tuple(sorted(_norm(s).split()))
+
+
 def run(env):
     Escort = env["camp.escort"]
     SOL = env["sale.order.line"]
+    Participant = env["camp.participant"]
+    Registration = env["event.registration"]
 
     # order lines з продуктом 204 у підтверджених замовленнях
     lines = SOL.search(
@@ -33,31 +51,30 @@ def run(env):
         ]
     )
     orders = lines.mapped("order_id")
+    print(f"Order-lines з product_tmpl_id={PRODUCT_204_TMPL}: {len(lines)}")
     print(f"Замовлень з продуктом 204 (sale/done): {len(orders)}")
-
-    created = skipped = no_match = 0
-    for order in orders:
-        # реєстрації цього замовлення з ПРЯМИМ звʼязком на дитину
-        # (populate_from_bs ставить registration.participant_id — правильний лінк,
-        #  на відміну від partner-евристики, що для 2+ дітей обирала б не ту).
-        regs = env["event.registration"].search(
-            [("sale_order_id", "=", order.id), ("participant_id", "!=", False)]
+    if not lines:
+        # Fail-loud: якщо жодного рядка — 204 майже напевно НЕ той продукт на цій БД
+        # (id product_template відрізняється між середовищами). Не мовчати.
+        tmpl = env["product.template"].browse(PRODUCT_204_TMPL)
+        tmpl_name = tmpl.name if tmpl.exists() else "<не існує>"
+        print(
+            f"⚠️ УВАГА: 0 order-lines з product_tmpl_id={PRODUCT_204_TMPL}. Перевір реальний "
+            f"id продукту «Indywidualna asysta» на цій БД перед прогоном. "
+            f"product_template[{PRODUCT_204_TMPL}].name={tmpl_name!r}"
         )
-        if not regs:
-            no_match += 1
-            continue
-        for reg in regs:
-            participant = reg.participant_id
-            # ідемпотентність: вже є escort на (participant, registration)?
-            exists = Escort.search_count(
-                [("participant_id", "=", participant.id), ("registration_id", "=", reg.id)]
-            )
-            if exists:
-                skipped += 1
-                continue
-            if DRY_RUN:
-                created += 1
-                continue
+
+    has_bs = "bs_child_name" in env["sale.order"]._fields
+
+    def _make(participant, reg):
+        """Ідемпотентне створення escort на (participant, registration).
+        Повертає 'created' або 'skipped'."""
+        exists = Escort.search_count(
+            [("participant_id", "=", participant.id), ("registration_id", "=", reg.id)]
+        )
+        if exists:
+            return "skipped"
+        if not DRY_RUN:
             with env.cr.savepoint():
                 Escort.create(
                     {
@@ -67,11 +84,125 @@ def run(env):
                         "state": "draft",
                     }
                 )
-                created += 1
+        return "created"
 
+    created = skipped = 0
+    unmatched = []  # (клас, order.name, причина)
+
+    for order in orders:
+        # ── Шлях 1: реєстрації самого escort-замовлення з прямим лінком на дитину
+        # (populate_from_bs ставить registration.participant_id — правильний лінк,
+        #  на відміну від partner-евристики, що для 2+ дітей обирала б не ту).
+        # Лише живі реєстрації: escort на скасований виїзд не створюємо.
+        regs = Registration.search(
+            [
+                ("sale_order_id", "=", order.id),
+                ("participant_id", "!=", False),
+                ("state", "in", ("open", "done")),
+            ]
+        )
+        if regs:
+            for reg in regs:
+                if _make(reg.participant_id, reg) == "created":
+                    created += 1
+                else:
+                    skipped += 1
+            continue
+
+        # ── Шлях 2 (fallback): матч за ДИТИНОЮ через усі замовлення батька
+        partner = order.partner_id
+        if not partner:
+            unmatched.append(("MANUAL", order.name, "замовлення без partner_id"))
+            continue
+        children = Participant.search([("parent_partner_id", "=", partner.id)])
+        child_name = _norm(order.bs_child_name) if has_bs else ""
+
+        if child_name:
+            matches = children.filtered(
+                lambda p, cn=child_name: _norm(f"{p.first_name} {p.last_name}") == cn
+                or _tokens(f"{p.first_name} {p.last_name}") == _tokens(cn)
+            )
+        elif len(children) == 1:
+            matches = children  # єдина дитина батька — детерміновано і без імені
+        else:
+            matches = Participant.browse()
+
+        if not matches:
+            # Класифікація (репетиція 2026-07-04): якщо ВСІ власні реєстрації
+            # замовлення скасовані — escort out-of-scope (zwrot/відміна turnusu);
+            # якщо реєстрація жива, але дитини немає в bs_* жодного замовлення
+            # партнера — автоматично створити учасника НЕМОЖЛИВО (немає імені):
+            # ручний список для sales.
+            own_any = Registration.search([("sale_order_id", "=", order.id)])
+            if own_any and all(r.state == "cancel" for r in own_any):
+                unmatched.append(
+                    (
+                        "OUT-OF-SCOPE-CANCEL",
+                        order.name,
+                        f"усі реєстрації замовлення скасовані "
+                        f"({own_any.mapped('event_id.name')}) — zwrot/відміна",
+                    )
+                )
+                continue
+            live = own_any.filtered(lambda r: r.state in ("open", "done"))
+            where = (
+                f"реєстрація {live.mapped('state')} на {live.mapped('event_id.name')}"
+                if live
+                else "замовлення без жодної реєстрації"
+            )
+            unmatched.append(
+                (
+                    "MANUAL",
+                    order.name,
+                    f"{where}; bs_child_name={order.bs_child_name!r}; дітей у батька "
+                    f"{partner.display_name!r}: {len(children)} — створити учасника вручну",
+                )
+            )
+            continue
+        if len(matches) > 1:
+            unmatched.append(
+                (
+                    "MANUAL",
+                    order.name,
+                    f"неоднозначно: {len(matches)} дітей з іменем {child_name!r}",
+                )
+            )
+            continue
+
+        participant = matches[0]
+        regs2 = Registration.search(
+            [("participant_id", "=", participant.id), ("state", "in", ("open", "done"))]
+        )
+        if not regs2:
+            unmatched.append(
+                ("MANUAL", order.name, f"учасник id={participant.id} без живої реєстрації")
+            )
+            continue
+        if len(regs2) > 1:
+            unmatched.append(
+                (
+                    "MANUAL",
+                    order.name,
+                    f"неоднозначно: {len(regs2)} реєстрацій учасника id={participant.id} "
+                    f"(events: {regs2.mapped('event_id.name')})",
+                )
+            )
+            continue
+
+        if _make(participant, regs2[0]) == "created":
+            created += 1
+        else:
+            skipped += 1
+
+    cancelled = [u for u in unmatched if u[0] == "OUT-OF-SCOPE-CANCEL"]
+    manual = [u for u in unmatched if u[0] == "MANUAL"]
     print(
-        f"Результат: created={created} skipped(існують)={skipped} no_match={no_match}  DRY_RUN={DRY_RUN}"
+        f"Результат: created={created} skipped(існують)={skipped} "
+        f"out_of_scope_cancel={len(cancelled)} manual={len(manual)}  DRY_RUN={DRY_RUN}"
     )
+    for klass, name, reason in unmatched:
+        print(f"  {klass} {name}: {reason}")
+    print(f"Непояснених no_match: 0 (усі {len(unmatched)} класифіковані вище)")
     if not DRY_RUN:
         env.cr.commit()
         print("COMMIT виконано.")
