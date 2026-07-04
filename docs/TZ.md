@@ -407,7 +407,7 @@
 
 **[PR-3] #4ZONES:** Mac → GitHub → staging → prod; жодних правок на серверах; `-u`/restart/deploy — за «ок»; секрети — heredoc, BP-010; людина-в-петлі: deploy, фінал RODO, бізнес-рішення, слова/тон, ціна/VAT. · ✅ діє.
 
-**[PR-4] Правила Odoo-буднів:** clear .pyc перед -u (RCA stale-.pyc); post_init_hook ≠ upgrade (migrations/ для існуючих БД); `-u` не перезаписує переклади (--i18n-overwrite); groups= на root tree/form невалідні в Odoo 17; XML-ID стандартних модулів звіряти в ir_model_data; No-Manual-DB. · ✅ зафіксовано (уроки INC-014..021, R1/R2).
+**[PR-4] Правила Odoo-буднів:** clear .pyc перед -u (RCA stale-.pyc); post_init_hook ≠ upgrade (migrations/ для існуючих БД); `-u` не перезаписує переклади (--i18n-overwrite); groups= на root tree/form невалідні в Odoo 17; XML-ID стандартних модулів звіряти в ir_model_data; No-Manual-DB; **asset-only зміни (scss/js/xml-шаблони) ВИМАГАЮТЬ бампу версії маніфеста** — deploy-staging має gated -u, без бампу бандли лишаються старими (RCA R4b 04.07: код на staging новий, рендер старий). · ✅ зафіксовано (уроки INC-014..021, R1/R2).
 
 **[PR-5] Definition of Done фічі:** форма показує всі поля і ЗБЕРІГАЄТЬСЯ; юр-документи заповнюються повністю + workflow; списки з group-by по табору; i18n повний без mixed-language; IA-меню не бреше; авто-розрахунки підключені; кожен кабінет прогнано на staging роллю; mobile-audit для /my/*; ux-гейт [N-1]. · ✅ діє (04-TZ §C, розширено).
 
