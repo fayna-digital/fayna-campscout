@@ -266,3 +266,41 @@ class TestIncidentCard(TransactionCase):
         with self.assertRaises(UserError):
             register.with_user(kierownik).action_unlock()
         self.assertTrue(register.locked)
+
+    # ------------------------------------------------------------------
+    # F-KAM-2 — the RENDERED Karta Wypadku / Rejestr documents (QWeb)
+    # ------------------------------------------------------------------
+
+    def test_card_report_renders_16_points_with_opis(self):
+        """WHEN Karta Wypadku is generated THEN pkt 9 carries opis_wypadku
+        (never empty) and all 16 wzór §11 points appear in the document."""
+        card = self.env["camp.incident.card"].create(self._card_vals())
+        html, _rtype = self.env["ir.actions.report"]._render_qweb_html(
+            "fayna_camp_portal.report_incident_card", [card.id]
+        )
+        text = html.decode("utf-8")
+
+        # pkt 9: header + the fixture's distinctive cause sentence
+        self.assertIn("Szczegółowy opis wypadku z podaniem przyczyny", text)
+        self.assertIn("potknęło się o korzeń", text)
+
+        # pkt 1 and 15 use their own markup; 2-14 and 16 are numbered cells
+        self.assertIn("1. Nazwa placówki", text)
+        self.assertIn("15. Podpisy członków komisji", text)
+        for n in (*range(2, 15), 16):
+            self.assertRegex(
+                text,
+                rf">{n}\.</td>",
+                f"pkt {n}. missing from the rendered Karta Wypadku",
+            )
+
+    def test_register_report_renders_card_opis(self):
+        """Rejestr Wypadków row carries the confirmed card's opis (column 5)."""
+        card = self.env["camp.incident.card"].create(self._card_vals())
+        card.action_confirm()
+        register = self.env["camp.incident.register"].create({"event_id": self.event.id})
+        html, _rtype = self.env["ir.actions.report"]._render_qweb_html(
+            "fayna_camp_portal.report_incident_register", [register.id]
+        )
+        text = html.decode("utf-8")
+        self.assertIn("potknęło się o korzeń", text)
