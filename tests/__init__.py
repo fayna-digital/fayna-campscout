@@ -4,6 +4,7 @@ from . import (
     test_admin_dashboard,  # noqa: E402,F401
     test_art9_access,  # noqa: E402,F401
     test_art9_http_isolation,  # noqa: E402,F401
+    test_auto_refusal_cron,  # noqa: E402,F401
     test_bep_activation_warning,  # noqa: E402,F401
     test_budget,  # noqa: E402,F401
     test_camp_group,

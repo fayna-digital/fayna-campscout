@@ -164,7 +164,7 @@
 
 **[F-KKW-5] Згоди 4a (wizerunek) + 4b (marketing)** з canvas-підписом, IP, RODO-log; фото дитини в stories лише за image-consent (consent-gate). Розрізняти ДВІ цілі фото: внутрішній показ у кабінеті ≠ публічний маркетинг (Dodatek 4a) — окремі згоди; 4b — toggle з можливістю ВІДКЛИКАННЯ будь-коли (не лише first-time), відкликання → RODO-log. Тексти згод — HTML-body на res.company (setup-чеклист перед запуском порталу). · ✅ Тести: `test_role_parent_image_consent.py`, `test_story_photo_consent_gate.py`.
 
-**[F-KKW-6] Auto-refusal.** Реєстрація без підписаної карти/RODO за 24 год до старту → cron скасовує + refund + RODO log, місце звільняється (нагадування батькам за 14/3 дні — SMS CRITICAL). · 🟡 інваріант описаний (master §2.6.2d.1), нагадування є в SMS-шаблонах; cron auto-refusal не верифіковано. **Як довести:** знайти cron у data/cron.xml; якщо нема — додати + тест; ~1 день. ⚠️ life-critical для сезону. **Критерій (EARS):** WHEN за <24 год до старту заїзду реєстрація без підписаної карти АБО без RODO-згоди, THEN система АВТОМАТИЧНО скасовує реєстрацію + повний refund + запис у RODO-лог; існує щоденний cron, що це виконує. · Верифікація: test (тест-фікстура з непідписаною картою → cancel+refund+log) + inspect (cron у data/).
+**[F-KKW-6] Auto-refusal.** Реєстрація без підписаної карти/RODO за 24 год до старту → cron скасовує + refund + RODO log, місце звільняється (нагадування батькам за 14/3 дні — SMS CRITICAL). · 🟡 cron ВЕРИФІКОВАНО тестом 04.07 (`test_auto_refusal_cron`: прострочений+непідписаний → cancel реєстрацій + латч refused_at + RODO-лог + chatter; підписаний недоторканий; ідемпотентність — 3/3): cron існує (`data/cron.xml: cron_auto_refusal_unsigned`, щоденний). **ЗАЛИШОК 🔴: refund — заглушка** (`_schedule_refund` лише логує, participant.py) — реальний механізм повернення окремим пунктом §8. ⚠️ life-critical для сезону. **Критерій (EARS):** WHEN за <24 год до старту заїзду реєстрація без підписаної карти АБО без RODO-згоди, THEN система АВТОМАТИЧНО скасовує реєстрацію + повний refund + запис у RODO-лог; існує щоденний cron, що це виконує. · Верифікація: test (тест-фікстура з непідписаною картою → cancel+refund+log) + inspect (cron у data/).
 
 **[F-KKW-7] Картка-еталон фірми.** PDF має виглядати як фірмовий еталон (гарніший за MEN-дефолт), res.company з брендом/лого/реквізитами (не «YourCompany»). · 🔴 еталон не знайдено/не застосовано (знахідка тесту 02.07). **Як зробити:** знайти еталон у репо camp / fayna_camp_qualification / Dokumenty → QWeb-стилізація karta_report; конфіг res.company на staging уже виправлено частково; ~1 день.
 
@@ -339,7 +339,7 @@
 
 **[T-3] E2E:** `tests/e2e/test_critical_paths.py` (Playwright) + workflow `e2e.yml` на staging (зелений з 02.07; networkidle-антипатерн виправлено на wait_for_url). QA-Playwright-агенти конвеєра: наскрізні прогони майстра (8 кроків), двомовності (9/9 UA kiosk, кабінет 100% UA), зі скрінами. · ✅.
 
-**[T-4] Відомі тестові борги:** 🟡 coverage зведено 04.07: 69% (docs/QUALITY_AUDIT_2026-07-04.md; ціль ≥70%, дельта ~90 stmts); 🔴 pytest-матриця RODO роль×модель×операція (беклог №13, ~4-6 год); 🟡 прямі тести: Kamilka-ескалація cron, SMS cost-guard ліміт, declaracja-блокування, attachment-ACL PDF, auto-refusal cron ([F-KKW-6]); 🔴 performance-бенчмарки [N-3]; 🔴 UAT з живими користувачами (usability-test-plan) перед prod — процедура: staging → тестер CampScout ops → кроки в docs/TESTING.md → sign-off у PR; без sign-off прод заборонений.
+**[T-4] Відомі тестові борги:** 🟡 coverage зведено 04.07: 69% (docs/QUALITY_AUDIT_2026-07-04.md; ціль ≥70%, дельта ~90 stmts); 🔴 pytest-матриця RODO роль×модель×операція (беклог №13, ~4-6 год); 🟡 прямі тести: Kamilka-ескалація cron, SMS cost-guard ліміт, declaracja-блокування, attachment-ACL PDF (auto-refusal cron ✅ 04.07 test_auto_refusal_cron); 🔴 performance-бенчмарки [N-3]; 🔴 UAT з живими користувачами (usability-test-plan) перед prod — процедура: staging → тестер CampScout ops → кроки в docs/TESTING.md → sign-off у PR; без sign-off прод заборонений.
 
 ---
 
@@ -381,7 +381,7 @@
 4. ~~R10 compute_sudo~~ ✅ 2026-07-04 (test_compute_sudo_consistency, модуль-wide гард).
 5. BEP-розрив продажі→ціна [F-FIN-3] — ~1 дн. (перевірити флоу через майстер).
 6. Karta wypadku п.9 opis-поле [F-KAM-2] — ~1 год.
-7. Auto-refusal cron верифікація [F-KKW-6] — ~1 дн.
+7. ~~Auto-refusal cron верифікація [F-KKW-6]~~ ✅ 04.07 (test_auto_refusal_cron, 3/3). 7b. **Auto-refusal REFUND** — реалізувати справжнє повернення (зараз placeholder-лог у _schedule_refund) — ~0.5-1 дн.
 8. Attachment-ACL PDF + тест [F-RODO-2] — ~1 дн.
 9. Картка-еталон фірми + брендинг company [F-KKW-7] — ~1 дн.
 10. Пакет документів виховника (кейс Даніеля) [F-REC-3] — ~1-2 дн.
@@ -420,7 +420,7 @@
 - [x] R2 merged + staging двомовний — ✅ 04.07 (PR#17, deploy run 28699005633, psql-проба).
 - [ ] 🔴 Пакет max-захисту [F-RODO-7] (шифрування at-rest, офсайт-бекап, ротація) — DoD-блокер art.9-прода.
 - [ ] 🔴 Human QA green по всіх ролях на staging + UAT sign-off ([T-4]).
-- [ ] 🔴 Auto-refusal + BEP-живлення + art9-ізоляція підтверджені ([F-KKW-6], [F-FIN-3], [F-RODO-2]).
+- [ ] 🟡 Auto-refusal cancel-ланцюг ✅ 04.07 (refund-заглушка — §8 7b); art9-ізоляція ✅ 04.07 (PR#17 leak-тести); ЛИШАЄТЬСЯ: BEP-живлення ([F-FIN-3]) + attachment-ACL ([F-RODO-2]).
 - [ ] 🟡 Mobile-audit всіх /my/* і кіосків ([N-2]).
 - [ ] ⚪ Interpretacja indywidualna VAT (людина; можна паралельно, до прод-калькулятора).
 - [ ] CHANGELOG биті посилання виправити (P5.3, дрібне).
