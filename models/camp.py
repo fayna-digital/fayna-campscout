@@ -184,6 +184,22 @@ class CampEvent(models.Model):
         index=True,
         help=_("The parent camp program (product.template) this shift belongs to."),
     )
+    # R6.1: the wizard's step-1 «Typ obozu» declaration lands HERE (before,
+    # the chosen value was silently dropped) and prefills the Zgłoszenie
+    # Wypoczynku (camp.kuratorium.notification) via its event onchange.
+    vacation_form = fields.Selection(
+        [
+            ("kolonia", "Kolonia"),
+            ("oboz", "Obóz"),
+            ("biwak", "Biwak"),
+            ("zimowisko", "Zimowisko"),
+            ("polkolonia", "Półkolonia"),
+            ("zielona_szkola", "Zielona szkoła"),
+            ("inne", "Inne"),
+        ],
+        string=_("Forma wypoczynku"),
+        help=_("Formal MEN form of leisure declared when the camp was created."),
+    )
     camp_shift_color = fields.Selection(
         selection=[
             ("orange", "Orange"),
