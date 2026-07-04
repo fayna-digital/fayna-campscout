@@ -123,11 +123,13 @@ class CampRegulamin(models.Model):
 
     signed_count = fields.Integer(
         compute="_compute_ack_stats",
+        compute_sudo=True,  # група має бути консистентна зі stored all_signed (R10)
         string=_("Signed"),
         help=_("Number of staff members who already signed."),
     )
     total_count = fields.Integer(
         compute="_compute_ack_stats",
+        compute_sudo=True,
         string=_("Total acks"),
         help=_("Total acknowledgment records generated for this regulamin."),
     )

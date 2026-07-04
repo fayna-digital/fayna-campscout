@@ -451,6 +451,7 @@ class CampMarketingReport(models.TransientModel):
     total_registrations = fields.Integer(
         string="Total Registrations",
         compute="_compute_metrics",
+        compute_sudo=True,
     )
     total_revenue = fields.Monetary(
         string="Total Revenue",
@@ -461,11 +462,13 @@ class CampMarketingReport(models.TransientModel):
     occupancy_rate = fields.Float(
         string="Occupancy Rate (%)",
         compute="_compute_metrics",
+        compute_sudo=True,
         digits=(6, 2),
     )
     avg_age = fields.Float(
         string="Average Age",
         compute="_compute_metrics",
+        compute_sudo=True,
         digits=(6, 1),
     )
     currency_id = fields.Many2one(
