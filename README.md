@@ -66,7 +66,7 @@ fayna_camp_portal/
 │   ├── training_vozhatyi.py              # standalone PL-MEN 36h/10h tracker (parallel to slide-based path)
 │   ├── transport.py                      # camp.transport — bus / coach booking per shift
 │   ├── stories.py                        # camp.story — newsfeed for parents (migrated from fayna_camp_stories)
-│   ├── reports.py                        # camp.analytics.snapshot, camp.stats.snapshot, marketing report wizard
+│   ├── reports.py                        # camp.analytics.snapshot (KPI, incl. capacity), marketing report wizard
 │   ├── sms.py                            # SMS adapter (TurboSMS via fayna_sms_base)
 │   ├── sms_notify.py                     # three-tier priority override of mail.thread._notify_thread_by_sms
 │   ├── incident_kamilka.py               # severity='kamilka' overlay + CRITICAL_OVERRIDE + 5-min escalation

@@ -2,12 +2,10 @@
 # License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 """Camp reports & analytics models (migrated from fayna_camp_reports).
 
-Consolidates three models that capture or render camp performance data:
+Consolidates two models that capture or render camp performance data:
 
 * ``camp.analytics.snapshot`` — daily KPI snapshot (attendance, finance,
   qualification cards, ops). Immutable historical fact.
-* ``camp.stats.snapshot`` — daily occupancy + revenue snapshot used for
-  trend graphs.
 * ``camp.marketing.report`` — TransientModel wizard for ad-hoc report
   generation (Registrations / Revenue / Occupancy / Age distribution).
 
@@ -71,6 +69,11 @@ class CampAnalyticsSnapshot(models.Model):
     registered_count = fields.Integer(string="Registered", default=0)
     confirmed_count = fields.Integer(string="Confirmed", default=0)
     cancelled_count = fields.Integer(string="Cancelled", default=0)
+    total_capacity = fields.Integer(
+        string="Total Capacity",
+        default=0,
+        help="Event seats_max at snapshot time (reuse S1 пара 1: успадковано від видаленого daily-stats снапшота).",
+    )
     occupancy_rate = fields.Float(
         string="Occupancy Rate (%)",
         digits=(5, 2),
@@ -209,12 +212,16 @@ class CampAnalyticsSnapshot(models.Model):
         occupancy_rate = (registered_count / capacity * 100.0) if capacity > 0 else 0.0
 
         # ---- Qualification cards (graceful degradation) ----
+        # ‼️ Латентна бага до 04.07: домен цілив у неіснуючі поля
+        # camp.participant.event_id / qualification_state → ValueError, який
+        # cron мовчки ковтав — щоденний снапшот НІКОЛИ не створювався.
+        # Учасник в'яжеться з подією через registration_ids; підпис = boolean.
         qualification_signed_count = 0
         if "camp.participant" in self.env:
             qualification_signed_count = self.env["camp.participant"].search_count(
                 [
-                    ("event_id", "=", event.id),
-                    ("qualification_state", "=", "signed"),
+                    ("registration_ids.event_id", "=", event.id),
+                    ("qualification_signed", "=", True),
                 ],
             )
 
@@ -250,6 +257,7 @@ class CampAnalyticsSnapshot(models.Model):
             "confirmed_count": confirmed_count,
             "cancelled_count": cancelled_count,
             "occupancy_rate": occupancy_rate,
+            "total_capacity": capacity,
             "qualification_signed_count": qualification_signed_count,
             "revenue_total": revenue_total,
             "revenue_paid": revenue_paid,
@@ -258,151 +266,6 @@ class CampAnalyticsSnapshot(models.Model):
             "currency_id": self.env.company.currency_id.id,
         }
         return self.with_context(snapshot_allow_write=True).create(vals)
-
-
-# =====================================================================
-# camp.stats.snapshot — daily occupancy + revenue (used by trend graphs)
-# =====================================================================
-class CampStatsSnapshot(models.Model):
-    """Daily snapshot of camp occupancy and revenue metrics.
-
-    Stored records used for dashboard trend graphs. Written once per day by
-    :meth:`_cron_take_snapshot`. Unlike ``camp.analytics.snapshot`` this
-    model permits updates so the cron can re-run safely on the same day
-    (the constraint is one row per (event, date)).
-    """
-
-    _name = "camp.stats.snapshot"
-    _description = "Camp Daily Stats Snapshot"
-    _order = "snapshot_date desc, id desc"
-    _rec_name = "display_name"
-
-    event_id = fields.Many2one(
-        "event.event",
-        string="Camp Event",
-        required=True,
-        index=True,
-        ondelete="cascade",
-    )
-    snapshot_date = fields.Date(
-        string="Snapshot Date",
-        required=True,
-        index=True,
-        default=fields.Date.context_today,
-    )
-
-    total_registered = fields.Integer(string="Total Registered", default=0)
-    total_capacity = fields.Integer(string="Total Capacity", default=0)
-    total_revenue = fields.Monetary(
-        string="Total Revenue",
-        currency_field="currency_id",
-        default=0.0,
-    )
-    occupancy_pct = fields.Float(
-        string="Occupancy (%)",
-        digits=(6, 2),
-        default=0.0,
-    )
-    currency_id = fields.Many2one(
-        "res.currency",
-        string="Currency",
-        required=True,
-        default=lambda self: self.env.company.currency_id,
-    )
-
-    display_name = fields.Char(
-        string="Label",
-        compute="_compute_display_name",
-        store=True,
-    )
-
-    _sql_constraints = [
-        (
-            "stats_event_date_unique",
-            "UNIQUE(event_id, snapshot_date)",
-            "A snapshot for this event and date already exists.",
-        ),
-    ]
-
-    @api.depends("event_id", "snapshot_date")
-    def _compute_display_name(self):
-        for rec in self:
-            event_name = rec.event_id.name or "?"
-            date_str = str(rec.snapshot_date) if rec.snapshot_date else "?"
-            rec.display_name = f"{event_name} / {date_str}"
-
-    # ------------------------------------------------------------------
-    # Cron — daily at 02:00.
-    # ------------------------------------------------------------------
-    @api.model
-    def _cron_take_snapshot(self):
-        """Iterate all active events and upsert one snapshot per event for
-        today's date.
-        """
-        today = fields.Date.today()
-        events = self.env["event.event"].search(
-            [("date_end", ">=", fields.Datetime.now())],
-        )
-        _logger.info(
-            "fayna_camp_portal: stats snapshot — %d active events for %s",
-            len(events),
-            today,
-        )
-        for event in events:
-            try:
-                self._take_event_snapshot(event, today)
-            except (UserError, ValidationError, ValueError, KeyError):
-                _logger.exception(
-                    "fayna_camp_portal: stats snapshot failed for event %s",
-                    event.id,
-                )
-
-    @api.model
-    def _take_event_snapshot(self, event, snapshot_date):
-        """Create or update the snapshot for one event on one date."""
-        registrations = self.env["event.registration"].search(
-            [
-                ("event_id", "=", event.id),
-                ("state", "not in", ["cancel"]),
-            ],
-        )
-        total_registered = len(registrations)
-        total_capacity = event.seats_max or 0
-        occupancy_pct = (total_registered / total_capacity * 100.0) if total_capacity > 0 else 0.0
-
-        partner_ids = registrations.mapped("partner_id").ids
-        total_revenue = 0.0
-        if partner_ids:
-            orders = (
-                self.env["sale.order"]
-                .sudo()
-                .search(
-                    [
-                        ("partner_id", "in", partner_ids),
-                        ("state", "in", ["sale", "done"]),
-                    ],
-                )
-            )
-            total_revenue = sum(orders.mapped("amount_total"))
-
-        vals = {
-            "event_id": event.id,
-            "snapshot_date": snapshot_date,
-            "total_registered": total_registered,
-            "total_capacity": total_capacity,
-            "total_revenue": total_revenue,
-            "occupancy_pct": occupancy_pct,
-            "currency_id": self.env.company.currency_id.id,
-        }
-
-        existing = self.search(
-            [("event_id", "=", event.id), ("snapshot_date", "=", snapshot_date)],
-            limit=1,
-        )
-        if existing:
-            existing.write(vals)
-            return existing
-        return self.create(vals)
 
 
 # =====================================================================

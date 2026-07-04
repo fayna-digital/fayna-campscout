@@ -14,7 +14,7 @@ best-effort для staging; втрата тестових даних НЕ є б�
 
 | # | Мігрувати → у keeper | LOC | Примітка |
 |---|---|---|---|
-| 1 | camp.stats.snapshot → **camp.analytics.snapshot** | 140 | обидва KPI-снапшоти; найдешевша пара |
+| 1 | ~~camp.stats.snapshot~~ → **camp.analytics.snapshot** ✅ 04.07 (PR#32) | 140 | total_capacity перенесено; бонус: полагоджено мертвий analytics-cron (домен цілив у неіснуючі поля — ValueError ковтався) |
 | 2 | camp.journal → **camp.daily.report** | 114 | daily.report = §2.11 (канонічний документ) |
 | 3 | camp.nutrition ⇄ camp.menu.day → **одна** | 131/104 | keeper за лінками kiosk/звітів |
 | 4 | camp.participant.diet ⇄ camp.diet.profile → **одна** | 89/111 | keeper за лінками на pkt9 картки |

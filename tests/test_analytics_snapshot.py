@@ -1,0 +1,43 @@
+# Copyright Fayna Digital — Volodymyr Shevchenko
+# License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
+"""Reuse S1 пара 1 — keeper camp.analytics.snapshot несе семантику stats.
+
+S1-4: total_capacity (єдине унікальне поле видаленої camp.stats.snapshot)
+зберігається; S1-3: сценарій щоденного снапшота під тестом; write-лок
+історичних фактів діє.
+"""
+
+from datetime import timedelta
+
+from odoo import fields
+from odoo.exceptions import UserError
+from odoo.tests.common import TransactionCase, tagged
+
+
+@tagged("post_install", "-at_install", "fayna_camp_portal")
+class TestAnalyticsSnapshot(TransactionCase):
+    def test_snapshot_stores_capacity_and_locks(self):
+        now = fields.Datetime.now()
+        event = self.env["event.event"].create(
+            {
+                "name": "Oboz Snapshot QA",
+                "date_begin": now + timedelta(days=3),
+                "date_end": now + timedelta(days=10),
+                "seats_limited": True,
+                "seats_max": 42,
+            }
+        )
+        snap = self.env["camp.analytics.snapshot"]._take_analytics_snapshot(
+            event, fields.Date.today()
+        )
+        self.assertEqual(snap.total_capacity, 42, "seats_max must land in the snapshot")
+        # ідемпотентність: повторний виклик того ж дня повертає той самий запис
+        again = self.env["camp.analytics.snapshot"]._take_analytics_snapshot(
+            event, fields.Date.today()
+        )
+        self.assertEqual(snap.id, again.id)
+        # історичний факт незмінний (чистий browse — recordset із
+        # _take_analytics_snapshot несе context snapshot_allow_write=True)
+        clean = self.env["camp.analytics.snapshot"].browse(snap.id)
+        with self.assertRaises(UserError):
+            clean.write({"registered_count": 99})

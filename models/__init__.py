@@ -47,7 +47,7 @@ from . import stories  # noqa: E402,I001
 from . import transport  # noqa: E402,I001
 
 # Reports & analytics — migrated from fayna_camp_reports (TZ §16 Phase 7, 2026-04-30).
-# camp.analytics.snapshot + camp.stats.snapshot + camp.marketing.report wizard.
+# camp.analytics.snapshot + camp.marketing.report wizard.
 from . import reports  # noqa: E402,I001
 
 # Vozhatyi training — migrated from fayna_camp_vozhatyi_school (TZ §16 Phase 7).

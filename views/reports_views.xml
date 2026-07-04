@@ -16,6 +16,7 @@
                     <field name="event_id"/>
                     <field name="snapshot_date"/>
                     <field name="registered_count"/>
+                    <field name="total_capacity" optional="show"/>
                     <field name="confirmed_count"/>
                     <field name="qualification_signed_count"/>
                     <field name="occupancy_rate"
@@ -48,6 +49,7 @@
                         <group string="Attendance">
                             <group>
                                 <field name="registered_count" readonly="1"/>
+                                <field name="total_capacity" readonly="1"/>
                                 <field name="confirmed_count" readonly="1"/>
                                 <field name="cancelled_count" readonly="1"/>
                                 <field name="qualification_signed_count" readonly="1"/>
@@ -134,111 +136,6 @@
         </record>
 
         <!-- ════════════════════════════════════════════════════════════════
-             camp.stats.snapshot — daily occupancy + revenue trend
-        ════════════════════════════════════════════════════════════════ -->
-
-        <record id="view_camp_stats_snapshot_tree" model="ir.ui.view">
-            <field name="name">camp.stats.snapshot.tree</field>
-            <field name="model">camp.stats.snapshot</field>
-            <field name="arch" type="xml">
-                <tree string="Camp Snapshots" create="false" edit="false">
-                    <field name="snapshot_date"/>
-                    <field name="event_id"/>
-                    <field name="total_registered"/>
-                    <field name="total_capacity"/>
-                    <field name="occupancy_pct"
-                           string="Occupancy %"
-                           decoration-danger="occupancy_pct &gt;= 100"
-                           decoration-warning="occupancy_pct &gt;= 80"/>
-                    <field name="total_revenue"/>
-                    <field name="currency_id" column_invisible="1"/>
-                </tree>
-            </field>
-        </record>
-
-        <record id="view_camp_stats_snapshot_form" model="ir.ui.view">
-            <field name="name">camp.stats.snapshot.form</field>
-            <field name="model">camp.stats.snapshot</field>
-            <field name="arch" type="xml">
-                <form string="Stats Snapshot">
-                    <sheet>
-                        <div class="oe_title">
-                            <h1><field name="display_name" readonly="1"/></h1>
-                        </div>
-                        <group>
-                            <group>
-                                <field name="event_id" readonly="1"/>
-                                <field name="snapshot_date" readonly="1"/>
-                                <field name="currency_id" invisible="1"/>
-                            </group>
-                            <group>
-                                <field name="total_registered" readonly="1"/>
-                                <field name="total_capacity" readonly="1"/>
-                                <field name="occupancy_pct" readonly="1"/>
-                                <field name="total_revenue" readonly="1"/>
-                            </group>
-                        </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
-
-        <record id="view_camp_stats_snapshot_graph" model="ir.ui.view">
-            <field name="name">camp.stats.snapshot.graph</field>
-            <field name="model">camp.stats.snapshot</field>
-            <field name="arch" type="xml">
-                <graph string="Occupancy Over Time" type="line">
-                    <field name="snapshot_date" type="row"/>
-                    <field name="occupancy_pct" type="measure"/>
-                    <field name="total_revenue" type="measure"/>
-                    <field name="total_registered" type="measure"/>
-                </graph>
-            </field>
-        </record>
-
-        <record id="view_camp_stats_snapshot_pivot" model="ir.ui.view">
-            <field name="name">camp.stats.snapshot.pivot</field>
-            <field name="model">camp.stats.snapshot</field>
-            <field name="arch" type="xml">
-                <pivot string="Snapshot Pivot">
-                    <field name="event_id" type="row"/>
-                    <field name="snapshot_date" type="col"/>
-                    <field name="occupancy_pct" type="measure"/>
-                    <field name="total_revenue" type="measure"/>
-                </pivot>
-            </field>
-        </record>
-
-        <record id="view_camp_stats_snapshot_search" model="ir.ui.view">
-            <field name="name">camp.stats.snapshot.search</field>
-            <field name="model">camp.stats.snapshot</field>
-            <field name="arch" type="xml">
-                <search string="Search Stats Snapshots">
-                    <field name="event_id" string="Camp Event"/>
-                    <field name="snapshot_date" string="Snapshot Date"/>
-                    <filter string="Today"
-                            name="filter_today"
-                            domain="[('snapshot_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
-                    <filter string="This Month"
-                            name="filter_this_month"
-                            domain="[('snapshot_date', '&gt;=', (context_today() + relativedelta(day=1)).strftime('%Y-%m-%d'))]"/>
-                    <group expand="0" string="Group By">
-                        <filter string="Event" name="group_by_event" context="{'group_by': 'event_id'}"/>
-                        <filter string="Date" name="group_by_date" context="{'group_by': 'snapshot_date:month'}"/>
-                    </group>
-                </search>
-            </field>
-        </record>
-
-        <record id="action_camp_stats_snapshot" model="ir.actions.act_window">
-            <field name="name">Stats History</field>
-            <field name="res_model">camp.stats.snapshot</field>
-            <field name="view_mode">tree,graph,pivot,form</field>
-            <field name="context">{"order": "snapshot_date desc"}</field>
-            <field name="search_view_id" ref="view_camp_stats_snapshot_search"/>
-        </record>
-
-        <!-- ════════════════════════════════════════════════════════════════
              camp.marketing.report — wizard (TransientModel popup)
         ════════════════════════════════════════════════════════════════ -->
 
@@ -301,13 +198,6 @@
                   action="action_camp_marketing_report_wizard"
                   sequence="10"
                   groups="fayna_camp_portal.group_camp_organizator,fayna_camp_portal.group_camp_sales"/>
-
-        <menuitem id="menu_camp_stats_history"
-                  name="Stats History"
-                  parent="menu_camp_reports_root"
-                  action="action_camp_stats_snapshot"
-                  sequence="20"
-                  groups="fayna_camp_portal.group_camp_organizator"/>
 
         <menuitem id="menu_camp_analytics_snapshots"
                   name="Analytics Snapshots"
