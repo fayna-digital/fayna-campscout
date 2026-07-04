@@ -4,6 +4,9 @@
 
 Рядки стають profile-рядками (participant_id, dietary_restrictions+notes →
 notes), алергени переливаються між M2M-таблицями. Upsert-safe за participant.
+notes на keeper — translate=True (jsonb-колонка від Odoo 16+), тому текст
+пишеться як jsonb_build_object('en_US', ...) — та сама форма, яку дає
+звичайний ORM-запис при активній мові en_US (fields.py _String.convert_to_column).
 Дані staging-тестові (STEP1_TZ)."""
 import logging
 
@@ -18,15 +21,24 @@ def migrate(cr, version):
 
     cr.execute(
         """
+        WITH legacy AS (
+            SELECT d.*,
+                   NULLIF(CONCAT_WS(E'\n\n', d.dietary_restrictions, d.notes), '') AS merged_notes
+            FROM camp_participant_diet d
+        )
         INSERT INTO camp_diet_profile
-            (participant_id, notes, create_uid, create_date, write_uid, write_date)
-        SELECT d.participant_id,
-               NULLIF(CONCAT_WS(E'\n\n', d.dietary_restrictions, d.notes), ''),
-               d.create_uid, d.create_date, d.write_uid, d.write_date
-        FROM camp_participant_diet d
+            (participant_id, notes, display_name, create_uid, create_date, write_uid, write_date)
+        SELECT legacy.participant_id,
+               CASE WHEN legacy.merged_notes IS NULL THEN NULL
+                    ELSE jsonb_build_object('en_US', legacy.merged_notes)
+               END,
+               COALESCE(pt.display_name, 'Unknown'),
+               legacy.create_uid, legacy.create_date, legacy.write_uid, legacy.write_date
+        FROM legacy
+        JOIN camp_participant pt ON pt.id = legacy.participant_id
         WHERE NOT EXISTS (
             SELECT 1 FROM camp_diet_profile p
-            WHERE p.participant_id = d.participant_id
+            WHERE p.participant_id = legacy.participant_id
         )
         """
     )

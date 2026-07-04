@@ -24,6 +24,7 @@ access_camp_allergen_user,camp.allergen user,model_camp_allergen,base.group_user
 access_camp_allergen_nutrition,camp.allergen nutrition officer,model_camp_allergen,fayna_camp_portal.group_nutrition_officer,1,1,1,0
 access_camp_diet_profile_admin,camp.diet.profile admin,model_camp_diet_profile,base.group_system,1,1,1,1
 access_camp_diet_profile_user,camp.diet.profile user,model_camp_diet_profile,base.group_user,1,0,0,0
+access_camp_diet_profile_nutrition,camp.diet.profile nutrition officer,model_camp_diet_profile,fayna_camp_portal.group_nutrition_officer,1,1,1,0
 access_camp_meal_plan_admin,camp.meal.plan admin,model_camp_meal_plan,base.group_system,1,1,1,1
 access_camp_meal_plan_user,camp.meal.plan user,model_camp_meal_plan,base.group_user,1,0,0,0
 access_camp_meal_plan_nutrition,camp.meal.plan nutrition officer,model_camp_meal_plan,fayna_camp_portal.group_nutrition_officer,1,1,1,0

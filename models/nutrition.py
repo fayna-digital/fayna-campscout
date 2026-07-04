@@ -229,18 +229,6 @@ class CampDietProfile(models.Model):
     # --- Constraints --------------------------------------------------------
 
     @api.constrains("participant_id", "partner_id")
-    @api.constrains("participant_id")
-    def _check_one_profile_per_participant(self):
-        """Один дієт-профіль на учасника (перенесено з camp.participant.diet)."""
-        for rec in self:
-            if not rec.participant_id:
-                continue
-            dup = self.search_count(
-                [("participant_id", "=", rec.participant_id.id), ("id", "!=", rec.id)]
-            )
-            if dup:
-                raise ValidationError(_("A diet profile for this participant already exists."))
-
     def _check_participant_or_partner(self):
         """At least one of participant_id or partner_id must be set."""
         for rec in self:
