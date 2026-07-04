@@ -3633,6 +3633,8 @@ class CampKuratoriumNotification(models.Model):
             ("oboz", "Obóz"),
             ("biwak", "Biwak"),
             ("zimowisko", "Zimowisko"),
+            ("polkolonia", "Półkolonia"),
+            ("zielona_szkola", "Zielona szkoła"),
             ("inne", "Inne"),
         ],
         required=True,

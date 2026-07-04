@@ -120,7 +120,7 @@
 
 **[F-WIZ-5] Авто-групи N=ceil(seats/20) (art.92c)** при каскаді + round-robin поділ дітей при резервації (епік D). · ✅ Тести: `test_camp_group.py`, `test_phase_d_split.py`. Ліміти: ≤20 дітей; є дитина <10 р. → ≤15; niepełnosprawni ≤2 — у constraints camp.group.
 
-**[F-WIZ-6] Форми wypoczynku — повний перелік MEN (=R6).** Зараз 5 опцій (kolonia/oboz/biwak/zimowisko/inne). · 🔴 бракує `półkolonia` і `zielona szkoła` (Dz.U. форми). **Як зробити:** додати 2 опції в Selection `vacation_form` (`camp_create_wizard.py:85`) + переклади; DoD: dropdown має 6+ опцій MEN [скрін]; ~1 год.
+**[F-WIZ-6] Форми wypoczynku — повний перелік MEN (=R6).** · ✅ 2026-07-04: додано `polkolonia` + `zielona_szkola` в обидва Selection `vacation_form` (`wizards/camp_create_wizard.py:85` і `camp.kuratorium.notification`, operations.py). Верифікація: test ✅ `test_vacation_forms.py` (повний каталог MEN + sync-гард wizard↔notification). 🔴 **Нова знахідка R6.1:** `action_create_camp` НЕ переносить обране `vacation_form` нікуди (значення губиться; kuratorium notification wizard-ом не створюється) — окремий пункт у §8.
 
 **[F-WIZ-7] High-risk табори.** Авто instructor-вакансія з ліцензією + поля high-risk/ubezpieczenie на event (лижі/вода → обов'язкове страхування + ліцензований інструктор). · 🔴 не реалізовано (GAP-и experiential seed, event 140 Ski Zakopane). **Як зробити:** boolean `is_high_risk` + activity-тип-тригер → вакансія instructor з required license-cert + required insurance attachment; ~1-2 дні.
 
@@ -376,7 +376,7 @@
 
 **Черга (пріоритет: перед демо клієнту → перед cutover → сезонні):**
 1. R4 desktop kiosk + R5 бренд + R8 кольори + R9 заголовок/контекст + «Powrót do kiosku»/селектор табору — пакет [F-KSK-2], ~3-5 дн.
-2. R6 форми wypoczynku (+2 опції MEN) — ~1 год.
+2. ~~R6 форми wypoczynku (+2 опції MEN)~~ ✅ 2026-07-04 (test_vacation_forms). 2b. **R6.1** wizard губить vacation_form при створенні (перенести в kuratorium notification / event) — ~0.5 дн.
 3. R7 мікрокопі — дочистити, ~0.5 дн.
 4. R10 compute_sudo — ~2 год.
 5. BEP-розрив продажі→ціна [F-FIN-3] — ~1 дн. (перевірити флоу через майстер).
