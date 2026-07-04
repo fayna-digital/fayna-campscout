@@ -77,3 +77,38 @@ class TestDailyReportArchive(TransactionCase):
         Report.cron_archive_old_reports()
         self.assertFalse(old_report.active, "8-річний рапорт мусить піти в архів")
         self.assertTrue(fresh_report.active, "свіжий рапорт лишається активним")
+
+
+@tagged("post_install", "-at_install", "fayna_camp_portal")
+class TestMenuDayKeeper(TransactionCase):
+    """Reuse S1 пара 3: keeper camp.menu.day несе семантику legacy nutrition."""
+
+    def _event(self):
+        now = fields.Datetime.now()
+        return self.env["event.event"].create(
+            {
+                "name": "Oboz Jadlospis QA",
+                "date_begin": now + timedelta(days=1),
+                "date_end": now + timedelta(days=10),
+            }
+        )
+
+    def test_confirm_flow_and_diet_counts(self):
+        event = self._event()
+        menu = self.env["camp.menu.day"].create(
+            {
+                "event_id": event.id,
+                "menu_date": fields.Date.today() + timedelta(days=2),
+                "breakfast": "Owsianka",
+                "vegetarian_count": 3,
+            }
+        )
+        self.assertEqual(menu.state, "draft")
+        menu.action_confirm()
+        self.assertEqual(menu.state, "confirmed")
+        with self.assertRaises(UserError):
+            menu.action_confirm()  # повторне підтвердження заборонене
+        menu.action_reset_to_draft()
+        self.assertEqual(menu.state, "draft")
+        with self.assertRaises(UserError):
+            menu.vegan_count = -1  # лічильники не бувають від'ємні

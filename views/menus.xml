@@ -220,6 +220,12 @@
             parent="menu_campscout_root"
             sequence="40"/>
 
+        <menuitem id="menu_daily_menus"
+            name="Jadłospis dzienny"
+            parent="menu_nutrition"
+            action="action_camp_menu_day"
+            sequence="5"/>
+
         <menuitem id="menu_meal_plans"
             name="Plany żywieniowe"
             parent="menu_nutrition"
