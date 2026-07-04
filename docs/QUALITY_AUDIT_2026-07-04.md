@@ -26,6 +26,7 @@
   `participant_id.parent_partner_id` фільтрував ВЛАСНІ записи (емпірично: rule-only search знаходить,
   route-домен — ні). Фікс: sudo + явний ownership-домен (канонічний патерн модуля, як
   `/my/participants`). Те саме в лічильнику `_prepare_home_portal_values` (показував 0).
+- 🐛 **Знайдено і полагоджено (тестом):** `/my/escort/<id>` — деталь (і підпис) мертві для батьків, див. «Розпарковано» нижче.
 - 🐛 **Знайдено і полагоджено (тестом):** `/admin/as-parent` показував порожній кабінет для батьків
   З user-акаунтом (scoped_env під portal-юзером → AccessError → catch → порожньо). Фікс: sudo +
   ownership-домен, як портал.
@@ -42,12 +43,15 @@
 | controllers/kiosk.py | 40% | 26 | плитки за ролями (set_lang прийде з PR#17) |
 | models/reports.py | 41% | 98 | snapshot-моделі + marketing report compute |
 
-## Парковано (тест-борг)
+## Розпарковано (серія 5, той самий день) — ТРЕТІЙ баг зловлено
 
-- `test_submit_collects_and_transitions` (escort POST /submit): url_open(detail) власника рендерить
-  форму, але csrf-scrape (`name="csrf_token" value="…"`) не матчить, хоча ідентичний scrape працює в
-  `test_art9_http_isolation`. Розібрати dump'ом body (чи `request.csrf_token()` порожній у цій сесії).
-  Нотатка: scratchpad/parked_escort_submit_test.py (сесія лупа 04.07).
+- Розбір паркованого submit-тесту (werkzeug-логи) показав: **/my/escort/<id> НІКОЛИ не рендерився
+  для власника** — `_get_own_escort` без sudo падав уже на читанні escort'а (record-rule check
+  трасує participant_id) → 303 на список для ВСІХ батьків; «зелений» detail-тест був хибно-зеленим
+  (follow-redirect на список, який теж містить ім'я дитини). Фікс: sudo-browse + жорсткий гейт
+  parent_partner_id (патерн `_get_own_participant`). Тепер: власник GET деталі → 200 (werkzeug),
+  чужий → 303; submit-тест повернуто, draft→collected під тестом. **Урок: асерти редірект-флоу —
+  лише raw (allow_redirects=False); follow-redirect маскує мертві сторінки.**
 
 ## Історія
 

@@ -24,14 +24,17 @@ class EscortPortal(CustomerPortal):
     def _get_own_escort(self, escort_id):
         """Повертає escort лише якщо він належить дитині поточного батька.
 
-        Без sudo: покладаємось на record-rule; явна перевірка partner —
-        друга лінія (consensus: standard access, no sudo для escort).
+        Sudo-browse + ЖОРСТКИЙ гейт на parent_partner_id — той самий патерн,
+        що _get_own_participant у portal.py. Під сирим portal-env навіть
+        ВЛАСНИК не міг прочитати escort (перевірка record-rule на читання
+        трасує participant_id і вбиває запит) — деталь 303-редіректила всіх
+        батьків без винятку [доказ: werkzeug-логи харнеса, GET /my/escort/1
+        → 303 у кожному прогоні]. Гейт власності лишається безумовним.
         """
-        escort = request.env["camp.escort"].browse(int(escort_id))
+        escort = request.env["camp.escort"].sudo().browse(int(escort_id))
         if not escort.exists():
             raise MissingError("Escort not found")
-        partner = request.env.user.partner_id
-        if escort.participant_id.parent_partner_id != partner:
+        if escort.participant_id.parent_partner_id != request.env.user.partner_id:
             raise AccessError("Not your child's escort")
         return escort
 
