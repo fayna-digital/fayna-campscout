@@ -142,7 +142,7 @@
 
 *Пояснення: вакансії й найм — через нативний hr_recruitment (вакансія на /jobs, apply, співбесіди-stages), а custom-модель вакансій відхилено; поверх — юридичний гейт §13 Ustawa Kamilka (KRK/RSPTS перед допуском до дітей). Джерела: 06-TZ §16-18, 12-TZ §7, 14-TZ §12.*
 
-**[F-REC-1] Рекрутація кадри — R13-півот: ВЛАСНА легка модель, БЕЗ hr_recruitment.** `camp.staff.vacancy` + публічний `/camp/vacancies` → заявка кандидата → §13-гейт (KRK/RSPTS) → `camp.staff` draft. · ✅ Доказ: `models/staffing.py:6` (R13: БЕЗ hr_recruitment), `models/recruitment.py`, `controllers/recruitment_portal.py` · Тести: `test_role_public_vacancies.py`, `test_staffing.py`. ⚠️ Виправлено 04.07 звіркою код↔ТЗ: попередній текст описував hr_recruitment-bridge, якого в коді немає (grep hr.applicant = 0).
+**[F-REC-1] Рекрутація кадри — R13-півот: ВЛАСНА легка модель, БЕЗ hr_recruitment.** `camp.staff.vacancy` + публічний `/camp/vacancies` → заявка кандидата → §13-гейт (KRK/RSPTS) → `camp.staff` draft. · ✅ Доказ: `models/staffing.py:6` (R13: БЕЗ hr_recruitment), `models/recruitment.py`, `controllers/recruitment_portal.py` · Тести: `test_role_public_vacancies.py`, `test_staffing.py`. ⚠️ Виправлено 04.07 звіркою код↔ТЗ: попередній текст описував hr_recruitment-bridge, якого в коді немає (grep hr.applicant = 0). 🔁 REUSE-ЦІЛЬ (аудит 04.07): планова міграція на стандартний hr_recruitment — крок 5 плану §8 п.17, лише після «ок» власника.
 
 **[F-REC-2] §13-допуск (флоу власника).** hire → staff=draft → підпис RODO + declaracja RSTPO ([F-RODO-3]) → доступ до порталу, але **діти РОЗМИТІ** (0 дій) → працівник вантажить KRK → керівник перевіряє → кнопка «ДОПУСК» → staff=active → діти видимі/редаговані. Гейт: `_check_rspts_before_admission` (`operations.py:217`). · ✅ Доказ: blurred-механіка у `controllers/recruitment_portal.py` [ПЕРЕВІРЕНО: grep] · Тести: `test_staffing.py` (RSPTS-гейт); 🟡 blurred-UX e2e-скріном не доведено — додати Playwright-крок.
 
@@ -394,6 +394,7 @@
 14. Публічна форма заявок: honeypot/rate-limit [N-4] — ~1 дн.
 15. Звена + лідери [GAP-2] — ~1-2 дн.
 16. Retention-cron [F-DOC-4], UODO-export [F-RODO-6], SMS-адаптери PL [P-3], термінологічний шар [R-5] — після cutover.
+17. **REUSE-МІГРАЦІЯ (аудит 04.07, повний звіт docs/reuse-audit/2026-07-04/REUSE_AUDIT.md; kanban):** 5 кроків, КОЖЕН = окреме ТЗ + «ок» власника (owner-gated): (1) злити внутрішні дублікати (меню×2, дієти×2, програми×2, тренінги×3, KPI×2, журнал/рапорт — ~640 LOC, без ліцензійних питань); (2) SMS-шаблони → sms.template + лояльність → loyalty.card (стандарт, уже в depends); (3) ⚪ ліцензійне рішення AGPL/OPL (§11 п.9); (4) support → helpdesk_mgmt (OCA) + розстрочки → sale_invoice_plan (OCA); (5) рекрутація → hr_recruitment (стандарт). Зачеплені вимоги отримують reuse-мітку в місці визначення.
 
 ---
 
@@ -408,6 +409,8 @@
 **[PR-3] #4ZONES:** Mac → GitHub → staging → prod; жодних правок на серверах; `-u`/restart/deploy — за «ок»; секрети — heredoc, BP-010; людина-в-петлі: deploy, фінал RODO, бізнес-рішення, слова/тон, ціна/VAT. · ✅ діє.
 
 **[PR-4] Правила Odoo-буднів:** clear .pyc перед -u (RCA stale-.pyc); post_init_hook ≠ upgrade (migrations/ для існуючих БД); `-u` не перезаписує переклади (--i18n-overwrite); groups= на root tree/form невалідні в Odoo 17; XML-ID стандартних модулів звіряти в ir_model_data; No-Manual-DB; **asset-only зміни (scss/js/xml-шаблони) ВИМАГАЮТЬ бампу версії маніфеста** — deploy-staging має gated -u, без бампу бандли лишаються старими (RCA R4b 04.07: код на staging новий, рендер старий). · ✅ зафіксовано (уроки INC-014..021, R1/R2).
+
+**[PR-6] REUSE-ГЕЙТ (аудит 04.07, наказ власника «щоб не повторювалось»):** ПЕРЕД створенням будь-якої нової моделі/фічі — письмовий доказ «аналога НЕМА» у стандарті Odoo 17 і OCA 17.0 (пошук + читання маніфесту/моделі кандидата, не думка LLM); є аналог → inherit-надбудова замість власного коду. Доказ — рядок у PR-описі/ADR. Підстава: reuse-аудит виявив 1 898 LOC дубляжу готового + 1 282 LOC самодублікатів (docs/reuse-audit/2026-07-04/REUSE_AUDIT.md). · ✅ діє з 04.07.
 
 **[PR-5] Definition of Done фічі:** форма показує всі поля і ЗБЕРІГАЄТЬСЯ; юр-документи заповнюються повністю + workflow; списки з group-by по табору; i18n повний без mixed-language; IA-меню не бреше; авто-розрахунки підключені; кожен кабінет прогнано на staging роллю; mobile-audit для /my/*; ux-гейт [N-1]. · ✅ діє (04-TZ §C, розширено).
 
@@ -441,6 +444,7 @@
 6. GitHub-репо `fayna-campscout` vs модуль `fayna_camp_portal` — перейменувати репо?
 7. Звена: чи існує окрема категорія «зовнішня молодь 16-17 не-учасники» ([GAP-2])?
 8. Дата interpretacji indywidualnej до KIS ([F-VAT-2]) — хто подає і коли.
+9. **Ліцензія reuse-міграції:** OCA-модулі = AGPL-3, наш модуль = OPL-1 — пряме змішування юридично сіра зона; варіанти у REUSE_AUDIT.md (окремий AGPL-інтеграційний модуль або свідомий AGPL для цих частин). Блокує кроки 4-5 плану §8 п.17.
 
 ---
 
