@@ -120,7 +120,7 @@
 
 **[F-WIZ-5] Авто-групи N=ceil(seats/20) (art.92c)** при каскаді + round-robin поділ дітей при резервації (епік D). · ✅ Тести: `test_camp_group.py`, `test_phase_d_split.py`. Ліміти: ≤20 дітей; є дитина <10 р. → ≤15; niepełnosprawni ≤2 — у constraints camp.group.
 
-**[F-WIZ-6] Форми wypoczynku — повний перелік MEN (=R6).** Зараз 5 опцій (kolonia/oboz/biwak/zimowisko/inne). · 🔴 бракує `półkolonia` і `zielona szkoła` (Dz.U. форми). **Як зробити:** додати 2 опції в Selection `vacation_form` (`camp_create_wizard.py:85`) + переклади; DoD: dropdown має 6+ опцій MEN [скрін]; ~1 год.
+**[F-WIZ-6] Форми wypoczynku — повний перелік MEN (=R6).** · ✅ 2026-07-04: додано `polkolonia` + `zielona_szkola` в обидва Selection `vacation_form` (`wizards/camp_create_wizard.py:85` і `camp.kuratorium.notification`, operations.py). Верифікація: test ✅ `test_vacation_forms.py` (повний каталог MEN + sync-гард wizard↔notification). 🔴 **Нова знахідка R6.1:** `action_create_camp` НЕ переносить обране `vacation_form` нікуди (значення губиться; kuratorium notification wizard-ом не створюється) — окремий пункт у §8.
 
 **[F-WIZ-7] High-risk табори.** Авто instructor-вакансія з ліцензією + поля high-risk/ubezpieczenie на event (лижі/вода → обов'язкове страхування + ліцензований інструктор). · 🔴 не реалізовано (GAP-и experiential seed, event 140 Ski Zakopane). **Як зробити:** boolean `is_high_risk` + activity-тип-тригер → вакансія instructor з required license-cert + required insurance attachment; ~1-2 дні.
 
@@ -192,7 +192,7 @@
 
 **[F-KAM-1] Kamilka override.** `camp.incident.report` severity='kamilka': SMS на ВСІХ subscribers навіть при opt-out (GDPR art.6.1.d), ескалація через 5 хв без прочитання → резервний контакт; immutable notification log для Kuratorium. · ✅ Доказ: `incident_kamilka.py`, `incident_notification_log.py`, cron_kamilka_escalation.xml · Тести: `test_native_approval.py`/`test_signoff_rodo.py` (суміжно); прямий тест ескалації — 🟡 у переліку відомих боргів P3.
 
-**[F-KAM-2] Karta Wypadku §11 (16 пунктів, не 7!) + Rejestr Wypadków §12** (10 колонок, авто-агрегація, Lp., immutable після закриття турнусу, PDF для KO). · ✅ Доказ: `models/incident_card.py:49` (карта), `:494` (реєстр), PLAN P2.2-2.3 · Тести: `test_incident_card.py`. 🔴 Знахідка тесту 02.07: п.9 opis у згенерованому документі порожній — поле опису називається не «description». **Як зробити:** grep реальну назву поля в camp.incident.card → мапнути у QWeb; ~1 год. **Критерій (EARS):** WHEN генерується Karta Wypadku, THEN п.9 (opis) заповнений даними camp.incident.card (ніколи не порожній) і документ містить рівно 16 пунктів §11. · Верифікація: test (рендер з фікстурою → перевірка 16 полів і непорожнього opis).
+**[F-KAM-2] Karta Wypadku §11 (16 пунктів, не 7!) + Rejestr Wypadków §12** (10 колонок, авто-агрегація, Lp., immutable після закриття турнусу, PDF для KO). · ✅ Доказ: `models/incident_card.py:49` (карта), `:494` (реєстр), PLAN P2.2-2.3 · Тести: `test_incident_card.py`. ✅ Знахідку 02.07 (п.9 opis порожній) закрито 2026-07-04: шаблон `report_incident_card_document` мапить `o.opis_wypadku` (п.9), усі 16 пунктів присутні; найімовірніша причина знахідки — stale-копія `/mnt/addons` на стенді (урок R1). **Критерій (EARS):** WHEN генерується Karta Wypadku, THEN п.9 (opis) заповнений даними camp.incident.card (ніколи не порожній) і документ містить рівно 16 пунктів §11. · Верифікація: test ✅ `test_incident_card.py::test_card_report_renders_16_points_with_opis` (+ рендер реєстру `test_register_report_renders_card_opis`) — рендер QWeb з фікстурою, 16 пунктів + непорожній opis.
 
 **[F-KAM-3] SLA-протокол інциденту (BP-006, AHA+Rozp. MEN):** 0-10с scene safety; 0-2хв CPR; 2-15хв безпечне місце+швидка+перший контакт батьків; 15-30хв батьки повністю поінформовані+kierownik на місці; 30хв-24г organizer+kurator+sanepid/prokurator; 24г-7д свідки; 7-21д protokół у 3 копіях. Реалізація: SLA computed booleans + sla_breaches + червоний бейдж у дашборді. · 🟡 workflow 7-state/18 дій є (`emergency.py`); SLA-таймери зі списком порушень не верифіковано. **Як довести/зробити:** перевірити поля sla_* у emergency.py; додати відсутні computed + тест; ~1 день.
 ## 4.7 Kiosk + кабінети + панель керівника
@@ -283,7 +283,7 @@
 
 **[F-OPS-4] Тренінги кадри:** MEN 36h/10h + школа вожатого (4 моделі vozhatyi + /my/training + сертифікати QWeb); курс через website_slides — Phase 9 (відкладено). · ✅ база; слайди ⏸.
 
-**[F-OPS-5] Звіти/снапшоти:** camp.analytics/marketing/stats.snapshot + `/admin/dashboard` KPI (7 секцій: бізнес, тривоги, активні табори, команда, комунікації, маркетинг+SMS-costs, audit) + view-as (with_user, НЕ sudo; immutable `camp.admin.access.log` RODO art.30, 7 років). · ✅ дашборд+view-as+лог · 🔴 R10: compute_sudo inconsistency `camp.marketing.report` (total_registrations/revenue/occupancy/avg_age) + `camp.regulamin` (signed_count) — warning ламає odoo shell context_get. **Як:** узгодити compute_sudo/store; DoD: старт без warning; ~2 год.
+**[F-OPS-5] Звіти/снапшоти:** camp.analytics/marketing/stats.snapshot + `/admin/dashboard` KPI (7 секцій: бізнес, тривоги, активні табори, команда, комунікації, маркетинг+SMS-costs, audit) + view-as (with_user, НЕ sudo; immutable `camp.admin.access.log` RODO art.30, 7 років). · ✅ дашборд+view-as+лог · ✅ R10 закрито 2026-07-04: `compute_sudo=True` на всю групу `_compute_metrics` (marketing.report) і `_compute_ack_stats` (regulamin; корінь — stored all_signed мав дефолт True, non-stored сусіди False). Верифікація: test ✅ `test_compute_sudo_consistency.py` (модуль-wide гард груп compute) + старт без warning (харнес-лог).
 
 **[F-OPS-6] Dziennik zajęć (Zał.5)** per camp.group (учасники ≤20; тижневі плани; щоденні записи; uwagi kierownika/KO) + activate/submit workflow + PDF. · ✅ Доказ: 04-TZ Тир 1-2 (форми+workflow), ADR «3 dziennik-моделі — РІЗНІ сутності, НЕ дубль» (⛔ злиття відхилено) · Тести: `test_role_kierownik_dziennik.py`, `test_dziennik_pdf.py`.
 
@@ -376,9 +376,9 @@
 
 **Черга (пріоритет: перед демо клієнту → перед cutover → сезонні):**
 1. R4 desktop kiosk + R5 бренд + R8 кольори + R9 заголовок/контекст + «Powrót do kiosku»/селектор табору — пакет [F-KSK-2], ~3-5 дн.
-2. R6 форми wypoczynku (+2 опції MEN) — ~1 год. (2 опції → PR#20). 2b. ~~R6.1 wizard губив vacation_form при створенні~~ ✅ 2026-07-04: лендинг на event.vacation_form (нове поле, повний каталог MEN) + onchange-префіл kuratorium notification з гардом каталогу; тест у test_role_organizator_create_camp (PR#24).
+2. ~~R6 форми wypoczynku (+2 опції MEN)~~ ✅ 2026-07-04 (test_vacation_forms, PR#20). 2b. ~~R6.1 wizard губив vacation_form при створенні~~ ✅ 2026-07-04: лендинг на event.vacation_form (нове поле, повний каталог MEN) + onchange-префіл kuratorium notification з гардом каталогу; тест у test_role_organizator_create_camp (PR#24).
 3. R7 мікрокопі — дочистити, ~0.5 дн.
-4. R10 compute_sudo — ~2 год.
+4. ~~R10 compute_sudo~~ ✅ 2026-07-04 (test_compute_sudo_consistency, модуль-wide гард).
 5. BEP-розрив продажі→ціна [F-FIN-3] — ~1 дн. (перевірити флоу через майстер).
 6. Karta wypadku п.9 opis-поле [F-KAM-2] — ~1 год.
 7. Auto-refusal cron верифікація [F-KKW-6] — ~1 дн.

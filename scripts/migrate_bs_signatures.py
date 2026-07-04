@@ -1,18 +1,44 @@
 # Copyright Fayna Digital — Volodymyr Shevchenko
 # License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
-"""§5.6 — перенос живих підписів bs_parents_signature (sale.order, Binary attachment)
-→ camp.participant.qualification_signature. Прогалина, якої populate_from_bs НЕ робить
-(він переносить лише PDF). Без цього 107 підписів лишаються тільки в legacy-полі.
+"""⚠️ DEPRECATED — НЕ ВКЛЮЧАТИ У МІГРАЦІЙНИЙ ПРОЦЕС БЕЗ РІШЕННЯ CTO. ⚠️
 
+Цей скрипт цілиться в поле sale.order.bs_parents_signature, якого на проді НЕ ІСНУЄ.
+Реальна схема campscout_management має рівно 21 поле bs_* на sale_order (звірено
+2026-07-01 проти прода / переліку ПЕРЕВІРЕНИХ ФАКТІВ) — окремого поля підпису серед
+них немає. Підпис батьків зберігається УСЕРЕДИНІ PDF-картки bs_qualification_form_pdf,
+яку вже переносить scripts/populate_from_bs.py (копіює attachment на camp.participant і
+ставить qualification_signed=True). Тобто перенос підписів НЕ є окремою прогалиною —
+він виконується разом із PDF.
+
+Наслідок: у DRY_RUN цей скрипт читає order.bs_parents_signature → AttributeError буде
+проковтнутий except-ом як «read FAIL» і кожна реєстрація потрапить у nosig; у реальному
+прогоні він не перенесе жодного підпису (переносити нема чого — поля немає).
+
+РІШЕННЯ CTO (винесено у звіт, тут НЕ виконується): вилучити цей скрипт із міграц-
+процесу як застарілий (підпис уже покривається populate_from_bs через PDF), або —
+якщо коли-небудь зʼявиться окреме binary-поле підпису — переписати під його реальну назву.
+Ідемпотентність/патерн лишаються нижче лише як історичний зразок; за замовчуванням DRY_RUN.
+
+--- історичний опис (недійсний, поле відсутнє) ---
+§5.6 — перенос живих підписів → camp.participant.qualification_signature.
 Лінк: registration.participant_id (populate_from_bs) → order = registration.sale_order_id.
-Ідемпотентний (пропускає participant, що вже має підпис). DRY_RUN за замовч.
-Запуск через odoo shell (як admin → immutability обходиться для signed-карток).
-Потребує filestore на staging (Binary читається з файлу).
-
-Критерій приймання: count(bs_parents_signature) ≈ count(qualification_signature) після.
 """
 
+# ⚠️ DEPRECATED-гейт: поле bs_parents_signature не існує на проді. Скрипт залишено як
+# no-op, щоб випадковий запуск нічого не робив і голосно повідомляв про причину.
+DEPRECATED = True
+
 DRY_RUN = True
+
+if DEPRECATED:
+    # Поле-джерело bs_parents_signature на проді відсутнє; підпис уже переноситься
+    # через PDF у populate_from_bs.py. Не виконувати логіку — лише повідомити CTO.
+    raise SystemExit(
+        "migrate_bs_signatures.py DEPRECATED: sale.order.bs_parents_signature не існує "
+        "(21 реальних bs_* полів без окремого підпису; підпис — у bs_qualification_form_pdf, "
+        "переноситься populate_from_bs.py). Рішення про вилучення з процесу — за CTO. "
+        "Щоб примусово запустити історичну логіку, вручну зніми DEPRECATED=True."
+    )
 
 Reg = env["event.registration"].sudo()  # noqa: F821
 migrated = skipped = nosig = noreg = 0

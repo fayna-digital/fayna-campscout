@@ -36,8 +36,17 @@ Covered:
 """
 
 import re
+from urllib.parse import urlparse
 
 from odoo.tests.common import HttpCase, tagged
+
+from .http_lang import (
+    REDIRECT_CODES,
+    lang_prefix_of,
+    location_path,
+    open_functional,
+    strip_lang_prefix,
+)
 
 # Distinctive art.9 (special-category health) markers. If either ever appears
 # in a response served to the WRONG parent, that string is the smoking gun.
@@ -160,15 +169,17 @@ class TestArt9HttpIsolation(HttpCase):
         """
         self.authenticate("art9_http_parent_a@campscout.test", "Art9HttpA-1234!")
 
-        # (a) Raw response must be a redirect, not a 200 card render.
-        raw = self.url_open(f"/my/participants/{self.child_b.id}", allow_redirects=False)
+        # (a) The functional response (i18n URL rewrites followed, see
+        #     http_lang) must be a redirect to the participants list — never a
+        #     200 card render.
+        raw = open_functional(self, f"/my/participants/{self.child_b.id}")
         self.assertIn(
             raw.status_code,
-            (301, 302, 303, 307, 308),
+            REDIRECT_CODES,
             f"Cross-parent card access must redirect, got {raw.status_code} "
             "(a 200 here would mean parent A rendered parent B's card)",
         )
-        location = raw.headers.get("Location", "")
+        location = strip_lang_prefix(location_path(raw))
         self.assertTrue(
             location.rstrip("/").endswith("/my/participants"),
             f"Expected redirect to /my/participants, got {location!r}",
@@ -199,7 +210,12 @@ class TestArt9HttpIsolation(HttpCase):
         self.authenticate("art9_http_parent_a@campscout.test", "Art9HttpA-1234!")
 
         # Scrape a valid CSRF token from parent A's own (unsigned) card form.
-        own_card = self.url_open(f"/my/participants/{self.child_a.id}").text
+        # Also note the language prefix the portal serves A's pages under, so
+        # the cross-parent POST below reaches the controller's ownership gate
+        # instead of stopping at the i18n URL rewrite.
+        own_resp = self.url_open(f"/my/participants/{self.child_a.id}")
+        own_card = own_resp.text
+        lang_prefix = lang_prefix_of(urlparse(own_resp.url).path)
         token = None
         match = re.search(r'name="csrf_token"\s+value="([^"]+)"', own_card)
         if match:
@@ -213,7 +229,7 @@ class TestArt9HttpIsolation(HttpCase):
             payload["csrf_token"] = token
 
         resp = self.url_open(
-            f"/my/participants/{self.child_b.id}/submit",
+            f"{lang_prefix}/my/participants/{self.child_b.id}/submit",
             data=payload,
             allow_redirects=False,
         )

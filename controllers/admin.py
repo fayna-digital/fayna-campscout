@@ -10,9 +10,12 @@ to support, debug or inspect.
 RODO compliance:
 - Every view-as call is logged to camp.admin.access.log BEFORE the render
   (even if the render fails afterwards, the trace exists).
-- We use with_user(target_user) — NOT sudo() — so ACL and ir.rule record
-  rules of the target role are preserved. The Organizator only "sees what
-  they would see" — they do not gain write-bypass on RODO Art.9 fields.
+- as-{role} previews are READ-ONLY renders over sudo scoped by the same
+  ownership domain the portal itself uses (portal pages read sudo +
+  parent_partner_id — a direct model read under a portal account raises
+  AccessError). No write path exists on these pages.
+- TRUE session switching (login-as) preserves the target's own ACL/record
+  rules and refuses admin/organizator targets (no escalation).
 - IP + session id are captured for RODO art.30 traceability.
 
 TZ §5.1 (2026-04-30 six-role design).
@@ -524,20 +527,16 @@ class CampscoutAdmin(http.Controller):
             reason=reason,
         )
 
-        try:
-            scoped_env = (
-                request.env(user=target_user.id) if partner.user_ids else request.env(su=True)
-            )
-            participants = scoped_env["camp.participant"].search(
-                [("parent_partner_id", "=", partner.id)]
-            )
-            registrations = scoped_env["event.registration"].search(
-                [("partner_id", "=", partner.id), ("state", "!=", "cancel")]
-            )
-        except (AccessError, MissingError, KeyError) as e:
-            _logger.warning("[ADMIN] as-parent scoped read failed: %s", e)
-            participants = request.env["camp.participant"].browse([])
-            registrations = request.env["event.registration"].browse([])
+        # Mirror the portal's own data path: /my/participants reads under
+        # sudo scoped by parent_partner_id (the ownership gate), NOT as the
+        # portal user directly — a direct model read under a portal account
+        # raises AccessError and this preview would silently show an empty
+        # cabinet for exactly the parents who DO have children.
+        env_sudo = request.env(su=True)
+        participants = env_sudo["camp.participant"].search([("parent_partner_id", "=", partner.id)])
+        registrations = env_sudo["event.registration"].search(
+            [("partner_id", "=", partner.id), ("state", "!=", "cancel")]
+        )
 
         values = {
             "page_name": "admin_as_parent",

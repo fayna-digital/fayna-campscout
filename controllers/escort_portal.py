@@ -24,14 +24,17 @@ class EscortPortal(CustomerPortal):
     def _get_own_escort(self, escort_id):
         """Повертає escort лише якщо він належить дитині поточного батька.
 
-        Без sudo: покладаємось на record-rule; явна перевірка partner —
-        друга лінія (consensus: standard access, no sudo для escort).
+        Sudo-browse + ЖОРСТКИЙ гейт на parent_partner_id — той самий патерн,
+        що _get_own_participant у portal.py. Під сирим portal-env навіть
+        ВЛАСНИК не міг прочитати escort (перевірка record-rule на читання
+        трасує participant_id і вбиває запит) — деталь 303-редіректила всіх
+        батьків без винятку [доказ: werkzeug-логи харнеса, GET /my/escort/1
+        → 303 у кожному прогоні]. Гейт власності лишається безумовним.
         """
-        escort = request.env["camp.escort"].browse(int(escort_id))
+        escort = request.env["camp.escort"].sudo().browse(int(escort_id))
         if not escort.exists():
             raise MissingError("Escort not found")
-        partner = request.env.user.partner_id
-        if escort.participant_id.parent_partner_id != partner:
+        if escort.participant_id.parent_partner_id != request.env.user.partner_id:
             raise AccessError("Not your child's escort")
         return escort
 
@@ -40,8 +43,12 @@ class EscortPortal(CustomerPortal):
         values = super()._prepare_home_portal_values(counters)
         if "escort_count" in counters:
             partner = request.env.user.partner_id
-            values["escort_count"] = request.env["camp.escort"].search_count(
-                [("participant_id.parent_partner_id", "=", partner.id)]
+            # sudo for the same reason as portal_my_escort below: the
+            # non-sudo traversal domain undercounts to 0 for parents.
+            values["escort_count"] = (
+                request.env["camp.escort"]
+                .sudo()
+                .search_count([("participant_id.parent_partner_id", "=", partner.id)])
             )
         return values
 
@@ -49,9 +56,19 @@ class EscortPortal(CustomerPortal):
     @http.route(["/my/escort"], type="http", auth="user", website=True)
     def portal_my_escort(self, **kw):
         partner = request.env.user.partner_id
-        escorts = request.env["camp.escort"].search(
-            [("participant_id.parent_partner_id", "=", partner.id)],
-            order="departure_datetime, id",
+        # sudo + explicit ownership domain (module portal pattern, see
+        # portal.py /my/participants): a non-sudo search whose domain
+        # traverses participant_id filters out the parent's OWN escorts
+        # (empirically: rule-only search finds them, the traversal domain
+        # does not) — the cabinet rendered «Brak rekordów» for parents who
+        # DO have escort records.
+        escorts = (
+            request.env["camp.escort"]
+            .sudo()
+            .search(
+                [("participant_id.parent_partner_id", "=", partner.id)],
+                order="departure_datetime, id",
+            )
         )
         return request.render(
             "fayna_camp_portal.portal_escort_list",

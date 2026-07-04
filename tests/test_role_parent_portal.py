@@ -25,6 +25,8 @@ from datetime import timedelta
 from odoo import fields
 from odoo.tests.common import HttpCase, tagged
 
+from .http_lang import REDIRECT_CODES, location_path, open_functional, strip_lang_prefix
+
 
 @tagged("post_install", "-at_install", "fayna_camp_portal")
 class TestRoleParentPortal(HttpCase):
@@ -150,14 +152,14 @@ class TestRoleParentPortal(HttpCase):
     def test_parent_redirected_from_foreign_camp_day(self):
         """Portal parent is redirected away from an event they are NOT registered for."""
         self.authenticate("qa_parent_portal@campscout.test", "QaParent-1234!")
-        resp = self.url_open(f"/my/camp-day/{self.other_event.id}", allow_redirects=False)
+        resp = open_functional(self, f"/my/camp-day/{self.other_event.id}")
         self.assertIn(
             resp.status_code,
-            (301, 302, 303, 307, 308),
+            REDIRECT_CODES,
             f"/my/camp-day/<foreign_event> must redirect a parent who is not "
             f"registered for that event, got {resp.status_code}.",
         )
-        location = resp.headers.get("Location", "")
+        location = strip_lang_prefix(location_path(resp))
         self.assertTrue(
             location.rstrip("/").endswith("/my"),
             f"Redirect from foreign camp-day must go to /my, got {location!r}.",

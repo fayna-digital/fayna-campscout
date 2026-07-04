@@ -62,14 +62,29 @@
      user's CampScout role groups; parent (portal-only) keeps the default. -->
 <template id="portal_layout_title_campscout" inherit_id="portal.portal_layout" priority="25">
     <xpath expr="//div[hasclass('wrapper')]/h3[hasclass('my-3')]" position="replace">
-        <h3 class="my-3">
-            <t t-if="user_id.has_group('fayna_camp_portal.group_camp_organizator')">Panel organizatora</t>
-            <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_kierownik')">Panel kierownika obozu</t>
-            <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_wychowawca')">Panel wychowawcy</t>
-            <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_instructor')">Panel instruktora</t>
-            <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_finance')">Panel księgowego</t>
-            <t t-else="">Panel rodzica</t>
-        </h3>
+        <!-- Title (left) + native language selector (right). Role titles stay
+             plain QWeb text so Odoo extracts + translates them via .po (R3). -->
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 my-3">
+            <h3 class="my-0">
+                <t t-if="user_id.has_group('fayna_camp_portal.group_camp_organizator')">Panel organizatora</t>
+                <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_kierownik')">Panel kierownika obozu</t>
+                <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_wychowawca')">Panel wychowawcy</t>
+                <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_instructor')">Panel instruktora</t>
+                <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_finance')">Panel księgowego</t>
+                <t t-else="">Panel rodzica</t>
+            </h3>
+            <!-- Native Odoo portal language selector (R2): the same dropdown as
+                 the footer, lifted into the /my header so the UA/PL switch is
+                 visible without scrolling. It renders itself only when >=2
+                 languages are active (its own `len(languages) > 1` guard).
+                 `languages`/`lang` come from the frontend qcontext (portal pages
+                 are is_frontend — same context the native footer selector uses).
+                 `_div_classes` must be set: the template interpolates it into
+                 t-attf-class, so an unset name would raise. -->
+            <t t-call="portal.language_selector">
+                <t t-set="_div_classes" t-value="''"/>
+            </t>
+        </div>
     </xpath>
 </template>
 
@@ -393,7 +408,7 @@
                 <i class="fa fa-home me-1"/>
                 <t t-if="user_id.has_group('fayna_camp_portal.group_camp_organizator')">Кабінет організатора</t>
                 <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_kierownik')">Кабінет керівника табору</t>
-                <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_wychowawca')">Кабінет виховника</t>
+                <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_wychowawca')">Кабінет вихователя</t>
                 <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_instructor')">Кабінет інструктора</t>
                 <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_finance')">Кабінет бухгалтера</t>
                 <t t-else="">Кабінет батьків</t>

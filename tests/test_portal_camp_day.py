@@ -16,6 +16,8 @@ from datetime import timedelta
 from odoo import fields
 from odoo.tests.common import HttpCase, tagged
 
+from .http_lang import REDIRECT_CODES, location_path, open_functional, strip_lang_prefix
+
 HEALTH_SENTINEL = "SEKRET-ZDROWOTNY-NIE-DLA-RODZICOW"
 KIEROWNIK_SENTINEL = "SEKRET-KIEROWNIKA-PRYWATNY"
 
@@ -110,9 +112,9 @@ class TestPortalCampDay(HttpCase):
     def test_foreign_event_redirects_to_my(self):
         """Event without the parent's registration → redirect to /my."""
         self.authenticate("campday_parent@campscout.test", "TestCampDay1234!")
-        resp = self.url_open(f"/my/camp-day/{self.event_other.id}", allow_redirects=False)
-        self.assertIn(resp.status_code, (301, 302, 303, 307, 308))
-        location = resp.headers.get("Location", "")
+        resp = open_functional(self, f"/my/camp-day/{self.event_other.id}")
+        self.assertIn(resp.status_code, REDIRECT_CODES)
+        location = strip_lang_prefix(location_path(resp))
         self.assertTrue(
             location.rstrip("/").endswith("/my"),
             f"Expected redirect to /my, got {location!r}",
