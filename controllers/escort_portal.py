@@ -40,8 +40,12 @@ class EscortPortal(CustomerPortal):
         values = super()._prepare_home_portal_values(counters)
         if "escort_count" in counters:
             partner = request.env.user.partner_id
-            values["escort_count"] = request.env["camp.escort"].search_count(
-                [("participant_id.parent_partner_id", "=", partner.id)]
+            # sudo for the same reason as portal_my_escort below: the
+            # non-sudo traversal domain undercounts to 0 for parents.
+            values["escort_count"] = (
+                request.env["camp.escort"]
+                .sudo()
+                .search_count([("participant_id.parent_partner_id", "=", partner.id)])
             )
         return values
 
@@ -49,9 +53,19 @@ class EscortPortal(CustomerPortal):
     @http.route(["/my/escort"], type="http", auth="user", website=True)
     def portal_my_escort(self, **kw):
         partner = request.env.user.partner_id
-        escorts = request.env["camp.escort"].search(
-            [("participant_id.parent_partner_id", "=", partner.id)],
-            order="departure_datetime, id",
+        # sudo + explicit ownership domain (module portal pattern, see
+        # portal.py /my/participants): a non-sudo search whose domain
+        # traverses participant_id filters out the parent's OWN escorts
+        # (empirically: rule-only search finds them, the traversal domain
+        # does not) — the cabinet rendered «Brak rekordów» for parents who
+        # DO have escort records.
+        escorts = (
+            request.env["camp.escort"]
+            .sudo()
+            .search(
+                [("participant_id.parent_partner_id", "=", partner.id)],
+                order="departure_datetime, id",
+            )
         )
         return request.render(
             "fayna_camp_portal.portal_escort_list",

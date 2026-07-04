@@ -1,6 +1,7 @@
 # Copyright Fayna Digital — Volodymyr Shevchenko
 # License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 from . import (
+    test_admin_dashboard,  # noqa: E402,F401
     test_art9_access,  # noqa: E402,F401
     test_art9_http_isolation,  # noqa: E402,F401
     test_bep_activation_warning,  # noqa: E402,F401
@@ -9,6 +10,7 @@ from . import (
     test_campscout,
     test_card_generator,  # noqa: E402,F401
     test_dziennik_pdf,  # noqa: E402,F401
+    test_escort_portal,  # noqa: E402,F401
     test_escort_signoff,  # noqa: E402,F401
     test_incident_card,  # noqa: E402,F401
     test_karta_2026,
