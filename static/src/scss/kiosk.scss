@@ -77,18 +77,42 @@ $kiosk-toggle-min:         44px;   // Apple HIG minimum touch target
 // Mobile-first: 1 column. Bootstrap row-cols-* handle 2/3 columns via
 // template classes — we override gap and ensure full-width on phone.
 .o_camp_kiosk_grid {
-    gap: $kiosk-gap-phone !important; // bootstrap g-* class needs override
+    // ‼️ R4b КОРІНЬ (знахідка власника 04.07): flex-`gap` НА bootstrap-row
+    // ламає row-cols-* — 2×50% (чи 3×33.33%) + gap не вміщаються в рядок,
+    // кожна плитка переносилась → одна колонка-гігант на будь-якій ширині.
+    // Гаттери дає САМ bootstrap через g-3/g-md-4 у шаблоні; gap тут ЗАБОРОНЕНО.
     width: 100% !important;
     max-width: 100% !important; // override inline max-width: 960px on phone
 
     // Tablet ≥576px: allow the inline max-width: 960px to kick back in
     @media (min-width: 576px) {
         max-width: 960px !important;
-        gap: $kiosk-gap-tablet !important;
     }
+}
 
-    @media (min-width: 992px) {
-        gap: $kiosk-gap-desktop !important;
+// ── Header row + langbar (R4b) ──────────────────────────────────────────────
+.o_camp_kiosk_header_spacer {
+    width: 96px; // дзеркало ширини langbar → заголовок точно по центру
+
+    @media (max-width: 575px) {
+        width: 0; // на телефоні центрування поступається місцю
+    }
+}
+
+.o_camp_kiosk_langbar {
+    .btn {
+        min-width: $kiosk-toggle-min;
+        min-height: $kiosk-toggle-min * 0.82; // 36px — компактно, але тапабельно
+        font-weight: 700;
+        color: $cs-teal;
+        border: 1px solid rgba($cs-teal, 0.45);
+        background: $cs-white;
+
+        &.active {
+            color: $cs-white;
+            background: $cs-teal;
+            border-color: $cs-teal;
+        }
     }
 }
 

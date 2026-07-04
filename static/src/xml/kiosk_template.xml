@@ -12,34 +12,35 @@
 
     <t t-name="fayna_camp_portal.CampKiosk" owl="1">
         <div class="o_camp_kiosk_app position-relative d-flex flex-column align-items-center
-                    justify-content-center min-vh-100 bg-light p-3 p-md-5">
+                    min-vh-100 bg-light p-3 p-md-5">
 
-            <!-- Language switcher PL/UA (R2) — pinned to the top-right corner of
-                 the kiosk shell.  setLang() persists res.users.lang through
-                 /camp/kiosk/set_lang, then reloads so the whole client-action
-                 re-renders in the chosen language.  `lang` is the component's
-                 current language (session.user_context.lang) → active button. -->
-            <div class="o_camp_kiosk_langbar position-absolute top-0 end-0 m-2 m-md-3 btn-group"
-                 role="group" aria-label="Język / Мова">
-                <button type="button" class="btn btn-sm"
-                        t-att-class="lang === 'pl_PL' ? 'btn-primary' : 'btn-outline-secondary'"
-                        t-att-aria-pressed="lang === 'pl_PL' ? 'true' : 'false'"
-                        t-on-click="() => this.setLang('pl_PL')">PL</button>
-                <button type="button" class="btn btn-sm"
-                        t-att-class="lang === 'uk_UA' ? 'btn-primary' : 'btn-outline-secondary'"
-                        t-att-aria-pressed="lang === 'uk_UA' ? 'true' : 'false'"
-                        t-on-click="() => this.setLang('uk_UA')">UA</button>
-            </div>
-
-            <!-- Header — w-100 гарантує центрування навіть без parent flex.
-                 Text comes from JS getters routed through _t() so it is
-                 exported to the .pot and rendered in the active language (R2);
-                 static template text would not be translatable. -->
-            <div class="text-center w-100 mb-4 mb-md-5">
-                <h1 class="display-5 fw-bold text-primary mb-1">
-                    <t t-esc="headerTitle"/>
-                </h1>
-                <p class="text-muted fs-5 mb-0"><t t-esc="headerSubtitle"/></p>
+            <!-- Header row (R4b): title по центру, перемикач мови PL/UA у ПРАВОМУ
+                 слоті ЦЬОГО ж рядка. Раніше langbar був position-absolute у
+                 скролюваному flex-контейнері з вертикальним центруванням —
+                 на живому staging його зносило на середину правого краю
+                 (знахідка власника 04.07). Рядок хедера позбавляє позиціювання
+                 будь-якої залежності від скролу/центрування. Лівий spacer
+                 дзеркалить ширину langbar, щоб заголовок лишався по центру.
+                 setLang() persists res.users.lang через /camp/kiosk/set_lang. -->
+            <div class="o_camp_kiosk_header w-100 d-flex align-items-start mb-4 mb-md-5">
+                <div class="o_camp_kiosk_header_spacer flex-shrink-0" aria-hidden="true"/>
+                <div class="text-center flex-grow-1">
+                    <h1 class="display-5 fw-bold text-primary mb-1">
+                        <t t-esc="headerTitle"/>
+                    </h1>
+                    <p class="text-muted fs-5 mb-0"><t t-esc="headerSubtitle"/></p>
+                </div>
+                <div class="o_camp_kiosk_langbar btn-group flex-shrink-0"
+                     role="group" aria-label="Język / Мова">
+                    <button type="button" class="btn btn-sm"
+                            t-att-class="lang === 'pl_PL' ? 'active' : ''"
+                            t-att-aria-pressed="lang === 'pl_PL' ? 'true' : 'false'"
+                            t-on-click="() => this.setLang('pl_PL')">PL</button>
+                    <button type="button" class="btn btn-sm"
+                            t-att-class="lang === 'uk_UA' ? 'active' : ''"
+                            t-att-aria-pressed="lang === 'uk_UA' ? 'true' : 'false'"
+                            t-on-click="() => this.setLang('uk_UA')">UA</button>
+                </div>
             </div>
 
             <!-- Loading spinner -->
