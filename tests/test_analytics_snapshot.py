@@ -112,3 +112,26 @@ class TestMenuDayKeeper(TransactionCase):
         self.assertEqual(menu.state, "draft")
         with self.assertRaises(UserError):
             menu.vegan_count = -1  # лічильники не бувають від'ємні
+
+
+@tagged("post_install", "-at_install", "fayna_camp_portal")
+class TestDietProfileKeeper(TransactionCase):
+    """Reuse S1 пара 4: keeper camp.diet.profile — унікальність на учасника."""
+
+    def test_one_profile_per_participant(self):
+        child = (
+            self.env["camp.participant"]
+            .sudo()
+            .create(
+                {
+                    "first_name": "DietQA",
+                    "last_name": "Testowa",
+                }
+            )
+        )
+        Profile = self.env["camp.diet.profile"].sudo()
+        Profile.create({"participant_id": child.id})
+        from odoo.exceptions import ValidationError as VErr
+
+        with self.assertRaises(VErr):
+            Profile.create({"participant_id": child.id})

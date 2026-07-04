@@ -278,44 +278,5 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <!-- ================================================================ -->
-        <!-- camp.participant.diet                                            -->
-        <!-- ================================================================ -->
-
-        <record id="view_camp_participant_diet_tree" model="ir.ui.view">
-            <field name="name">camp.participant.diet.tree</field>
-            <field name="model">camp.participant.diet</field>
-            <field name="arch" type="xml">
-                <tree>
-                    <field name="participant_id"/>
-                    <field name="allergen_names" readonly="1"/>
-                </tree>
-            </field>
-        </record>
-
-        <record id="view_camp_participant_diet_form" model="ir.ui.view">
-            <field name="name">camp.participant.diet.form</field>
-            <field name="model">camp.participant.diet</field>
-            <field name="arch" type="xml">
-                <form>
-                    <sheet>
-                        <group groups="fayna_camp_portal.group_nutrition_officer">
-                            <field name="participant_id"/>
-                            <field name="allergen_ids" widget="many2many_tags" groups="fayna_camp_portal.group_nutrition_officer"/>
-                            <field name="dietary_restrictions" groups="fayna_camp_portal.group_nutrition_officer"/>
-                            <field name="notes" groups="fayna_camp_portal.group_nutrition_officer"/>
-                        </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
-
-        <record id="action_camp_participant_diet" model="ir.actions.act_window">
-            <field name="name">Participant Diets</field>
-            <field name="res_model">camp.participant.diet</field>
-            <field name="view_mode">tree,form</field>
-            <field name="groups_id" eval="[(4, ref('fayna_camp_portal.group_nutrition_officer'))]"/>
-        </record>
-
     </data>
 </odoo>

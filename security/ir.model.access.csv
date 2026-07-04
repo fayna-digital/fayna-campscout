@@ -34,9 +34,6 @@ access_camp_menu_day_admin,camp.menu.day admin,model_camp_menu_day,base.group_sy
 access_camp_menu_day_user,camp.menu.day user,model_camp_menu_day,base.group_user,1,0,0,0
 access_camp_menu_day_nutrition,camp.menu.day nutrition officer,model_camp_menu_day,fayna_camp_portal.group_nutrition_officer,1,1,1,0
 access_camp_menu_day_kierownik,camp.menu.day kierownik,model_camp_menu_day,fayna_camp_portal.group_camp_kierownik,1,1,1,0
-access_camp_participant_diet_admin,camp.participant.diet admin,model_camp_participant_diet,base.group_system,1,1,1,1
-access_camp_participant_diet_user,camp.participant.diet user,model_camp_participant_diet,base.group_user,1,0,0,0
-access_camp_participant_diet_nutrition,camp.participant.diet nutrition officer,model_camp_participant_diet,fayna_camp_portal.group_nutrition_officer,1,1,1,0
 access_camp_incident_report_admin,camp.incident.report admin,model_camp_incident_report,base.group_system,1,1,1,1
 access_camp_incident_report_user,camp.incident.report user,model_camp_incident_report,base.group_user,1,0,0,0
 access_camp_incident_report_responder,camp.incident.report emergency responder,model_camp_incident_report,fayna_camp_portal.group_emergency_responder,1,1,1,0

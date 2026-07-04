@@ -141,7 +141,7 @@
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
             <field name="comment">
                 Nutrition officer — read/write access to dietary and allergen data
-                on camp.participant.diet (RODO Art.9 special-category data).
+                on camp.diet.profile (RODO Art.9 special-category data).
                 EU Regulation 1169/2011 (14 major allergens).
             </field>
         </record>
