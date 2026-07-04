@@ -408,7 +408,7 @@
                 <i class="fa fa-home me-1"/>
                 <t t-if="user_id.has_group('fayna_camp_portal.group_camp_organizator')">Кабінет організатора</t>
                 <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_kierownik')">Кабінет керівника табору</t>
-                <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_wychowawca')">Кабінет виховника</t>
+                <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_wychowawca')">Кабінет вихователя</t>
                 <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_instructor')">Кабінет інструктора</t>
                 <t t-elif="user_id.has_group('fayna_camp_portal.group_camp_finance')">Кабінет бухгалтера</t>
                 <t t-else="">Кабінет батьків</t>
