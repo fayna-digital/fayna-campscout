@@ -53,7 +53,7 @@
 
 **[B-4] Головний бізнес-ризик.** Проґавити вікно реєстрації → сезон 2027 не на порталі → ще рік «95% готово, 0 у проді, 0 доходу». · Мітигація: розділ 7 (cutover) — найвищий пріоритет після ремонту R2.
 
-**[B-5] UX-DoD продукту.** Кожен екран самозрозумілий без інструкції (recognition-not-recall); двомовність UA/PL (аудиторія — українські діти в Польщі, дефолт мови — PL, рішення власника). · 🟡 механізм двомовності збудовано (PR #15, гейти PASS), CI червоний — деталі [F-i18n] і розділ 8.
+**[B-5] UX-DoD продукту.** Кожен екран самозрозумілий без інструкції (recognition-not-recall); двомовність UA/PL (аудиторія — українські діти в Польщі, дефолт мови — PL, рішення власника). · 🟡 двомовність ВЛИТА і жива на staging (PR#17, 04.07; deploy run 28699005633; psql: pl_PL+uk_UA active) — 🟡 лишається за рештою UX-DoD.
 
 **[B-6] Пріоритет використання (пере-тріаж власника 25.06).** Реальний пріоритет = «портал працює для CampScout (сезон)»; «white-label перепродаж» (дебрендинг SMS, data→demo, мета-пакет) — ⏸ відкладено до реального продажу. Ліцензійний захист (OPL-1) — зроблено заздалегідь як дешевий. · ✅ рішення зафіксовано (14-TZ §20.8).
 
@@ -142,7 +142,7 @@
 
 *Пояснення: вакансії й найм — через нативний hr_recruitment (вакансія на /jobs, apply, співбесіди-stages), а custom-модель вакансій відхилено; поверх — юридичний гейт §13 Ustawa Kamilka (KRK/RSPTS перед допуском до дітей). Джерела: 06-TZ §16-18, 12-TZ §7, 14-TZ §12.*
 
-**[F-REC-1] Bridge B+: hr_recruitment + §13-надбудова.** hr.job (+camp_event_id/camp_role) → /jobs → hr.applicant → співбесіди stages → hire → `camp.staff` draft; custom `/camp/vacancies` — retire. · ✅ Доказ: `hr.applicant`/hr_recruitment у `models/staffing.py` [ПЕРЕВІРЕНО: grep] · Тести: `test_role_public_vacancies.py`, `test_staffing.py`.
+**[F-REC-1] Рекрутація кадри — R13-півот: ВЛАСНА легка модель, БЕЗ hr_recruitment.** `camp.staff.vacancy` + публічний `/camp/vacancies` → заявка кандидата → §13-гейт (KRK/RSPTS) → `camp.staff` draft. · ✅ Доказ: `models/staffing.py:6` (R13: БЕЗ hr_recruitment), `models/recruitment.py`, `controllers/recruitment_portal.py` · Тести: `test_role_public_vacancies.py`, `test_staffing.py`. ⚠️ Виправлено 04.07 звіркою код↔ТЗ: попередній текст описував hr_recruitment-bridge, якого в коді немає (grep hr.applicant = 0).
 
 **[F-REC-2] §13-допуск (флоу власника).** hire → staff=draft → підпис RODO + declaracja RSTPO ([F-RODO-3]) → доступ до порталу, але **діти РОЗМИТІ** (0 дій) → працівник вантажить KRK → керівник перевіряє → кнопка «ДОПУСК» → staff=active → діти видимі/редаговані. Гейт: `_check_rspts_before_admission` (`operations.py:217`). · ✅ Доказ: blurred-механіка у `controllers/recruitment_portal.py` [ПЕРЕВІРЕНО: grep] · Тести: `test_staffing.py` (RSPTS-гейт); 🟡 blurred-UX e2e-скріном не доведено — додати Playwright-крок.
 
@@ -192,7 +192,7 @@
 
 **[F-KAM-1] Kamilka override.** `camp.incident.report` severity='kamilka': SMS на ВСІХ subscribers навіть при opt-out (GDPR art.6.1.d), ескалація через 5 хв без прочитання → резервний контакт; immutable notification log для Kuratorium. · ✅ Доказ: `incident_kamilka.py`, `incident_notification_log.py`, cron_kamilka_escalation.xml · Тести: `test_native_approval.py`/`test_signoff_rodo.py` (суміжно); прямий тест ескалації — 🟡 у переліку відомих боргів P3.
 
-**[F-KAM-2] Karta Wypadku §11 (16 пунктів, не 7!) + Rejestr Wypadków §12** (10 колонок, авто-агрегація, Lp., immutable після закриття турнусу, PDF для KO). · ✅ Доказ: `models/incident_card.py:49` (карта), `:494` (реєстр), PLAN P2.2-2.3 · Тести: `test_incident_card.py`. ✅ Знахідку 02.07 (п.9 opis порожній) закрито 2026-07-04: шаблон `report_incident_card_document` мапить `o.opis_wypadku` (п.9), усі 16 пунктів присутні; найімовірніша причина знахідки — stale-копія `/mnt/addons` на стенді (урок R1). **Критерій (EARS):** WHEN генерується Karta Wypadku, THEN п.9 (opis) заповнений даними camp.incident.card (ніколи не порожній) і документ містить рівно 16 пунктів §11. · Верифікація: test ✅ `test_incident_card.py::test_card_report_renders_16_points_with_opis` (+ рендер реєстру `test_register_report_renders_card_opis`) — рендер QWeb з фікстурою, 16 пунктів + непорожній opis.
+**[F-KAM-2] Karta Wypadku §11 (16 пунктів, не 7!) + Rejestr Wypadków §12** (10 колонок, авто-агрегація, Lp., immutable після закриття турнусу, PDF для KO). · ✅ Доказ: `models/incident_card.py:49` (карта), `:494` (реєстр), PLAN P2.2-2.3 · Тести: `test_incident_card.py`. ✅ Знахідку 02.07 (п.9 opis порожній) закрито 2026-07-04: шаблон `report_incident_card_document` мапить `o.opis_wypadku` (п.9), усі 16 пунктів присутні; найімовірніша причина знахідки — stale-копія `/mnt/addons` на стенді (урок R1). **Критерій (EARS):** WHEN генерується Karta Wypadku, THEN п.9 (opis) заповнений даними camp.incident.card (ніколи не порожній) і документ містить рівно 16 пунктів §11. · Верифікація: test ✅ `test_incident_card.py::test_card_report_renders_16_points_with_opis` (+ рендер реєстру `test_register_report_renders_card_opis`) — рендер QWeb з фікстурою, 16 пунктів + непорожній opis. Нюанс 04.07 (звірка код↔ТЗ): непорожність гарантує гейт `action_confirm` (draft-друк може мати порожній п.9 — шаблон `or ''`).
 
 **[F-KAM-3] SLA-протокол інциденту (BP-006, AHA+Rozp. MEN):** 0-10с scene safety; 0-2хв CPR; 2-15хв безпечне місце+швидка+перший контакт батьків; 15-30хв батьки повністю поінформовані+kierownik на місці; 30хв-24г organizer+kurator+sanepid/prokurator; 24г-7д свідки; 7-21д protokół у 3 копіях. Реалізація: SLA computed booleans + sla_breaches + червоний бейдж у дашборді. · 🟡 workflow 7-state/18 дій є (`emergency.py`); SLA-таймери зі списком порушень не верифіковано. **Як довести/зробити:** перевірити поля sla_* у emergency.py; додати відсутні computed + тест; ~1 день.
 ## 4.7 Kiosk + кабінети + панель керівника
@@ -303,7 +303,7 @@
 
 *Пояснення: аудиторія — українські діти в Польщі; дефолт PL (рішення власника), повне перемикання UA всюди (kiosk + /my). Джерела: REPAIR R2-R3, R2_STATUS.*
 
-**[F-I18N-1] Перемикач мови:** kiosk (OWL langbar + endpoint `/camp/kiosk/set_lang`, persist на res.users.lang, звужено до PL/UA) + portal (`portal.language_selector` у шапці /my); вибір зберігається після перезаходу. · ✅ код (PR #15: a696ee0+f802a68+1ed0df8); обидва гейти PASS (reviewer high: upgrade-gap закрито migration `17.0.4.1.0`; QA: kiosk 9/9 UA, кабінет 100% UA bidirectional) · Доказ grep: set_lang у `controllers/kiosk.py` · **АЛЕ 🟡 НЕ merged: CI червоний** — 3 блокери: (1) ‼️ `test_art9_http_isolation` ×3 (URL-префікс /pl/ — з'ясувати діра/застарілі тести ПЕРШИМ); (2) 26 .po-дублів (msgmerge/python-дедуп); (3) ruff format 2 файли. Після зеленого → merge #15 → staging deploy. **Критерій (EARS):** WHEN користувач обирає мову в kiosk або /my, THEN UI перемикається PL↔UA, вибір зберігається на res.users.lang і переживає relogin; PR #15: 0 падінь art9-тестів, 0 .po-дублів, 0 ruff-порушень. · Верифікація: test (e2e перемикання+persist) + CI green.
+**[F-I18N-1] Перемикач мови:** kiosk (OWL langbar + endpoint `/camp/kiosk/set_lang`, persist на res.users.lang, звужено до PL/UA) + portal (`portal.language_selector` у шапці /my); вибір зберігається після перезаходу. · ✅ код (PR #15: a696ee0+f802a68+1ed0df8); обидва гейти PASS (reviewer high: upgrade-gap закрито migration `17.0.4.1.0`; QA: kiosk 9/9 UA, кабінет 100% UA bidirectional) · Доказ grep: set_lang у `controllers/kiosk.py` · **✅ MERGED 04.07 (PR#17):** art9-ізоляція доведена ЦІЛОЮ (leak-асерти зелені; тести зроблено i18n-aware — tests/http_lang.py), .po-дублі 0 (дедуп за .pot), ruff чистий; staging задеплоєно (run 28699005633), мови активні (psql). i18n-backfill uk_UA 909→0 (PR#22). **Критерій (EARS):** WHEN користувач обирає мову в kiosk або /my, THEN UI перемикається PL↔UA, вибір зберігається на res.users.lang і переживає relogin; PR #15: 0 падінь art9-тестів, 0 .po-дублів, 0 ruff-порушень. · Верифікація: test (e2e перемикання+persist) + CI green.
 
 **[F-I18N-2] Нуль хардкоду мов у шаблонах (R3):** всі UI-рядки через `_()`/`_lt` з перекладом; `.pot` регенерований (code-ref!); 281/281 рядків UA/PL перекладено (gemini під msgfmt-гейт); пастка: model_terms-переклад без code:-reference невидимий для `_lt()`. · ✅ у PR #15 · Тести: msgfmt clean; DoD-grep: хардкод у templates/ = 0.
 
@@ -339,7 +339,7 @@
 
 **[T-3] E2E:** `tests/e2e/test_critical_paths.py` (Playwright) + workflow `e2e.yml` на staging (зелений з 02.07; networkidle-антипатерн виправлено на wait_for_url). QA-Playwright-агенти конвеєра: наскрізні прогони майстра (8 кроків), двомовності (9/9 UA kiosk, кабінет 100% UA), зі скрінами. · ✅.
 
-**[T-4] Відомі тестові борги:** 🔴 формальний coverage-число не зведено (ціль ≥70%; згенерувати QUALITY_AUDIT перед prod-gate: `--test-enable` + coverage report); 🔴 pytest-матриця RODO роль×модель×операція (беклог №13, ~4-6 год); 🟡 прямі тести: Kamilka-ескалація cron, SMS cost-guard ліміт, declaracja-блокування, attachment-ACL PDF, auto-refusal cron ([F-KKW-6]); 🔴 performance-бенчмарки [N-3]; 🔴 UAT з живими користувачами (usability-test-plan) перед prod — процедура: staging → тестер CampScout ops → кроки в docs/TESTING.md → sign-off у PR; без sign-off прод заборонений.
+**[T-4] Відомі тестові борги:** 🟡 coverage зведено 04.07: 69% (docs/QUALITY_AUDIT_2026-07-04.md; ціль ≥70%, дельта ~90 stmts); 🔴 pytest-матриця RODO роль×модель×операція (беклог №13, ~4-6 год); 🟡 прямі тести: Kamilka-ескалація cron, SMS cost-guard ліміт, declaracja-блокування, attachment-ACL PDF, auto-refusal cron ([F-KKW-6]); 🔴 performance-бенчмарки [N-3]; 🔴 UAT з живими користувачами (usability-test-plan) перед prod — процедура: staging → тестер CampScout ops → кроки в docs/TESTING.md → sign-off у PR; без sign-off прод заборонений.
 
 ---
 
@@ -372,7 +372,7 @@
 **Закрито:** R1 майстер (✅ merged fd9dad2 + staging); організатор-порожній-екран (✅ 093cab4); кіоск керівника + i18n бекенду керівника (✅); ACL-аудит (✅); ліцензія OPL-1 порталу (✅); /api/v1 IDOR (✅ видалено); PDF-оферти (✅ прод).
 
 **У процесі:**
-- **R2+R3 двомовність** — код ✅, гейти PASS, **CI червоний** → (1) art9-тести ×3 (‼️ спершу діра/застарілі: читати tests/test_art9_http_isolation.py + controllers/portal.py редірект; застарілі → зробити /pl/-толерантними; діра → СТОП merge, фіксити доступ); (2) .po-дедуп ×26; (3) ruff ×2 → merge #15 → staging.
+- ~~R2+R3 двомовність~~ ✅ 04.07 (PR#17+#22, staging живий). Додатково закрито тестами 04.07: /my/escort список+лічильник (порожні для батьків), /my/escort/<id> деталь+підпис (303 всім власникам), /admin/as-parent (порожній при user-акаунті) — PR#23; R7 частково (breadcrumb, PR#25).
 
 **Черга (пріоритет: перед демо клієнту → перед cutover → сезонні):**
 1. R4 desktop kiosk + R5 бренд + R8 кольори + R9 заголовок/контекст + «Powrót do kiosku»/селектор табору — пакет [F-KSK-2], ~3-5 дн.
@@ -416,8 +416,8 @@
 
 - [ ] 🔴 **P1.4:** міграція виконана НА ПРОДІ за [M-4] з нулем втрат за [M-5].
 - [x] Правові моделі P2 (karta wzór2026, incident §11-12, RSPTS §13) — ✅.
-- [x] Тести критичних шляхів P3 (36 файлів; CI 170) — ✅; [ ] 🔴 формальний coverage ≥70% звести перед gate.
-- [ ] 🟡 R2 merged + staging двомовний.
+- [x] Тести критичних шляхів P3 (36 файлів; CI 170) — ✅; [ ] 🟡 coverage зведено: **69%** (docs/QUALITY_AUDIT_2026-07-04.md); до цілі ≥70% ~90 інструкцій (кандидати в аудиті).
+- [x] R2 merged + staging двомовний — ✅ 04.07 (PR#17, deploy run 28699005633, psql-проба).
 - [ ] 🔴 Пакет max-захисту [F-RODO-7] (шифрування at-rest, офсайт-бекап, ротація) — DoD-блокер art.9-прода.
 - [ ] 🔴 Human QA green по всіх ролях на staging + UAT sign-off ([T-4]).
 - [ ] 🔴 Auto-refusal + BEP-живлення + art9-ізоляція підтверджені ([F-KKW-6], [F-FIN-3], [F-RODO-2]).
