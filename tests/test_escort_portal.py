@@ -14,6 +14,8 @@ from datetime import timedelta
 from odoo import fields
 from odoo.tests.common import HttpCase, tagged
 
+from .http_lang import open_functional
+
 PARENT_A_LOGIN = "escort_parent_a@campscout.test"
 PARENT_B_LOGIN = "escort_parent_b@campscout.test"
 PASSWORD = "EscortQa-1234!Strong"
@@ -101,7 +103,7 @@ class TestEscortPortal(HttpCase):
         # RAW (без follow): раніше деталь 303-редіректила ВЛАСНИКА на список,
         # а follow-redirect робив цей тест хибно-зеленим (список теж містить
         # ім'я дитини). Тепер деталь мусить відренде́ритись сама.
-        detail = self.url_open(f"/my/escort/{self.escort_a.id}", allow_redirects=False)
+        detail = open_functional(self, f"/my/escort/{self.escort_a.id}")
         self.assertEqual(detail.status_code, 200, "owner's escort detail must render, not redirect")
         self.assertIn(CHILD_A_NAME, detail.text)
         self.assertIn("csrf_token", detail.text, "collect form must be present")
@@ -110,7 +112,7 @@ class TestEscortPortal(HttpCase):
 
     def test_foreign_escort_blocked_without_leak(self):
         self.authenticate(PARENT_B_LOGIN, PASSWORD)
-        raw = self.url_open(f"/my/escort/{self.escort_a.id}", allow_redirects=False)
+        raw = open_functional(self, f"/my/escort/{self.escort_a.id}")
         self.assertIn(
             raw.status_code,
             (301, 302, 303, 307, 308),

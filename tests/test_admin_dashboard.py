@@ -11,6 +11,8 @@ no-escalation rule) and the as-parent read-only view.
 
 from odoo.tests.common import HttpCase, tagged
 
+from .http_lang import open_functional
+
 ORGANIZATOR_GROUP = "fayna_camp_portal.group_camp_organizator"
 WYCHOWAWCA_GROUP = "fayna_camp_portal.group_camp_wychowawca"
 
@@ -124,10 +126,9 @@ class TestAdminDashboard(HttpCase):
         internal role inside the CampScout menu — then stop restores admin."""
         self.authenticate(ADMIN_LOGIN, PASSWORD)
 
-        resp = self.url_open(
-            f"/admin/login-as?user_id={self.wych_user.id}&reason=QA-cykl",
-            allow_redirects=False,
-        )
+        # open_functional: із двомовністю (R2) перший 3xx — мовний переписувач
+        # URL, а не редірект контролера; асертити треба функціональну відповідь.
+        resp = open_functional(self, f"/admin/login-as?user_id={self.wych_user.id}&reason=QA-cykl")
         self.assertIn(resp.status_code, (301, 302, 303, 307, 308))
         self.assertIn("/web", resp.headers.get("Location", ""))
 
@@ -141,7 +142,7 @@ class TestAdminDashboard(HttpCase):
         self.assertNotEqual(gate.status_code, 200, "impersonated session kept admin rights")
 
         # Stop: session returns to the Organizator, stop row is logged.
-        stop = self.url_open("/admin/stop-impersonation", allow_redirects=False)
+        stop = open_functional(self, "/admin/stop-impersonation")
         self.assertIn(stop.status_code, (301, 302, 303, 307, 308))
         stop_log = self._access_logs("stop")[:1]
         self.assertTrue(stop_log, "stop-impersonation must write an access-log row")
@@ -171,9 +172,8 @@ class TestAdminDashboard(HttpCase):
         )
         self.authenticate(ADMIN_LOGIN, PASSWORD)
         before = len(self._access_logs("login_as"))
-        resp = self.url_open(
-            f"/admin/login-as?user_id={other_admin.id}&reason=QA-eskalacja",
-            allow_redirects=False,
+        resp = open_functional(
+            self, f"/admin/login-as?user_id={other_admin.id}&reason=QA-eskalacja"
         )
         self.assertNotIn(
             resp.status_code,
