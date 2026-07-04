@@ -2,6 +2,9 @@
 
 All notable changes to `fayna_camp_portal` are documented here.
 
+## 17.0.4.1.4 — 2026-07-04
+- Reuse S1 пара 3: legacy camp.nutrition злито в camp.menu.day (порт diet-лічильників/allergy_notes/state+tracking/prepared_by/confirm-флоу; migrations/: мапінг snacks→afternoon_snack, notes-злиття; ACL кухні/керівника; НОВЕ menuitem «Jadłospis dzienny» — обидві моделі були UI-сиротами).
+
 ## 17.0.4.1.3 — 2026-07-04
 - Reuse S1 пара 2: camp.journal злито в camp.daily.report (active+7р retention-cron перенесені й ПІДКЛЮЧЕНІ — у журналі архів-метод був мертвий без ir.cron; autofill camp.report → з денних рапортів; migrations/: записи → kierownik_notes, вкладення перепідвішені; model/views/ACL/rules/menu видалені, сиріт 0).
 

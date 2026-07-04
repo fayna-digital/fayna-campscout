@@ -203,10 +203,12 @@
             <field name="name">camp.menu.day.tree</field>
             <field name="model">camp.menu.day</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree decoration-success="state == 'confirmed'">
                     <field name="display_name"/>
                     <field name="event_id"/>
                     <field name="menu_date"/>
+                    <field name="state"/>
+                    <field name="prepared_by" optional="hide"/>
                 </tree>
             </field>
         </record>
@@ -216,10 +218,18 @@
             <field name="model">camp.menu.day</field>
             <field name="arch" type="xml">
                 <form>
+                    <header>
+                        <button name="action_confirm" type="object" string="Zatwierdź"
+                                class="btn-primary" invisible="state != 'draft'"/>
+                        <button name="action_reset_to_draft" type="object" string="Do szkicu"
+                                invisible="state != 'confirmed'"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
                     <sheet>
                         <group>
                             <field name="event_id"/>
                             <field name="menu_date"/>
+                            <field name="prepared_by"/>
                         </group>
                         <group string="Meals">
                             <field name="breakfast"/>
@@ -228,10 +238,21 @@
                             <field name="afternoon_snack"/>
                             <field name="dinner"/>
                         </group>
+                        <group string="Diety specjalne">
+                            <field name="vegetarian_count"/>
+                            <field name="vegan_count"/>
+                            <field name="gluten_free_count"/>
+                            <field name="lactose_free_count"/>
+                            <field name="allergy_notes"/>
+                        </group>
                         <group string="Nutritionist Notes">
                             <field name="notes" nolabel="1"/>
                         </group>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="message_ids"/>
+                    </div>
                 </form>
             </field>
         </record>
@@ -254,94 +275,6 @@
         <record id="action_camp_menu_day" model="ir.actions.act_window">
             <field name="name">Daily Menus</field>
             <field name="res_model">camp.menu.day</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
-        <!-- ================================================================ -->
-        <!-- camp.nutrition (legacy)                                          -->
-        <!-- ================================================================ -->
-
-        <record id="view_camp_nutrition_tree" model="ir.ui.view">
-            <field name="name">camp.nutrition.tree</field>
-            <field name="model">camp.nutrition</field>
-            <field name="arch" type="xml">
-                <tree decoration-success="state == 'confirmed'" decoration-info="state == 'draft'">
-                    <field name="event_id"/>
-                    <field name="menu_date"/>
-                    <field name="state"/>
-                    <field name="prepared_by"/>
-                </tree>
-            </field>
-        </record>
-
-        <record id="view_camp_nutrition_form" model="ir.ui.view">
-            <field name="name">camp.nutrition.form</field>
-            <field name="model">camp.nutrition</field>
-            <field name="arch" type="xml">
-                <form>
-                    <header>
-                        <button name="action_confirm" string="Confirm" type="object"
-                                invisible="state != 'draft'" class="btn-primary"/>
-                        <button name="action_reset_to_draft" string="Reset to Draft" type="object"
-                                invisible="state != 'confirmed'"/>
-                        <field name="state" widget="statusbar"/>
-                    </header>
-                    <sheet>
-                        <group>
-                            <field name="event_id"/>
-                            <field name="menu_date"/>
-                            <field name="prepared_by"/>
-                        </group>
-                        <group string="Meals">
-                            <field name="breakfast"/>
-                            <field name="lunch"/>
-                            <field name="dinner"/>
-                            <field name="snacks"/>
-                        </group>
-                        <group string="Special Diet Counts">
-                            <group>
-                                <field name="vegetarian_count"/>
-                                <field name="vegan_count"/>
-                            </group>
-                            <group>
-                                <field name="gluten_free_count"/>
-                                <field name="lactose_free_count"/>
-                            </group>
-                            <field name="allergy_notes"/>
-                        </group>
-                        <group string="Notes">
-                            <field name="notes" nolabel="1"/>
-                        </group>
-                    </sheet>
-                    <div class="oe_chatter">
-                        <field name="message_ids"/>
-                    </div>
-                </form>
-            </field>
-        </record>
-
-        <record id="view_camp_nutrition_search" model="ir.ui.view">
-            <field name="name">camp.nutrition.search</field>
-            <field name="model">camp.nutrition</field>
-            <field name="arch" type="xml">
-                <search>
-                    <field name="event_id"/>
-                    <field name="menu_date"/>
-                    <field name="prepared_by"/>
-                    <filter name="draft" string="Szkic" domain="[('state','=','draft')]"/>
-                    <filter name="confirmed" string="Zatwierdzone" domain="[('state','=','confirmed')]"/>
-                    <group expand="0" string="Group By">
-                        <filter name="by_event" string="Turnus" context="{'group_by':'event_id'}"/>
-                        <filter name="by_date" string="Data" context="{'group_by':'menu_date'}"/>
-                        <filter name="by_state" string="Status" context="{'group_by':'state'}"/>
-                    </group>
-                </search>
-            </field>
-        </record>
-
-        <record id="action_camp_nutrition" model="ir.actions.act_window">
-            <field name="name">Daily Nutrition (legacy)</field>
-            <field name="res_model">camp.nutrition</field>
             <field name="view_mode">tree,form</field>
         </record>
 

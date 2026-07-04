@@ -8,7 +8,6 @@ Models:
   - camp.meal.plan.line   Single ingredient/product row within a meal plan
   - camp.menu.day         Full daily menu per event per date (5 meals PL MEN)
   - camp.participant.diet Kitchen-facing diet card linked to camp.participant
-  - CampNutrition         Legacy daily menu model (camp.nutrition)
 """
 
 import logging
@@ -460,6 +459,7 @@ class CampMenuDay(models.Model):
 
     _name = "camp.menu.day"
     _description = "Camp Daily Menu"
+    _inherit = ["mail.thread"]
     _order = "menu_date desc, event_id"
     _rec_name = "display_name"
 
@@ -502,6 +502,48 @@ class CampMenuDay(models.Model):
             "Substitutions, allergen warnings, or portion notes from the nutritionist. "
             "Visible to kitchen staff and camp leaders."
         ),
+    )
+
+    # ── Спецдієти + флоу (перенесено з legacy camp.nutrition, reuse S1 пара 3) ──
+    vegetarian_count = fields.Integer(
+        string=_("Vegetarian"),
+        default=0,
+        help=_("Number of participants requiring vegetarian meals"),
+    )
+    vegan_count = fields.Integer(
+        string=_("Vegan"),
+        default=0,
+        help=_("Number of participants requiring vegan meals"),
+    )
+    gluten_free_count = fields.Integer(
+        string=_("Gluten-free"),
+        default=0,
+        help=_("Number of participants requiring gluten-free meals"),
+    )
+    lactose_free_count = fields.Integer(
+        string=_("Lactose-free"),
+        default=0,
+        help=_("Number of participants requiring lactose-free meals"),
+    )
+    allergy_notes = fields.Text(
+        string=_("Inne alergie i diety specjalne"),
+        help=_("Other allergies and special diets (free text)"),
+    )
+    state = fields.Selection(
+        [
+            ("draft", "Szkic"),
+            ("confirmed", "Zatwierdzone"),
+        ],
+        string=_("Status"),
+        default="draft",
+        required=True,
+        tracking=True,
+    )
+    prepared_by = fields.Many2one(
+        "res.users",
+        string=_("Prepared by"),
+        index=True,
+        default=lambda self: self.env.user,
     )
 
     # --- Computed display ---------------------------------------------------
@@ -554,6 +596,33 @@ class CampMenuDay(models.Model):
                         end=event_end,
                     )
                 )
+
+    @api.constrains("vegetarian_count", "vegan_count", "gluten_free_count", "lactose_free_count")
+    def _check_diet_counts_non_negative(self):
+        for rec in self:
+            for fname in (
+                "vegetarian_count",
+                "vegan_count",
+                "gluten_free_count",
+                "lactose_free_count",
+            ):
+                if rec[fname] < 0:
+                    raise UserError(_("Diet count fields cannot be negative."))
+
+    # ── Дії (перенесено з legacy camp.nutrition) ───────────────────────────
+    def action_confirm(self):
+        """Confirm (approve) the daily menu."""
+        for rec in self:
+            if rec.state != "draft":
+                raise UserError(_("Menu '%(date)s' is already confirmed.", date=rec.menu_date))
+            rec.write({"state": "confirmed"})
+        return True
+
+    def action_reset_to_draft(self):
+        """Reset a confirmed menu back to draft for editing."""
+        for rec in self:
+            rec.write({"state": "draft"})
+        return True
 
 
 # ===========================================================================
@@ -653,138 +722,3 @@ class CampParticipantDiet(models.Model):
 
 
 # ===========================================================================
-# camp.nutrition  (legacy daily menu model — kept for migration compatibility)
-# ===========================================================================
-
-
-class CampNutrition(models.Model):
-    """Legacy daily menu record for a camp shift.
-
-    Tracks breakfast/lunch/dinner/snacks along with special dietary requirements
-    per date. One record = one full day of menus for one shift.
-
-    NOTE: New code should use camp.menu.day + camp.meal.plan instead.
-    This model is retained for data-migration compatibility with
-    bs_campscout_addon records.
-    """
-
-    _name = "camp.nutrition"
-    _description = "Camp daily menu"
-    _inherit = ["mail.thread"]
-    _order = "menu_date desc"
-
-    # ── Core ───────────────────────────────────────────────────────────────
-    event_id = fields.Many2one(
-        "event.event",
-        string=_("Camp shift"),
-        required=True,
-        index=True,
-        ondelete="restrict",
-        tracking=True,
-    )
-    menu_date = fields.Date(
-        string=_("Date"),
-        required=True,
-        tracking=True,
-    )
-
-    # ── Meals ──────────────────────────────────────────────────────────────
-    breakfast = fields.Text(
-        string=_("Breakfast (Śniadanie)"),
-        help=_("Menu items for breakfast"),
-    )
-    lunch = fields.Text(
-        string=_("Lunch (Obiad)"),
-        help=_("Menu items for lunch / main meal"),
-    )
-    dinner = fields.Text(
-        string=_("Dinner (Kolacja)"),
-        help=_("Menu items for dinner"),
-    )
-    snacks = fields.Text(
-        string=_("Snacks (Podwieczorek)"),
-        help=_("Afternoon snack / additional meals"),
-    )
-
-    # ── Special diets ──────────────────────────────────────────────────────
-    vegetarian_count = fields.Integer(
-        string=_("Vegetarian"),
-        default=0,
-        help=_("Number of participants requiring vegetarian meals"),
-    )
-    vegan_count = fields.Integer(
-        string=_("Vegan"),
-        default=0,
-        help=_("Number of participants requiring vegan meals"),
-    )
-    gluten_free_count = fields.Integer(
-        string=_("Gluten-free"),
-        default=0,
-        help=_("Number of participants requiring gluten-free meals"),
-    )
-    lactose_free_count = fields.Integer(
-        string=_("Lactose-free"),
-        default=0,
-        help=_("Number of participants requiring lactose-free meals"),
-    )
-    allergy_notes = fields.Text(
-        string=_("Inne alergie i diety specjalne"),
-        help=_("Other allergies and special diets (free text)"),
-    )
-
-    # ── State ──────────────────────────────────────────────────────────────
-    state = fields.Selection(
-        [
-            ("draft", "Szkic"),
-            ("confirmed", "Zatwierdzone"),
-        ],
-        string=_("Status"),
-        default="draft",
-        required=True,
-        tracking=True,
-    )
-
-    # ── Meta ───────────────────────────────────────────────────────────────
-    prepared_by = fields.Many2one(
-        "res.users",
-        string=_("Prepared by"),
-        index=True,
-        default=lambda self: self.env.user,
-    )
-    notes = fields.Text(string=_("Internal notes"))
-
-    # ── Constraints ────────────────────────────────────────────────────────
-    _sql_constraints = [
-        (
-            "event_date_uniq",
-            "UNIQUE(event_id, menu_date)",
-            "A daily menu already exists for this shift and date.",
-        ),
-    ]
-
-    @api.constrains("vegetarian_count", "vegan_count", "gluten_free_count", "lactose_free_count")
-    def _check_diet_counts_non_negative(self):
-        for rec in self:
-            for fname in (
-                "vegetarian_count",
-                "vegan_count",
-                "gluten_free_count",
-                "lactose_free_count",
-            ):
-                if rec[fname] < 0:
-                    raise UserError(_("Diet count fields cannot be negative."))
-
-    # ── Actions ────────────────────────────────────────────────────────────
-    def action_confirm(self):
-        """Confirm (approve) the daily menu."""
-        for rec in self:
-            if rec.state != "draft":
-                raise UserError(_("Menu '%(date)s' is already confirmed.", date=rec.menu_date))
-            rec.write({"state": "confirmed"})
-        return True
-
-    def action_reset_to_draft(self):
-        """Reset a confirmed menu back to draft for editing."""
-        for rec in self:
-            rec.write({"state": "draft"})
-        return True

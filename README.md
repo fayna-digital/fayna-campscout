@@ -59,7 +59,7 @@ fayna_camp_portal/
 │   ├── camp.py                           # camp.category, camp.activity, camp.room.type + event.event extensions
 │   ├── participant.py                    # camp.participant (5-section qualification card, immutability after sign-off)
 │   ├── operations.py                     # camp.report, camp.staff (+ certs), camp.daily.report, camp.program (Załącznik 9), camp.dziennik, camp.kuratorium.*
-│   ├── nutrition.py                      # camp.nutrition.plan + EU-14 allergens (Regulation 1169/2011)
+│   ├── nutrition.py                      # camp.menu.day.plan + EU-14 allergens (Regulation 1169/2011)
 │   ├── emergency.py                      # camp.incident.report (7-state machine, 18 action types)
 │   ├── commercial.py                     # camp.support.ticket, camp.installment, loyalty integration, reviews
 │   ├── training.py                       # extends slide.channel — wychowawca 36h MEN-compliant course
@@ -485,7 +485,7 @@ docker exec camp_dev odoo \
 | **Camp Wychowawca** | Own group's `camp.dziennik`, qualification card Section VI, SMS broadcast (capped) | Allergies + emergency contact of own group's children | Medications, doctor_notes, other groups, incidents (unless responder) |
 | **Camp Instructor** | Own activity assignments (`camp.activity` where `responsible_id == self`) | Activity-relevant medical (e.g. asthma for running) of attendees | Full medical, journal, incidents |
 | **Camp Medical Officer** | RODO Art.9 health fields (`allergies`, `medications`, `chronic_conditions`, `doctor_notes`) | Qualification card metadata | Sales, marketing, support |
-| **Camp Nutrition Officer** | `camp.participant.diet` (RODO Art.9 dietary), `camp.nutrition.plan`, EU-14 allergens | Participant card metadata | Medical (non-dietary), incidents |
+| **Camp Nutrition Officer** | `camp.participant.diet` (RODO Art.9 dietary), `camp.menu.day.plan`, EU-14 allergens | Participant card metadata | Medical (non-dietary), incidents |
 | **Camp HR Manager** | Staff certifications (KRK, RPS, course certs) per Rozp. MEN §4 | Staff list | Participants, incidents, sales |
 | **Emergency Responder** | Create/update `camp.incident.report` + `camp.incident.action` | Closed incidents (read-only) | Close/reopen incidents |
 | **Emergency Manager** | Full incident lifecycle (close, reopen, override) | — | — |
