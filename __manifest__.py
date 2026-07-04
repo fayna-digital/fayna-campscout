@@ -2,7 +2,7 @@
 # License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 {
     "name": "Портал CampScout",
-    "version": "17.0.4.1.1",
+    "version": "17.0.4.1.2",
     "category": "Tools/Camp Management",
     "summary": "Complete children's summer camp management portal (Polish law compliance)",
     "description": """

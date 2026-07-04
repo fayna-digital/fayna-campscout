@@ -174,8 +174,6 @@ access_camp_transport_wychowawca,camp.transport wychowawca,model_camp_transport,
 access_camp_transport_portal,camp.transport portal,model_camp_transport,base.group_portal,1,0,0,0
 access_camp_analytics_snapshot_organizator,camp.analytics.snapshot organizator,model_camp_analytics_snapshot,fayna_camp_portal.group_camp_organizator,1,1,1,1
 access_camp_analytics_snapshot_admin,camp.analytics.snapshot admin,model_camp_analytics_snapshot,base.group_system,1,1,1,1
-access_camp_stats_snapshot_organizator,camp.stats.snapshot organizator,model_camp_stats_snapshot,fayna_camp_portal.group_camp_organizator,1,1,1,1
-access_camp_stats_snapshot_admin,camp.stats.snapshot admin,model_camp_stats_snapshot,base.group_system,1,1,1,1
 access_camp_marketing_report_organizator,camp.marketing.report organizator,model_camp_marketing_report,fayna_camp_portal.group_camp_organizator,1,1,1,1
 access_camp_marketing_report_sales,camp.marketing.report sales,model_camp_marketing_report,fayna_camp_portal.group_camp_sales,1,1,1,1
 access_camp_marketing_report_admin,camp.marketing.report admin,model_camp_marketing_report,base.group_system,1,1,1,1

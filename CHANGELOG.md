@@ -2,6 +2,10 @@
 
 All notable changes to `fayna_camp_portal` are documented here.
 
+## 17.0.4.1.2 — 2026-07-04
+- Reuse S1 пара 1: camp.stats.snapshot злито в camp.analytics.snapshot (total_capacity перенесено, migrations/-перенос даних, cron/ACL/views видалені, git grep сиріт = 0).
+- FIX: щоденний analytics-cron мовчки падав 100% (домен по неіснуючих полях camp.participant.event_id/qualification_state; ValueError ковтався try/except) — знайдено новим тестом keeper'а.
+
 ## [17.0.3.0.0] — 2026-06-23 … 2026-06-25 — Native parent signoff + escort + kiosk + relicense
 
 ### Added
