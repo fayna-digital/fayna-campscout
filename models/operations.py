@@ -3653,6 +3653,20 @@ class CampKuratoriumNotification(models.Model):
         string=_("Rodzaj obiektu"),
         help=_("Type of accommodation used."),
     )
+
+    @api.onchange("event_id")
+    def _onchange_event_vacation_form(self):
+        """R6.1: prefill the declared MEN form from the event.
+
+        The creation wizard lands its step-1 «Typ obozu» on event.vacation_form;
+        when the notification is drafted for that event the declaration follows
+        automatically. Guarded by the local selection so an event value unknown
+        to this model (catalogue drift) is skipped rather than crashing."""
+        for rec in self:
+            ev_form = rec.event_id.vacation_form
+            if ev_form and ev_form in dict(rec._fields["vacation_form"].selection):
+                rec.vacation_form = ev_form
+
     date_start = fields.Datetime(
         related="event_id.date_begin",
         store=True,

@@ -689,6 +689,9 @@ class CampCreateWizard(models.TransientModel):
             "seats_max": self.seats,
             "website_published": False,
             "camp_approval_state": "pending_approval",
+            # R6.1: step-1 «Typ obozu» must not be dropped — it lands on the
+            # event and prefills the Kuratorium notification later.
+            "vacation_form": self.vacation_form,
         }
         venue = self._get_or_create_venue()
         if venue:

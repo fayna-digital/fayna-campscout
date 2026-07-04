@@ -176,3 +176,31 @@ class TestOrganizatorCreatesCamp(TransactionCase):
             "the ticket price must equal the applied §7 price (800.00) — this is the "
             "exact figure a parent is charged",
         )
+
+    def test_r61_vacation_form_lands_on_event_and_notification(self):
+        """R6.1: the wizard's step-1 «Typ obozu» must not be dropped — it
+        lands on event.vacation_form and prefills the Kuratorium notification
+        via its event onchange."""
+        run_id = uuid.uuid4().hex[:8]
+        vals = self._wizard_vals(suffix=run_id)
+        vals["vacation_form"] = "zimowisko"
+        wizard = self.env["camp.create.wizard"].with_user(self.organizator).create(vals)
+        action = wizard.action_create_camp()
+        event = self.env["event.event"].browse(action["res_id"])
+        self.assertEqual(
+            event.vacation_form,
+            "zimowisko",
+            "wizard's vacation_form must land on the created event (R6.1)",
+        )
+
+        notification = (
+            self.env["camp.kuratorium.notification"]
+            .with_user(self.organizator)
+            .new({"event_id": event.id})
+        )
+        notification._onchange_event_vacation_form()
+        self.assertEqual(
+            notification.vacation_form,
+            "zimowisko",
+            "Kuratorium notification must prefill the declared MEN form",
+        )
