@@ -43,26 +43,16 @@
             <field name="user_id" ref="base.user_root"/>
         </record>
 
-        <!-- Vozhatyi: expire fayna.vozhatyi.certificate when valid_until passes (5y) -->
-        <record id="cron_expire_vozhatyi_certificates" model="ir.cron">
-            <field name="name">CampScout: Mark Expired Vozhatyi Certificates</field>
-            <field name="model_id" ref="model_fayna_vozhatyi_certificate"/>
+        <!-- Training: expire camp.staff.training.record when expiry_date passes (5y MEN).
+             Reuse S1 пара 6: consolidates the two legacy vozhatyi expiry crons
+             (fayna.vozhatyi.certificate + vozhatyi.training.record, both removed)
+             into ONE cron on the keeper — which previously had NO expiry cron
+             at all despite having an `expired` state (latent dead feature, now fixed). -->
+        <record id="cron_expire_camp_staff_training_records" model="ir.cron">
+            <field name="name">CampScout: Mark Expired Staff Training Records</field>
+            <field name="model_id" ref="model_camp_staff_training_record"/>
             <field name="state">code</field>
-            <field name="code">model._cron_expire_certificates()</field>
-            <field name="interval_number">1</field>
-            <field name="interval_type">days</field>
-            <field name="numbercall">-1</field>
-            <field name="active">True</field>
-            <field name="priority">10</field>
-            <field name="user_id" ref="base.user_root"/>
-        </record>
-
-        <!-- Vozhatyi: flat record state flip (completed → expired) when valid_until passes -->
-        <record id="cron_expire_vozhatyi_training_records" model="ir.cron">
-            <field name="name">CampScout: Mark Expired Vozhatyi Training Records</field>
-            <field name="model_id" ref="model_vozhatyi_training_record"/>
-            <field name="state">code</field>
-            <field name="code">model._cron_mark_expired()</field>
+            <field name="code">model._cron_expire_training_records()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>

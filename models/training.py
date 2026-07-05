@@ -4,11 +4,26 @@
 
 Extends slide.channel with:
 - Course type: wychowawca 36h / kierownik improvement / first_aid / specialty
+  / online_platform (§2.15)
 - Required-hours tracking (MEN Rozp. 2016 §3)
-- Per-partner training record with certificate issuance
+- Per-partner training record with certificate issuance (+printable QWeb cert)
 - Staff event-assignment compliance check
+- Daily expiry cron (5-year MEN renewal window)
 
 ADR-001 decision: do not build a custom LMS; extend native slide.channel instead.
+
+Reuse S1 пара 6 (2026-07-05): sole keeper after merging in the two
+legacy standalone trackers `fayna.vozhatyi.training(+module+certificate)` and
+`vozhatyi.training.record` (both removed; see migrations/17.0.4.1.5). Absorbed:
+- broader training_type coverage → `online_platform` course type added here;
+- session logistics (start/end date, location, instructor) → new fields below;
+- module-level granularity → already covered natively by slide.channel's own
+  slide.slide children, no custom "module" model needed (stronger reuse);
+- certificate print (QWeb) → action_print_certificate() + new report below;
+- automatic expiry → `_cron_expire_training_records` (previously this state
+  machine had an `expired` state and a manual action_expire() button but
+  NOTHING flipped it automatically — a latent dead feature, now fixed and
+  wired into data/cron.xml, consolidating both legacy expiry crons into one).
 """
 
 import uuid
@@ -28,6 +43,7 @@ class SlideChannel(models.Model):
             ("kierownik_improvement", "Doskonalenie kierownika — MEN"),
             ("first_aid", "Pierwsza pomoc / BLS — AHA 2025"),
             ("specialty", "Kurs specjalistyczny"),
+            ("online_platform", "Szkolenie na platformie online (§2.15)"),
         ],
         string=_("Camp course type"),
         help=_(
@@ -203,6 +219,30 @@ class CampStaffTrainingRecord(models.Model):
         help=_("Total hours required to complete this course (from channel settings)."),
     )
 
+    # ── Session logistics (absorbed from legacy fayna.vozhatyi.training) ──────
+    # Offline MEN courses (unlike native eLearning slides) happen on a dated
+    # session at a physical location with an instructor — optional, only
+    # populated when the training was delivered offline.
+
+    session_start_date = fields.Date(
+        string=_("Session start date"),
+        help=_("Start date of the offline training session, if applicable."),
+    )
+    session_end_date = fields.Date(
+        string=_("Session end date"),
+        help=_("End date of the offline training session, if applicable."),
+    )
+    session_location = fields.Char(
+        string=_("Session location"),
+        help=_("Where the offline training session took place, if applicable."),
+    )
+    instructor_id = fields.Many2one(
+        "res.partner",
+        string=_("Instructor"),
+        ondelete="set null",
+        help=_("Person who delivered the offline training session, if applicable."),
+    )
+
     # ── SQL constraints ────────────────────────────────────────────────────────
 
     _sql_constraints = [
@@ -309,3 +349,44 @@ class CampStaffTrainingRecord(models.Model):
             "res_id": self.channel_id.id,
             "view_mode": "form",
         }
+
+    def action_print_certificate(self):
+        """Print the MEN training certificate (QWeb PDF).
+
+        Absorbed from legacy fayna.vozhatyi.certificate.action_print_certificate —
+        the keeper embeds certificate fields directly on the record (no separate
+        certificate model needed), so this just binds to the report action below.
+        """
+        self.ensure_one()
+        if self.state not in ("certified", "expired"):
+            raise UserError(_("Only certified (or expired) records have a certificate to print."))
+        return self.env.ref(
+            "fayna_camp_portal.camp_staff_training_record_certificate_report_action"
+        ).report_action(self)
+
+    # ── Cron ─────────────────────────────────────────────────────────────────
+
+    @api.model
+    def _cron_expire_training_records(self):
+        """Daily cron: flip certified records to expired once expiry_date passes.
+
+        FIX (Reuse S1 pair6): the state machine has always had an `expired`
+        state and a manual `action_expire()` button, but nothing invoked it
+        automatically — a latent dead feature (unlike the two legacy vozhatyi
+        trackers this model absorbs, which both had working expiry crons).
+        This consolidates that missing behaviour onto the keeper.
+        """
+        today = fields.Date.today()
+        expired = self.search(
+            [
+                ("state", "=", "certified"),
+                ("expiry_date", "!=", False),
+                ("expiry_date", "<", today),
+            ]
+        )
+        expired.write({"state": "expired"})
+        for rec in expired:
+            rec.message_post(
+                body=_("Certificate automatically marked as Expired (5-year MEN validity passed).")
+            )
+        return len(expired)

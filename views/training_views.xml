@@ -64,6 +64,8 @@
                                 invisible="state != 'completed'" class="btn-primary"/>
                         <button name="action_expire" string="Expire" type="object"
                                 invisible="state != 'certified'"/>
+                        <button name="action_print_certificate" string="Print Certificate" type="object"
+                                invisible="state not in ('certified', 'expired')" class="btn-secondary"/>
                         <field name="state" widget="statusbar"
                                statusbar_visible="enrolled,in_progress,completed,certified"/>
                     </header>
@@ -82,6 +84,16 @@
                                 <field name="required_hours" readonly="1"/>
                                 <field name="completion_pct" readonly="1" widget="progressbar"/>
                                 <field name="slides_completed"/>
+                            </group>
+                        </group>
+                        <group string="Offline session (optional)">
+                            <group>
+                                <field name="session_start_date"/>
+                                <field name="session_end_date"/>
+                            </group>
+                            <group>
+                                <field name="session_location"/>
+                                <field name="instructor_id"/>
                             </group>
                         </group>
                         <group string="Certificate" invisible="state not in ('certified', 'expired')">
@@ -136,6 +148,98 @@
             <field name="view_mode">tree,form</field>
             <field name="domain">[('camp_course_type', '!=', False)]</field>
         </record>
+
+        <!-- ================================================================ -->
+        <!-- QWeb PDF Certificate Report                                      -->
+        <!-- Absorbed from legacy fayna.vozhatyi.certificate_report (Reuse    -->
+        <!-- S1 pair6): keeper embeds cert fields directly on the record,     -->
+        <!-- so this binds straight to camp.staff.training.record.            -->
+        <!-- ================================================================ -->
+
+        <record id="camp_staff_training_record_certificate_report_action" model="ir.actions.report">
+            <field name="name">Training Certificate</field>
+            <field name="model">camp.staff.training.record</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">fayna_camp_portal.camp_staff_training_record_certificate_report_template</field>
+            <field name="report_file">fayna_camp_portal.camp_staff_training_record_certificate_report_template</field>
+            <field name="binding_model_id" ref="model_camp_staff_training_record"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="base.paperformat_euro"/>
+        </record>
+
+        <template id="camp_staff_training_record_certificate_report_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <!-- Header / Title -->
+                            <div style="text-align:center; margin-bottom:40px;">
+                                <h1 style="font-size:28pt; text-transform:uppercase; letter-spacing:3px;">
+                                    Certificate of Completion
+                                </h1>
+                                <p style="font-size:13pt; color:#555;">
+                                    Zaświadczenie ukończenia kursu / Свідоцтво про закінчення курсу
+                                </p>
+                                <hr style="border:2px solid #20ac41; margin:16px auto; width:60%;"/>
+                            </div>
+
+                            <!-- Body -->
+                            <div style="text-align:center; font-size:13pt; line-height:2;">
+                                <p>This certifies that</p>
+                                <h2 style="font-size:22pt; color:#20ac41;">
+                                    <t t-esc="o.partner_id.name"/>
+                                </h2>
+                                <p>has successfully completed the</p>
+                                <h3 style="font-size:16pt;">
+                                    <t t-esc="o.channel_id.name"/>
+                                </h3>
+                                <p>as required by Rozporządzenie MEN 2016 (Dz.U. 2016 poz. 2148)</p>
+                            </div>
+
+                            <!-- Certificate Details -->
+                            <div style="margin-top:40px; border:1px solid #ddd; padding:16px; border-radius:6px;">
+                                <table style="width:100%; font-size:11pt;">
+                                    <tr>
+                                        <td style="width:40%; color:#777;">Certificate Number:</td>
+                                        <td><strong><t t-esc="o.certificate_number"/></strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="color:#777;">Issue Date:</td>
+                                        <td><t t-esc="o.issue_date"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="color:#777;">Valid Until:</td>
+                                        <td><t t-esc="o.expiry_date"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="color:#777;">Instructor:</td>
+                                        <td><t t-esc="o.instructor_id.name or '—'"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="color:#777;">Training Location:</td>
+                                        <td><t t-esc="o.session_location or '—'"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="color:#777;">Total Hours Completed:</td>
+                                        <td><t t-esc="o.hours_completed"/> h</td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <!-- Signature area -->
+                            <div style="margin-top:60px; display:flex; justify-content:space-between;">
+                                <div style="text-align:center; width:40%;">
+                                    <div style="border-top:1px solid #333; padding-top:8px;">Instructor Signature</div>
+                                </div>
+                                <div style="text-align:center; width:40%;">
+                                    <div style="border-top:1px solid #333; padding-top:8px;">Organizer Stamp / Seal</div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
 
     </data>
 </odoo>

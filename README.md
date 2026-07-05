@@ -62,8 +62,7 @@ fayna_camp_portal/
 │   ├── nutrition.py                      # camp.menu.day.plan + EU-14 allergens (Regulation 1169/2011)
 │   ├── emergency.py                      # camp.incident.report (7-state machine, 18 action types)
 │   ├── commercial.py                     # camp.support.ticket, camp.installment, loyalty integration, reviews
-│   ├── training.py                       # extends slide.channel — wychowawca 36h MEN-compliant course
-│   ├── training_vozhatyi.py              # standalone PL-MEN 36h/10h tracker (parallel to slide-based path)
+│   ├── training.py                       # extends slide.channel — sole training keeper (Reuse S1 pair6): wychowawca 36h/kierownik 10h/first_aid/online_platform, session logistics, certificate print, expiry cron
 │   ├── transport.py                      # camp.transport — bus / coach booking per shift
 │   ├── stories.py                        # camp.story — newsfeed for parents (migrated from fayna_camp_stories)
 │   ├── reports.py                        # camp.analytics.snapshot (KPI, incl. capacity), marketing report wizard
@@ -92,8 +91,7 @@ fayna_camp_portal/
 │   ├── nutrition_views.xml
 │   ├── emergency_views.xml
 │   ├── commercial_views.xml              # support, installments, loyalty, reviews
-│   ├── training_views.xml                # slide-based course
-│   ├── training_vozhatyi_views.xml       # standalone 36h tracker
+│   ├── training_views.xml                # slide-based course (sole keeper) + printable QWeb certificate report
 │   ├── transport_views.xml
 │   ├── stories_views.xml
 │   ├── reports_views.xml

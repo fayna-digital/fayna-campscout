@@ -19,7 +19,7 @@ best-effort для staging; втрата тестових даних НЕ є б�
 | 3 | ~~camp.nutrition~~ → **camp.menu.day** ✅ 04.07 (PR#35) | 131/104 | обидві були UI-сиротами (0 menuitem); keeper = 5-посилкова PL-структура + порт diet-лічильників/state/chatter/confirm-флоу; розділ «Jadłospis dzienny» ОЖИВ у меню Żywienie |
 | 4 | camp.participant.diet ⇄ camp.diet.profile → **одна** | 89/111 | keeper за лінками на pkt9 картки |
 | 5 | camp.program(+activity) + camp.schedule.entry → **camp.program.structured(+day+line)** | 324 | structured-гілка канонічна (майстер її створює) |
-| 6 | vozhatyi.training.record ⇄ fayna.vozhatyi.training(+module+certificate) ⇄ camp.staff.training.record → **одна** | 713 | найбільша; довгостроково — OCA hr_course (крок 4+) |
+| 6 | ~~vozhatyi.training.record ⇄ fayna.vozhatyi.training(+module+certificate)~~ → **camp.staff.training.record** ✅ 05.07 (PR#38) | 713 | найбільша; keeper = extends native slide.channel (ADR-001, website_slides вже в depends); session-логістика + printable QWeb-сертифікат перенесені; бонус: полагоджено мертвий expiry-cron (keeper мав `expired` стан без жодного cron); довгостроково — OCA hr_course виключено політикою Community-only |
 
 ## Вимоги (EARS) — до КОЖНОЇ пари
 

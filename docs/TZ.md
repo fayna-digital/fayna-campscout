@@ -282,7 +282,7 @@
 
 **[F-OPS-3] Лояльність:** розширення нативного loyalty.program (BP-011: fayna_rule_type + override _program_check_compute_points; banda/platinum/gold). · ✅.
 
-**[F-OPS-4] Тренінги кадри:** MEN 36h/10h + школа вожатого (4 моделі vozhatyi + /my/training + сертифікати QWeb); курс через website_slides — Phase 9 (відкладено). · ✅ база; слайди ⏸.
+**[F-OPS-4] Тренінги кадри:** MEN 36h/10h + wychowawca/kierownik/first_aid/online_platform — ЄДИНИЙ keeper `camp.staff.training.record` (extends native `slide.channel`, website_slides). Reuse S1 пара 6 (05.07): три системи обліку (vozhatyi.training.record ⇄ fayna.vozhatyi.training+module+certificate ⇄ camp.staff.training.record) злиті в одну; сесійна логістика (дата/локація/instructor) + printable QWeb-сертифікат + expiry-cron перенесені на keeper; /my/training портал-маршрут НЕ збудований (був лише заявлений у ТЗ, коду не було — реальний контролер-споживач: `/admin/dashboard` виджет прострочених сертифікатів). · ✅ модель+cron+ACL/rules; 🟡 /my/training портал-кабінет — не збудовано (backlog).
 
 **[F-OPS-5] Звіти/снапшоти:** camp.analytics/marketing/stats.snapshot + `/admin/dashboard` KPI (7 секцій: бізнес, тривоги, активні табори, команда, комунікації, маркетинг+SMS-costs, audit) + view-as (with_user, НЕ sudo; immutable `camp.admin.access.log` RODO art.30, 7 років). · ✅ дашборд+view-as+лог · ✅ R10 закрито 2026-07-04: `compute_sudo=True` на всю групу `_compute_metrics` (marketing.report) і `_compute_ack_stats` (regulamin; корінь — stored all_signed мав дефолт True, non-stored сусіди False). Верифікація: test ✅ `test_compute_sudo_consistency.py` (модуль-wide гард груп compute) + старт без warning (харнес-лог).
 
