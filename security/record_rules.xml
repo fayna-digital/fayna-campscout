@@ -236,40 +236,19 @@
         </record>
 
         <!-- ═══════════════════════════════════════════════════════════════
-             Vozhatyi training (migrated from fayna_camp_vozhatyi_school)
-             - Internal users: see only own (where they are participant via
-               res.partner.user_ids)
-             - Portal users: see only own (where partner_id = user.partner_id)
-             - Admin (group_system): full access
+             camp.staff.training.record (Reuse S1 пара 6: sole keeper after
+             merging in fayna.vozhatyi.training(+module+certificate) and
+             vozhatyi.training.record, both removed) — these two "own record"
+             rules absorb the visibility semantics both legacy trackers had:
+             - Internal users: see only own (where partner_id.user_ids matches)
+             - Portal users: see only own (where partner_id = user.partner_id) —
+               staff on umowa zlecenie often only have portal accounts.
+             - Admin (group_system): full access via ACL, no rule needed.
         ═══════════════════════════════════════════════════════════════ -->
 
-        <!-- fayna.vozhatyi.training -->
-        <record id="rule_fayna_vozhatyi_training_user_own" model="ir.rule">
-            <field name="name">Vozhatyi Training: internal user sees own</field>
-            <field name="model_id" ref="model_fayna_vozhatyi_training"/>
-            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
-            <field name="domain_force">[('participant_id.user_ids', 'in', [user.id])]</field>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="False"/>
-            <field name="perm_create" eval="False"/>
-            <field name="perm_unlink" eval="False"/>
-        </record>
-
-        <record id="rule_fayna_vozhatyi_training_portal_own" model="ir.rule">
-            <field name="name">Vozhatyi Training: portal user sees own</field>
-            <field name="model_id" ref="model_fayna_vozhatyi_training"/>
-            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
-            <field name="domain_force">[('participant_id', '=', user.partner_id.id)]</field>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="False"/>
-            <field name="perm_create" eval="False"/>
-            <field name="perm_unlink" eval="False"/>
-        </record>
-
-        <!-- fayna.vozhatyi.certificate -->
-        <record id="rule_fayna_vozhatyi_certificate_user_own" model="ir.rule">
-            <field name="name">Vozhatyi Certificate: internal user sees own</field>
-            <field name="model_id" ref="model_fayna_vozhatyi_certificate"/>
+        <record id="rule_camp_staff_training_record_user_own" model="ir.rule">
+            <field name="name">Staff Training Record: internal user sees own</field>
+            <field name="model_id" ref="model_camp_staff_training_record"/>
             <field name="groups" eval="[(4, ref('base.group_user'))]"/>
             <field name="domain_force">[('partner_id.user_ids', 'in', [user.id])]</field>
             <field name="perm_read" eval="True"/>
@@ -278,32 +257,9 @@
             <field name="perm_unlink" eval="False"/>
         </record>
 
-        <record id="rule_fayna_vozhatyi_certificate_portal_own" model="ir.rule">
-            <field name="name">Vozhatyi Certificate: portal user sees own</field>
-            <field name="model_id" ref="model_fayna_vozhatyi_certificate"/>
-            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
-            <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="False"/>
-            <field name="perm_create" eval="False"/>
-            <field name="perm_unlink" eval="False"/>
-        </record>
-
-        <!-- vozhatyi.training.record -->
-        <record id="rule_vozhatyi_training_record_user_own" model="ir.rule">
-            <field name="name">Vozhatyi Training Record: internal user sees own</field>
-            <field name="model_id" ref="model_vozhatyi_training_record"/>
-            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
-            <field name="domain_force">[('partner_id.user_ids', 'in', [user.id])]</field>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="False"/>
-            <field name="perm_create" eval="False"/>
-            <field name="perm_unlink" eval="False"/>
-        </record>
-
-        <record id="rule_vozhatyi_training_record_portal_own" model="ir.rule">
-            <field name="name">Vozhatyi Training Record: portal user sees own</field>
-            <field name="model_id" ref="model_vozhatyi_training_record"/>
+        <record id="rule_camp_staff_training_record_portal_own" model="ir.rule">
+            <field name="name">Staff Training Record: portal user sees own</field>
+            <field name="model_id" ref="model_camp_staff_training_record"/>
             <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
             <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
             <field name="perm_read" eval="True"/>
@@ -690,29 +646,9 @@
             <field name="perm_create" eval="True"/>
             <field name="perm_unlink" eval="False"/>
         </record>
-        <record id="rule_fayna_vozhatyi_certificate_organizator_all" model="ir.rule">
-            <field name="name">Organizator: all fayna_vozhatyi_certificate (see everything)</field>
-            <field name="model_id" ref="model_fayna_vozhatyi_certificate"/>
-            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
-            <field name="domain_force">[(1, '=', 1)]</field>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="False"/>
-        </record>
-        <record id="rule_fayna_vozhatyi_training_organizator_all" model="ir.rule">
-            <field name="name">Organizator: all fayna_vozhatyi_training (see everything)</field>
-            <field name="model_id" ref="model_fayna_vozhatyi_training"/>
-            <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
-            <field name="domain_force">[(1, '=', 1)]</field>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="False"/>
-        </record>
-        <record id="rule_vozhatyi_training_record_organizator_all" model="ir.rule">
-            <field name="name">Organizator: all vozhatyi_training_record (see everything)</field>
-            <field name="model_id" ref="model_vozhatyi_training_record"/>
+        <record id="rule_camp_staff_training_record_organizator_all" model="ir.rule">
+            <field name="name">Organizator: all camp_staff_training_record (see everything)</field>
+            <field name="model_id" ref="model_camp_staff_training_record"/>
             <field name="groups" eval="[(4, ref('group_camp_organizator'))]"/>
             <field name="domain_force">[(1, '=', 1)]</field>
             <field name="perm_read" eval="True"/>

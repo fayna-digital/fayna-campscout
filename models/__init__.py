@@ -50,10 +50,6 @@ from . import transport  # noqa: E402,I001
 # camp.analytics.snapshot + camp.marketing.report wizard.
 from . import reports  # noqa: E402,I001
 
-# Vozhatyi training — migrated from fayna_camp_vozhatyi_school (TZ §16 Phase 7).
-# Standalone PL-MEN 36h/10h tracker (parallel to slide.channel-based training.py).
-from . import training_vozhatyi  # noqa: E402,I001
-
 # camp.group — grupa wychowawcza §2 art. 92c (sprint 2026-06-10).
 from . import camp_group  # noqa: E402,I001
 
