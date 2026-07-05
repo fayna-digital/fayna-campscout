@@ -4,8 +4,10 @@
 # Sources:
 #   fayna_camp_operations:   CampReport, CampJournal, CampStaff, CampStaffCert,
 #                            CampStaffMedical, CampDailyReport, CampProgramWypoczynku
-#   fayna_camp_program:      CampProgram, CampProgramStructured, CampProgramDay,
-#                            CampProgramActivity, CampProgramActivityLine, CampActivityTemplate
+#   fayna_camp_program:      CampProgramStructured, CampProgramDay,
+#                            CampProgramActivityLine, CampActivityTemplate
+#                            (legacy day-execution-tracking model merged into the
+#                            structured branch — reuse S1 pair 5, see migrations/)
 #   fayna_camp_dziennik_zajec: FaynaCampDziennik, FaynaCampDziennikActivity,
 #                            FaynaCampDziennikNote, FaynaCampDziennikPlanLine
 #   fayna_camp_kuratorium:   CampKuratoriumNotification, CampKuratoriumChecklist,
@@ -1724,7 +1726,7 @@ class CampProgramWypoczynku(models.Model):
             }
         )
         _logger.info(
-            "[camp_program] Program %d approved by uid=%d (event %s)",
+            "[camp_program_wypoczynku] Program %d approved by uid=%d (event %s)",
             self.id,
             self.env.uid,
             self.event_id.name,
@@ -1737,7 +1739,7 @@ class CampProgramWypoczynku(models.Model):
             raise UserError(_("Only approved programs can be submitted to kuratoria."))
         self.write({"state": "submitted", "submitted_date": fields.Date.today()})
         _logger.info(
-            "[camp_program] Program %d submitted to kuratoria (event %s)",
+            "[camp_program_wypoczynku] Program %d submitted to kuratoria (event %s)",
             self.id,
             self.event_id.name,
         )
@@ -1756,7 +1758,7 @@ class CampProgramWypoczynku(models.Model):
             }
         )
         _logger.info(
-            "[camp_program] Program %d reset to draft v%d (event %s)",
+            "[camp_program_wypoczynku] Program %d reset to draft v%d (event %s)",
             self.id,
             self.version,
             self.event_id.name,
@@ -1775,7 +1777,7 @@ class CampProgramWypoczynku(models.Model):
             }
         )
         _logger.info(
-            "[camp_program] New version %d created from record %d (event %s)",
+            "[camp_program_wypoczynku] New version %d created from record %d (event %s)",
             new_program.version,
             self.id,
             self.event_id.name,
@@ -2327,6 +2329,120 @@ class CampProgramDay(models.Model):
         help=_("General notes for the day (weather, special circumstances, etc.)."),
     )
 
+    # ── Reuse S1 пара 5: execution-tracking fields merged from the legacy
+    # day-execution-tracking model (state machine, incidents, photos, theme).
+    # Plan A/B is already carried by the parent's is_rain_plan — no separate
+    # variant field is duplicated here.
+    name = fields.Char(
+        string=_("Program title"),
+        help=_("e.g. 'Morning hike', 'Team building activity' (execution log title)."),
+    )
+    theme = fields.Char(
+        string=_("Theme"),
+        translate=True,
+        help=_("Day theme, e.g. 'Piratów', 'Kosmosu', 'Olimpijskie'."),
+    )
+    exec_start_time = fields.Float(
+        string=_("Start time (execution)"),
+        help=_("Actual start time of the day's activities, decimal hours."),
+    )
+    exec_end_time = fields.Float(
+        string=_("End time (execution)"),
+        help=_("Actual end time of the day's activities, decimal hours."),
+    )
+    description = fields.Html(
+        string=_("Execution description"),
+        help=_("What happened, notes, observations (execution log)."),
+    )
+    incidents = fields.Text(
+        string=_("Incidents or deviations"),
+        help=_("Any incidents, accidents, deviations from plan."),
+    )
+    participant_count = fields.Integer(
+        string=_("Participants"),
+        help=_("How many kids participated."),
+    )
+    staff_ids = fields.Many2many(
+        "camp.staff",
+        string=_("Staff lead"),
+        help=_("Which staff members led this day's activities."),
+    )
+    photo_attachment_ids = fields.Many2many(
+        "ir.attachment",
+        string=_("Photos"),
+        help=_("Photos from this day's activities."),
+    )
+    is_published = fields.Boolean(
+        string=_("Published"),
+        default=False,
+        help=_("When True, this day's execution log is visible to portal users (parents)."),
+    )
+    weather_plan = fields.Selection(
+        [
+            ("sun", "Plan A (Sunny)"),
+            ("rain", "Plan B (Rainy)"),
+        ],
+        string=_("Weather plan (actual)"),
+        help=_("Which weather-variant plan was actually in effect for this day."),
+    )
+    schedule_entry_id = fields.Many2one(
+        "camp.schedule.entry",
+        string=_("Master schedule entry"),
+        help=_("Link to the product's master daily schedule, if this day mirrors it."),
+    )
+    state = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("approved", "Approved"),
+            ("scheduled", "Scheduled"),
+            ("ongoing", "Ongoing"),
+            ("completed", "Completed"),
+            ("cancelled", "Cancelled"),
+        ],
+        default="draft",
+        string=_("Execution status"),
+        help=_("Execution lifecycle state of this day's program."),
+    )
+
+    @api.constrains("exec_start_time", "exec_end_time")
+    def _check_exec_time_order(self):
+        for rec in self:
+            if (
+                rec.exec_start_time
+                and rec.exec_end_time
+                and rec.exec_end_time <= rec.exec_start_time
+            ):
+                raise ValidationError(
+                    _(
+                        "End time must be later than start time on day '%(name)s'.",
+                        name=rec.display_name,
+                    )
+                )
+
+    def action_approve(self):
+        for record in self:
+            if record.state != "draft":
+                continue
+            record.write({"state": "approved"})
+
+    def action_schedule(self):
+        for record in self:
+            if record.state not in ("draft", "approved"):
+                continue
+            record.write({"state": "scheduled"})
+
+    def action_start(self):
+        for record in self:
+            record.write({"state": "ongoing"})
+
+    def action_complete(self):
+        for record in self:
+            record.write({"state": "completed"})
+
+    def action_cancel(self):
+        for record in self:
+            record.write({"state": "cancelled"})
+
     @api.depends("date", "program_id", "program_id.event_id", "program_id.event_id.date_begin")
     def _compute_day_number(self):
         for rec in self:
@@ -2442,6 +2558,38 @@ class CampProgramActivityLine(models.Model):
         help=_("General activity name from the skeleton. Wychowawca fills in the concrete title."),
     )
 
+    # ── Reuse S1 пара 5: risk flags merged from the legacy activity model ──
+    # (Enforcement of these flags against participant medical restrictions
+    # lives on fayna.camp.dziennik.activity — a distinct, kept model; here
+    # they are informational/planning flags only, same as in the legacy model.)
+    risk_water = fields.Boolean(
+        string=_("Water activity (§7)"),
+        help=_(
+            "Activity takes place on/in water (kąpiel, kajaki, basen). "
+            "Planning flag — participant-level hard block is enforced on "
+            "the Dziennik Zajęć activity, not here."
+        ),
+    )
+    risk_heights = fields.Boolean(
+        string=_("Heights activity"),
+        help=_(
+            "Activity involves heights (park linowy, wspinaczka, zjazdy). "
+            "Planning flag — participant-level hard block is enforced on "
+            "the Dziennik Zajęć activity, not here."
+        ),
+    )
+
+    @api.constrains("time_from", "time_to")
+    def _check_time_order(self):
+        for line in self:
+            if line.time_from and line.time_to and line.time_to <= line.time_from:
+                raise ValidationError(
+                    _(
+                        "End time must be later than start time on activity '%(name)s'.",
+                        name=line.title,
+                    )
+                )
+
     @api.constrains(
         "is_locked",
         "owner_role",
@@ -2478,298 +2626,6 @@ class CampProgramActivityLine(models.Model):
                 hours = int(self.time_from)
                 frac = (self.time_from - hours) * 60 + mins
                 self.time_to = hours + frac / 60
-
-
-# ---------------------------------------------------------------------------
-# Camp Program (execution tracking — per shift, per day)
-# ---------------------------------------------------------------------------
-
-
-class CampProgram(models.Model):
-    _name = "camp.program"
-    _description = "Camp program execution per shift"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _order = "event_id, sequence"
-
-    event_id = fields.Many2one(
-        "event.event",
-        required=True,
-        ondelete="cascade",
-        string=_("Camp shift (event)"),
-        help=_("The specific shift/заїзд this program entry is for."),
-        index=True,
-    )
-    product_tmpl_id = fields.Many2one(
-        "product.template",
-        related="event_id.camp_program_id",
-        store=True,
-        string=_("Camp template"),
-        help=_("Camp product template — derived from the event."),
-    )
-    sequence = fields.Integer(
-        default=10,
-        string=_("Sequence"),
-        help=_("Order within the shift program list."),
-    )
-    name = fields.Char(
-        required=True,
-        string=_("Program title"),
-        help=_("e.g. 'Morning hike', 'Team building activity'."),
-    )
-    schedule_entry_id = fields.Many2one(
-        "camp.schedule.entry",
-        string=_("Scheduled activity"),
-        help=_("Link to the master schedule (if this program is a variant of master schedule)."),
-        domain="[('product_tmpl_id', '=', product_tmpl_id)]",
-    )
-    date = fields.Date(
-        required=True,
-        string=_("Date of activity"),
-        tracking=True,
-        help=_("Calendar date this program entry was executed."),
-    )
-    start_time = fields.Float(
-        string=_("Start time (hours, e.g. 9.5 for 09:30)"),
-        help=_("Start time in decimal hours."),
-    )
-    end_time = fields.Float(
-        string=_("End time"),
-        help=_("End time in decimal hours."),
-    )
-    plan_variant = fields.Selection(
-        [
-            ("a", "Plan A (sunny/ideal)"),
-            ("b", "Plan B (rainy/backup)"),
-        ],
-        default="a",
-        string=_("Which plan executed"),
-        help=_("Which variant of the schedule was executed due to weather/circumstances."),
-        tracking=True,
-    )
-    description = fields.Html(
-        string=_("Program description"),
-        help=_("What happened, notes, observations."),
-    )
-    photo_attachment_ids = fields.Many2many(
-        "ir.attachment",
-        string=_("Photos"),
-        help=_("Photos from this activity."),
-    )
-    incidents = fields.Text(
-        string=_("Incidents or deviations"),
-        help=_("Any incidents, accidents, deviations from plan."),
-    )
-    participant_count = fields.Integer(
-        string=_("Participants"),
-        help=_("How many kids participated."),
-    )
-    staff_ids = fields.Many2many(
-        "camp.staff",
-        string=_("Staff lead"),
-        help=_("Which staff members led this activity."),
-    )
-    theme = fields.Char(
-        string=_("Theme"),
-        translate=True,
-        help=_("Day theme, e.g. 'Piratów', 'Kosmosu', 'Olimpijskie'."),
-    )
-    weather_plan = fields.Selection(
-        [
-            ("sun", "Plan A (Sunny)"),
-            ("rain", "Plan B (Rainy)"),
-        ],
-        string=_("Weather plan"),
-        help=_("Which weather-variant plan is in effect for this day."),
-    )
-    program_activity_ids = fields.One2many(
-        "camp.program.activity",
-        "program_id",
-        string=_("Activities"),
-        help=_("Inline activity slots (program builder flow)."),
-    )
-    activity_count = fields.Integer(
-        compute="_compute_activity_count",
-        store=True,
-        string=_("# Activities"),
-        help=_("Number of activity slots in this program entry."),
-    )
-    state = fields.Selection(
-        [
-            ("draft", "Draft"),
-            ("approved", "Approved"),
-            ("scheduled", "Scheduled"),
-            ("ongoing", "Ongoing"),
-            ("completed", "Completed"),
-            ("cancelled", "Cancelled"),
-        ],
-        default="draft",
-        string=_("Status"),
-        tracking=True,
-        help=_("Execution lifecycle state of this program entry."),
-    )
-    is_published = fields.Boolean(
-        string=_("Published"),
-        default=False,
-        help=_("When True, this program is visible to portal users (parents)."),
-        tracking=True,
-    )
-
-    @api.depends("program_activity_ids")
-    def _compute_activity_count(self):
-        for rec in self:
-            rec.activity_count = len(rec.program_activity_ids)
-
-    @api.onchange("schedule_entry_id")
-    def _onchange_schedule_entry(self):
-        if self.schedule_entry_id:
-            activity = (
-                self.schedule_entry_id.activity_a
-                if self.plan_variant == "a"
-                else self.schedule_entry_id.activity_b
-            )
-            if activity:
-                self.name = activity
-
-    def action_approve(self):
-        for record in self:
-            if record.state != "draft":
-                continue
-            record.write({"state": "approved"})
-
-    def action_schedule(self):
-        for record in self:
-            if record.state not in ("draft", "approved"):
-                continue
-            record.write({"state": "scheduled"})
-
-    def action_start(self):
-        for record in self:
-            record.write({"state": "ongoing"})
-
-    def action_complete(self):
-        for record in self:
-            record.write({"state": "completed"})
-
-    def action_cancel(self):
-        for record in self:
-            record.write({"state": "cancelled"})
-
-    @api.constrains("start_time", "end_time")
-    def _check_time_order(self):
-        for rec in self:
-            if rec.start_time and rec.end_time and rec.end_time <= rec.start_time:
-                raise ValidationError(
-                    _(
-                        "End time must be later than start time on program '%(name)s'.",
-                        name=rec.name,
-                    )
-                )
-
-
-# ---------------------------------------------------------------------------
-# Program activity slot (inline within CampProgram — program builder)
-# ---------------------------------------------------------------------------
-
-
-class CampProgramActivity(models.Model):
-    _name = "camp.program.activity"
-    _description = "Camp program — activity slot"
-    _order = "time_start, id"
-
-    program_id = fields.Many2one(
-        "camp.program",
-        required=True,
-        ondelete="cascade",
-        string=_("Program"),
-        index=True,
-        help=_("The program entry this activity slot belongs to."),
-    )
-    time_start = fields.Float(
-        string=_("Start time"),
-        help=_("Start time in decimal hours (e.g. 9.5 = 09:30)."),
-    )
-    time_end = fields.Float(
-        string=_("End time"),
-        help=_("End time in decimal hours."),
-    )
-    activity_name = fields.Char(
-        required=True,
-        string=_("Activity"),
-        translate=True,
-        help=_("Name or description of the activity."),
-    )
-    location = fields.Char(
-        string=_("Location"),
-        translate=True,
-        help=_("Where this activity takes place."),
-    )
-    responsible_id = fields.Many2one(
-        "res.partner",
-        string=_("Responsible"),
-        ondelete="set null",
-        help=_("Person responsible for leading this activity."),
-    )
-    activity_type = fields.Selection(
-        [
-            ("sport", "Sport"),
-            ("creative", "Creative"),
-            ("educational", "Educational"),
-            ("meal", "Meal"),
-            ("rest", "Rest"),
-            ("other", "Other"),
-        ],
-        string=_("Type"),
-        index=True,
-        help=_("Activity type — used for program statistics and reporting."),
-    )
-    risk_water = fields.Boolean(
-        string=_("Water activity (§7)"),
-        help=_(
-            "Activity takes place on/in water (kąpiel, kajaki, basen). "
-            "Triggers the hard block for participants flagged with hydrophobia "
-            "(wzór 2026 pkt 9, sprint decision R1) and §7 lifeguard validation."
-        ),
-    )
-    risk_heights = fields.Boolean(
-        string=_("Heights activity"),
-        help=_(
-            "Activity involves heights (park linowy, wspinaczka, zjazdy). "
-            "Triggers the hard block for participants flagged with fear of heights "
-            "(wzór 2026 pkt 9, sprint decision R1)."
-        ),
-    )
-    notes = fields.Text(
-        string=_("Notes"),
-        help=_("Preparation notes, materials needed, special instructions."),
-    )
-    time_label = fields.Char(
-        compute="_compute_time_label",
-        string=_("Time"),
-        store=False,
-        help=_("Human-readable time range label (e.g. '09:00 – 10:30')."),
-    )
-
-    @api.depends("time_start", "time_end")
-    def _compute_time_label(self):
-        for rec in self:
-            parts = []
-            for val in (rec.time_start, rec.time_end):
-                if val:
-                    h = int(val)
-                    m = int(round((val - h) * 60))
-                    parts.append(f"{h:02d}:{m:02d}")
-            rec.time_label = " – ".join(parts) if parts else ""
-
-    @api.constrains("time_start", "time_end")
-    def _check_time_order(self):
-        for rec in self:
-            if rec.time_start and rec.time_end and rec.time_end <= rec.time_start:
-                raise ValidationError(
-                    _(
-                        "End time must be later than start time on activity '%(name)s'.",
-                        name=rec.activity_name,
-                    )
-                )
 
 
 # ---------------------------------------------------------------------------

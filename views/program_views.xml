@@ -66,6 +66,8 @@
                                         <field name="date"/>
                                         <field name="day_number"/>
                                         <field name="display_name"/>
+                                        <field name="theme" optional="hide"/>
+                                        <field name="state" widget="badge" optional="show"/>
                                         <field name="notes"/>
                                     </tree>
                                 </field>
@@ -93,11 +95,38 @@
             <field name="model">camp.program.day</field>
             <field name="arch" type="xml">
                 <form string="Dzień programu">
+                    <header>
+                        <button name="action_approve" string="Zatwierdź" type="object"
+                                class="btn-primary" invisible="state != 'draft'"/>
+                        <button name="action_schedule" string="Zaplanuj" type="object"
+                                invisible="state not in ('draft', 'approved')"/>
+                        <button name="action_start" string="Rozpocznij" type="object"
+                                invisible="state not in ('approved', 'scheduled')"/>
+                        <button name="action_complete" string="Zakończ" type="object"
+                                class="btn-primary" invisible="state != 'ongoing'"/>
+                        <button name="action_cancel" string="Anuluj" type="object"
+                                invisible="state in ('completed', 'cancelled')"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,approved,scheduled,ongoing,completed"/>
+                    </header>
                     <sheet>
                         <group>
-                            <field name="program_id"/>
-                            <field name="date"/>
-                            <field name="day_number" readonly="1"/>
+                            <group>
+                                <field name="program_id"/>
+                                <field name="date"/>
+                                <field name="day_number" readonly="1"/>
+                                <field name="name"/>
+                                <field name="theme"/>
+                            </group>
+                            <group>
+                                <field name="exec_start_time"/>
+                                <field name="exec_end_time"/>
+                                <field name="participant_count"/>
+                                <field name="staff_ids" widget="many2many_tags"/>
+                                <field name="is_published"/>
+                                <field name="weather_plan"/>
+                                <field name="schedule_entry_id"/>
+                            </group>
                         </group>
                         <field name="activity_line_ids">
                             <tree string="Zajęcia" editable="bottom"
@@ -111,9 +140,20 @@
                                 <field name="is_locked" widget="boolean_toggle"/>
                                 <field name="is_skeleton" widget="boolean_toggle" optional="hide"/>
                                 <field name="responsible_id" optional="hide"/>
+                                <field name="risk_water" widget="boolean_toggle" optional="hide"/>
+                                <field name="risk_heights" widget="boolean_toggle" optional="hide"/>
                                 <field name="notes" optional="hide"/>
                             </tree>
                         </field>
+                        <group string="Opis wykonania">
+                            <field name="description" nolabel="1" colspan="2"/>
+                        </group>
+                        <group string="Incydenty">
+                            <field name="incidents" nolabel="1" colspan="2"/>
+                        </group>
+                        <group string="Zdjęcia">
+                            <field name="photo_attachment_ids" widget="many2many" nolabel="1" colspan="2"/>
+                        </group>
                         <group string="Uwagi dnia">
                             <field name="notes" nolabel="1" colspan="2"/>
                         </group>
@@ -139,6 +179,8 @@
                     <field name="owner_role"/>
                     <field name="is_locked" widget="boolean_toggle"/>
                     <field name="is_skeleton" optional="hide"/>
+                    <field name="risk_water" widget="boolean_toggle" optional="hide"/>
+                    <field name="risk_heights" widget="boolean_toggle" optional="hide"/>
                 </tree>
             </field>
         </record>

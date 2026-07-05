@@ -58,7 +58,7 @@ fayna_camp_portal/
 ├── models/
 │   ├── camp.py                           # camp.category, camp.activity, camp.room.type + event.event extensions
 │   ├── participant.py                    # camp.participant (5-section qualification card, immutability after sign-off)
-│   ├── operations.py                     # camp.report, camp.staff (+ certs), camp.daily.report, camp.program (Załącznik 9), camp.dziennik, camp.kuratorium.*
+│   ├── operations.py                     # camp.report, camp.staff (+ certs), camp.daily.report, camp.program.wypoczynku (Załącznik 9), camp.program.structured (+day+activity.line), camp.dziennik, camp.kuratorium.*
 │   ├── nutrition.py                      # camp.menu.day.plan + EU-14 allergens (Regulation 1169/2011)
 │   ├── emergency.py                      # camp.incident.report (7-state machine, 18 action types)
 │   ├── commercial.py                     # camp.support.ticket, camp.installment, loyalty integration, reviews
@@ -249,7 +249,7 @@ Logo, brand colour and email footer are read from the active company. The portal
 2. **Daily report** — submit `camp.daily.report` (head count, weather, incidents) — auto-notifies organizator
 3. **Journal** — `camp.daily.report` per day; sign-off locks Section III of every participant card under their charge
 4. **Sections IV-V** — sign at end of shift (locks group dynamics + health summary)
-5. **Załącznik 9 approval** — `camp.program` → submit → manager approves
+5. **Załącznik 9 approval** — `camp.program.wypoczynku` → submit → manager approves
 6. **Kuratorium checklist** — tick off Załącznik 1 items; system blocks shift start if unchecked
 
 ### Wychowawca flow (own group + dziennik + SMS broadcast)
@@ -293,7 +293,7 @@ Post-signoff edits require a fresh signed record + archive of the previous one (
 
 ### Program Wypoczynku (Załącznik 9)
 
-`camp.program` — multi-day structured program (theme + objectives + daily activities). State machine `draft → submitted → approved`. Approval requires `group_fayna_camp_manager`. Approved programs are read-only except by manager override.
+`camp.program.wypoczynku` — the official MEN document (theme + objectives + safety sections). State machine `draft → submitted → approved`. Approval requires `group_fayna_camp_manager`. Approved programs are read-only except by manager override. (The separate day-by-day activity plan lives in `camp.program.structured` + `camp.program.day` + `camp.program.activity.line`.)
 
 ### Kuratorium notification (Załącznik 1)
 
@@ -480,7 +480,7 @@ docker exec camp_dev odoo \
 |------|------------|-----------|--------|
 | **Organizator Wypoczynku** | All models (via `base.group_system` + implied roles); admin dashboard; view-as any role | — | — |
 | **Camp Sales Manager** | Catalog (camp.category, camp.activity, product.template), `sale.order`, `camp.support.ticket`, marketing reports, public stories | Camp shifts (read), participants (count only) | Medical fields, kuratorium, dziennik, daily reports, incidents |
-| **Camp Manager** | `camp.program` (Załącznik 9 approval), full incident lifecycle, all kuratorium docs | — | — |
+| **Camp Manager** | `camp.program.wypoczynku` (Załącznik 9 approval), full incident lifecycle, all kuratorium docs | — | — |
 | **Camp Kierownik** | Own shift's `camp.daily.report`, `camp.daily.report`, `camp.staff`, qualification card Sections III-V | Other shifts (read), participants of own shift only (via record rule) | Other shifts' medical/journal data |
 | **Camp Wychowawca** | Own group's `camp.dziennik`, qualification card Section VI, SMS broadcast (capped) | Allergies + emergency contact of own group's children | Medications, doctor_notes, other groups, incidents (unless responder) |
 | **Camp Instructor** | Own activity assignments (`camp.activity` where `responsible_id == self`) | Activity-relevant medical (e.g. asthma for running) of attendees | Full medical, journal, incidents |

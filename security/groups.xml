@@ -93,9 +93,9 @@
             <field name="category_id" ref="module_category_fayna_camp_portal"/>
             <field name="implied_ids" eval="[(4, ref('group_camp_admin'))]"/>
             <field name="comment">
-                Camp manager — full access to camp.program (Program Wypoczynku,
-                Załącznik 9) including approve/submit workflow. Can override
-                immutability where PL law permits (incident post-closure edits).
+                Camp manager — full access to Program Wypoczynku (Załącznik 9)
+                including approve/submit workflow. Can override immutability
+                where PL law permits (incident post-closure edits).
             </field>
         </record>
 
