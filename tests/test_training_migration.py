@@ -25,6 +25,7 @@ Docker-харнес завжди робить свіжий ``-i`` install (ле�
    і перенесена здатність (новий expiry-cron, раніше відсутній на keeper)
    реально працює.
 """
+
 import importlib.util
 from datetime import timedelta
 
@@ -123,7 +124,9 @@ class TestTrainingRecordKeeperCron(TransactionCase):
         # the xmlid resolves to a real qweb-pdf report AND it actually renders.
         action = rec.action_print_certificate()
         self.assertTrue(action)
-        report = self.env.ref("fayna_camp_portal.camp_staff_training_record_certificate_report_action")
+        report = self.env.ref(
+            "fayna_camp_portal.camp_staff_training_record_certificate_report_action"
+        )
         self.assertEqual(report._name, "ir.actions.report")
         self.assertEqual(report.model, "camp.staff.training.record")
         self.assertEqual(report.report_type, "qweb-pdf")
@@ -235,8 +238,11 @@ class TestLegacyTrainingMigration(TransactionCase):
             RETURNING id
             """,
             (
-                "Kurs Wychowawcy QA maj 2026", self.trainee_b.id,
-                self.wychowawca.id, uid, uid,
+                "Kurs Wychowawcy QA maj 2026",
+                self.trainee_b.id,
+                self.wychowawca.id,
+                uid,
+                uid,
             ),
         )
         training_id = cr.fetchone()[0]
@@ -300,27 +306,37 @@ class TestLegacyTrainingMigration(TransactionCase):
         self.assertEqual(rec_b.channel_id.camp_course_type, "wychowawca")
         self.assertEqual(rec_b.hours_completed, 36.0)
         self.assertEqual(rec_b.state, "certified")
-        self.assertEqual(rec_b.certificate_number, "FAYNA-WYC-CERT1", "сертифікат дочірньої моделі має пріоритет")
+        self.assertEqual(
+            rec_b.certificate_number, "FAYNA-WYC-CERT1", "сертифікат дочірньої моделі має пріоритет"
+        )
         self.assertEqual(str(rec_b.issue_date), "2026-05-11")
-        self.assertEqual(str(rec_b.expiry_date), "2031-05-11", "valid_until перенесено 1:1, не перераховано")
+        self.assertEqual(
+            str(rec_b.expiry_date), "2031-05-11", "valid_until перенесено 1:1, не перераховано"
+        )
         self.assertEqual(str(rec_b.session_start_date), "2026-05-01")
         self.assertEqual(str(rec_b.session_end_date), "2026-05-10")
         self.assertEqual(rec_b.session_location, "Ośrodek Szkoleniowy QA")
         self.assertEqual(rec_b.instructor_id, self.wychowawca)
 
         # module_ids granularity → chatter provenance note
-        b_messages = rec_b.message_ids.filtered(lambda m: "migracja fayna.vozhatyi.training" in (m.body or ""))
+        b_messages = rec_b.message_ids.filtered(
+            lambda m: "migracja fayna.vozhatyi.training" in (m.body or "")
+        )
         self.assertTrue(b_messages, "деталі модулів мають бути в chatter-нотатці")
         self.assertIn("Group Dynamics", b_messages[0].body)
         self.assertIn("First Aid", b_messages[0].body)
 
         # S1-4: унікальна семантика vozhatyi.training.record перенесена 1:1
         self.assertEqual(rec_a.channel_id.camp_course_type, "first_aid")
-        self.assertEqual(rec_a.state, "certified", "completed+certificate_number → certified на keeper'і")
+        self.assertEqual(
+            rec_a.state, "certified", "completed+certificate_number → certified на keeper'і"
+        )
         self.assertEqual(rec_a.certificate_number, "FAYNA-FA-LEGACY2")
         self.assertEqual(str(rec_a.issue_date), "2026-04-01")
         self.assertEqual(str(rec_a.expiry_date), "2031-04-01")
-        a_messages = rec_a.message_ids.filtered(lambda m: "migracja vozhatyi.training.record" in (m.body or ""))
+        a_messages = rec_a.message_ids.filtered(
+            lambda m: "migracja vozhatyi.training.record" in (m.body or "")
+        )
         self.assertTrue(a_messages, "notes мають бути в chatter-нотатці")
         self.assertIn("Ukończono na platformie zewnętrznej", a_messages[0].body)
 
@@ -328,11 +344,14 @@ class TestLegacyTrainingMigration(TransactionCase):
         self.migrate(self.env.cr, "17.0.4.1.5")
         self.assertEqual(
             Keeper.search_count([("partner_id", "in", [self.trainee_a.id, self.trainee_b.id])]),
-            2, "повторний migrate() не має плодити нові camp.staff.training.record",
+            2,
+            "повторний migrate() не має плодити нові camp.staff.training.record",
         )
 
         # ── перенесена здатність (новий expiry-cron) реально працює ──
         rec_b.write({"issue_date": fields.Date.today() - timedelta(days=6 * 365)})
         self.assertEqual(rec_b.state, "certified")
         Keeper._cron_expire_training_records()
-        self.assertEqual(rec_b.state, "expired", "перенесений запис підпадає під живий expiry-cron keeper'а")
+        self.assertEqual(
+            rec_b.state, "expired", "перенесений запис підпадає під живий expiry-cron keeper'а"
+        )
