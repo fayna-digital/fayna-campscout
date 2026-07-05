@@ -2,6 +2,9 @@
 
 All notable changes to `fayna_camp_portal` are documented here.
 
+## 17.0.4.1.5 — 2026-07-05
+- Reuse S1 пара 4: camp.participant.diet злито в camp.diet.profile (dietary_restrictions+notes → notes, алергени через m2m; migrations/: перенос + display_name; ФІКС: додано ACL nutrition officer на keeper — цю роль раніше пускала лише видалена модель; модель/views/action/ACL видаленої моделі прибрані, сиріт 0 поза i18n).
+
 ## 17.0.4.1.4 — 2026-07-04
 - Reuse S1 пара 3: legacy camp.nutrition злито в camp.menu.day (порт diet-лічильників/allergy_notes/state+tracking/prepared_by/confirm-флоу; migrations/: мапінг snacks→afternoon_snack, notes-злиття; ACL кухні/керівника; НОВЕ menuitem «Jadłospis dzienny» — обидві моделі були UI-сиротами).
 

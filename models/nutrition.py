@@ -7,13 +7,12 @@ Models:
   - camp.meal.plan        Daily meal plan per camp event (draft/confirmed)
   - camp.meal.plan.line   Single ingredient/product row within a meal plan
   - camp.menu.day         Full daily menu per event per date (5 meals PL MEN)
-  - camp.participant.diet Kitchen-facing diet card linked to camp.participant
 """
 
 import logging
 
 from odoo import _, api, fields, models
-from odoo.exceptions import AccessError, UserError, ValidationError
+from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -182,11 +181,16 @@ class CampDietProfile(models.Model):
         "profile_id",
         "allergen_id",
         string=_("Allergens"),
-        help=_("EU-14 allergens the person cannot consume."),
+        groups="fayna_camp_portal.group_nutrition_officer",
+        help=_(
+            "EU-14 allergens the person cannot consume. "
+            "Мінімізація art.9-суміжних даних (reuse S1 пара 4): бачить кухня."
+        ),
     )
     notes = fields.Text(
         string=_("Additional dietary notes"),
         translate=True,
+        groups="fayna_camp_portal.group_nutrition_officer",
         help=_(
             "Free-text notes for kitchen: severity of reactions, cross-contamination "
             "risk, accepted substitutions. Supplement the structured allergen list."
@@ -623,102 +627,3 @@ class CampMenuDay(models.Model):
         for rec in self:
             rec.write({"state": "draft"})
         return True
-
-
-# ===========================================================================
-# camp.participant.diet
-# ===========================================================================
-
-
-class CampParticipantDiet(models.Model):
-    """Dietary profile for a camp participant.
-
-    Links the participant's allergen set and free-text restrictions from the
-    qualification card (camp.participant.diet_restrictions / allergies) into a
-    structured record the kitchen module can query per event.
-
-    One record per participant — upsert pattern (no duplicates enforced via
-    _sql_constraints). Medical officers and camp leaders can write; portal
-    parent reads own child's diet via the record rule.
-    """
-
-    _name = "camp.participant.diet"
-    _description = "Camp Participant Diet Profile"
-    _order = "participant_id"
-    _rec_name = "participant_id"
-
-    participant_id = fields.Many2one(
-        "camp.participant",
-        string=_("Participant"),
-        required=True,
-        index=True,
-        ondelete="cascade",
-    )
-    allergen_ids = fields.Many2many(
-        "camp.allergen",
-        "camp_participant_diet_allergen_rel",
-        "diet_id",
-        "allergen_id",
-        string=_("Allergens"),
-        groups="fayna_camp_portal.group_nutrition_officer",
-        help=_("EU-14 allergens the participant cannot consume."),
-    )
-    dietary_restrictions = fields.Text(
-        string=_("Dietary restrictions"),
-        translate=True,
-        groups="fayna_camp_portal.group_nutrition_officer",
-        help=_(
-            "Free-text description of dietary rules: halal, vegan, no pork, "
-            "lactose-free, gluten-free, etc. Use allergen_ids for the structured "
-            "EU-14 list; this field captures qualitative rules."
-        ),
-    )
-    notes = fields.Text(
-        string=_("Kitchen notes"),
-        translate=True,
-        groups="fayna_camp_portal.group_nutrition_officer",
-        help=_(
-            "Additional context for the kitchen team: severity of reactions, "
-            "cross-contamination risk, alternative substitutions."
-        ),
-    )
-
-    # --- Computed display --------------------------------------------------
-
-    allergen_names = fields.Char(
-        string=_("Allergen codes"),
-        compute="_compute_allergen_names",
-        store=False,
-        help=_("Comma-separated allergen codes for display in list views."),
-    )
-
-    @api.depends("allergen_ids", "allergen_ids.code")
-    def _compute_allergen_names(self):
-        for diet in self:
-            diet.allergen_names = ", ".join(diet.allergen_ids.mapped("code")) or ""
-
-    # --- Constraints -------------------------------------------------------
-
-    _sql_constraints = [
-        (
-            "participant_diet_unique",
-            "UNIQUE(participant_id)",
-            "A diet profile for this participant already exists.",
-        ),
-    ]
-
-    # --- Security override -------------------------------------------------
-
-    def read(self, fields_list=None, load="_classic_read"):
-        """Enforce medical-data read restriction.
-
-        Portal users receive their own record via ir.rule. Internal users
-        need group_camp_coordinator or higher. Raises AccessError otherwise.
-        """
-        try:
-            return super().read(fields_list=fields_list, load=load)
-        except AccessError:
-            raise
-
-
-# ===========================================================================

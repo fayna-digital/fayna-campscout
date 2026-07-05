@@ -485,7 +485,7 @@ docker exec camp_dev odoo \
 | **Camp Wychowawca** | Own group's `camp.dziennik`, qualification card Section VI, SMS broadcast (capped) | Allergies + emergency contact of own group's children | Medications, doctor_notes, other groups, incidents (unless responder) |
 | **Camp Instructor** | Own activity assignments (`camp.activity` where `responsible_id == self`) | Activity-relevant medical (e.g. asthma for running) of attendees | Full medical, journal, incidents |
 | **Camp Medical Officer** | RODO Art.9 health fields (`allergies`, `medications`, `chronic_conditions`, `doctor_notes`) | Qualification card metadata | Sales, marketing, support |
-| **Camp Nutrition Officer** | `camp.participant.diet` (RODO Art.9 dietary), `camp.menu.day.plan`, EU-14 allergens | Participant card metadata | Medical (non-dietary), incidents |
+| **Camp Nutrition Officer** | `camp.diet.profile` (RODO Art.9 dietary; groups-захист полів), `camp.menu.day.plan`, EU-14 allergens | Participant card metadata | Medical (non-dietary), incidents |
 | **Camp HR Manager** | Staff certifications (KRK, RPS, course certs) per Rozp. MEN §4 | Staff list | Participants, incidents, sales |
 | **Emergency Responder** | Create/update `camp.incident.report` + `camp.incident.action` | Closed incidents (read-only) | Close/reopen incidents |
 | **Emergency Manager** | Full incident lifecycle (close, reopen, override) | — | — |
