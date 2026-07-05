@@ -11,13 +11,12 @@ import importlib.util
 import os
 from datetime import timedelta
 
-from psycopg2 import IntegrityError
-
 from odoo import fields
 from odoo.exceptions import UserError
 from odoo.modules.module import get_module_path
 from odoo.tests.common import TransactionCase, tagged
 from odoo.tools import mute_logger
+from psycopg2 import IntegrityError
 
 
 @tagged("post_install", "-at_install", "fayna_camp_portal")
@@ -144,9 +143,12 @@ class TestDietProfileKeeper(TransactionCase):
         )
         Profile = self.env["camp.diet.profile"].sudo()
         Profile.create({"participant_id": child.id})
-        with self.assertRaises(IntegrityError), mute_logger("odoo.sql_db"):
-            with self.env.cr.savepoint():
-                Profile.create({"participant_id": child.id})
+        with (
+            self.assertRaises(IntegrityError),
+            mute_logger("odoo.sql_db"),
+            self.env.cr.savepoint(),
+        ):
+            Profile.create({"participant_id": child.id})
 
 
 @tagged("post_install", "-at_install", "fayna_camp_portal")
@@ -224,10 +226,16 @@ class TestDietProfileMigrationLossless(TransactionCase):
             RETURNING id
             """,
             (
-                p1.id, "vegan, bez wieprzowiny", "silna reakcja na orzechy",
-                uid, uid,
-                p2.id, "bezglutenowa", None,
-                uid, uid,
+                p1.id,
+                "vegan, bez wieprzowiny",
+                "silna reakcja na orzechy",
+                uid,
+                uid,
+                p2.id,
+                "bezglutenowa",
+                None,
+                uid,
+                uid,
             ),
         )
         diet1_id, diet2_id = (row[0] for row in cr.fetchall())
