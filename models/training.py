@@ -14,7 +14,7 @@ ADR-001 decision: do not build a custom LMS; extend native slide.channel instead
 
 Reuse S1 пара 6 (2026-07-05): sole keeper after merging in the two
 legacy standalone trackers `fayna.vozhatyi.training(+module+certificate)` and
-`vozhatyi.training.record` (both removed; see migrations/17.0.4.1.5). Absorbed:
+`vozhatyi.training.record` (both removed; see migrations/17.0.4.1.7). Absorbed:
 - broader training_type coverage → `online_platform` course type added here;
 - session logistics (start/end date, location, instructor) → new fields below;
 - module-level granularity → already covered natively by slide.channel's own

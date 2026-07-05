@@ -5,7 +5,7 @@ merge: vozhatyi.training.record ⇄ fayna.vozhatyi.training(+module+certificate)
 → camp.staff.training.record (keeper, extends native slide.channel).
 
 Docker-харнес завжди робить свіжий ``-i`` install (легасі-таблиці не існують —
-моделі видалені з коду), тому migrations/17.0.4.1.5/post-migrate.py НІКОЛИ
+моделі видалені з коду), тому migrations/17.0.4.1.7/post-migrate.py НІКОЛИ
 природно не запускається тут (post-migrate виконується лише на реальному
 ``-u`` апгрейді існуючої інсталяції). Щоб довести коректність міграції без
 живих staging-даних (ssh на staging заблоковано), цей тест:
@@ -17,8 +17,8 @@ Docker-харнес завжди робить свіжий ``-i`` install (ле�
 2. Вставляє синтетичні рядки, що імітують історичні записи з ОБОХ легасі-
    систем (одна детальна fayna.vozhatyi.training з модулями+сертифікатом,
    один флет vozhatyi.training.record).
-3. Імпортує ТОЙ САМИЙ файл migrations/17.0.4.1.5/post-migrate.py (importlib)
-   і викликає migrate(cr, "17.0.4.1.5") напряму через реальний cr — без
+3. Імпортує ТОЙ САМИЙ файл migrations/17.0.4.1.7/post-migrate.py (importlib)
+   і викликає migrate(cr, "17.0.4.1.7") напряму через реальний cr — без
    sudo-обходу, без мокання ORM.
 4. Доводить: keeper отримав обидва записи 1:1 (S1-4), повторний виклик
    migrate() НЕ дублює рядки (unique_partner_channel + ir_model_data мітки),
@@ -36,9 +36,9 @@ from odoo.tests.common import TransactionCase, tagged
 
 
 def _load_migrate():
-    """Load migrate(cr, version) straight from migrations/17.0.4.1.5/post-migrate.py."""
+    """Load migrate(cr, version) straight from migrations/17.0.4.1.7/post-migrate.py."""
     module_path = get_module_path("fayna_camp_portal")
-    script_path = f"{module_path}/migrations/17.0.4.1.5/post-migrate.py"
+    script_path = f"{module_path}/migrations/17.0.4.1.7/post-migrate.py"
     spec = importlib.util.spec_from_file_location("reuse_s1p6_post_migrate", script_path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
@@ -294,7 +294,7 @@ class TestLegacyTrainingMigration(TransactionCase):
         training_id, record_id = self._insert_legacy_data()
 
         # ── 1st run ──
-        self.migrate(self.env.cr, "17.0.4.1.5")
+        self.migrate(self.env.cr, "17.0.4.1.7")
 
         Keeper = self.env["camp.staff.training.record"]
         rec_b = Keeper.search([("partner_id", "=", self.trainee_b.id)])
@@ -341,7 +341,7 @@ class TestLegacyTrainingMigration(TransactionCase):
         self.assertIn("Ukończono na platformie zewnętrznej", a_messages[0].body)
 
         # ── ідемпотентність: 2-й прогін НЕ дублює жодного рядка ──
-        self.migrate(self.env.cr, "17.0.4.1.5")
+        self.migrate(self.env.cr, "17.0.4.1.7")
         self.assertEqual(
             Keeper.search_count([("partner_id", "in", [self.trainee_a.id, self.trainee_b.id])]),
             2,
