@@ -18,7 +18,7 @@ best-effort для staging; втрата тестових даних НЕ є б�
 | 2 | ~~camp.journal~~ → **camp.daily.report** ✅ 04.07 (PR#34) | 114 | keeper отримав active + 7р-архів-cron (у журналі метод був МЕРТВИЙ — без ir.cron); autofill кінцевого звіту перенаправлено на денні рапорти; записи → kierownik_notes, вкладення перепідвішені |
 | 3 | ~~camp.nutrition~~ → **camp.menu.day** ✅ 04.07 (PR#35) | 131/104 | обидві були UI-сиротами (0 menuitem); keeper = 5-посилкова PL-структура + порт diet-лічильників/state/chatter/confirm-флоу; розділ «Jadłospis dzienny» ОЖИВ у меню Żywienie |
 | 4 | camp.participant.diet ⇄ camp.diet.profile → **одна** | 89/111 | keeper за лінками на pkt9 картки |
-| 5 | camp.program(+activity) + camp.schedule.entry → **camp.program.structured(+day+line)** | 324 | structured-гілка канонічна (майстер її створює) |
+| 5 | ~~camp.program~~(+activity) → **camp.program.structured** ✅ 05.07 (PR#37) | 324 | structured-гілка канонічна (майстер її створює); camp.schedule.entry ВИКЛЮЧЕНО з пари — grep-доказ на ітерації: окрема жива фіча (product-template маркетинг), не дублікат |
 | 6 | vozhatyi.training.record ⇄ fayna.vozhatyi.training(+module+certificate) ⇄ camp.staff.training.record → **одна** | 713 | найбільша; довгостроково — OCA hr_course (крок 4+) |
 
 ## Вимоги (EARS) — до КОЖНОЇ пари

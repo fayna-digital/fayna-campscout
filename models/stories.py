@@ -8,9 +8,10 @@ CAMPSCOUT_MASTER_TZ §9 step 4.
 
 Notes on the migration:
 
-* Removed ``program_id`` Many2one — it referenced ``camp.program`` which
-  lives in ``fayna_camp_program`` (currently uninstalled). Re-add when
-  that module is brought online.
+* Removed ``program_id`` Many2one — it referenced the legacy day-execution
+  program model (now merged away entirely, reuse S1 pair 5). Re-add a link
+  to ``camp.program.structured``/``camp.program.day`` if a future story needs
+  one.
 * Removed loyalty bridge views — that lives in ``fayna_camp_loyalty``.
 * Added ``portal.mixin`` so ``/my/stories/<id>`` can render
   ``portal.message_thread`` chatter (token-based access for guardians).

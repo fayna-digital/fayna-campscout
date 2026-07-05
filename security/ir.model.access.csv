@@ -84,12 +84,8 @@ access_camp_daily_report_camp_admin,camp.daily.report camp admin,model_camp_dail
 access_camp_program_wypoczynku_admin,camp.program.wypoczynku admin,model_camp_program_wypoczynku,base.group_system,1,1,1,1
 access_camp_program_wypoczynku_user,camp.program.wypoczynku user,model_camp_program_wypoczynku,base.group_user,1,0,0,0
 access_camp_program_wypoczynku_manager,camp.program.wypoczynku manager,model_camp_program_wypoczynku,fayna_camp_portal.group_fayna_camp_manager,1,1,1,1
-access_camp_program_admin,camp.program admin,model_camp_program,base.group_system,1,1,1,1
-access_camp_program_user,camp.program user,model_camp_program,base.group_user,1,0,0,0
 access_camp_program_day_admin,camp.program.day admin,model_camp_program_day,base.group_system,1,1,1,1
 access_camp_program_day_user,camp.program.day user,model_camp_program_day,base.group_user,1,0,0,0
-access_camp_program_activity_admin,camp.program.activity admin,model_camp_program_activity,base.group_system,1,1,1,1
-access_camp_program_activity_user,camp.program.activity user,model_camp_program_activity,base.group_user,1,0,0,0
 access_camp_program_activity_line_admin,camp.program.activity.line admin,model_camp_program_activity_line,base.group_system,1,1,1,1
 access_camp_program_activity_line_user,camp.program.activity.line user,model_camp_program_activity_line,base.group_user,1,0,0,0
 access_camp_activity_template_admin,camp.activity.template admin,model_camp_activity_template,base.group_system,1,1,1,1

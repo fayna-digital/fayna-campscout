@@ -2,6 +2,9 @@
 
 All notable changes to `fayna_camp_portal` are documented here.
 
+## 17.0.4.1.5 — 2026-07-05
+- Reuse S1 пара 5: legacy camp.program (+camp.program.activity, обидві були UI-сиротами — 0 menuitem, 0 тестів) злито в camp.program.structured (+camp.program.day +camp.program.activity.line): state-machine (draft→approved→scheduled→ongoing→completed→cancelled), theme/incidents/photos/staff_ids/description/participant_count/is_published/weather_plan перенесені на день; risk_water/risk_heights + time-order constraint перенесені на activity.line. camp.schedule.entry НЕ мігрується/НЕ видаляється — grep-доказ на ітерації показав окрему живу фічу (product-template маркетинговий «типовий день», не event-instance план); STEP1_TZ дозволяє корегувати keeper на ітерації. migrations/17.0.4.1.5: SQL-перенос за ir_model_data-мітками (ідемпотентно), model/views/2 ACL-рядки видалені, git grep сиріт = 0 (крім migrations/ і синтетичного lossless-тесту).
+
 ## 17.0.4.1.4 — 2026-07-04
 - Reuse S1 пара 3: legacy camp.nutrition злито в camp.menu.day (порт diet-лічильників/allergy_notes/state+tracking/prepared_by/confirm-флоу; migrations/: мапінг snacks→afternoon_snack, notes-злиття; ACL кухні/керівника; НОВЕ menuitem «Jadłospis dzienny» — обидві моделі були UI-сиротами).
 
