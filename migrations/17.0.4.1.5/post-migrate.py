@@ -51,7 +51,7 @@ def migrate(cr, version):
         FROM camp_participant_diet_allergen_rel rel
         JOIN camp_participant_diet d ON d.id = rel.diet_id
         JOIN camp_diet_profile p ON p.participant_id = d.participant_id
-        ON CONFLICT DO NOTHING
+        ON CONFLICT (profile_id, allergen_id) DO NOTHING
         """
     )
     moved_all = cr.rowcount
