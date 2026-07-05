@@ -86,11 +86,16 @@ def _migrate_m2m_best_effort(cr, day_id_map, legacy_table, legacy_col_a, legacy_
                 return 0
             moved = 0
             for old_id, new_id in day_id_map.items():
+                # legacy_table/legacy_col_* are hardcoded internal constants
+                # passed by migration callers (see migrate() below), never
+                # user input; only %s-bound values are actual data.
                 cr.execute(
-                    f"SELECT {legacy_col_b} FROM {legacy_table} WHERE {legacy_col_a} = %s",
+                    f"SELECT {legacy_col_b} FROM {legacy_table} WHERE {legacy_col_a} = %s",  # nosec B608
                     (old_id,),
                 )
                 for (related_id,) in cr.fetchall():
+                    # keeper_table/keeper_col_* are hardcoded internal
+                    # constants passed by migration callers, not user input.
                     cr.execute(
                         f"""
                         INSERT INTO {keeper_table} ({keeper_col_a}, {keeper_col_b})
@@ -99,7 +104,7 @@ def _migrate_m2m_best_effort(cr, day_id_map, legacy_table, legacy_col_a, legacy_
                             SELECT 1 FROM {keeper_table}
                             WHERE {keeper_col_a} = %s AND {keeper_col_b} = %s
                         )
-                        """,
+                        """,  # nosec B608
                         (new_id, related_id, new_id, related_id),
                     )
                     moved += cr.rowcount
