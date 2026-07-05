@@ -5,7 +5,7 @@
 migration.
 
 Docker-харнес завжди робить свіжий ``-i`` install (немає ``camp_program``
-таблиці взагалі — модель видалена з коду), тому migrations/17.0.4.1.5/
+таблиці взагалі — модель видалена з коду), тому migrations/17.0.4.1.6/
 post-migrate.py НІКОЛИ природно не запускається тут (post-migrate виконується
 лише на реальному ``-u`` апгрейді існуючої інсталяції). Щоб довести коректність
 міграції без живих staging-даних (ssh заблоковано), цей тест:
@@ -16,9 +16,9 @@ post-migrate.py НІКОЛИ природно не запускається ту
    транзакції тесту — жодного сліду не лишається).
 2. Вставляє синтетичні рядки, що імітують дві історичні "програми" (Plan A
    і Plan B) з дочірньою активністю кожна.
-3. Імпортує ТОЙ САМИЙ файл, що лежить у migrations/17.0.4.1.5/post-migrate.py
+3. Імпортує ТОЙ САМИЙ файл, що лежить у migrations/17.0.4.1.6/post-migrate.py
    (через importlib — ім'я теки з крапками не є валідним Python-пакетом),
-   і викликає migrate(cr, "17.0.4.1.5") напряму через реальний cr — без
+   і викликає migrate(cr, "17.0.4.1.6") напряму через реальний cr — без
    sudo-обходу, без мокання ORM.
 4. Доводить: keeper (camp.program.structured/day/activity.line) отримав усі
    поля 1:1 (S1-4); повторний виклик migrate() НЕ дублює рядки (ir_model_data
@@ -34,9 +34,9 @@ from odoo.tests.common import TransactionCase, tagged
 
 
 def _load_migrate():
-    """Load migrate(cr, version) straight from migrations/17.0.4.1.5/post-migrate.py."""
+    """Load migrate(cr, version) straight from migrations/17.0.4.1.6/post-migrate.py."""
     module_path = get_module_path("fayna_camp_portal")
-    script_path = f"{module_path}/migrations/17.0.4.1.5/post-migrate.py"
+    script_path = f"{module_path}/migrations/17.0.4.1.6/post-migrate.py"
     spec = importlib.util.spec_from_file_location("reuse_s1p5_post_migrate", script_path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
@@ -219,7 +219,7 @@ class TestLegacyProgramMigration(TransactionCase):
         )
 
         # ── 1st run: migrate() перетворює легасі-рядки на keeper ──
-        self.migrate(self.env.cr, "17.0.4.1.5")
+        self.migrate(self.env.cr, "17.0.4.1.6")
 
         Structured = self.env["camp.program.structured"]
         sunny = Structured.search([("event_id", "=", self.event.id), ("is_rain_plan", "=", False)])
@@ -262,7 +262,7 @@ class TestLegacyProgramMigration(TransactionCase):
         self.assertEqual(line_b.title, "Gry planszowe")
 
         # ── ідемпотентність: 2-й прогін НЕ дублює жодного рядка ──
-        self.migrate(self.env.cr, "17.0.4.1.5")
+        self.migrate(self.env.cr, "17.0.4.1.6")
         self.assertEqual(
             Structured.search_count([("event_id", "=", self.event.id)]),
             2,
