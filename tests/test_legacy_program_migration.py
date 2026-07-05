@@ -24,6 +24,7 @@ post-migrate.py НІКОЛИ природно не запускається ту
    поля 1:1 (S1-4); повторний виклик migrate() НЕ дублює рядки (ir_model_data
    мітки); і transplant-спроможність (state-machine на дні) реально працює.
 """
+
 import importlib.util
 from datetime import timedelta
 
@@ -135,12 +136,21 @@ class TestLegacyProgramMigration(TransactionCase):
             RETURNING id
             """,
             (
-                self.event.id, f"Dzień QA {plan_variant}",
+                self.event.id,
+                f"Dzień QA {plan_variant}",
                 fields.Date.to_date("2026-08-01") + timedelta(days=day_offset),
-                9.0, 18.0, plan_variant,
-                "<p>Opis wykonania QA</p>", "Brak incydentów", 15, True,
-                theme, "sun" if plan_variant == "a" else "rain", "draft",
-                uid, uid,
+                9.0,
+                18.0,
+                plan_variant,
+                "<p>Opis wykonania QA</p>",
+                "Brak incydentów",
+                15,
+                True,
+                theme,
+                "sun" if plan_variant == "a" else "rain",
+                "draft",
+                uid,
+                uid,
             ),
         )
         program_id = cr.fetchone()[0]
@@ -158,11 +168,18 @@ class TestLegacyProgramMigration(TransactionCase):
             RETURNING id
             """,
             (
-                program_id, activity["time_start"], activity["time_end"],
-                activity["name"], activity["location"],
-                self.admin_user.partner_id.id, activity["activity_type"],
-                activity["risk_water"], activity["risk_heights"], activity["notes"],
-                uid, uid,
+                program_id,
+                activity["time_start"],
+                activity["time_end"],
+                activity["name"],
+                activity["location"],
+                self.admin_user.partner_id.id,
+                activity["activity_type"],
+                activity["risk_water"],
+                activity["risk_heights"],
+                activity["notes"],
+                uid,
+                uid,
             ),
         )
         activity_id = cr.fetchone()[0]
@@ -171,19 +188,33 @@ class TestLegacyProgramMigration(TransactionCase):
     def test_migration_lossless_and_idempotent(self):
         self._create_legacy_schema()
         prog_a_id, act_a_id = self._insert_legacy_program(
-            "a", 0, "Piratów",
+            "a",
+            0,
+            "Piratów",
             {
-                "time_start": 10.0, "time_end": 11.5, "name": "Kąpiel w jeziorze",
-                "location": "Jezioro", "activity_type": "sport",
-                "risk_water": True, "risk_heights": False, "notes": "Uwaga na dzieci",
+                "time_start": 10.0,
+                "time_end": 11.5,
+                "name": "Kąpiel w jeziorze",
+                "location": "Jezioro",
+                "activity_type": "sport",
+                "risk_water": True,
+                "risk_heights": False,
+                "notes": "Uwaga na dzieci",
             },
         )
         prog_b_id, act_b_id = self._insert_legacy_program(
-            "b", 0, "Piratów (deszcz)",
+            "b",
+            0,
+            "Piratów (deszcz)",
             {
-                "time_start": 10.0, "time_end": 11.0, "name": "Gry planszowe",
-                "location": "Świetlica", "activity_type": "rest",
-                "risk_water": False, "risk_heights": False, "notes": "Sala B",
+                "time_start": 10.0,
+                "time_end": 11.0,
+                "name": "Gry planszowe",
+                "location": "Świetlica",
+                "activity_type": "rest",
+                "risk_water": False,
+                "risk_heights": False,
+                "notes": "Sala B",
             },
         )
 
@@ -233,11 +264,14 @@ class TestLegacyProgramMigration(TransactionCase):
         # ── ідемпотентність: 2-й прогін НЕ дублює жодного рядка ──
         self.migrate(self.env.cr, "17.0.4.1.5")
         self.assertEqual(
-            Structured.search_count([("event_id", "=", self.event.id)]), 2,
+            Structured.search_count([("event_id", "=", self.event.id)]),
+            2,
             "повторний migrate() не має плодити нові camp.program.structured",
         )
         self.assertEqual(len(sunny.day_ids), 1, "повторний migrate() не дублює дні")
-        self.assertEqual(len(sunny.day_ids.activity_line_ids), 1, "повторний migrate() не дублює лінії")
+        self.assertEqual(
+            len(sunny.day_ids.activity_line_ids), 1, "повторний migrate() не дублює лінії"
+        )
 
         # ── перенесена здатність (state-machine) реально працює на keeper ──
         self.assertEqual(day_a.state, "draft")

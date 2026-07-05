@@ -2407,7 +2407,11 @@ class CampProgramDay(models.Model):
     @api.constrains("exec_start_time", "exec_end_time")
     def _check_exec_time_order(self):
         for rec in self:
-            if rec.exec_start_time and rec.exec_end_time and rec.exec_end_time <= rec.exec_start_time:
+            if (
+                rec.exec_start_time
+                and rec.exec_end_time
+                and rec.exec_end_time <= rec.exec_start_time
+            ):
                 raise ValidationError(
                     _(
                         "End time must be later than start time on day '%(name)s'.",
