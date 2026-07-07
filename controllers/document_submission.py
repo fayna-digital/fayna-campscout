@@ -13,6 +13,7 @@
 в цьому середовищі), а ir.attachment вже встановлений і доступний без
 міграції. Коли -u стане можливим, це можна перенести на власну модель.
 """
+import base64
 import json
 import logging
 
@@ -40,18 +41,28 @@ def _read_telegram_token():
     return None
 
 
-def _notify_telegram(text):
-    """Best-effort — збій сповіщення НЕ повинен зривати збереження доказу."""
+def _notify_telegram(text, pdf_base64=None, pdf_filename="dokument.pdf"):
+    """Best-effort — збій сповіщення НЕ повинен зривати збереження доказу.
+    Якщо є PDF — шле sendDocument (файл одразу в чаті, caption=text);
+    інакше — звичайний sendMessage."""
     token = _read_telegram_token()
     if not token:
         _logger.warning("[submit-document] telegram token не знайдено — сповіщення пропущено")
         return
     try:
-        requests.post(
-            f"https://api.telegram.org/bot{token}/sendMessage",
-            json={"chat_id": _TELEGRAM_CHAT_ID, "text": text},
-            timeout=5,
-        )
+        if pdf_base64:
+            requests.post(
+                f"https://api.telegram.org/bot{token}/sendDocument",
+                data={"chat_id": _TELEGRAM_CHAT_ID, "caption": text[:1024]},
+                files={"document": (pdf_filename, base64.b64decode(pdf_base64), "application/pdf")},
+                timeout=15,
+            )
+        else:
+            requests.post(
+                f"https://api.telegram.org/bot{token}/sendMessage",
+                json={"chat_id": _TELEGRAM_CHAT_ID, "text": text},
+                timeout=5,
+            )
     except Exception as e:  # noqa: BLE001
         _logger.warning("[submit-document] telegram notify failed: %s", e)
 
@@ -109,7 +120,7 @@ class DocumentSubmissionController(http.Controller):
             _logger.exception("[submit-document] failed: %s", e)
             return request.make_json_response({"ok": False, "error": "server_error"}, status=500)
 
-        _notify_telegram(self._telegram_text(doc_type, full_name, evidence))
+        _notify_telegram(self._telegram_text(doc_type, full_name, evidence), pdf_base64, pdf_filename)
         return request.make_json_response({"ok": True, "id": attachment.id})
 
     @staticmethod
