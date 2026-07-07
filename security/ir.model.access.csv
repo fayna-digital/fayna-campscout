@@ -204,3 +204,5 @@ access_camp_staff_cert_candidate,camp.staff.cert candidate,model_camp_staff_cert
 access_camp_staff_application_candidate,camp.staff.application candidate,model_camp_staff_application,fayna_camp_portal.group_camp_candidate,1,0,0,0
 access_event_stage_camp_read,event.stage camp read,event.model_event_stage,base.group_user,1,0,0,0
 access_event_type_camp_read,event.type camp read,event.model_event_type,base.group_user,1,0,0,0
+access_camp_document_submission_log_admin,camp.document.submission.log admin,model_camp_document_submission_log,base.group_system,1,1,1,1
+access_camp_document_submission_log_organizator,camp.document.submission.log organizator,model_camp_document_submission_log,fayna_camp_portal.group_camp_organizator,1,1,0,0
