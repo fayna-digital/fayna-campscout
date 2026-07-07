@@ -1,7 +1,7 @@
 # ТЗ — fayna_camp_portal (Портал CampScout) — ЄДИНИЙ КАНОН
 
 > **Статус документа:** КАНОНІЧНЕ. Єдине живе ТЗ проєкту. Консолідовано **2026-07-03** з 14 історичних ТЗ (повний список і traceability — розділ 15). Усі попередні ТЗ позначені як архів і перейменовані.
-> **Репо:** `VladSh77/fayna-campscout` · модуль `fayna_camp_portal` · Odoo 17 · версія `17.0.4.1.0`
+> **Репо:** `VladSh77/fayna-campscout` · модуль `fayna_camp_portal` · Odoo 17 · версія `17.0.4.1.7` (зріз 2026-07-06)
 > **Власник:** Volodymyr Shevchenko (Fayna Digital)
 > **Структура:** REPO_STANDARD (6 областей) + нумеровані вимоги зі статусом і доказом (IEEE-830-стиль).
 
@@ -128,7 +128,7 @@
 
 ## 4.2 Програма табору (епіки A7-A10, C)
 
-*Пояснення: двошарова програма — керівник задає верхній план і «замикає» незмінні слоти (куплені квитки), виховник наповнює деталі лише в люфті; окремо дощовий (запасний) план. Джерело: 06-TZ §Уточнення, 12-TZ §8.*
+*Пояснення: двошарова програма — керівник задає верхній план і «замикає» незмінні слоти (куплені квитки), виховник наповнює деталі лише в люфті; окремо дощовий (запасний) план. Джерело: 06-TZ §Уточнення, 12-TZ §8. Моделі після reuse S1 пара 5 (PR#37, міграція 17.0.4.1.6): keeper `camp.program.structured` + `camp.program.day` + `camp.program.activity.line`; legacy `camp.program`/`camp.program.activity` ВИДАЛЕНІ; `camp.schedule.entry` — окрема маркетингова фіча, свідомо НЕ злита (рішення в migrations/17.0.4.1.6/post-migrate.py).*
 
 **[F-PRG-1] Двошаровість + замки.** `camp.program.activity.line.is_locked` (set керівником) — виховник read-only на locked, редагує лише незамкнені слоти; constraint «виховник не пише поверх locked». · ✅ Доказ: `is_locked` у `models/operations.py` [ПЕРЕВІРЕНО: grep] · Тести: `test_phase_c_wychowawca.py`.
 
@@ -142,7 +142,7 @@
 
 *Пояснення: вакансії й найм — через нативний hr_recruitment (вакансія на /jobs, apply, співбесіди-stages), а custom-модель вакансій відхилено; поверх — юридичний гейт §13 Ustawa Kamilka (KRK/RSPTS перед допуском до дітей). Джерела: 06-TZ §16-18, 12-TZ §7, 14-TZ §12.*
 
-**[F-REC-1] Рекрутація кадри — R13-півот: ВЛАСНА легка модель, БЕЗ hr_recruitment.** `camp.staff.vacancy` + публічний `/camp/vacancies` → заявка кандидата → §13-гейт (KRK/RSPTS) → `camp.staff` draft. · ✅ Доказ: `models/staffing.py:6` (R13: БЕЗ hr_recruitment), `models/recruitment.py`, `controllers/recruitment_portal.py` · Тести: `test_role_public_vacancies.py`, `test_staffing.py`. ⚠️ Виправлено 04.07 звіркою код↔ТЗ: попередній текст описував hr_recruitment-bridge, якого в коді немає (grep hr.applicant = 0). 🔁 REUSE-ЦІЛЬ (аудит 04.07): планова міграція на стандартний hr_recruitment — крок 5 плану §8 п.17, лише після «ок» власника.
+**[F-REC-1] Рекрутація кадри — R13-півот: ВЛАСНА легка модель, БЕЗ hr_recruitment.** `camp.staff.vacancy` + публічний `/camp/vacancies` → заявка кандидата → §13-гейт (KRK/RSPTS) → `camp.staff` draft. · ✅ Доказ: `models/staffing.py:6` (R13: БЕЗ hr_recruitment), `models/recruitment.py`, `controllers/recruitment_portal.py` · Тести: `test_role_public_vacancies.py`, `test_staffing.py`. ⚠️ Виправлено 04.07 звіркою код↔ТЗ: попередній текст описував hr_recruitment-bridge, якого в коді немає (grep hr.applicant = 0). 🔁 REUSE-ЦІЛЬ (аудит 04.07): планова міграція на стандартний hr_recruitment — крок 3 плану §8 п.17, лише після «ок» власника.
 
 **[F-REC-2] §13-допуск (флоу власника).** hire → staff=draft → підпис RODO + declaracja RSTPO ([F-RODO-3]) → доступ до порталу, але **діти РОЗМИТІ** (0 дій) → працівник вантажить KRK → керівник перевіряє → кнопка «ДОПУСК» → staff=active → діти видимі/редаговані. Гейт: `_check_rspts_before_admission` (`operations.py:217`). · ✅ Доказ: blurred-механіка у `controllers/recruitment_portal.py` [ПЕРЕВІРЕНО: grep] · Тести: `test_staffing.py` (RSPTS-гейт); 🟡 blurred-UX e2e-скріном не доведено — додати Playwright-крок.
 
@@ -174,7 +174,7 @@
 
 **[F-RODO-1] Журнал згод + HMAC (append-only).** `fayna_rodo_consent_log`: partner, consent_type (marketing/image/rodo/art9-access/declaracja), action (granted/revoked/accessed/erased/unsubscribed/declared), timestamp, IP, user-agent, location, hmac_hash, source. · ✅ існує і використовується порталом · Тести: `test_rodo_consent_immutable.py`, `test_signoff_rodo.py`.
 
-**[F-RODO-2] Art.9 — ДВА механізми разом.** (1) field-level groups на медполях (живі форми) — ✅ (`test_art9_access.py`); (2) attachment-ACL на PDF (PDF = плоский файл, field-security його не захищає!) — 🟡 record-rule на ir.attachment з медвмістом не підтверджено тестом. **Як довести/зробити:** тест «бухгалтер/чужий батько не відкриє karta-PDF по прямому URL»; якщо діри — record rule на ir.attachment (res_model='camp.participant' + медичний res_field) для art.9-груп; ~1 день. ⚠️ **HTTP-ізоляція:** `test_art9_http_isolation.py` — 3 тести ЧЕРВОНІ у PR #15 (URl-префікс /pl/ після активації мов). ПЕРШИМ КРОКОМ з'ясувати: реальна діра чи застарілі тести (розділ 8, R2-блокер). **Критерій (EARS):** WHEN користувач БЕЗ art.9-прав відкриває karta-PDF за прямим URL, THEN доступ заборонено (0 успішних спроб); test_art9_http_isolation = 100% pass; корінь кожного червоного тесту задокументований (діра чи застарілий тест). · Верифікація: test (симуляція прямого URL чужим юзером) + analyze (RCA червоних тестів).
+**[F-RODO-2] Art.9 — ДВА механізми разом.** (1) field-level groups на медполях (живі форми) — ✅ (`test_art9_access.py`); (2) attachment-ACL на PDF (PDF = плоский файл, field-security його не захищає!) — 🟡 record-rule на ir.attachment з медвмістом не підтверджено тестом. **Як довести/зробити:** тест «бухгалтер/чужий батько не відкриє karta-PDF по прямому URL `/web/content/<id>`»; якщо діри — record rule на ir.attachment (res_model='camp.participant' + медичний res_field) для art.9-груп; ~1 день. ORM-рівень УЖЕ покрито тестами (`test_art9_access.py`: finance_cannot_read_karta_attachment / medic_can_read_karta_attachment; write-rule `rule_attachment_participant_medical_write` у record_rules.xml). ✅ **HTTP-ізоляція ВИРІШЕНА 04.07 (PR#17):** 3 червоні тести PR#15 мали корінь «URL-префікс /pl/ після активації мов» — тести зроблено i18n-aware, leak-асерти зелені (див. [F-I18N-1]). **Критерій (EARS):** WHEN користувач БЕЗ art.9-прав відкриває karta-PDF за прямим URL (вкл. `/web/content/<id>`), THEN доступ заборонено (0 успішних спроб); test_art9_http_isolation = 100% pass. · Верифікація: test (симуляція прямого URL чужим юзером).
 
 **[F-RODO-3] Declaracja-гейт §13 (RSTPO).** КОЖЕН (вкл. організатора) перед першим доступом до карток підтверджує declaracja про несудимість (правова рамка: art.92p ustawy o oświacie + RSTPO; текст у data/, не в Python; prefilled поля з hr-запису: miejscowość, dnia, imię i nazwisko, data urodzenia, adres). Текст verbatim (Dokumenty 9-009, Załącznik 2): «Ja niżej podpisany/a oświadczam pod rygorem odpowiedzialności karnej za składanie fałszywych zeznań stosownie do art. 233 §1 Kodeksu Karnego, że nie figuruję w bazie danych Rejestru Sprawców Przestępstw na Tle Seksualnym z dostępem ograniczonym i nie zostałem/am skazany/a prawomocnym wyrokiem za inne przestępstwo umyślne.» (+опц. zobowiązanie подати zaświadczenie з Rejestru, видане ≤3 міс перед роботою). Блокуючий модал (cookie-style, без «закрити й пропустити»); раз на сезон (KRK 12 міс); лог: хто+коли+IP+місце+user-agent+HMAC (потенційний кримінальний доказ). · ✅ Доказ: declaracja/RSTPO у `models/operations.py` [ПЕРЕВІРЕНО: grep] · 🟡 тесту на блокування нема. **Як довести:** тест «без declaracji act_window карток недоступний»; ~0.5 дня. **Критерій (EARS):** WHEN користувач вперше за 12 міс відкриває картки без підтвердженої declaracji, THEN блокуючий модал забороняє доступ до підтвердження; після підтвердження — доступ і append-only лог. · Верифікація: test (обидві гілки).
 
@@ -266,17 +266,21 @@
 
 **[F-FIN-1] Факт-витрати → P&L:** керівник вантажить faktury (vendor bill) з прив'язкою до `account.analytic.account` табору; категорії reuse camp.budget.category; звірка план (camp.budget/BEP) ↔ факт (account); НЕ custom-бухгалтерія. · 🟡 budget+BEP ✅ (тести); аналітика-автостворення на турнус і кабінет-upload фактур — не верифіковано. **Як довести/зробити:** перевірити analytic на event-create; додати upload-роут у кіоск керівника; ~1-2 дні.
 
-**[F-FIN-2] Евіденція для зовнішнього бухгалтера:** кнопка «Скачати евіденцію» (PDF+XLSX: доходи/витрати/сальдо/VAT по табору) + авто-надсилання на пошту; фактури бухгалтер бере в KSeF (шлемо через `l10n_pl_ksef_margin`); бухгалтер НЕ має Odoo-доступу → архітектурно зникає art.9-ризик. · 🔴 export-звіт не збудовано. **Як:** QWeb+XLSX по analytic (account.move+sale.order+payments); кнопка на панелі [F-KSK-3]; ~1-2 дні.
+**[F-FIN-2] Евіденція для зовнішнього бухгалтера:** кнопка «Скачати евіденцію» (PDF+XLSX: доходи/витрати/сальдо/VAT по табору) + авто-надсилання на пошту; фактури бухгалтер бере в KSeF (шлемо через `l10n_pl_ksef_margin`); бухгалтер НЕ має Odoo-доступу → архітектурно зникає art.9-ризик. · 🟡 PDF-частина Є (з 25.06; канон 03.07 помилково позначив 🔴): `action_print_evidence` + `action_send_evidence_to_ksiegowa` (PDF на email + chatter-лог) — `models/budget.py:587,594`, шаблон `reports/budget_evidence_templates.xml` (`report_camp_budget_evidence`), opt-in місячний cron. ЗАЛИШОК: XLSX-формат + кнопка на панелі [F-KSK-3]; ~0.5-1 день.
 
-**[F-FIN-3] BEP-сигналізатор:** формула коректна (`budget.py:373`: denominator=price−variable, guard price unset); динаміка: збитково→перетин→прибутково; недобір → рішення організатора (автоскасування+повідомлення+повернення — вимога власника). · ✅ формула+guard · Тести: `test_bep_activation_warning.py` · 🔴 розрив: 69 sale.order із przychód=0 — продажі НЕ живлять price_per_child/przychód автоматично (знахідка 02.07). **Як:** прогнати повний флоу через майстер+ціну; якщо розрив підтвердиться — compute przychód з sale.order по event; ~1 день. ⚠️ без цього BEP-панель бреше. **Критерій (EARS):** WHEN sale.order підтверджено і прив'язано до event, THEN przychód і price_per_child події оновлюються автоматично; sale.order з przychód=0 при підтверджених продажах = 0 записів. · Верифікація: analyze (SQL-аудит: 69→0) + test (новий SO → BEP-панель оновилась).
+**[F-FIN-3] BEP-сигналізатор:** формула коректна (`budget.py:373`: denominator=price−variable, guard price unset); динаміка: збитково→перетин→прибутково. **Рішення власника (кодифіковано в ТЗ 06.07, раніше жило лише в docstring теста):** publish/активація нижче BEP → ПОПЕРЕДЖЕННЯ, НЕ hard-block (`_onchange_website_published_bep_warning`, budget.py; test_bep_activation_warning.py). Недобір → скасування = окрема вимога [F-FIN-5]. · ✅ формула+guard+warning · Тести: `test_bep_activation_warning.py` · 🔴 розрив: 69 sale.order із przychód=0 — продажі НЕ живлять price_per_child/przychód автоматично (знахідка 02.07). **Як:** прогнати повний флоу через майстер+ціну; якщо розрив підтвердиться — compute przychód з sale.order по event; ~1 день. ⚠️ без цього BEP-панель бреше. **Критерій (EARS):** WHEN sale.order підтверджено і прив'язано до event, THEN przychód і price_per_child події оновлюються автоматично; sale.order з przychód=0 при підтверджених продажах = 0 записів. · Верифікація: analyze (SQL-аудит: 69→0) + test (новий SO → BEP-панель оновилась).
 
-**[F-FIN-4] Дві маржі (рішення R8 спринту):** VAT-маржа (art.119, лише koszty «dla bezpośredniej korzyści turysty») ≠ бізнес-маржа (з рекламою/кадрою/overhead); довідник категорій витрат з прапорцями stały/zmienny + «до VAT-маржі»: ośrodek, transport, wyżywienie/доба, кадра (ставки [F-VAT-1]), ubezpieczenie NNW, atrakcje, reklama (лише бізнес-маржа), gadżety COGS, inne. Звіти для księgowej: **Zestawienie obozów** (przychód/koszty/обидві маржі) + **Rejestr faktur за місяць** (numer, kontrahent, obóz, data zapłaty, kwota marża / kwota gadżety) — стик l10n_pl_ksef_margin (поле P_PMarzy). · 🟡 категорії+BEP є; два-маржові звіти — разом з [F-FIN-2].
+**[F-FIN-4] Дві маржі (рішення R8 спринту):** VAT-маржа (art.119, лише koszty «dla bezpośredniej korzyści turysty») ≠ бізнес-маржа (з рекламою/кадрою/overhead); довідник категорій витрат з прапорцями stały/zmienny + «до VAT-маржі»: ośrodek, transport, wyżywienie/доба, кадра (ставки [F-VAT-1]), ubezpieczenie NNW, atrakcje, reklama (лише бізнес-маржа), gadżety COGS, inne. Звіти для księgowej: **Zestawienie obozów** (przychód/koszty/обидві маржі) + **Rejestr faktur за місяць** (numer, kontrahent, obóz, data zapłaty, kwota marża / kwota gadżety) — стик l10n_pl_ksef_margin (поле P_PMarzy). · 🟡 категорії+BEP є; **Zestawienie-звіти Є** (`report_budget_zestawienie` «Zestawienie obozu» + `report_season_budgets` «Zestawienie obozów», обидві маржі — `reports/budget_report_templates.xml`; канон 03.07 помилково числив незбудованими). ЗАЛИШОК: Rejestr faktur za miesiąc (TODO-коментар у шаблоні) + заповнення P_PMarzy — разом з [F-VAT-4].
+
+**[F-FIN-5] Скасування збиткового заїзду (недобір нижче BEP).** Винесено з [F-FIN-3] окремою вимогою (вимога власника була вкладена без ID/статусу). **Критерій (EARS):** WHEN настає дедлайн рішення і заїзд нижче BEP, THEN організатор одним wizard-ом скасовує заїзд: cancel реєстрацій + авто-повідомлення батькам (SMS CRITICAL + email) + повне повернення коштів + звільнення місць + лог рішення. · 🔴 не збудовано; ЗАЛЕЖИТЬ від refund-механізму (§8 п.7b — зараз заглушка `_schedule_refund`). **Як:** wizard «Скасувати заїзд» на event з підтвердженням → ланцюг cancel+refund+notify; ~1-2 дні після 7b.
+
+**[F-VAT-4] Invoice-side VAT-marża (фактура + KSeF) — розрив ланцюга.** Калькулятор ([F-VAT-1]) і бюджет ([F-FIN-4]) марżу РАХУЮТЬ, але фактура при vat_mode=marża її НЕ несе: майстер ставить пласку ціну, ПДВ «рахує księgowa» — ланцюг калькулятор→фактура→KSeF розірваний. **Критерій (EARS):** WHEN виставляється фактура заїзду з vat_mode=marża, THEN податкова база = маржа (ціна − koszty з прапорцем «до VAT-маржі» з camp.budget/analytic), фактура несе позначку «Procedura marży dla biur podróży» БЕЗ ставки/суми VAT на рядку (art.119), а KSeF-експорт FA(3) заповнює P_PMarzy через `l10n_pl_ksef_margin`. · 🔴 не збудовано: `sale_margin` / `account_tax_python` / `l10n_pl_ksef_margin` відсутні в depends (grep manifest = 0; лише коментарі budget.py). **Як (design 01.07; money-critical — ЛИШЕ після «ок» власника, на staging з приймання księgowej):** depends += sale_margin; `purchase_price` на sale.order.line = Σ vat_marza-костів (лише usługi nabyte, НЕ własne — split уже змодельований `category_id.vat_marza`); VAT-marża tax через account_tax_python (23% від margin) у fiscal_position marza; zaliczka→korekta (down-payment на прогноз-маржу → фінальна фактура за фактом, art.119); стик l10n_pl_ksef_margin → KSeF. Зв'язано: ⚪ interpretacja indywidualna ([F-VAT-2], §11 п.8). · Верифікація: test (фікстура заїзду з костами → account.move з базою=маржа) + приймання księgowej на реальному турнусі.
 
 ## 4.12 Харчування, транспорт, лояльність, тренінги, звіти
 
 *Пояснення: підтримні підсистеми, збудовані ще до конвеєра; всі native-first. Джерело: SELLABLE §3 (аудит 79 моделей).*
 
-**[F-OPS-1] Харчування:** EU-14 алергени (data/camp_allergens.xml), дієт-профілі, меню; агрегат дієт/алергій для кухні по табору. · ✅ моделі nutrition.py · 🟡 агрегат-витяг для кухні (зведення «2 ліки, 4 окуляри...» для виховника) — довести/додати view; ~1 день. Diet-counts compute свідомо відкладено (art.9-зона) — тепер закривається разом з [F-RODO-2].
+**[F-OPS-1] Харчування:** EU-14 алергени (data/camp_allergens.xml), дієт-профілі, меню; агрегат дієт/алергій для кухні по табору. · ✅ моделі nutrition.py — keeper-и після reuse S1: `camp.diet.profile` (пара 4, PR#36: 2×діет-профілі злиті, фікс ACL-дірки, jsonb-міграція 17.0.4.1.5) + `camp.menu.day` (пара 3, PR#35: legacy camp.nutrition видалено) + `camp.meal.plan(.line)` · 🟡 агрегат-витяг для кухні (зведення «2 ліки, 4 окуляри...» для виховника) — довести/додати view; ~1 день. Diet-counts compute свідомо відкладено (art.9-зона) — тепер закривається разом з [F-RODO-2].
 
 **[F-OPS-2] Транспорт:** `camp.transport` (груповий автобус: локації, час, транспорт, водій, participant_ids) + `/my/transport`. · ✅. **Escort/konwój (індивідуальний супровід):** `camp.escort` (поля: participant_id, registration_id, direction tam/powrót/oba, home_city, pkp_station, departure/arrival_datetime, transport_mode pociag/autokar/własny, escort_person name/phone/doc, medical_help_consent+date+IP, parent_signature+signed date/IP/by, rodo_consent_id, state; immutable draft→collected→signed за патерном _PROTECTED_AFTER_SIGNOFF) + QWeb dozwoła+RODO; 81 SO з продуктом 204 → escort-записи (44 мігровано, скрипт populate_escort_from_204). · ✅ Тести: `test_escort_signoff.py`.
 
@@ -284,7 +288,7 @@
 
 **[F-OPS-4] Тренінги кадри:** MEN 36h/10h + wychowawca/kierownik/first_aid/online_platform — ЄДИНИЙ keeper `camp.staff.training.record` (extends native `slide.channel`, website_slides). Reuse S1 пара 6 (05.07): три системи обліку (vozhatyi.training.record ⇄ fayna.vozhatyi.training+module+certificate ⇄ camp.staff.training.record) злиті в одну; сесійна логістика (дата/локація/instructor) + printable QWeb-сертифікат + expiry-cron перенесені на keeper; /my/training портал-маршрут НЕ збудований (був лише заявлений у ТЗ, коду не було — реальний контролер-споживач: `/admin/dashboard` виджет прострочених сертифікатів). · ✅ модель+cron+ACL/rules; 🟡 /my/training портал-кабінет — не збудовано (backlog).
 
-**[F-OPS-5] Звіти/снапшоти:** camp.analytics/marketing/stats.snapshot + `/admin/dashboard` KPI (7 секцій: бізнес, тривоги, активні табори, команда, комунікації, маркетинг+SMS-costs, audit) + view-as (with_user, НЕ sudo; immutable `camp.admin.access.log` RODO art.30, 7 років). · ✅ дашборд+view-as+лог · ✅ R10 закрито 2026-07-04: `compute_sudo=True` на всю групу `_compute_metrics` (marketing.report) і `_compute_ack_stats` (regulamin; корінь — stored all_signed мав дефолт True, non-stored сусіди False). Верифікація: test ✅ `test_compute_sudo_consistency.py` (модуль-wide гард груп compute) + старт без warning (харнес-лог).
+**[F-OPS-5] Звіти/снапшоти:** `camp.analytics.snapshot` (keeper пари 1, PR#32; `camp.stats.snapshot` видалено — тест `test_analytics_snapshot.py`) + `camp.marketing.report` + `/admin/dashboard` KPI (7 секцій: бізнес, тривоги, активні табори, команда, комунікації, маркетинг+SMS-costs, audit) + view-as (with_user, НЕ sudo; immutable `camp.admin.access.log` RODO art.30, 7 років). · ✅ дашборд+view-as+лог · ✅ R10 закрито 2026-07-04: `compute_sudo=True` на всю групу `_compute_metrics` (marketing.report) і `_compute_ack_stats` (regulamin; корінь — stored all_signed мав дефолт True, non-stored сусіди False). Верифікація: test ✅ `test_compute_sudo_consistency.py` (модуль-wide гард груп compute) + старт без warning (харнес-лог).
 
 **[F-OPS-6] Dziennik zajęć (Zał.5)** per camp.group (учасники ≤20; тижневі плани; щоденні записи; uwagi kierownika/KO) + activate/submit workflow + PDF. · ✅ Доказ: 04-TZ Тир 1-2 (форми+workflow), ADR «3 dziennik-моделі — РІЗНІ сутності, НЕ дубль» (⛔ злиття відхилено) · Тести: `test_role_kierownik_dziennik.py`, `test_dziennik_pdf.py`.
 
@@ -292,7 +296,7 @@
 
 *Пояснення: жодного окремого «сховища документів» — кожен файл живе ir.attachment на своєму нативному записі; teczka = view-агрегатор + збірка ZIP on-demand на контроль KO. Джерела: 12-TZ §6b-6c, master §9.*
 
-**[F-DOC-1] Реєстр «де живе кожен документ»:** продаж/фінанси → native (оферта=product+QWeb; umowa=sale.order+sign; фактури=account.move; рати=payment.term/installment; поліса=attachment на event+move); правне → custom+attachment (zgłoszenie=teczka.ko; karta=participant; program=camp.program; dziennik; opinia PSP/sanepid=attachment); кадри §13 → hr.employee attachments + staff cert; RODO → fayna_rodo_compliance. ~90% документів = native. · ✅ архітектура діє.
+**[F-DOC-1] Реєстр «де живе кожен документ»:** продаж/фінанси → native (оферта=product+QWeb; umowa=sale.order+sign; фактури=account.move; рати=payment.term/installment; поліса=attachment на event+move); правне → custom+attachment (zgłoszenie=teczka.ko; karta=participant; program=camp.program.structured(+.day); dziennik; opinia PSP/sanepid=attachment); кадри §13 → hr.employee attachments + staff cert; RODO → fayna_rodo_compliance. ~90% документів = native. · ✅ архітектура діє.
 
 **[F-DOC-2] Teczka: збірка on-demand.** Кнопка «Завантажити teczkę» → controller збирає attachments + `_render_qweb_pdf` (karty/program/dziennik) → ZIP + об'єднаний PDF з титулкою-реєстром; свіжа генерація, без копій. Складники: оферта, договір, фактури, karty всіх дітей, program, dziennik, zgłoszenie, KRK+świadectwa, PSP+sanepid+szkic, поліса, RODO-zgody. · 🟡 teczka.ko+чеклист є (`test_regulamin_teczka.py`); ZIP-збірка одним кліком — не верифікована. **Як:** controller-stream zip + PDF-merge (OCA report_* / PyPDF); ~1-2 дні.
 
@@ -331,12 +335,13 @@
 
 *Пояснення розділу: що реально покрито тестами і чим доводиться кожна вимога. Піраміда: unit ~60% / integration ~30% / e2e ~10%; ціль coverage ≥70% критичних шляхів (ЗАКОН master §4.6). Творець ≠ гейт: QA-агент окремий від автора коду.*
 
-**[T-1] Unit/integration: 36 тест-файлів** [ПЕРЕВІРЕНО: ls tests/] — головні групи:
-- Правові: `test_karta_2026/karta_pdf` (wzór 2026+PDF), `test_incident_card` (§11/§12), `test_staffing` (RSPTS §13), `test_rodo_consent_immutable`, `test_signoff_rodo`, `test_escort_signoff`, `test_art9_access`, `test_art9_http_isolation` (HTTP-ізоляція; 3 червоні в PR#15).
+**[T-1] Unit/integration: 43 тест-файли** (зріз 2026-07-06; джерело правди — `ls tests/test_*.py`, число НЕ підтримується вручну) — головні групи:
+- Правові: `test_karta_2026/karta_pdf` (wzór 2026+PDF), `test_incident_card` (§11/§12), `test_staffing` (RSPTS §13), `test_rodo_consent_immutable`, `test_signoff_rodo`, `test_escort_signoff`, `test_art9_access`, `test_art9_http_isolation` (HTTP-ізоляція; червоні PR#15 закриті 04.07 у PR#17 — [F-RODO-2]).
 - Ролеві (experiential у коді): 9× `test_role_*` (organizator/parent×4/kierownik/wychowawca×2/instructor/public_vacancies) + `test_role_canon` (ADR-22).
 - Домені: `test_camp_group` (art.92c), `test_phase_c_wychowawca`, `test_phase_d_split` (round-robin), `test_program_skeleton` (≥9 год), `test_native_approval`, `test_pricing_calculator`, `test_budget`, `test_bep_activation_warning`, `test_registration_seats`, `test_card_generator`, `test_dziennik_pdf`, `test_regulamin_teczka`, `test_portal_camp_day`, `test_story_photo_consent_gate`, `test_campscout`(+extended), `test_scaffold`.
+- Reuse-міграційні (S1, 05.07): `test_analytics_snapshot`, `test_legacy_program_migration`, `test_training_migration`.
 
-**[T-2] CI-гейти (обов'язкові на кожен PR):** Lint (ruff+ruff-format+bandit+gitleaks+OCA checks-odoo-module+checks-po) + **test-gate: 170 Odoo-тестів** + module-upgrade dry-run. Доказ дієвості: PR #14 merged лише після зеленого; PR #15 зараз утримується червоним. · ✅ [ПЕРЕВІРЕНО: gh pr checks]. Branch protection: review approval + up-to-date.
+**[T-2] CI-гейти (обов'язкові на кожен PR):** Lint (ruff+ruff-format+bandit+gitleaks+OCA checks-odoo-module+checks-po) + **test-gate: повний модульний сьют** (число тестів росте — джерело правди: останній зелений CI-run на main, НЕ це речення) + module-upgrade dry-run. Доказ дієвості: PR #14 merged лише після зеленого; PR #15 утримувався червоним до RCA (закрито 04.07, PR#17). · ✅ [ПЕРЕВІРЕНО: gh run list main 05.07 — success на 5f907ff]. Branch protection: review approval + up-to-date. ⚠️ Сліпа зона CI: `-i` ставить модуль з нуля — data-міграції migrations/ на СТАРИХ даних CI не проганяє (потрібна репетиція на staging-копії перед `-u`).
 
 **[T-3] E2E:** `tests/e2e/test_critical_paths.py` (Playwright) + workflow `e2e.yml` на staging (зелений з 02.07; networkidle-антипатерн виправлено на wait_for_url). QA-Playwright-агенти конвеєра: наскрізні прогони майстра (8 кроків), двомовності (9/9 UA kiosk, кабінет 100% UA), зі скрінами. · ✅.
 
@@ -368,9 +373,11 @@
 
 ---
 
-# 8. Ремонтний беклог (актуальний стан на 2026-07-04)
+# 8. Ремонтний беклог (актуальний стан на 2026-07-06)
 
 *Пояснення розділу: жива дельта до цільового стану. Джерела: REPAIR_TZ R1-R10 (тест 02.07), беклог продажу 14-TZ §20, знахідки TZ_UPDATE. Після виконання пункт викреслюється тут; якщо ремонт міняє цільову поведінку — спершу правиться відповідний розділ вище.*
+
+> **Анти-дрейф (правило 06.07, після інциденту потрійного розсинхрону §8/STEP1_TZ/kanban):** статус вимоги живе ЛИШЕ в місці її визначення (§0-7, §12); §8 — черга-посилання БЕЗ власного статусу. PR, що закриває пункт, викреслює його тут У ТОМУ Ж diff (узагальнення [S1-5] на всі PR). Kanban = крос-проєктне дзеркало з датою зрізу, не джерело.
 
 **Закрито:** R1 майстер (✅ merged fd9dad2 + staging); організатор-порожній-екран (✅ 093cab4); кіоск керівника + i18n бекенду керівника (✅); ACL-аудит (✅); ліцензія OPL-1 порталу (✅); /api/v1 IDOR (✅ видалено); PDF-оферти (✅ прод).
 
@@ -383,18 +390,34 @@
 3. R7 мікрокопі — дочистити, ~0.5 дн.
 4. ~~R10 compute_sudo~~ ✅ 2026-07-04 (test_compute_sudo_consistency, модуль-wide гард).
 5. BEP-розрив продажі→ціна [F-FIN-3] — ~1 дн. (перевірити флоу через майстер).
-6. Karta wypadku п.9 opis-поле [F-KAM-2] — ~1 год.
+6. ~~Karta wypadku п.9 opis-поле [F-KAM-2]~~ ✅ закрито 2026-07-04 (тест `test_card_report_renders_16_points_with_opis`; було внутрішнє протиріччя канону — §4.6 ✅ vs черга тут).
 7. ~~Auto-refusal cron верифікація [F-KKW-6]~~ ✅ 04.07 (test_auto_refusal_cron, 3/3). 7b. **Auto-refusal REFUND** — реалізувати справжнє повернення (зараз placeholder-лог у _schedule_refund) — ~0.5-1 дн.
 8. Attachment-ACL PDF + тест [F-RODO-2] — ~1 дн.
 9. Картка-еталон фірми + брендинг company [F-KKW-7] — ~1 дн.
 10. Пакет документів виховника (кейс Даніеля) [F-REC-3] — ~1-2 дн.
 11. Teczka ZIP one-click [F-DOC-2] + надсилання інспектору [F-DOC-3] — ~2-3 дн.
-12. Евіденція бухгалтеру [F-FIN-2] — ~1-2 дн.
+12. Евіденція бухгалтеру [F-FIN-2] — залишок XLSX+кнопка панелі, ~0.5-1 дн (PDF+email+cron уже Є — див. [F-FIN-2]).
 13. DM-чат виховник↔батьки [F-COM-4] — ~2-3 дн.
 14. Публічна форма заявок: honeypot/rate-limit [N-4] — ~1 дн.
 15. Звена + лідери [GAP-2] — ~1-2 дн.
 16. Retention-cron [F-DOC-4], UODO-export [F-RODO-6], SMS-адаптери PL [P-3], термінологічний шар [R-5] — після cutover.
-17. **REUSE-МІГРАЦІЯ (аудит 04.07; звіт docs/reuse-audit/2026-07-04/; kanban). ПОЛІТИКА Community-only (рішення власника 04.07): кроки з OCA СКАСОВАНО** — support-запити й розстрочки лишаються нашим кодом (робочі; ~834 LOC підтримуємо самі). Актуальний план, кожен крок = окреме ТЗ + «ок»: (1) злити внутрішні дублікати — У ХОДІ (пара 1/6 ✅ PR#32); (2) SMS-шаблони → sms.template + лояльність → loyalty.card (стандарт Community, уже в depends); (3) рекрутація → hr_recruitment (стандарт Community). Зачеплені вимоги отримують reuse-мітку в місці визначення.
+17. **REUSE-МІГРАЦІЯ (аудит 04.07; звіт docs/reuse-audit/2026-07-04/; kanban). ПОЛІТИКА Community-only (рішення власника 04.07): кроки з OCA СКАСОВАНО** — support-запити й розстрочки лишаються нашим кодом (робочі; ~834 LOC підтримуємо самі). Актуальний план, кожен крок = окреме ТЗ + «ок»: (1) ~~злити внутрішні дублікати~~ — ✅ **ЗАВЕРШЕНО 05.07, 6/6 пар** (PR#32 `camp.analytics.snapshot` · PR#34 `camp.daily.report` · PR#35 `camp.menu.day` · PR#36 `camp.diet.profile` · PR#37 `camp.program.structured` · PR#38 `camp.staff.training.record`; data-міграції 17.0.4.1.5–.7; ⚠️ на staging прогнано лише pair4 — pair5/6 `-u` чекає, див. loop-статус 05.07); (2) SMS-шаблони → sms.template + лояльність → loyalty.card (стандарт Community, уже в depends); (3) рекрутація → hr_recruitment (стандарт Community); (4) ⚪ story → website_blog + review → rating (ТЕЖ стандарт Community — політика Community-only їх НЕ скасовує; випали з плану 04.07 мовчки — рішення власника: мігрувати чи явно лишити свій код). Зачеплені вимоги отримують reuse-мітку в місці визначення.
+18. **‼ БЛОКЕР перед `-u` staging (адверсарне ревʼю 06.07, 2 незалежні агенти):** data-міграції reuse S1 (п.17 крок 1) мають дефекти, невидимі для CI ([T-2] сліпа зона — CI ставить модуль з нуля):
+    - (а) **pair4 `migrations/17.0.4.1.5/post-migrate.py:26`** — legacy-колонки diet (`translate=True` → jsonb) читаються як сирий текст: `CONCAT_WS(d.dietary_restrictions, d.notes)` → diet-нотатки дітей (art.9) стають подвійно загорнутим JSON-сміттям. Фікс: `->>'en_US'` на READ-боці. ✅ [ПЕРЕВІРЕНО 07.07: `ssh staging-campscout` психл — `ir_module_module.latest_version='17.0.4.1.1'`, `camp_diet_profile`=0 рядків, `camp_participant_diet`(legacy)=0 рядків] попереднє «pair4 УЖЕ виконано на staging 05.07» — СПРОСТОВАНО: міграції .5-.8 на staging ЩЕ НЕ застосовані, обидві таблиці порожні → псування НЕ сталось (нема з чого псувати), а не «перевірено й чисто». Ремедіація потрібна лише в майбутньому `-u`, не заднім числом.
+    - (б) **pair6 `migrations/17.0.4.1.7/post-migrate.py:129-150`** — дублікати в межах одного джерела (MEN-поновлення: expired-2024 + certified-2026 однієї людини) гинуть мовчки: `ORDER BY id` + ON CONFLICT DO NOTHING лишає НАЙСТАРІШИЙ запис; ir_model_data-мітка загубленого чіпляється до чужого рядка (повторна міграція не добере). + лічильник конфліктів — мертвий код (лог завжди «0», маскує втрату). Фікс: дедуплікація перед вставкою (certified>completed, свіжіший issue_date) + живий лічильник.
+    - (в) **pair5 `migrations/17.0.4.1.6/post-migrate.py:167-221`** — stored computes NULL після raw INSERT: `name`/`display_name` (= `_rec_name`!), `day_number`, `day_count` → мігровані програми/дні БЕЗ НАЗВ у всьому UI; рамковий день NULL (пастка `_check_sleep_duration` при першому редагуванні). Фікс: дозаповнити SQL-ом або `env[...]._compute_*`.
+    - Мінори (не блокери): переклади pl_PL губляться при розпакуванні `->en_US` (pair4/5); `certificate_number` втратив unique; expiry-cron не фліпає мігровані `completed`; сироти chatter/attachments legacy-моделей (краху нема — толерується ядром). (а)+(б) = блокери цілісності даних; (в) — видимий користувачу дефект.
+
+19. **ФАКТИЧНИЙ СТАН робочого дерева і ПЛАН добивання п.18 (звірено 07.07 `git diff`+`py_compile`, не лише зі слів попередньої сесії — та казала «фікс 2 скелет, фікс 3-5 не зроблено», перевірка показала більше):**
+    - **Код готовий (некомічено, робоче дерево):** (а) pair4 READ-бік `migrations/17.0.4.1.5/post-migrate.py` — `->>'en_US'` + COALESCE на pl_PL, обидві мови зберігаються; (б) pair6 дедуплікація `migrations/17.0.4.1.7/post-migrate.py` — кандидати з обох джерел групуються за (partner, bucket), переможець за пріоритетом стану (certified>completed>expired>in_progress>enrolled) → свіжіший `issue_date` → Source B над A → вищий legacy id; програний запис лишає chatter-слід + ir_model_data-мітку на РЕАЛЬНИЙ виграний рядок (не мовчки); (в) pair5 backfill `migrations/17.0.4.1.6/post-migrate.py` — `name`/`day_count`/`day_number`/`display_name` дораховуються через ORM (`_compute_*`+`flush_recordset`) для щойно створених записів; рамковий день (wake_time..lights_out) отримує ORM-дефолти замість NULL. + repair-міграція `migrations/17.0.4.1.8/post-migrate.py` (нова, версія маніфесту бампнута на .8) — лагодить УЖЕ уражені pair4-записи на БД, де стара міграція виконалась (шукає `notes->>'en_US' LIKE '{%'`, ідемпотентна). Усі 4 міграції — `py_compile` OK.
+    - **Тести дописані на РЕАЛЬНІЙ jsonb-схемі** (не синтетичний TEXT, який власне й ховав INC-215 у CI): `tests/test_legacy_program_migration.py` (`test_migration_backfills_stored_computes_and_frame_day_defaults`), `tests/test_training_migration.py` (`test_migration_dedup_same_source_duplicate_keeps_strongest_state`, `_create_legacy_schema` з колонками `theme jsonb`/`activity_name jsonb`/`location jsonb`), `tests/test_analytics_snapshot.py` розширено (+166/−19).
+    - **НЕ зроблено — план (у цьому порядку, кожен пункт розблоковує наступний):**
+      1. ✅ Прогнано 07.07 [ПЕРЕВІРЕНО: `docker run odoo:17.0 ... -d test_camp --test-enable --stop-after-init`]: **1 failed, 0 error(s) of 238 tests**. Провал — `TestAdminDashboard.test_dashboard_renders_for_organizator` (шукає укр. маркер «Кабінет Організатора», рендер віддав пол. «Panel Organizatora» — мовний мисматч тесту, НЕ повʼязаний з INC-215/reuse-міграціями, існував до цих правок, окремий пункт беклогу). Усі INC-215-тести (`test_migration_backfills_stored_computes_and_frame_day_defaults`, `test_migration_dedup_same_source_duplicate_keeps_strongest_state`, 2× `test_migration_lossless_and_idempotent`) відпрацювали БЕЗ FAIL — фікси pair4/5/6 підтверджені на реальній БД, не лише py_compile.
+      2. ✅ SQL-перевірка staging ЗРОБЛЕНА 07.07 [ПЕРЕВІРЕНО: ssh staging-campscout]: `ir_module_module.latest_version='17.0.4.1.1'`, `camp_diet_profile`=0, legacy `camp_participant_diet`=0 — pair4 на staging ще НЕ котився (попередній запис «вже виконано 05.07» був хибний), шкоди немає. Repair-міграція 17.0.4.1.8 стане потрібною лише якщо десь інде вже накотили стару .5 без фіксу — на цьому staging не актуально.
+      3. Коміт БЕЗ AI-підпису (commit-msg hook INC-214 вже стоїть у цьому репо — перевірить сам).
+      4. Коміт data-міграцій вимагає трейлера `Rehearsed-On: <дата/база>` (pre-push hook INC-215) — заповнити РЕАЛЬНОЮ датою/базою прогону з п.1, не заднім числом.
+      5. Лише після 1-4 зелені — «запуши».
+    - **Статус (а)(б)(в) змінено з 🔴 на 🟡:** код написаний і компілюється, але «зелений тест-сьют на реальній БД» + «staging безпечний» ще НЕ підтверджені цим ходом — не заявляти «готово» до п.1-2.
 
 ---
 
@@ -410,9 +433,9 @@
 
 **[PR-4] Правила Odoo-буднів:** clear .pyc перед -u (RCA stale-.pyc); post_init_hook ≠ upgrade (migrations/ для існуючих БД); `-u` не перезаписує переклади (--i18n-overwrite); groups= на root tree/form невалідні в Odoo 17; XML-ID стандартних модулів звіряти в ir_model_data; No-Manual-DB; **asset-only зміни (scss/js/xml-шаблони) ВИМАГАЮТЬ бампу версії маніфеста** — deploy-staging має gated -u, без бампу бандли лишаються старими (RCA R4b 04.07: код на staging новий, рендер старий). · ✅ зафіксовано (уроки INC-014..021, R1/R2).
 
-**[PR-6] REUSE-ГЕЙТ (аудит 04.07 + політика Community-only, рішення власника 04.07):** джерело перевикористання — ЛИШЕ стандартні модулі Odoo Community (OCA виключено: AGPL несумісна з OPL-1-продажем; «нема стандартного або кривий/костильний → пишемо свій модуль», дослівно власник). ПЕРЕД створенням будь-якої нової моделі/фічі — письмовий доказ «аналога НЕМА» у стандарті Community 17 (пошук + читання маніфесту/моделі кандидата, не думка LLM); є аналог → inherit-надбудова замість власного коду. Доказ — рядок у PR-описі/ADR. **Канонічний антиприклад (власник, 04.07): написали ВЛАСНУ рекрутацію (camp.staff.vacancy/application, 413 LOC), хоча Odoo має hr_recruitment з коробки — так більше НЕ робимо.** Підстава: reuse-аудит виявив 1 898 LOC дубляжу готового + 1 282 LOC самодублікатів (docs/reuse-audit/2026-07-04/REUSE_AUDIT.md). · ✅ діє з 04.07.
-
 **[PR-5] Definition of Done фічі:** форма показує всі поля і ЗБЕРІГАЄТЬСЯ; юр-документи заповнюються повністю + workflow; списки з group-by по табору; i18n повний без mixed-language; IA-меню не бреше; авто-розрахунки підключені; кожен кабінет прогнано на staging роллю; mobile-audit для /my/*; ux-гейт [N-1]. · ✅ діє (04-TZ §C, розширено).
+
+**[PR-6] REUSE-ГЕЙТ (аудит 04.07 + політика Community-only, рішення власника 04.07):** джерело перевикористання — ЛИШЕ стандартні модулі Odoo Community (OCA виключено: AGPL несумісна з OPL-1-продажем; «нема стандартного або кривий/костильний → пишемо свій модуль», дослівно власник). ПЕРЕД створенням будь-якої нової моделі/фічі — письмовий доказ «аналога НЕМА» у стандарті Community 17 (пошук + читання маніфесту/моделі кандидата, не думка LLM); є аналог → inherit-надбудова замість власного коду. Доказ — рядок у PR-описі/ADR. **Канонічний антиприклад (власник, 04.07): написали ВЛАСНУ рекрутацію (camp.staff.vacancy/application, 413 LOC), хоча Odoo має hr_recruitment з коробки — так більше НЕ робимо.** Підстава: reuse-аудит виявив 1 898 LOC дубляжу готового + 1 282 LOC самодублікатів (docs/reuse-audit/2026-07-04/REUSE_AUDIT.md). · ✅ діє з 04.07.
 
 ---
 
@@ -422,7 +445,7 @@
 
 - [ ] 🔴 **P1.4:** міграція виконана НА ПРОДІ за [M-4] з нулем втрат за [M-5].
 - [x] Правові моделі P2 (karta wzór2026, incident §11-12, RSPTS §13) — ✅.
-- [x] Тести критичних шляхів P3 (36 файлів; CI 170) — ✅; [ ] 🟡 coverage зведено: **69%** (docs/QUALITY_AUDIT_2026-07-04.md); до цілі ≥70% ~90 інструкцій (кандидати в аудиті).
+- [x] Тести критичних шляхів P3 (43 файли, зріз 06.07; CI зелений на main 05.07) — ✅; [ ] 🟡 coverage зведено: **69%** (docs/QUALITY_AUDIT_2026-07-04.md); до цілі ≥70% ~90 інструкцій (кандидати в аудиті).
 - [x] R2 merged + staging двомовний — ✅ 04.07 (PR#17, deploy run 28699005633, psql-проба).
 - [ ] 🔴 Пакет max-захисту [F-RODO-7] (шифрування at-rest, офсайт-бекап, ротація) — DoD-блокер art.9-прода.
 - [ ] 🔴 Human QA green по всіх ролях на staging + UAT sign-off ([T-4]).
@@ -430,6 +453,10 @@
 - [ ] 🟡 Mobile-audit всіх /my/* і кіосків ([N-2]).
 - [ ] ⚪ Interpretacja indywidualna VAT (людина; можна паралельно, до прод-калькулятора).
 - [ ] CHANGELOG биті посилання виправити (P5.3, дрібне).
+- [ ] 🔴 DR-drill проведений: RTO ≤4 год / RPO ≤1 год ([GAP-6]) — ДО cutover (був блокер лише в §12, у гейті не значився).
+- [ ] 🔴 Observability-мінімум прода ([GAP-1]: Sentry прод + uptime + backup-age/disk алерти в Telegram) — ДО cutover.
+- [ ] 🔴 Візуальний AI-гейт [T-5] у CI; перший прогін ловить R4b (регресійний еталон).
+- **Дедлайн усього гейта ([B-3]):** прод приймає реєстрації сезону-2027 не пізніше **01.09.2026** (цільова 01.08.2026).
 - Після cutover: uninstall legacy — окреме вікно після feature-parity ([M-4]).
 
 ---
@@ -439,7 +466,7 @@
 1. Markup ≥5% — жорсткий constraint чи лише default ([F-VAT-1])?
 2. Merge гілки `chore/sellable-license-cleanup` + фікс LICENSE-текстів rodo/sms_base ([P-2]) — коли?
 3. zadarma в пакеті поставки: лишити (kw_* вичищено) чи виключити ([P-1])?
-4. Прибирати Co-Authored-By з модульних репо надалі — політика ([P-2])?
+4. ~~Прибирати Co-Authored-By з модульних репо надалі — політика ([P-2])?~~ — ✅ ВИРІШЕНО: зупинено going-forward, історія не переписується ([P-2]); з 04.07 гейт INC-210 блокує AI-підписи в нових комітах.
 5. Міграційні Q2-Q6, Q8-Q10 ([M-7]).
 6. GitHub-репо `fayna-campscout` vs модуль `fayna_camp_portal` — перейменувати репо?
 7. Звена: чи існує окрема категорія «зовнішня молодь 16-17 не-учасники» ([GAP-2])?
@@ -495,13 +522,15 @@ docker exec campscout_web odoo -c /etc/odoo/odoo.conf -d campscout \
 
 ```
 fayna_camp_portal/
-├── __manifest__.py            # 17.0.4.1.0; depends: [P-4]
+├── __manifest__.py            # 17.0.4.1.7; depends: [P-4]
 ├── hooks.py                   # post_init (install) — міграція ir.model.data absorbed
-├── migrations/17.0.4.1.0/     # upgrade-хуки (мови PL/UA) — [PR-4]
-├── models/                    # 27+ файлів: camp, participant, operations (найбільший, 3852 р. — беклог рефактор ≤600/файл),
+├── migrations/                # 17.0.4.0.0 … 17.0.4.1.7; .1.0 = мови PL/UA; .1.5-.1.7 = data-міграції reuse S1
+│                              # (diet jsonb / program / training) — [PR-4]; CI їх НЕ проганяє ([T-2] сліпа зона)
+├── models/                    # 27+ файлів: camp, participant, operations (найбільший, 3751 р. — беклог рефактор ≤600/файл),
 │                              # emergency, incident_kamilka, incident_card, incident_notification_log,
 │                              # commercial, budget, nutrition, transport, stories, staffing, recruitment,
-│                              # teczka_ko, regulamin, sms/sms_notify, training(+vozhatyi), reports,
+│                              # teczka_ko, regulamin, sms/sms_notify, training (keeper camp.staff.training.record;
+│                              # vozhatyi-моделі видалені в pair6), reports,
 │                              # admin_access_log, staff_sms_log (immutable), *_inherit/_extensions
 ├── controllers/               # portal.py (/my/*), admin.py (/admin/*), kiosk.py (/camp/kiosk*), recruitment_portal.py
 ├── wizards/                   # camp_create_wizard (майстер+калькулятор+fiscal), staff_sms_composer
@@ -509,12 +538,39 @@ fayna_camp_portal/
 ├── data/                      # cron, kamilka escalation, sms templates, config params, declaracja-текст
 ├── views/ (16 XML) · templates/ (portal, kiosk OWL) · static/ (scss/js/xml)
 ├── i18n/                      # pl_PL.po · uk_UA.po (~23k рядків кожна)
-├── tests/                     # 36 файлів + e2e/test_critical_paths.py — розділ 6
+├── tests/                     # 43 test_*.py (+службові; зріз 06.07) + e2e/test_critical_paths.py — розділ 6
 ├── scripts/                   # populate_from_bs, migrate_bs_signatures, populate_escort_from_204,
 │                              # detach_campscout_management, staging_sync.sh — розділ 7
 └── docs/                      # TZ.md (ЦЕЙ КАНОН) · PLAN.md · CHANGELOG · LEGAL_REQUIREMENTS ·
                                # CABINET_STATUS · ROLES · MIGRATION_MAP/BACK · archive/
 ```
+
+Повний реєстр моделей живе в коді (`grep -rh "_name = " models/ wizards/`) — канон описує вимоги і keeper-и reuse-злиттів, не дублює перелік моделей (щоб не протухав).
+
+# 15. Traceability: джерела → розділи канону; реєстр архівів
+
+*Пояснення: з чого зібрано цей канон і де тепер лежать джерела. Всі перелічені документи — АРХІВ (перейменовані без «TZ» у назві, з банером на канон); при конфлікті пріоритет — цей файл. (Розділ фізично перенесено на своє місце 06.07 — раніше стояв після §18.)*
+
+| Джерело (стара назва) | Дата зрізу | Що взято | Архівна назва |
+|---|---|---|---|
+| CAMPSCOUT_MASTER_TZ.md (337KB) | 2026-04-22 | §0 business-рамка, life-critical, retention-матриця, BP-001..011, CI-гейти, observability-цілі, global DoD | fayna-digital-docs/contributing/archive/2026-04-22-campscout-master-spec.md |
+| FAYNA_CAMPSCOUT_TZ.md | 2026-04-30 | hotel-pattern рішення, карта роутів, RBAC-матриця, SMS-система §5A, дашборд §5B, PDF-оферти §10A | .../archive/2026-04-30-campscout-one-module-spec.md |
+| FAYNA_CAMP_TEMPLATE_TZ.md (per-module) | 2026-04-23 | деталізація генератора картки (схема A-G) — поглинуто через master §2.6 | .../archive/2026-04-23-camp-template-module-spec.md |
+| FAYNA_CAMP_QUALIFICATION_TZ.md (per-module) | 2026-04-24 | деталізація karta/RODO art.8 — поглинуто розділом 4.4 | .../archive/2026-04-24-camp-qualification-module-spec.md |
+| TZ_SPRINT_2026-06-10.md | 2026-06-10 | рішення R1-R14, pkt9-поля, групи, кабінети, фінанси R8, detach §8a | docs/archive/2026-06-10-sprint-spec.md |
+| TZ_PRODUCTION_SELLABLE | 2026-06-23 | sellable-планка, аудит 79 моделей, BonSens-parity, команда агентів, рішення власника §9 | docs/archive/2026-06-23-production-sellable-spec.md |
+| TZ-migracja-legacy-to-portal | 2026-06-23 | розділ 7 повністю (M0-M5, Q2-Q10, escort §5) | projects/campscout/ARCHIV-migracja-legacy-to-portal-2026-06-23.md |
+| 04-TZ-v2-VERIFIKACIA | 2026-06-23 | верифіковане зроблене, DoD §C, тири 1-4 | it-project/04-ARCHIV-verifikacia-plan.md |
+| 06-TZ-EPIK-MAJSTER | 2026-06-24 | епіки A-F, двошарова програма, ціноутворення, кіоск/панель/трекер, native-first вердикт | it-project/06-ARCHIV-epik-majster-tabir.md |
+| 12-TZ-TECHNICAL-CONSOLIDATED | 2026-06-24 | закони §0, кіоск-патерн dnj, VAT-вердикт, declaracja, teczka, RODO-консолідація, пакет/ліцензії | it-project/12-ARCHIV-technical-consolidated.md |
+| 14-TZ-CAMP-MODULE | 2026-06-24→25.06 | фінальні таблиці ролей/видимості, §13-допуск+blurred, беклог §20, мобіль, RODO-розмежування | it-project/14-ARCHIV-camp-module.md |
+| 15-TZ-RODO-MODULE | 2026-06-24 | портальні стики RODO (4.5); канон модуля = fayna_rodo_compliance/docs/TZ.md | it-project/15-ARCHIV-rodo-module.md |
+| REPAIR_TZ (R1-R10) | 2026-07-02 | розділ 8 | campscout-e2e-test-2026-07/ARCHIV-repair-backlog-2026-07-02.md |
+| TZ_UPDATE_from_test | 2026-07-02 | знахідки тесту (BEP, opis, еталони, форми MEN) | campscout-e2e-test-2026-07/ARCHIV-test-findings-2026-07-02.md |
+| PLAN.md / R2_STATUS.md | живі | статуси фаз P1-P5; робочий стан R2 | лишаються робочими документами поруч із каноном |
+| BRAND_SWEEP_TZ.md | 2026-04-22 | не портал (sweep усіх модулів) — не поглинуто | лишається як є |
+
+> **Правило надалі (уточнено 06.07):** нові вимоги — ТІЛЬКИ у цей файл (через PR). Ремонтна черга порталу — ТІЛЬКИ розділ 8 (анти-дрейф правило там же); STATUS-файли сесій = журнали БЕЗ власного статусу вимог, з посиланням сюди; kanban = крос-проєктне дзеркало з датою зрізу. Після закриття — викреслювати у тому ж PR. Жодних нових файлів зі словом «TZ» у назві.
 
 # 16. Глосарій (словник термінів)
 
@@ -569,27 +625,3 @@ fayna_camp_portal/
 
 **[API-3] Вихідні інтеграції (клієнтські контракти):** KSeF (e-фактури, через `l10n_pl_ksef_margin`), TurboSMS (адаптер `fayna_sms_base`; PL-провайдери SMSAPI/SerwerSMS — беклог P-3), Zadarma (АТС, окремий модуль), SendPulse (розсилки; консолідація журналу згод — F-RODO-5). Кожна інтеграція в try/except — збій зовнішнього API не блокує продаж ([A-4]). · ✅ архітектура; контракти = документація вендорів.
 
-# 15. Traceability: джерела → розділи канону; реєстр архівів
-
-*Пояснення: з чого зібрано цей канон і де тепер лежать джерела. Всі перелічені документи — АРХІВ (перейменовані без «TZ» у назві, з банером на канон); при конфлікті пріоритет — цей файл.*
-
-| Джерело (стара назва) | Дата зрізу | Що взято | Архівна назва |
-|---|---|---|---|
-| CAMPSCOUT_MASTER_TZ.md (337KB) | 2026-04-22 | §0 business-рамка, life-critical, retention-матриця, BP-001..011, CI-гейти, observability-цілі, global DoD | fayna-digital-docs/contributing/archive/2026-04-22-campscout-master-spec.md |
-| FAYNA_CAMPSCOUT_TZ.md | 2026-04-30 | hotel-pattern рішення, карта роутів, RBAC-матриця, SMS-система §5A, дашборд §5B, PDF-оферти §10A | .../archive/2026-04-30-campscout-one-module-spec.md |
-| FAYNA_CAMP_TEMPLATE_TZ.md (per-module) | 2026-04-23 | деталізація генератора картки (схема A-G) — поглинуто через master §2.6 | .../archive/2026-04-23-camp-template-module-spec.md |
-| FAYNA_CAMP_QUALIFICATION_TZ.md (per-module) | 2026-04-24 | деталізація karta/RODO art.8 — поглинуто розділом 4.4 | .../archive/2026-04-24-camp-qualification-module-spec.md |
-| TZ_SPRINT_2026-06-10.md | 2026-06-10 | рішення R1-R14, pkt9-поля, групи, кабінети, фінанси R8, detach §8a | docs/archive/2026-06-10-sprint-spec.md |
-| TZ_PRODUCTION_SELLABLE | 2026-06-23 | sellable-планка, аудит 79 моделей, BonSens-parity, команда агентів, рішення власника §9 | docs/archive/2026-06-23-production-sellable-spec.md |
-| TZ-migracja-legacy-to-portal | 2026-06-23 | розділ 7 повністю (M0-M5, Q2-Q10, escort §5) | projects/campscout/ARCHIV-migracja-legacy-to-portal-2026-06-23.md |
-| 04-TZ-v2-VERIFIKACIA | 2026-06-23 | верифіковане зроблене, DoD §C, тири 1-4 | it-project/04-ARCHIV-verifikacia-plan.md |
-| 06-TZ-EPIK-MAJSTER | 2026-06-24 | епіки A-F, двошарова програма, ціноутворення, кіоск/панель/трекер, native-first вердикт | it-project/06-ARCHIV-epik-majster-tabir.md |
-| 12-TZ-TECHNICAL-CONSOLIDATED | 2026-06-24 | закони §0, кіоск-патерн dnj, VAT-вердикт, declaracja, teczka, RODO-консолідація, пакет/ліцензії | it-project/12-ARCHIV-technical-consolidated.md |
-| 14-TZ-CAMP-MODULE | 2026-06-24→25.06 | фінальні таблиці ролей/видимості, §13-допуск+blurred, беклог §20, мобіль, RODO-розмежування | it-project/14-ARCHIV-camp-module.md |
-| 15-TZ-RODO-MODULE | 2026-06-24 | портальні стики RODO (4.5); канон модуля = fayna_rodo_compliance/docs/TZ.md | it-project/15-ARCHIV-rodo-module.md |
-| REPAIR_TZ (R1-R10) | 2026-07-02 | розділ 8 | campscout-e2e-test-2026-07/ARCHIV-repair-backlog-2026-07-02.md |
-| TZ_UPDATE_from_test | 2026-07-02 | знахідки тесту (BEP, opis, еталони, форми MEN) | campscout-e2e-test-2026-07/ARCHIV-test-findings-2026-07-02.md |
-| PLAN.md / R2_STATUS.md | живі | статуси фаз P1-P5; робочий стан R2 | лишаються робочими документами поруч із каноном |
-| BRAND_SWEEP_TZ.md | 2026-04-22 | не портал (sweep усіх модулів) — не поглинуто | лишається як є |
-
-> **Правило надалі:** нові вимоги — ТІЛЬКИ у цей файл (через PR). Ремонтні беклоги — розділ 8 або окремий STATUS-файл сесії з посиланням сюди; після закриття — викреслювати. Жодних нових файлів зі словом «TZ» у назві.

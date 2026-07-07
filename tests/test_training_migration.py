@@ -355,3 +355,80 @@ class TestLegacyTrainingMigration(TransactionCase):
         self.assertEqual(
             rec_b.state, "expired", "перенесений запис підпадає під живий expiry-cron keeper'а"
         )
+
+    def test_migration_dedup_same_source_duplicate_keeps_strongest_state(self):
+        """INC-215: MEN 5-річний цикл поновлення — одна людина ЛЕГАЛЬНО має і
+        старий протермінований запис, і новий сертифікований (той самий
+        partner + training_type, той самий Source A). Попередня версія міграції
+        (ORDER BY id + ON CONFLICT DO NOTHING) виживала НАЙСТАРІШИЙ (менший id)
+        і губила свіжий сертифікат мовчки, чіпляючи його ir_model_data-мітку до
+        чужого рядка. Тепер: дедуплікація за пріоритетом стану, програний
+        запис лишає слід у chatter, мітка вказує на реальний виграний рядок."""
+        self._create_legacy_schema()
+        cr = self.env.cr
+        uid = self.env.uid
+        partner = self.env["res.partner"].create({"name": "Wychowawca Odnowienie QA"})
+
+        # старий протермінований запис — вставлений ПЕРШИМ (менший id)
+        cr.execute(
+            """
+            INSERT INTO vozhatyi_training_record
+                (partner_id, training_type, completion_date, certificate_number,
+                 valid_until, notes, state, create_uid, create_date, write_uid, write_date)
+            VALUES (%s, 'first_aid', '2020-01-01', 'FAYNA-FA-OLD',
+                    '2025-01-01', NULL, 'expired', %s, now(), %s, now())
+            RETURNING id
+            """,
+            (partner.id, uid, uid),
+        )
+        old_id = cr.fetchone()[0]
+
+        # новий сертифікований запис — той самий partner+training_type, БІЛЬШИЙ id
+        cr.execute(
+            """
+            INSERT INTO vozhatyi_training_record
+                (partner_id, training_type, completion_date, certificate_number,
+                 valid_until, notes, state, create_uid, create_date, write_uid, write_date)
+            VALUES (%s, 'first_aid', '2026-01-01', 'FAYNA-FA-NEW',
+                    '2031-01-01', NULL, 'completed', %s, now(), %s, now())
+            """,
+            (partner.id, uid, uid),
+        )
+
+        self.migrate(self.env.cr, "17.0.4.1.7")
+
+        Keeper = self.env["camp.staff.training.record"]
+        recs = Keeper.search([("partner_id", "=", partner.id)])
+        self.assertEqual(len(recs), 1, "unique_partner_channel — рівно 1 keeper-запис на дублікат")
+        self.assertEqual(
+            recs.certificate_number,
+            "FAYNA-FA-NEW",
+            "виживає НОВІШИЙ сертифікований запис, не найстаріший (INC-215)",
+        )
+        self.assertEqual(recs.state, "certified")
+
+        merge_notes = recs.message_ids.filtered(lambda m: "Злиті дублікати" in (m.body or ""))
+        self.assertTrue(
+            merge_notes, "програний дублікат має лишити слід у chatter, не зникнути мовчки"
+        )
+        self.assertIn("FAYNA-FA-OLD", merge_notes[0].body)
+
+        cr.execute(
+            "SELECT res_id FROM ir_model_data WHERE module = %s AND name = %s",
+            ("fayna_camp_portal", f"reuse_s1p6_recA_{old_id}"),
+        )
+        marker_res_id = cr.fetchone()[0]
+        self.assertEqual(
+            marker_res_id,
+            recs.id,
+            "мітка програного legacy-запису вказує на реальний виграний рядок",
+        )
+
+        # ідемпотентність: повторний прогін не дублює і не змінює переможця
+        self.migrate(self.env.cr, "17.0.4.1.7")
+        self.assertEqual(
+            Keeper.search_count([("partner_id", "=", partner.id)]),
+            1,
+            "повторний прогін після дедуплікації не плодить нові рядки",
+        )
+        self.assertEqual(recs.certificate_number, "FAYNA-FA-NEW")

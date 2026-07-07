@@ -4,9 +4,16 @@
 
 Рядки стають profile-рядками (participant_id, dietary_restrictions+notes →
 notes), алергени переливаються між M2M-таблицями. Upsert-safe за participant.
-notes на keeper — translate=True (jsonb-колонка від Odoo 16+), тому текст
-пишеться як jsonb_build_object('en_US', ...) — та сама форма, яку дає
-звичайний ORM-запис при активній мові en_US (fields.py _String.convert_to_column).
+
+READ-бік (INC-215): legacy dietary_restrictions і notes мали translate=True
+(звірено з models/nutrition.py на b8768c0^) — у реальній БД це jsonb-колонки,
+тому їх НЕ МОЖНА конкатенувати як текст (вийшов би сирий JSON-рядок).
+Розпаковуємо ->>'en_US' (COALESCE на pl_PL, якщо en відсутній); якщо джерело
+має ключ pl_PL — зберігаємо обидві мови.
+
+WRITE-бік: notes на keeper — теж translate=True (jsonb-колонка від Odoo 16+),
+тому текст пишеться як jsonb_build_object('en_US', ..., ['pl_PL', ...]) — та
+сама форма, яку дає звичайний ORM-запис (fields.py _String.convert_to_column).
 Дані staging-тестові (STEP1_TZ)."""
 import logging
 
@@ -23,14 +30,30 @@ def migrate(cr, version):
         """
         WITH legacy AS (
             SELECT d.*,
-                   NULLIF(CONCAT_WS(E'\n\n', d.dietary_restrictions, d.notes), '') AS merged_notes
+                   NULLIF(CONCAT_WS(E'\n\n',
+                                    COALESCE(d.dietary_restrictions ->> 'en_US',
+                                             d.dietary_restrictions ->> 'pl_PL'),
+                                    COALESCE(d.notes ->> 'en_US',
+                                             d.notes ->> 'pl_PL')), '') AS merged_en,
+                   CASE WHEN (d.dietary_restrictions ? 'pl_PL' OR d.notes ? 'pl_PL')
+                        THEN NULLIF(CONCAT_WS(E'\n\n',
+                                              COALESCE(d.dietary_restrictions ->> 'pl_PL',
+                                                       d.dietary_restrictions ->> 'en_US'),
+                                              COALESCE(d.notes ->> 'pl_PL',
+                                                       d.notes ->> 'en_US')), '')
+                        ELSE NULL
+                   END AS merged_pl
             FROM camp_participant_diet d
         )
         INSERT INTO camp_diet_profile
             (participant_id, notes, display_name, create_uid, create_date, write_uid, write_date)
         SELECT legacy.participant_id,
-               CASE WHEN legacy.merged_notes IS NULL THEN NULL
-                    ELSE jsonb_build_object('en_US', legacy.merged_notes)
+               CASE WHEN legacy.merged_en IS NULL AND legacy.merged_pl IS NULL THEN NULL
+                    WHEN legacy.merged_pl IS NULL
+                         THEN jsonb_build_object('en_US', legacy.merged_en)
+                    ELSE jsonb_build_object(
+                             'en_US', COALESCE(legacy.merged_en, legacy.merged_pl),
+                             'pl_PL', legacy.merged_pl)
                END,
                COALESCE(pt.display_name, 'Unknown'),
                legacy.create_uid, legacy.create_date, legacy.write_uid, legacy.write_date

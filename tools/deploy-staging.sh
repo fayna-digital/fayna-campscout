@@ -47,10 +47,11 @@ ssh -o ConnectTimeout=180 "${SSH_HOST}" "set -euo pipefail
   find . -name __pycache__ -type d -exec rm -rf {} + 2>/dev/null || true
 
   echo '  [d] МІГРАЦІЯ (one-off --stop-after-init) — ГЕЙТ за exit-кодом'
-  if ! docker exec ${CONTAINER} odoo -c ${CONF} -d ${DB} -u ${MODULE} --stop-after-init --no-http \
-       > /tmp/deploy_migrate.log 2>&1; then
-    echo '  ❌ МІГРАЦІЯ ВПАЛА — НЕ свопимо живий сервіс. Останні рядки:'
-    grep -iE 'ERROR|CRITICAL|Traceback|ParseError' /tmp/deploy_migrate.log | tail -8
+  docker exec ${CONTAINER} odoo -c ${CONF} -d ${DB} -u ${MODULE} --stop-after-init --no-http 2>&1 | tee /tmp/deploy_migrate.log
+  MIGRATE_EXIT=\${PIPESTATUS[0]}
+  if [ \$MIGRATE_EXIT -ne 0 ]; then
+    echo '  ❌ МІГРАЦІЯ ВПАЛА (exit='\$MIGRATE_EXIT') — НЕ свопимо живий сервіс. Останні 30 рядків:'
+    tail -30 /tmp/deploy_migrate.log
     echo \"  ↩ ROLLBACK коду на \$PREV\"; git checkout \$PREV >/dev/null 2>&1; sudo chmod -R o+rX .
     exit 1
   fi

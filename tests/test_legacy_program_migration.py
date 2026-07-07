@@ -283,3 +283,61 @@ class TestLegacyProgramMigration(TransactionCase):
         self.assertEqual(day_a.state, "ongoing")
         day_a.action_complete()
         self.assertEqual(day_a.state, "completed")
+
+    def test_migration_backfills_stored_computes_and_frame_day_defaults(self):
+        """INC-215: raw INSERT обходить @api.depends — name/day_count
+        (structured) і day_number/display_name (day) не мають лишитись NULL,
+        а рамковий день (wake_time..rest_duration) мусить отримати ті самі
+        ORM-дефолти, що й звичайний create() (раніше — сирі NULL, пастка на
+        першому ж редагуванні через _check_sleep_duration)."""
+        self._create_legacy_schema()
+        self._insert_legacy_program(
+            "a",
+            0,
+            "Kosmosu",
+            {
+                "time_start": 9.0,
+                "time_end": 10.0,
+                "name": "Poranna gimnastyka",
+                "location": "Plac",
+                "activity_type": "sport",
+                "risk_water": False,
+                "risk_heights": False,
+                "notes": None,
+            },
+        )
+
+        self.migrate(self.env.cr, "17.0.4.1.6")
+
+        structured = self.env["camp.program.structured"].search(
+            [("event_id", "=", self.event.id), ("is_rain_plan", "=", False)]
+        )
+        self.assertEqual(
+            structured.name,
+            f"Program: {self.event.name}",
+            "name (_rec_name!) не має лишитись NULL після raw INSERT",
+        )
+        self.assertEqual(structured.day_count, 1, "day_count має рахуватись від day_ids")
+
+        day = structured.day_ids
+        self.assertEqual(day.day_number, 1, "day_number = (date - event.date_begin).days + 1")
+        self.assertIn("1", day.display_name)
+        self.assertIn("2026-08-01", day.display_name)
+
+        # рамковий день — ORM-дефолти, не NULL
+        self.assertEqual(structured.wake_time, 7.0)
+        self.assertEqual(structured.breakfast, 8.0)
+        self.assertEqual(structured.lunch, 13.0)
+        self.assertEqual(structured.afternoon_rest, 14.0)
+        self.assertEqual(structured.snack, 16.0)
+        self.assertEqual(structured.dinner, 18.0)
+        self.assertEqual(structured.lights_out, 22.0)
+        self.assertEqual(structured.meal_duration, 0.75)
+        self.assertEqual(structured.rest_duration, 1.0)
+        # дефолти валідні — constraint не падає на щойно мігрованому записі
+        structured._check_sleep_duration()
+
+        # ідемпотентність: 2-й прогін не псує вже полагоджені значення
+        self.migrate(self.env.cr, "17.0.4.1.6")
+        self.assertEqual(structured.name, f"Program: {self.event.name}")
+        self.assertEqual(structured.day_count, 1)

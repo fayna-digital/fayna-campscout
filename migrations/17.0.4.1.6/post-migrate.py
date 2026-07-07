@@ -115,6 +115,10 @@ def _migrate_m2m_best_effort(cr, day_id_map, legacy_table, legacy_col_a, legacy_
 
 
 def migrate(cr, version):
+    from odoo import SUPERUSER_ID, api
+
+    env = api.Environment(cr, SUPERUSER_ID, {})
+
     cr.execute("SELECT to_regclass('public.camp_program')")
     if not cr.fetchone()[0]:
         _logger.info("reuse-s1p5: таблиці camp_program немає — нічого переносити")
@@ -136,6 +140,7 @@ def migrate(cr, version):
 
     day_id_map = {}
     structured_cache = {}
+    created_structured_ids = []
     created_structured = 0
     created_days = 0
     reused_days = 0
@@ -179,6 +184,7 @@ def migrate(cr, version):
                 )
                 structured_id = cr.fetchone()[0]
                 created_structured += 1
+                created_structured_ids.append(structured_id)
             structured_cache[key] = structured_id
 
         # theme — translate=True на легасі й на keeper'і (jsonb-колонка Odoo
@@ -327,6 +333,46 @@ def migrate(cr, version):
         keeper_col_a="camp_program_day_id", keeper_col_b="ir_attachment_id",
         label="photo_attachment_ids",
     )
+
+    # ── Backfill stored computes bypassed by raw INSERT (INC-215 fix) ──
+    # Рамковий день (wake_time..rest_duration): default=X на полі — це ORM
+    # Python-default, НЕ SQL DEFAULT колонки, тож raw INSERT лишає їх NULL.
+    # Заповнюємо ЛИШЕ щойно СТВОРЕНИМ цією міграцією structured-записам
+    # (вже існуючі не чіпаємо — вони або мають свої значення, або так само
+    # NULL і будуть виправлені при першому редагуванні формою — не regression
+    # цього фікса).
+    if created_structured_ids:
+        cr.execute(
+            """
+            UPDATE camp_program_structured
+            SET wake_time = COALESCE(wake_time, 7.0),
+                breakfast = COALESCE(breakfast, 8.0),
+                lunch = COALESCE(lunch, 13.0),
+                afternoon_rest = COALESCE(afternoon_rest, 14.0),
+                snack = COALESCE(snack, 16.0),
+                dinner = COALESCE(dinner, 18.0),
+                lights_out = COALESCE(lights_out, 22.0),
+                meal_duration = COALESCE(meal_duration, 0.75),
+                rest_duration = COALESCE(rest_duration, 1.0)
+            WHERE id = ANY(%s)
+            """,
+            (created_structured_ids,),
+        )
+
+    # name (_rec_name!) + day_count на structured; day_number + display_name
+    # (_rec_name!) на day — @api.depends-компьюти, які raw INSERT не рахує.
+    # Рахуємо через ORM (не дублюємо compute-логіку SQL-ом) і явно flush-имо
+    # (post-migrate може завершитись до природного авто-flush транзакції).
+    if structured_cache:
+        structured_recs = env["camp.program.structured"].browse(set(structured_cache.values()))
+        structured_recs._compute_name()
+        structured_recs._compute_day_count()
+        structured_recs.flush_recordset(["name", "day_count"])
+    if day_id_map:
+        day_recs = env["camp.program.day"].browse(set(day_id_map.values()))
+        day_recs._compute_day_number()
+        day_recs._compute_display_name()
+        day_recs.flush_recordset(["day_number", "display_name"])
 
     cr.execute("SELECT count(*) FROM camp_program")
     total_programs = cr.fetchone()[0]
