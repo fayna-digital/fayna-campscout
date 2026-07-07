@@ -13,12 +13,12 @@
 в цьому середовищі), а ir.attachment вже встановлений і доступний без
 міграції. Коли -u стане можливим, це можна перенести на власну модель.
 """
+
 import base64
 import json
 import logging
 
 import requests
-
 from odoo import fields, http
 from odoo.http import request
 
@@ -32,7 +32,7 @@ _TELEGRAM_CHAT_ID = 1216572335  # @FaynaBrain_bot, той самий чат, щ�
 
 def _read_telegram_token():
     try:
-        with open(_TELEGRAM_SECRETS_FILE, "r", encoding="utf-8") as f:
+        with open(_TELEGRAM_SECRETS_FILE, encoding="utf-8") as f:
             for line in f:
                 if line.startswith("TELEGRAM_BOT_TOKEN="):
                     return line.strip().split("=", 1)[1]
@@ -68,7 +68,6 @@ def _notify_telegram(text, pdf_base64=None, pdf_filename="dokument.pdf"):
 
 
 class DocumentSubmissionController(http.Controller):
-
     @http.route(
         ["/camp/submit-document"],
         type="http",
@@ -91,10 +90,15 @@ class DocumentSubmissionController(http.Controller):
         if doc_type not in _ALLOWED_DOC_TYPES or not full_name:
             return request.make_json_response({"ok": False, "error": "missing_fields"}, status=400)
 
-        ip_address = request.httprequest.headers.get("X-Forwarded-For", "").split(",")[0].strip() \
-            or request.httprequest.remote_addr or ""
+        ip_address = (
+            request.httprequest.headers.get("X-Forwarded-For", "").split(",")[0].strip()
+            or request.httprequest.remote_addr
+            or ""
+        )
 
-        pdf_base64 = data.get("pdf_base64")  # чистий base64 без "data:application/pdf;base64," префіксу
+        pdf_base64 = data.get(
+            "pdf_base64"
+        )  # чистий base64 без "data:application/pdf;base64," префіксу
         if pdf_base64 and "," in pdf_base64:
             pdf_base64 = pdf_base64.split(",", 1)[1]
 
@@ -110,17 +114,25 @@ class DocumentSubmissionController(http.Controller):
         pdf_filename = data.get("pdf_filename") or "dokument.pdf"
 
         try:
-            attachment = request.env["ir.attachment"].sudo().create({
-                "name": f"[SUBMIT-LOG] {doc_type} — {full_name} — {evidence['doc_number']} — {pdf_filename}",
-                "datas": pdf_base64,
-                "mimetype": "application/pdf",
-                "description": json.dumps(evidence, ensure_ascii=False, indent=2),
-            })
+            attachment = (
+                request.env["ir.attachment"]
+                .sudo()
+                .create(
+                    {
+                        "name": f"[SUBMIT-LOG] {doc_type} — {full_name} — {evidence['doc_number']} — {pdf_filename}",
+                        "datas": pdf_base64,
+                        "mimetype": "application/pdf",
+                        "description": json.dumps(evidence, ensure_ascii=False, indent=2),
+                    }
+                )
+            )
         except Exception as e:  # noqa: BLE001 — публічний endpoint не повинен 500-ити на клієнта
             _logger.exception("[submit-document] failed: %s", e)
             return request.make_json_response({"ok": False, "error": "server_error"}, status=500)
 
-        _notify_telegram(self._telegram_text(doc_type, full_name, evidence), pdf_base64, pdf_filename)
+        _notify_telegram(
+            self._telegram_text(doc_type, full_name, evidence), pdf_base64, pdf_filename
+        )
         return request.make_json_response({"ok": True, "id": attachment.id})
 
     @staticmethod

@@ -7,7 +7,7 @@ client-side pdfmake, без порталу). Мета: докази IP+час п
 Портал (/my/participants) не використовується для цього, бо staging тримає
 тестові дані (SEED/test events), а не реальні сім'ї — див. INC-216 контекст.
 """
-import base64
+
 import logging
 
 from odoo import _, fields, models
@@ -38,18 +38,29 @@ class CampDocumentSubmissionLog(models.Model):
         string=_("Data/godzina złożenia"), default=fields.Datetime.now, readonly=True
     )
     raw_payload = fields.Text(string=_("Pełne dane formularza (JSON)"))
-    pdf_attachment_id = fields.Many2one(
-        "ir.attachment", string=_("Podpisany PDF"), readonly=True
-    )
+    pdf_attachment_id = fields.Many2one("ir.attachment", string=_("Podpisany PDF"), readonly=True)
 
     def name_get(self):
         return [
-            (rec.id, f"{dict(rec._fields['doc_type'].selection).get(rec.doc_type)} — {rec.full_name}")
+            (
+                rec.id,
+                f"{dict(rec._fields['doc_type'].selection).get(rec.doc_type)} — {rec.full_name}",
+            )
             for rec in self
         ]
 
     @staticmethod
-    def create_from_submission(env, doc_type, full_name, contact, doc_number, ip_address, raw_payload, pdf_base64, pdf_filename):
+    def create_from_submission(
+        env,
+        doc_type,
+        full_name,
+        contact,
+        doc_number,
+        ip_address,
+        raw_payload,
+        pdf_base64,
+        pdf_filename,
+    ):
         """Створює лог-запис + прикріплює PDF як ir.attachment (sudo — публічний endpoint)."""
         Log = env["camp.document.submission.log"].sudo()
         Attachment = env["ir.attachment"].sudo()
