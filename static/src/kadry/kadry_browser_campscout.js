@@ -16,18 +16,20 @@ const CAMPSCOUT = {
 };
 
 
-// вектор-чекбокс: порожній квадрат або зелений із галкою
+// чекбокс: порожній квадрат або зелений заповнений (таблиця, НЕ canvas —
+// canvas у клітинці таблиці ламає розрахунок висоти рядка на межі сторінки:
+// рядок роздувається на всю решту сторінки замість нормального переносу,
+// або чекбокс взагалі зникає з рендеру (INC 2026-07-07, живий запуск 60 батьків)
 function box(checked) {
-  const c = [{
-    type: 'rect', x: 0, y: 1.5, w: 8.5, h: 8.5, lineWidth: .8,
-    lineColor: checked ? FOREST : '#888',
-    ...(checked ? { color: FOREST } : {}),
-  }];
-  if (checked) { // біла галка
-    c.push({ type: 'line', x1: 1.8, y1: 6, x2: 3.6, y2: 8, lineWidth: 1.1, lineColor: '#fff' });
-    c.push({ type: 'line', x1: 3.6, y1: 8, x2: 7, y2: 3, lineWidth: 1.1, lineColor: '#fff' });
-  }
-  return { canvas: c, width: 13 };
+  return {
+    table: { widths: [8.5], heights: [8.5], body: [[{ text: '', fillColor: checked ? FOREST : '#ffffff' }]] },
+    layout: {
+      hLineWidth: () => 0.8, vLineWidth: () => 0.8,
+      hLineColor: () => checked ? FOREST : '#888', vLineColor: () => checked ? FOREST : '#888',
+      paddingLeft: () => 0, paddingRight: () => 0, paddingTop: () => 0, paddingBottom: () => 0,
+    },
+    width: 13,
+  };
 }
 
 // чекбокс + підпис (рядок)
@@ -415,9 +417,11 @@ function h2(t) { return { text: t, fontSize: 9.5, color: FOREST, bold: true, mar
 
 const NR = '1/WYC/2026'; // nr Umowy zlecenia, do której niniejsze oświadczenie jest załącznikiem nr 4
 
-// pusta podkreślona linia (odpowiednik `bl` z referencji)
+// pusta podkreślona linia (tekst, NIE canvas — canvas w komórce tabeli łamie
+// wysokość wiersza na granicy strony, patrz campscout_pdf.js::box())
 function bl(w) {
-  return { canvas: [{ type: 'line', x1: 0, y1: 9, x2: w || 160, y2: 9, lineWidth: 0.8, lineColor: '#999' }], margin: [0, 0, 0, 0] };
+  const n = Math.round((w || 160) / 5.6);
+  return { text: ' '.repeat(n), decoration: 'underline', color: '#999' };
 }
 // wartość z A → fld(...) albo pusta linia
 function vline(A, key, w) {
