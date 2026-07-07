@@ -7,11 +7,16 @@
 Не потребує portal-логіну (parents/kadra тестового табору можуть не мати
 акаунту до завтрашнього виїзду) — публічний, але лише ЗАПИСУЄ дані, нічого
 не читає й не видає (немає витоку чужих даних).
+
+Зберігає через ir.attachment (не через camp.document.submission.log) — той
+модуль ще чекає -u на staging (INC-216 продовження: CLI/UI upgrade зламані
+в цьому середовищі), а ir.attachment вже встановлений і доступний без
+міграції. Коли -u стане можливим, це можна перенести на власну модель.
 """
 import json
 import logging
 
-from odoo import http
+from odoo import fields, http
 from odoo.http import request
 
 _logger = logging.getLogger(__name__)
@@ -49,20 +54,26 @@ class DocumentSubmissionController(http.Controller):
         if pdf_base64 and "," in pdf_base64:
             pdf_base64 = pdf_base64.split(",", 1)[1]
 
+        evidence = {
+            "doc_type": doc_type,
+            "full_name": full_name,
+            "contact": data.get("contact") or "",
+            "doc_number": data.get("doc_number") or "",
+            "ip_address": ip_address,
+            "submitted_at": str(fields.Datetime.now()),
+            "raw_payload": data.get("raw_payload") or {},
+        }
+        pdf_filename = data.get("pdf_filename") or "dokument.pdf"
+
         try:
-            record = request.env["camp.document.submission.log"].sudo().create_from_submission(
-                env=request.env,
-                doc_type=doc_type,
-                full_name=full_name,
-                contact=data.get("contact") or "",
-                doc_number=data.get("doc_number") or "",
-                ip_address=ip_address,
-                raw_payload=json.dumps(data.get("raw_payload") or {}, ensure_ascii=False),
-                pdf_base64=pdf_base64,
-                pdf_filename=data.get("pdf_filename") or "dokument.pdf",
-            )
+            attachment = request.env["ir.attachment"].sudo().create({
+                "name": f"[SUBMIT-LOG] {doc_type} — {full_name} — {evidence['doc_number']} — {pdf_filename}",
+                "datas": pdf_base64,
+                "mimetype": "application/pdf",
+                "description": json.dumps(evidence, ensure_ascii=False, indent=2),
+            })
         except Exception as e:  # noqa: BLE001 — публічний endpoint не повинен 500-ити на клієнта
             _logger.exception("[submit-document] failed: %s", e)
             return request.make_json_response({"ok": False, "error": "server_error"}, status=500)
 
-        return request.make_json_response({"ok": True, "id": record.id})
+        return request.make_json_response({"ok": True, "id": attachment.id})
