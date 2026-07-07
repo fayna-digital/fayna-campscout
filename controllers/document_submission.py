@@ -16,12 +16,44 @@
 import json
 import logging
 
+import requests
+
 from odoo import fields, http
 from odoo.http import request
 
 _logger = logging.getLogger(__name__)
 
 _ALLOWED_DOC_TYPES = ("wychowawca", "rodzic")
+
+_TELEGRAM_SECRETS_FILE = "/etc/odoo/telegram_secrets.env"
+_TELEGRAM_CHAT_ID = 1216572335  # @FaynaBrain_bot, той самий чат, що й inbox-agent
+
+
+def _read_telegram_token():
+    try:
+        with open(_TELEGRAM_SECRETS_FILE, "r", encoding="utf-8") as f:
+            for line in f:
+                if line.startswith("TELEGRAM_BOT_TOKEN="):
+                    return line.strip().split("=", 1)[1]
+    except OSError:
+        pass
+    return None
+
+
+def _notify_telegram(text):
+    """Best-effort — збій сповіщення НЕ повинен зривати збереження доказу."""
+    token = _read_telegram_token()
+    if not token:
+        _logger.warning("[submit-document] telegram token не знайдено — сповіщення пропущено")
+        return
+    try:
+        requests.post(
+            f"https://api.telegram.org/bot{token}/sendMessage",
+            json={"chat_id": _TELEGRAM_CHAT_ID, "text": text},
+            timeout=5,
+        )
+    except Exception as e:  # noqa: BLE001
+        _logger.warning("[submit-document] telegram notify failed: %s", e)
 
 
 class DocumentSubmissionController(http.Controller):
@@ -77,4 +109,22 @@ class DocumentSubmissionController(http.Controller):
             _logger.exception("[submit-document] failed: %s", e)
             return request.make_json_response({"ok": False, "error": "server_error"}, status=500)
 
+        _notify_telegram(self._telegram_text(doc_type, full_name, evidence))
         return request.make_json_response({"ok": True, "id": attachment.id})
+
+    @staticmethod
+    def _telegram_text(doc_type, full_name, evidence):
+        payload = evidence["raw_payload"] or {}
+        lines = [f"📄 Нова заявка ({'кадра' if doc_type == 'wychowawca' else 'згода батьків'})"]
+        if doc_type == "rodzic":
+            lines.append(f"Дитина: {payload.get('dziecko') or '—'}")
+            lines.append(f"Батько/опікун: {full_name}")
+            lines.append(f"Wizerunek: {payload.get('wizerunek') or '—'}")
+            lines.append(f"Marketing: {'TAK' if payload.get('marketing') else 'NIE'}")
+        else:
+            lines.append(f"ПІБ: {full_name}")
+        lines.append(f"Контакт: {evidence['contact'] or '—'}")
+        lines.append(f"Номер: {evidence['doc_number'] or '—'}")
+        lines.append(f"IP: {evidence['ip_address'] or '—'}")
+        lines.append(f"Час: {evidence['submitted_at']}")
+        return "\n".join(lines)
