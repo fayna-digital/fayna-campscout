@@ -60,7 +60,8 @@ jobs:
 
             echo "[d] МІГРАЦІЯ one-off — ГЕЙТ за exit"
             if ! docker exec "$CONT" odoo -c "$CONF" -d "$DB" -u "$MODULE" --stop-after-init --no-http > /tmp/mig.log 2>&1; then
-              echo "❌ міграція впала — НЕ свопимо"; grep -iE 'ERROR|CRITICAL|Traceback' /tmp/mig.log | tail -8
+              echo "❌ міграція впала — НЕ свопимо. Повний /tmp/mig.log:"
+              cat /tmp/mig.log
               git checkout "$PREV" >/dev/null 2>&1; sudo chmod -R o+rX .; exit 1
             fi
             echo "    міграція exit=0"
