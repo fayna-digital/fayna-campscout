@@ -649,4 +649,3 @@ fayna_camp_portal/
 **[API-2] Внутрішні HTTP-контракти** (auth=user, не публічні): портал `/my/*` (QWeb, session), kiosk `/camp/kiosk/*` + `/camp/kiosk/set_lang` (json-RPC, валідація active-мов), `/admin/dashboard` + login-as (organizator-only, audit-лог). Контракти живуть у коді контролерів; OpenAPI не ведеться свідомо (немає зовнішніх споживачів). · ✅.
 
 **[API-3] Вихідні інтеграції (клієнтські контракти):** KSeF (e-фактури, через `l10n_pl_ksef_margin`), TurboSMS (адаптер `fayna_sms_base`; PL-провайдери SMSAPI/SerwerSMS — беклог P-3), Zadarma (АТС, окремий модуль), SendPulse (розсилки; консолідація журналу згод — F-RODO-5). Кожна інтеграція в try/except — збій зовнішнього API не блокує продаж ([A-4]). · ✅ архітектура; контракти = документація вендорів.
-
