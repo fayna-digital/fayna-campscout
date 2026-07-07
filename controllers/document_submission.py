@@ -31,8 +31,9 @@ class DocumentSubmissionController(http.Controller):
         type="http",
         auth="public",
         website=False,
-        methods=["POST"],
+        methods=["POST", "OPTIONS"],
         csrf=False,
+        cors="*",
     )
     def submit_document(self, **post):
         """Приймає JSON body: {doc_type, full_name, contact, doc_number,
