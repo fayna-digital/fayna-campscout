@@ -373,6 +373,7 @@ function buildA_UA(fd, docNr){
   return {
     umowa_nr_ua: docNr + '/2026',
     fullname: [fd.prizvyshche_ua, fd.imia_ua, fd.po_batkovi].filter(Boolean).join(' '),
+    data_urodzenia: fd.data_urodzenia,
     dowod: (dokUA+' '+(fd.dokument_ua_numer||'')).trim(),
     adres_zam_ulica: fd.adresa_ua,
     adres_zam_kod: '',
