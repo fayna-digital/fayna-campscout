@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CampScout «Na Wilczej Ścieżce» — pakiet dokumentów kadry</title>
+<style>
+  :root{ --forest:#1B4332; --gold:#C08A2D; --bg:#f4f5f3; --card:#fff; --line:#dcdcd6; --ink:#1c2420; --muted:#6b6f6a; --helpbg:rgba(192,138,45,.08); }
+  @media (prefers-color-scheme: dark){ :root{ --bg:#14181a; --card:#1e2426; --line:#33403a; --ink:#e8ece9; --muted:#9aa39d; --gold:#F7CB74; --helpbg:rgba(247,203,116,.08); } }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif;line-height:1.5;}
+  header{background:var(--forest);color:#fff;padding:22px 18px;border-bottom:4px solid var(--gold);}
+  header .co{font-weight:800;font-size:19px;letter-spacing:.5px;}
+  header h1{font-size:16px;margin:10px 0 0;font-weight:600;}
+  header p{font-size:12.5px;opacity:.92;margin:6px 0 0;max-width:760px;}
+  main{max-width:780px;margin:0 auto;padding:18px 16px 60px;}
+  .sec{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:16px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .sec h2{color:var(--gold);font-size:15px;margin:0 0 4px;border-bottom:2px solid var(--gold);padding-bottom:6px;}
+  .sec .hint{font-size:12px;color:var(--muted);margin:0 0 12px;}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px;}
+  @media(max-width:560px){.grid{grid-template-columns:1fr}}
+  .f{display:flex;flex-direction:column;}
+  .f.full{grid-column:1/-1;}
+  label{font-size:12.5px;font-weight:600;margin-bottom:4px;}
+  label .req{color:#b3261e;}
+  input[type=text],input[type=tel],input[type=email],input[type=date],input[type=number],select,textarea{
+    border:1px solid var(--line);border-radius:8px;padding:9px 10px;font-size:14px;font-family:inherit;background:var(--card);color:var(--ink);width:100%;}
+  textarea{min-height:78px;resize:vertical;line-height:1.45;}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--forest);box-shadow:0 0 0 3px rgba(27,67,50,.15);}
+  .tip{font-size:11px;color:var(--muted);margin-top:3px;}
+  .help{font-size:11.5px;color:var(--muted);background:var(--helpbg);border-left:3px solid var(--gold);padding:6px 9px;border-radius:4px;margin:4px 0 10px;line-height:1.45;}
+  .opt{font-weight:400;color:var(--muted);font-size:11px;}
+  .kwota-row{display:grid;grid-template-columns:1fr 1.2fr;gap:10px;}
+  .chk{display:flex;gap:9px;align-items:flex-start;padding:8px 0;}
+  .chk input{margin-top:3px;width:17px;height:17px;accent-color:var(--forest);flex:0 0 auto}
+  .chk .txt{font-size:12.5px}
+  .sub{margin:12px 0 4px;font-weight:700;font-size:13px;color:var(--forest);}
+  .yn{display:flex;gap:14px;align-items:center;font-size:12.5px}
+  .zrow{padding:6px 0;border-bottom:1px dashed var(--line);font-size:12px}
+  .zrow .q{display:flex;gap:10px;align-items:center;}
+  .zrow .q .txt{flex:1}
+  .actions{position:sticky;bottom:0;background:linear-gradient(180deg,transparent,var(--bg) 30%);padding:18px 0 6px;display:flex;gap:10px;flex-wrap:wrap;}
+  button{font-family:inherit;font-size:15px;font-weight:700;border:none;border-radius:10px;padding:13px 22px;cursor:pointer;}
+  button.primary{background:var(--forest);color:#fff;}
+  button.ghost{background:var(--card);color:var(--forest);border:1.5px solid var(--forest);}
+  button:disabled{opacity:.5;cursor:not-allowed;}
+  .err{color:#b3261e;font-size:12px;margin-top:4px;display:none;}
+  #done{display:none;background:rgba(27,67,50,.08);border:1px solid var(--forest);border-radius:12px;padding:18px;margin-top:16px;}
+  #done h3{color:var(--forest);margin:0 0 6px;}
+  .lbl-place{font-size:12px;color:var(--muted);background:var(--helpbg);border-left:3px solid var(--gold);padding:8px 10px;border-radius:4px;margin:4px 0 0;line-height:1.5;}
+</style>
+<script src="/fayna_camp_portal/static/src/kadry/assets/pdfmake.min.js"></script>
+<script src="/fayna_camp_portal/static/src/kadry/assets/vfs_fonts.js"></script>
+<!-- kadry_browser_campscout.js — реюз 4 генераторів додатків (Kwest/RODO/ZUS/Upoważnienie) -->
+<script src="/fayna_camp_portal/static/src/kadry/kadry_browser_campscout.js"></script>
+<script src="/fayna_camp_portal/static/src/kadry/kadry_browser_wilcza.js"></script>
+</head>
+<body>
+<header>
+  <div class="co">CAMP SCOUT</div>
+  <h1>Pakiet dokumentów kadry — turnus «Na Wilczej Ścieżce»</h1>
+  <p>Formularz dla kadry (instruktor / ratownik wodny). Po wypełnieniu otrzymasz <b>komplet 5 dokumentów w jednym PDF</b>: umowa zlecenia + kwestionariusz osobowy + klauzula RODO + oświadczenie ZUS/podatki + upoważnienie do przetwarzania danych. Kopia trafi też do organizatora. Pola z <span style="color:#ffd9d4">*</span> są wymagane; puste pola pojawią się w dokumentach jako linia do ręcznego uzupełnienia.</p>
+</header>
+<main>
+<form id="f" novalidate>
+
+  <section class="sec">
+    <h2>0. Stanowisko (rola na turnusie) <span class="req">*</span></h2>
+    <div class="help">Wybór stanowiska ustawia sposób rozliczenia i zestaw dokumentów. <b>Instruktor</b> / <b>medyk</b> — pakiet umowy zlecenia (kwotę i przedmiot podajesz sam). <b>Kierownik</b> — umowa zlecenia ze stałą stawką <b>250 zł za dzień</b> oraz dodatkowo <b>Umowa wolontariacka (opieka nad dziećmi)</b> — ТОВ «КЕМПСКАУТ».</div>
+    <div class="f full">
+      <select name="stanowisko" id="stanowisko" required>
+        <option value="instruktor">Instruktor</option>
+        <option value="medyk">Medyk (ratownik / opieka medyczna)</option>
+        <option value="kierownik">Kierownik turnusu</option>
+      </select>
+    </div>
+    <div class="lbl-place" id="kier-note" style="display:none">Dla kierownika stawka jest stała: <b>250,00 zł za dzień</b>. Dodatkowo do pakietu dołączana jest <b>Umowa wolontariacka (opieka nad dziećmi)</b> — bezpłatna, ТОВ «КЕМПСКАУТ».</div>
+  </section>
+
+  <section class="sec">
+    <h2>1. Dane Zleceniobiorcy</h2>
+    <div class="help">Wpisz dane dokładnie jak w dokumencie tożsamości (obcokrajowcy — jak w paszporcie).</div>
+    <div class="grid">
+      <div class="f full"><label>Imię i nazwisko <span class="req">*</span></label><input type="text" name="fullname" required placeholder="np. Jan Kowalski"></div>
+      <div class="f"><label>PESEL</label><input type="text" name="pesel" inputmode="numeric" maxlength="11" placeholder="11 cyfr"></div>
+      <div class="f"><label>Dokument tożsamości <span class="opt">(seria i nr)</span></label><input type="text" name="dowod" placeholder="np. dowód osobisty ABC123456 / paszport"></div>
+      <div class="f"><label>Data urodzenia</label><input type="date" name="data_urodzenia"></div>
+      <div class="f"><label>Miejsce urodzenia</label><input type="text" name="miejsce_urodzenia"></div>
+      <div class="f"><label>Obywatelstwo</label><input type="text" name="obywatelstwo" placeholder="np. polskie"></div>
+      <div class="f"><label>Nazwisko rodowe <span class="opt">(jeśli dotyczy)</span></label><input type="text" name="nazwisko_rodowe"></div>
+      <div class="f"><label>Imiona rodziców <span class="opt">(jeśli dotyczy)</span></label><input type="text" name="imiona_rodzicow" placeholder="np. Jan, Maria"></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>2. Adres zamieszkania</h2>
+    <div class="grid">
+      <div class="f full"><label>Ulica, nr domu / mieszkania</label><input type="text" name="adres_zam_ulica" placeholder="np. ul. Kwiatowa 5/2"></div>
+      <div class="f"><label>Kod pocztowy</label><input type="text" name="adres_zam_kod" placeholder="np. 63-400"></div>
+      <div class="f"><label>Miejscowość</label><input type="text" name="adres_zam_miasto" placeholder="np. Ostrów Wielkopolski"></div>
+      <div class="f full"><label>Adres do korespondencji <span class="opt">(jeśli inny)</span></label><input type="text" name="adres_koresp" placeholder="zostaw puste, jeśli taki sam"></div>
+      <div class="f"><label>Województwo <span class="opt">(jeśli dotyczy)</span></label><input type="text" name="adres_zam_woj"></div>
+      <div class="f"><label>Powiat / gmina <span class="opt">(jeśli dotyczy)</span></label><input type="text" name="adres_zam_powiat_gmina"></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>3. Kontakt, rachunek, urzędy</h2>
+    <div class="grid">
+      <div class="f"><label>Telefon</label><input type="tel" name="tel" placeholder="+48 ..."></div>
+      <div class="f"><label>E-mail</label><input type="email" name="email" placeholder="np. jan@example.com"></div>
+      <div class="f full"><label>Numer rachunku bankowego (IBAN)</label><input type="text" name="iban" placeholder="PL.."></div>
+      <div class="f"><label>Wykształcenie</label><input type="text" name="wyksztalcenie" placeholder="np. wyższe pedagogiczne"></div>
+      <div class="f"><label>Zawód wykonywany</label><input type="text" name="zawod"></div>
+      <div class="f"><label>Oddział NFZ</label><input type="text" name="nfz" placeholder="np. Wielkopolski"></div>
+      <div class="f"><label>Urząd Skarbowy</label><input type="text" name="us"></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>4. Przedmiot zlecenia <span class="req">*</span></h2>
+    <div class="help">Opisz, jaką usługę wykonujesz na turnusie. Trafi do § 1 umowy. Przykłady: <i>„Szkolenie sprawnościowo-obronne: musztra, terenoznawstwo, techniki survivalowe dla uczestników obozu"</i> lub <i>„Zapewnienie bezpieczeństwa uczestników podczas kąpieli i zajęć w wodzie"</i>.</div>
+    <div class="f full"><textarea name="przedmiot" required placeholder="Nazwa / opis usługi (przedmiot zlecenia)"></textarea></div>
+    <div class="f full" style="margin-top:10px"><label>Kwalifikacje / nr uprawnień <span class="opt">(opcjonalnie)</span></label><input type="text" name="kwalifikacje" placeholder="np. ratownik wodny nr 12345/WOPR"></div>
+    <div class="tip">Jeśli wypełnisz — do § 1 dopisze się oświadczenie o posiadanych uprawnieniach. Puste — pomijamy.</div>
+  </section>
+
+  <section class="sec">
+    <h2>5. Wynagrodzenie <span class="req">*</span></h2>
+    <div class="help">Kwota brutto i jednostka rozliczenia → § 4 umowy (np. <i>„220,00 zł brutto za dzień"</i>). Minimalna stawka godzinowa 31,40 zł/h (2026) jest gwarantowana klauzulą § 4.2 niezależnie od jednostki.</div>
+    <div class="kwota-row">
+      <div class="f"><label>Kwota (zł brutto) <span class="req">*</span></label><input type="number" name="kwota" min="0" step="0.01" required placeholder="np. 220"></div>
+      <div class="f"><label>Jednostka <span class="req">*</span></label>
+        <select name="jednostka" required>
+          <option value="za dzień">za dzień</option>
+          <option value="za dyżur">za dyżur</option>
+          <option value="za miesiąc">za miesiąc</option>
+          <option value="za cały turnus">za cały turnus</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>6. Okres zlecenia <span class="req">*</span></h2>
+    <div class="help">Daty obowiązywania umowy (§ 3). Domyślnie termin turnusu «Na Wilczej Ścieżce»: 12–26.07.2026.</div>
+    <div class="grid">
+      <div class="f"><label>Od dnia <span class="req">*</span></label><input type="date" name="data_od" value="2026-07-12" required></div>
+      <div class="f"><label>Do dnia <span class="req">*</span></label><input type="date" name="data_do" value="2026-07-26" required></div>
+      <div class="f"><label>Data zawarcia umowy</label><input type="date" name="data_zawarcia"></div>
+    </div>
+    <div class="lbl-place"><b>Miejsce wykonywania zlecenia</b> (wpisane na stałe): Baza Obozowa Chorągwi Zachodniopomorskiej ZHP, ul. Rzeczna 3, 72-350 Pogorzelica (woj. zachodniopomorskie).</div>
+  </section>
+
+  <section class="sec">
+    <h2>7. Status ubezpieczeniowy (ZUS)</h2>
+    <p class="hint">Zaznacz TAK/NIE dla każdej pozycji — na tej podstawie ustalane jest oskładkowanie (załącznik ZUS/podatki).</p>
+    <div id="zus"></div>
+  </section>
+
+  <section class="sec">
+    <h2>8. Podatki (PIT)</h2>
+    <label class="chk"><input type="checkbox" name="pit2"><span class="txt"><b>Wnoszę o stosowanie kwoty zmniejszającej zaliczkę na podatek (PIT-2)</b>.</span></label>
+    <div class="help">Zaznacz, jeśli to Twoja jedyna lub główna umowa w Polsce — wtedy co miesiąc potrącą mniejszą zaliczkę. Jeśli PIT-2 złożono u innego płatnika — nie zaznaczaj.</div>
+    <div class="yn" style="margin:2px 0 4px 28px">
+      <span class="opt">jeśli zaznaczono, w jakiej części:</span>
+      <label><input type="radio" name="pit2_czesc" value="1/12" checked> 1/12</label>
+      <label><input type="radio" name="pit2_czesc" value="1/24"> 1/24</label>
+      <label><input type="radio" name="pit2_czesc" value="1/36"> 1/36</label>
+    </div>
+    <label class="chk"><input type="checkbox" name="bez_zaliczki"><span class="txt"><b>Wnoszę o niepobieranie zaliczki na podatek</b> (przewiduję roczny dochód poniżej kwoty wolnej).</span></label>
+  </section>
+
+  <section class="sec">
+    <h2>9. Zgody dobrowolne (RODO)</h2>
+    <label class="chk"><input type="checkbox" name="zgoda_marketing"><span class="txt">(dobrowolnie) Wyrażam zgodę na przetwarzanie danych w celach marketingowych CampScout.</span></label>
+    <label class="chk"><input type="checkbox" name="zgoda_wizerunek"><span class="txt">(dobrowolnie) Wyrażam zgodę na utrwalanie i wykorzystanie mojego wizerunku (zdjęcia/nagrania zespołowe) do celów promocyjnych CampScout.</span></label>
+    <div class="help">Zgody są dobrowolne, można je wycofać w każdym czasie; ich brak nie wpływa na zawarcie umowy.</div>
+  </section>
+
+  <div class="err" id="err">Wypełnij, proszę, pola wymagane (*).</div>
+  <div class="actions">
+    <button type="button" class="ghost" id="preview">Podgląd PDF</button>
+    <button type="submit" class="primary" id="send">Generuj i wyślij</button>
+  </div>
+
+  <div id="done">
+    <h3>Gotowe! ✅</h3>
+    <p style="font-size:13px;margin:4px 0" id="donemsg">Pakiet dokumentów (5 w jednym PDF) został wygenerowany i pobrany na Twoje urządzenie. Kopia (z datą i godziną złożenia) trafiła do organizatora — nic nie musisz dodatkowo wysyłać. Podpisanie nastąpi osobiście przy spotkaniu z organizatorem.</p>
+  </div>
+</form>
+</main>
+<script>
+// дефолт дати zawarcia = сьогодні (браузер; НЕ зашито в шаблон як константа)
+(function(){
+  var dz = document.querySelector('[name="data_zawarcia"]');
+  if(dz && !dz.value){ var d=new Date(); dz.value = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+})();
+
+// 9 питань ZUS — польський текст (з doc_zus_wychowawca_pl.js :: bItems), значення TAK/NIE
+const ZUS = [
+ ['zus1','Jestem zatrudniony u innego pracodawcy z wynagrodzeniem co najmniej minimalnym'],
+ ['zus2','Wykonuję inną umowę zlecenia objętą obowiązkowym ZUS'],
+ ['zus3','Prowadzę działalność gospodarczą objętą obowiązkowym ZUS'],
+ ['zus4','Jestem emerytem'],
+ ['zus5','Jestem rencistą'],
+ ['zus6','Jestem studentem/uczniem i nie ukończyłem 26 lat'],
+ ['zus7','Jestem zarejestrowany jako bezrobotny'],
+ ['zus8','Przebywam na urlopie macierzyńskim/wychowawczym lub mam świadczenie przedemerytalne'],
+ ['zus9','Podlegam ubezpieczeniu w KRUS'],
+];
+const zc = document.getElementById('zus');
+ZUS.forEach(([k,q])=>{
+  const d=document.createElement('div'); d.className='zrow';
+  d.innerHTML = `<div class="q"><span class="txt">${q}</span>
+    <label><input type="radio" name="${k}" value="TAK"> TAK</label>
+    <label><input type="radio" name="${k}" value="NIE" checked> NIE</label></div>`;
+  zc.appendChild(d);
+});
+
+function collect(){
+  const o={};
+  const fd=new FormData(document.getElementById('f'));
+  for(const [k,v] of fd.entries()) o[k]=v;
+  document.querySelectorAll('#f input[type=checkbox]').forEach(c=>{ o[c.name]=c.checked; });
+  // select[disabled] не потрапляє у FormData — читаємо явно
+  o.jednostka = document.querySelector('[name="jednostka"]').value;
+  return o;
+}
+
+// Посада → jednostka/kwota/przedmiot placeholder + UA-нотатка для kierownika
+const PRZEDMIOT_PH = {
+  instruktor: 'np. Szkolenie sprawnościowo-obronne: musztra, terenoznawstwo, techniki survivalowe',
+  medyk: 'np. Zapewnienie opieki medycznej i bezpieczeństwa uczestników podczas turnusu',
+  kierownik: 'np. Kierowanie i prowadzenie zajęć programowych na turnusie',
+};
+function applyStanowisko(){
+  const st = document.getElementById('stanowisko').value;
+  const kwota = document.querySelector('[name="kwota"]');
+  const jedn = document.querySelector('[name="jednostka"]');
+  const przed = document.querySelector('[name="przedmiot"]');
+  const note = document.getElementById('kier-note');
+  przed.placeholder = PRZEDMIOT_PH[st] || PRZEDMIOT_PH.instruktor;
+  if(st === 'kierownik'){
+    kwota.value = '250'; kwota.readOnly = true;
+    jedn.value = 'za dzień'; jedn.disabled = true;
+    note.style.display = 'block';
+  } else {
+    kwota.readOnly = false;
+    jedn.disabled = false;
+    jedn.value = (st === 'medyk') ? 'za dyżur' : 'za dzień';
+    note.style.display = 'none';
+  }
+}
+document.getElementById('stanowisko').addEventListener('change', applyStanowisko);
+applyStanowisko();
+
+// вік < 26 → ulga26 'dotyczy'/'nie_dotyczy'
+function ulga26FromDob(dobStr){
+  if(!dobStr) return 'nie_dotyczy';
+  const d=new Date(dobStr); if(isNaN(d)) return 'nie_dotyczy';
+  const now=new Date(); let age=now.getFullYear()-d.getFullYear();
+  const m=now.getMonth()-d.getMonth();
+  if(m<0||(m===0&&now.getDate()<d.getDate())) age--;
+  return age<26 ? 'dotyczy' : 'nie_dotyczy';
+}
+
+// авто-унікальний ID однієї умови: YYYYMMDD-HHMMSS-RRR (RRR = 3 випадкові base36),
+// щоб два подання в ту саму секунду НЕ колізували. Кожен виклик — новий ID.
+function genID(){
+  const d=new Date(), pad=n=>String(n).padStart(2,'0');
+  const ts=`${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
+  const rrr=(Math.random().toString(36).slice(2)+'000').slice(0,3).toUpperCase();
+  return ts+'-'+rrr;
+}
+
+// A — один об'єкт на подання. Номери:
+//  • PL-пакет zlecenia (umowa + 4 додатки) = ОДИН номер {ID_z}/WIL/2026 на всі 5 док.
+//  • UA Договір волонтера (kierownik) = ОКРЕМИЙ незалежний номер {ID_w}/WOL/2026.
+function buildA(fd){
+  const st = fd.stanowisko || 'instruktor';
+  const idZ = genID();            // ID zlecenie
+  const idW = genID();            // ID wolontariat — генерується НЕЗАЛЕЖНО (свій timestamp+RRR)
+  // kierownik — ФІКСОВАНА ставка 250 zł za dzień (жорстко, навіть якщо UI обійшли)
+  let kwota = fd.kwota, jednostka = fd.jednostka;
+  if(st === 'kierownik'){ kwota = '250'; jednostka = 'za dzień'; }
+  const STAN_LABEL = { instruktor:'instruktor', medyk:'medyk (opieka medyczna)', kierownik:'kierownik turnusu' };
+  return {
+    stanowisko: st,
+    stanowisko_label: STAN_LABEL[st] || st,
+    _idZ: idZ, _idW: idW,
+    umowa_nr: idZ + '/WIL/2026',
+    umowa_nr_ua: idW + '/WOL/2026',      // UA Договір волонтера — власний номер, ≠ zlecenie
+    fullname: (fd.fullname||'').trim(),
+    nazwisko: (fd.fullname||'').trim().split(/\s+/).slice(-1)[0] || 'kadra',
+    pesel: fd.pesel, dowod: fd.dowod,
+    data_urodzenia: fd.data_urodzenia, miejsce_urodzenia: fd.miejsce_urodzenia,
+    obywatelstwo: fd.obywatelstwo, nazwisko_rodowe: fd.nazwisko_rodowe, imiona_rodzicow: fd.imiona_rodzicow,
+    adres_zam_ulica: fd.adres_zam_ulica, adres_zam_kod: fd.adres_zam_kod, adres_zam_miasto: fd.adres_zam_miasto,
+    adres_koresp: fd.adres_koresp, adres_zam_woj: fd.adres_zam_woj, adres_zam_powiat_gmina: fd.adres_zam_powiat_gmina,
+    tel: fd.tel, email: fd.email, iban: fd.iban,
+    wyksztalcenie: fd.wyksztalcenie, zawod: fd.zawod, nfz: fd.nfz, us: fd.us,
+    // 3 самополя
+    przedmiot: fd.przedmiot, kwalifikacje: fd.kwalifikacje,
+    kwota: kwota, jednostka: jednostka,
+    data_od: fd.data_od, data_do: fd.data_do, data_zawarcia: fd.data_zawarcia,
+    // ZUS / PIT / ulgi
+    zus1: fd.zus1, zus2: fd.zus2, zus3: fd.zus3, zus4: fd.zus4, zus5: fd.zus5,
+    zus6: fd.zus6, zus7: fd.zus7, zus8: fd.zus8, zus9: fd.zus9,
+    pit2: fd.pit2, pit2_czesc: fd.pit2_czesc || '1/12', bez_zaliczki: fd.bez_zaliczki, kup: '20',
+    ulga26: ulga26FromDob(fd.data_urodzenia),
+    // RODO-згоди
+    zgoda_marketing: fd.zgoda_marketing, zgoda_wizerunek: fd.zgoda_wizerunek,
+  };
+}
+
+function validate(fd){
+  const errs=[];
+  if(!(fd.fullname||'').trim()) errs.push('Podaj imię i nazwisko.');
+  if(!(fd.przedmiot||'').trim()) errs.push('Opisz przedmiot zlecenia.');
+  if(!fd.kwota) errs.push('Podaj kwotę wynagrodzenia.');
+  if(!fd.data_od||!fd.data_do) errs.push('Podaj okres zlecenia (od / do).');
+  return errs;
+}
+
+const SUBMIT_ENDPOINT = '/camp/submit-document';
+
+async function postToServer(A, docNr, filename, base64){
+  try{
+    await fetch(SUBMIT_ENDPOINT, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        doc_type: 'wychowawca',            // реюз наявного дозволеного типу (submit-document не міняємо)
+        full_name: A.fullname,
+        contact: A.tel || A.email || '',
+        doc_number: docNr,                 // {ID_z}/WIL/2026 (+ {ID_w}/WOL/2026 для kierownika)
+        raw_payload: A,
+        pdf_base64: base64,
+        pdf_filename: filename,
+      }),
+    });
+  }catch(e){ console.warn('submit-document niedostępny — PDF pozostał lokalnie', e); }
+}
+
+function fnameOf(A){ return (A.nazwisko||'kadra').replace(/\s+/g,'_') + '_dokumenty_wilcza.pdf'; }
+
+function ready(){ return window.KADRY_WILCZA && window.KADRY && window.KADRY._docs && window.pdfMake; }
+
+function doPreview(){
+  if(!ready()){ alert('Generator dokumentów nie załadował się. Odśwież stronę.'); return; }
+  const A=buildA(collect());
+  pdfMake.createPdf(window.KADRY_WILCZA.docDefPackage(A)).open();
+}
+
+async function doSubmit(){
+  const fd=collect(), err=document.getElementById('err'), btn=document.getElementById('send');
+  const errs=validate(fd);
+  if(errs.length){ err.style.display='block'; err.textContent=errs.join(' '); document.getElementById('f').reportValidity(); return; }
+  if(!ready()){ alert('Generator dokumentów nie załadował się. Odśwież stronę.'); return; }
+  err.style.display='none'; btn.disabled=true; btn.textContent='Generowanie…';
+  const A=buildA(fd);
+  const filename=fnameOf(A);
+  // doc_number = номер zlecenie; для kierownika додаємо ще й номер волонтаріату в текст
+  let docNumber = A._idZ + '/WIL/2026';
+  if(A.stanowisko === 'kierownik') docNumber += ' · wol: ' + A._idW + '/WOL/2026';
+  // ОДИН виклик createPdf → і .download(), і .getBase64() з того самого об'єкта
+  const pdfDoc = pdfMake.createPdf(window.KADRY_WILCZA.docDefPackage(A));
+  pdfDoc.download(filename);
+  pdfDoc.getBase64(base64 => postToServer(A, docNumber, filename, base64));
+  document.getElementById('done').style.display='block';
+  document.getElementById('done').scrollIntoView({behavior:'smooth'});
+  btn.disabled=false; btn.textContent='Generuj i wyślij';
+}
+
+document.getElementById('preview').addEventListener('click', doPreview);
+document.getElementById('f').addEventListener('submit', e=>{ e.preventDefault(); doSubmit(); });
+</script>
+</body>
+</html>

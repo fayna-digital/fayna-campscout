@@ -33,3 +33,10 @@ class KadryFormsController(http.Controller):
     def kadry_rodzice(self, **kw):
         """Згоди батьків (Dodatek 4a wizerunek + 4b marketing) — canvas-підпис."""
         return self._serve_html("rodzice.html")
+
+    @http.route(["/camp/kadry/wilcza"], type="http", auth="public", website=False, methods=["GET"])
+    def kadry_wilcza(self, **kw):
+        """Umowa zlecenia — turnus «Na Wilczej Ścieżce» (instruktor / ratownik wodny).
+        Одна універсальна форма: кадра сама заповнює przedmiot/kwota/okres, генерує
+        PDF umowa zlecenia (art. 734 KC) у браузері й надсилає копію в Telegram."""
+        return self._serve_html("wilcza.html")
