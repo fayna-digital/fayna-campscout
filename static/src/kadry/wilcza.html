@@ -52,8 +52,8 @@
 <script src="/fayna_camp_portal/static/src/kadry/assets/pdfmake.min.js"></script>
 <script src="/fayna_camp_portal/static/src/kadry/assets/vfs_fonts.js"></script>
 <!-- kadry_browser_campscout.js — реюз 4 генераторів додатків (Kwest/RODO/ZUS/Upoważnienie) -->
-<script src="/fayna_camp_portal/static/src/kadry/kadry_browser_campscout.js"></script>
-<script src="/fayna_camp_portal/static/src/kadry/kadry_browser_wilcza.js"></script>
+<script src="/fayna_camp_portal/static/src/kadry/kadry_browser_campscout.js?v=20260712b"></script>
+<script src="/fayna_camp_portal/static/src/kadry/kadry_browser_wilcza.js?v=20260712b"></script>
 </head>
 <body>
 <header>
@@ -285,9 +285,24 @@ function buildA(fd){
   let kwota = fd.kwota, jednostka = fd.jednostka;
   if(st === 'kierownik'){ kwota = '250'; jednostka = 'za dzień'; }
   const STAN_LABEL = { instruktor:'instruktor', medyk:'medyk (opieka medyczna)', kierownik:'kierownik turnusu' };
+  // Дата укладення умови (data_zawarcia) у форматі DD.MM.YYYY → та сама дата в ДОДАТКАХ
+  // (Upoważnienie «Sporządzone … dnia», UA Договір «дата укладення»), щоб уся папка мала ОДНУ дату.
+  // Порожньо (blank-режим) → undefined → генератор падає на власну константу-fallback (без змін).
+  const _fmtPL = s => {
+    if(!s) return '';
+    s = String(s).trim();
+    if(/^\d{2}\.\d{2}\.\d{4}$/.test(s)) return s;
+    const d = new Date(s + 'T00:00:00'); if(isNaN(d)) return s;
+    const pad = n => String(n).padStart(2,'0');
+    return pad(d.getDate()) + '.' + pad(d.getMonth()+1) + '.' + d.getFullYear();
+  };
+  const _dataUmowy = _fmtPL(fd.data_zawarcia);
   return {
     stanowisko: st,
     stanowisko_label: STAN_LABEL[st] || st,
+    // одна дата на всю папку (додатки беруть її ж; порожня → fallback на константу генератора)
+    data_sporzadzenia: _dataUmowy || undefined,
+    data_ukladennia: _dataUmowy || undefined,
     _idZ: idZ, _idW: idW,
     umowa_nr: idZ + '/WIL/2026',
     umowa_nr_ua: idW + '/WOL/2026',      // UA Договір волонтера — власний номер, ≠ zlecenie
@@ -325,9 +340,11 @@ function validate(fd){
 
 const SUBMIT_ENDPOINT = '/camp/submit-document';
 
+// Повертає true лише при успішній доставці (response.ok). Помилка fetch/HTTP → false
+// (НЕ ковтаємо тихо — виклик doSubmit покаже #err, якщо копія не долетіла).
 async function postToServer(A, docNr, filename, base64){
   try{
-    await fetch(SUBMIT_ENDPOINT, {
+    const resp = await fetch(SUBMIT_ENDPOINT, {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
         doc_type: 'wychowawca',            // реюз наявного дозволеного типу (submit-document не міняємо)
@@ -339,7 +356,8 @@ async function postToServer(A, docNr, filename, base64){
         pdf_filename: filename,
       }),
     });
-  }catch(e){ console.warn('submit-document niedostępny — PDF pozostał lokalnie', e); }
+    return resp.ok;
+  }catch(e){ console.error('submit-document niedostępny — kopia NIE dotarła do organizatora', e); return false; }
 }
 
 function fnameOf(A){ return (A.nazwisko||'kadra').replace(/\s+/g,'_') + '_dokumenty_wilcza.pdf'; }
@@ -350,6 +368,34 @@ function doPreview(){
   if(!ready()){ alert('Generator dokumentów nie załadował się. Odśwież stronę.'); return; }
   const A=buildA(collect());
   pdfMake.createPdf(window.KADRY_WILCZA.docDefPackage(A)).open();
+}
+
+// base64 з pdfmake як Promise (один білд PDF → потім і сервер-копія, і локальне завантаження)
+function pdfBase64(A){
+  return new Promise((resolve, reject)=>{
+    try{
+      pdfMake.createPdf(window.KADRY_WILCZA.docDefPackage(A)).getBase64(b64=>{
+        if(b64) resolve(b64); else reject(new Error('pdfMake getBase64 zwrócił pusty wynik'));
+      });
+    }catch(e){ reject(e); }
+  });
+}
+
+// Локальне завантаження з ТИХ САМИХ base64-байтів (blob + a[download]) —
+// БЕЗ повторного pdfDoc.download() (уникаємо подвійного споживання pdfmake-обʼєкта, Safari-квірк).
+function downloadBase64Pdf(base64, filename){
+  try{
+    const bin = atob(base64);
+    const len = bin.length;
+    const bytes = new Uint8Array(len);
+    for(let i=0;i<len;i++) bytes[i]=bin.charCodeAt(i);
+    const blob = new Blob([bytes], {type:'application/pdf'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 4000);
+  }catch(e){ console.warn('Lokalne pobranie PDF nieudane (kopia serwera i tak wysłana)', e); }
 }
 
 async function doSubmit(){
@@ -363,13 +409,30 @@ async function doSubmit(){
   // doc_number = номер zlecenie; для kierownika додаємо ще й номер волонтаріату в текст
   let docNumber = A._idZ + '/WIL/2026';
   if(A.stanowisko === 'kierownik') docNumber += ' · wol: ' + A._idW + '/WOL/2026';
-  // ОДИН виклик createPdf → і .download(), і .getBase64() з того самого об'єкта
-  const pdfDoc = pdfMake.createPdf(window.KADRY_WILCZA.docDefPackage(A));
-  pdfDoc.download(filename);
-  pdfDoc.getBase64(base64 => postToServer(A, docNumber, filename, base64));
-  document.getElementById('done').style.display='block';
-  document.getElementById('done').scrollIntoView({behavior:'smooth'});
-  btn.disabled=false; btn.textContent='Generuj i wyślij';
+  try{
+    // 1) ОДИН білд PDF → base64
+    const base64 = await pdfBase64(A);
+    // 2) СЕРВЕР-КОПІЯ ПЕРША (await + перевірка ok) — саме її раніше «губили»
+    const ok = await postToServer(A, docNumber, filename, base64);
+    // 3) локальне завантаження з тих самих байтів (не критичне для успіху)
+    downloadBase64Pdf(base64, filename);
+    if(ok){
+      document.getElementById('done').style.display='block';
+      document.getElementById('done').scrollIntoView({behavior:'smooth'});
+    } else {
+      // Збій доставки — НЕ тихо: показуємо видиму помилку
+      err.style.display='block';
+      err.textContent='Nie udało się wysłać do organizatora. Odśwież stronę (Cmd+Shift+R) i spróbuj ponownie. Kopia PDF została pobrana.';
+      console.error('postToServer: kopia NIE dotarła do organizatora (response.ok=false)');
+    }
+  }catch(e){
+    // Виняток у білді/getBase64/fetch — теж ВИДИМО, не тихо
+    err.style.display='block';
+    err.textContent='Błąd generowania lub wysyłki dokumentu: '+((e&&e.message)||e)+'. Odśwież stronę (Cmd+Shift+R) i spróbuj ponownie.';
+    console.error('doSubmit failed', e);
+  }finally{
+    btn.disabled=false; btn.textContent='Generuj i wyślij';
+  }
 }
 
 document.getElementById('preview').addEventListener('click', doPreview);

@@ -610,7 +610,7 @@ function docUpowaznieniePL(A) {
       'art. 29 RODO — załącznik nr 1 do Umowy zlecenia'),
 
     { text: `Załącznik nr 1 do Umowy zlecenia nr ${nr}`, italics: true, fontSize: 7.6, color: '#666', margin: [0, 0, 0, 4] },
-    p(['Sporządzone w Ostrowie Wielkopolskim dnia ', fld(DATA_SPORZADZENIA), '.']),
+    p(['Sporządzone w Ostrowie Wielkopolskim dnia ', fld(A.data_sporzadzenia || DATA_SPORZADZENIA), '.']),
     p([
       { text: CAMPSCOUT.nazwa, bold: true },
       `, ${CAMPSCOUT.adres}, NIP ${CAMPSCOUT.nip}, REGON ${CAMPSCOUT.regon}, ROT ${CAMPSCOUT.rot}, `,
@@ -753,7 +753,7 @@ function docWolontariatWychowawcaUA(A) {
     {
       columns: [
         { text: ['№ ', fld(A.umowa_nr_ua || '___/2026')], fontSize: 9 },
-        { text: [TOV.misto.replace('м. ', 'м. '), ', ', fld(DATA_UKLADENNA)], fontSize: 9, alignment: 'right' },
+        { text: [TOV.misto.replace('м. ', 'м. '), ', ', fld(A.data_ukladennia || DATA_UKLADENNA)], fontSize: 9, alignment: 'right' },
       ], margin: [0, 0, 0, 6],
     },
 
