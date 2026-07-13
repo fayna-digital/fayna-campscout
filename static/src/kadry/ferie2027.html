@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CampScout — Ферії Зима 2027</title>
+<style>
+  :root{
+    --pine-950:#0d211b;--pine-900:#12362b;--pine-800:#1b4332;--pine-700:#285642;--pine-600:#356a53;
+    --gold:#f7cb74;--gold-deep:#d9a441;--ice:#9cc4d2;--ice-deep:#5f93a6;
+    --bg:#f3f6f4;--bg-panel:#ffffff;--bg-sunk:#eaf0ed;--ink:#16261f;--ink-soft:#41564d;--ink-faint:#6c7f77;
+    --line:#d6e0da;--line-strong:#c1cfc7;--accent:#285642;--accent-ink:#1b4332;--gold-on-bg:#a9762a;
+    --shadow:0 1px 2px rgba(16,38,31,.05),0 8px 30px rgba(16,38,31,.06);
+    --good:#2f7d5b;--warn:#b5772a;
+    --sowie:#3f7d67;--stolowe:#5f93a6;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --bg:#0d211b;--bg-panel:#12362b;--bg-sunk:#0a1a15;--ink:#eaf2ee;--ink-soft:#b7c9c0;--ink-faint:#84988e;
+    --line:#234437;--line-strong:#2f5645;--accent:#4f9b78;--accent-ink:#8fd3ac;--gold-on-bg:#f7cb74;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 40px rgba(0,0,0,.35);--good:#5cc191;--warn:#e0a856;
+    --sowie:#6fb394;--stolowe:#8fc0d2;
+  }}
+  :root[data-theme="light"]{--bg:#f3f6f4;--bg-panel:#ffffff;--bg-sunk:#eaf0ed;--ink:#16261f;--ink-soft:#41564d;--ink-faint:#6c7f77;--line:#d6e0da;--line-strong:#c1cfc7;--accent:#285642;--accent-ink:#1b4332;--gold-on-bg:#a9762a;--shadow:0 1px 2px rgba(16,38,31,.05),0 8px 30px rgba(16,38,31,.06);--good:#2f7d5b;--warn:#b5772a;--sowie:#3f7d67;--stolowe:#5f93a6;}
+  :root[data-theme="dark"]{--bg:#0d211b;--bg-panel:#12362b;--bg-sunk:#0a1a15;--ink:#eaf2ee;--ink-soft:#b7c9c0;--ink-faint:#84988e;--line:#234437;--line-strong:#2f5645;--accent:#4f9b78;--accent-ink:#8fd3ac;--gold-on-bg:#f7cb74;--shadow:0 1px 2px rgba(0,0,0,.3),0 12px 40px rgba(0,0,0,.35);--good:#5cc191;--warn:#e0a856;--sowie:#6fb394;--stolowe:#8fc0d2;}
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;line-height:1.6;font-size:17px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 22px}
+  h1,h2,h3{line-height:1.13;text-wrap:balance;font-weight:800;letter-spacing:-.01em}
+  .num{font-variant-numeric:tabular-nums}
+  .eyebrow{text-transform:uppercase;letter-spacing:.18em;font-size:.72rem;font-weight:700;color:var(--gold-on-bg)}
+
+  /* hero */
+  .hero{position:relative;overflow:hidden;color:#eaf2ee;background:radial-gradient(120% 80% at 82% -10%,rgba(247,203,116,.14),transparent 55%),linear-gradient(160deg,var(--pine-900),var(--pine-950) 72%);border-bottom:1px solid rgba(255,255,255,.06)}
+  .hero .wrap{position:relative;z-index:2;padding:52px 22px 118px}
+  .hero .eyebrow{color:var(--gold)}
+  .hero h1{font-size:clamp(2.3rem,6vw,3.9rem);margin:.3em 0 .12em;color:#fff;letter-spacing:-.02em}
+  .hero h1 span{color:var(--gold);display:block;font-size:.5em;font-weight:600;letter-spacing:.01em}
+  .hero .lede{font-size:clamp(1.02rem,2.2vw,1.24rem);color:#cfe0d7;max-width:62ch;margin:.2em 0 0}
+  .ridge{position:absolute;left:0;right:0;bottom:-1px;z-index:1;width:100%;height:auto;display:block}
+  .ridge .r1{fill:var(--pine-800)}.ridge .r2{fill:var(--pine-700);opacity:.85}
+  @media (prefers-reduced-motion:no-preference){.flake{animation:fall linear infinite}@keyframes fall{to{transform:translateY(140px)}}}
+
+  .facts{position:relative;z-index:3;margin-top:-62px;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+  .facts div{background:var(--bg-panel);padding:16px 15px}
+  .facts .k{font-size:1.3rem;font-weight:800;color:var(--accent-ink);line-height:1.05}
+  .facts .l{font-size:.74rem;color:var(--ink-faint);margin-top:6px;text-transform:uppercase;letter-spacing:.05em}
+  @media(max-width:680px){.facts{grid-template-columns:repeat(2,1fr)}}
+
+  section{padding:48px 0}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:8px;flex-wrap:wrap}
+  .sec-head h2{font-size:clamp(1.5rem,3.3vw,2rem);margin:0}
+  .lead-copy{max-width:70ch;color:var(--ink-soft);font-size:1.05rem;margin:.4em 0 0}
+
+  /* two camp cards */
+  .camps{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:26px}
+  @media(max-width:760px){.camps{grid-template-columns:1fr}}
+  .camp{background:var(--bg-panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+  .camp .top{padding:20px 22px;color:#fff;position:relative}
+  .camp.sowie .top{background:linear-gradient(150deg,var(--pine-700),var(--pine-800))}
+  .camp.stolowe .top{background:linear-gradient(150deg,var(--ice-deep),#3f6f80)}
+  .camp .top .badge{font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;font-weight:700;opacity:.9}
+  .camp .top h3{margin:6px 0 2px;font-size:1.5rem;color:#fff}
+  .camp .top .sub{font-size:.9rem;opacity:.92}
+  .camp .body{padding:20px 22px;display:flex;flex-direction:column;gap:14px;flex:1}
+  .camp .desc{margin:0;color:var(--ink-soft);font-size:.96rem}
+  .feat{margin:0;padding:0;list-style:none;display:grid;gap:7px}
+  .feat li{display:grid;grid-template-columns:22px 1fr;gap:8px;font-size:.93rem;color:var(--ink-soft)}
+  .feat li b{color:var(--ink);font-weight:600}
+  .feat .i{color:var(--accent);font-weight:800}
+  .forwho{background:var(--bg-sunk);border-radius:10px;padding:11px 14px;font-size:.9rem;color:var(--ink-soft)}
+  .forwho b{color:var(--accent-ink)}
+  .camp .foot{margin-top:auto;padding:18px 22px;border-top:1px solid var(--line);display:flex;align-items:flex-end;justify-content:space-between;gap:12px;background:var(--bg-sunk)}
+  .camp .foot .price .amt{font-size:1.9rem;font-weight:800;color:var(--accent-ink);line-height:1}
+  .camp .foot .price .amt small{font-size:.85rem;font-weight:600;color:var(--ink-faint)}
+  .camp .foot .price .from{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint)}
+  .camp .foot .dates{text-align:right;font-size:.82rem;color:var(--ink-soft)}
+  .camp .foot .dates b{color:var(--ink);display:block}
+
+  .divider{height:1px;background:var(--line)}
+
+  /* website copy blocks */
+  .site-copy{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:26px}
+  @media(max-width:760px){.site-copy{grid-template-columns:1fr}}
+  .blurb{background:var(--bg-panel);border:1px solid var(--line);border-left:4px solid var(--sowie);border-radius:12px;padding:20px 22px;box-shadow:var(--shadow)}
+  .blurb.stolowe{border-left-color:var(--stolowe)}
+  .blurb .tag{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-faint);font-weight:700}
+  .blurb h3{margin:8px 0 4px;font-size:1.22rem;color:var(--accent-ink)}
+  .blurb .slogan{font-style:italic;color:var(--gold-on-bg);font-weight:600;margin:0 0 10px;font-size:.96rem}
+  .blurb p{margin:0 0 10px;color:var(--ink-soft);font-size:.95rem}
+  .blurb .mini{font-size:.82rem;color:var(--ink-faint);border-top:1px dashed var(--line);padding-top:10px;margin-top:4px}
+  .blurb .mini b{color:var(--ink)}
+
+  /* program */
+  .days{display:flex;flex-direction:column;gap:12px;margin-top:24px}
+  .day{background:var(--bg-panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;display:grid;grid-template-columns:80px 1fr}
+  @media(max-width:600px){.day{grid-template-columns:1fr}}
+  .day .rail{background:linear-gradient(180deg,var(--pine-700),var(--pine-800));color:#fff;padding:16px 12px;display:flex;flex-direction:column;justify-content:center;gap:2px}
+  .day .rail .dn{font-size:.64rem;text-transform:uppercase;letter-spacing:.12em;color:var(--gold)}
+  .day .rail .dd{font-size:1.5rem;font-weight:800;line-height:1}
+  .day .body{padding:15px 18px}
+  .day .body h3{margin:0 0 5px;font-size:1.05rem;color:var(--accent-ink)}
+  .day .body p{margin:0;color:var(--ink-soft);font-size:.93rem}
+  .day .body .split{margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  @media(max-width:520px){.day .body .split{grid-template-columns:1fr}}
+  .day .body .split div{font-size:.84rem;padding:8px 11px;border-radius:8px;background:var(--bg-sunk)}
+  .day .body .split .s1{border-left:3px solid var(--sowie)}
+  .day .body .split .s2{border-left:3px solid var(--stolowe)}
+  .day .body .split b{color:var(--ink)}
+
+  .card{background:var(--bg-panel);border:1px solid var(--line);border-radius:14px;padding:22px;box-shadow:var(--shadow)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px}
+  @media(max-width:680px){.two{grid-template-columns:1fr}}
+  .card h3{margin:0 0 12px;font-size:1.05rem}
+  .card ul{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+  .card li{display:grid;grid-template-columns:20px 1fr;gap:8px;font-size:.94rem;color:var(--ink-soft)}
+  .incl .m{color:var(--good);font-weight:800}
+  .excl .m{color:var(--ink-faint);font-weight:800}
+
+  /* pricing table */
+  .tbl-card{background:var(--bg-panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;margin-top:22px}
+  .tbl-card>.cap{padding:16px 18px 2px}
+  .tbl-card .cap h3{margin:0;font-size:1.05rem}
+  .tbl-card .cap p{margin:4px 0 0;font-size:.82rem;color:var(--ink-faint)}
+  .tbl-wrap{overflow-x:auto;padding:10px 8px 10px}
+  table{width:100%;border-collapse:collapse;font-size:.93rem;min-width:520px}
+  th,td{padding:10px 13px;text-align:left}
+  thead th{font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);font-weight:700;border-bottom:1px solid var(--line)}
+  tbody td{border-bottom:1px solid var(--line)}
+  tbody tr:last-child td{border-bottom:0}
+  td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .pill{display:inline-block;font-size:.7rem;font-weight:700;padding:2px 9px;border-radius:20px;color:#fff}
+  .pill.s{background:var(--sowie)}.pill.k{background:var(--stolowe)}
+  .big{font-weight:800;color:var(--accent-ink)}
+
+  .note{background:var(--bg-sunk);border:1px solid var(--line);border-left:3px solid var(--gold-deep);border-radius:10px;padding:15px 18px;font-size:.9rem;color:var(--ink-soft);margin-top:20px}
+  .note b{color:var(--ink)}
+  .note ul{margin:8px 0 0;padding-left:18px}.note li{margin:3px 0}
+  .internal{border-left-color:var(--ice-deep);background:var(--bg-sunk)}
+
+  footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--ink-faint);font-size:.85rem}
+  footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  a{color:var(--accent);text-underline-offset:2px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <svg class="ridge" viewBox="0 0 1440 150" preserveAspectRatio="none" aria-hidden="true">
+    <path class="r2" d="M0,150 L0,92 L200,40 L380,100 L560,38 L760,104 L960,48 L1180,106 L1440,52 L1440,150 Z"/>
+    <path class="r1" d="M0,150 L0,116 L240,74 L470,122 L700,70 L940,126 L1180,80 L1440,110 L1440,150 Z"/>
+  </svg>
+  <svg style="position:absolute;inset:0;z-index:1" width="100%" height="100%" aria-hidden="true">
+    <g fill="#fff" opacity="0.5">
+      <circle class="flake" cx="14%" cy="18" r="1.5" style="animation-duration:9s"/><circle class="flake" cx="30%" cy="60" r="1.1" style="animation-duration:12s"/><circle class="flake" cx="49%" cy="28" r="1.7" style="animation-duration:7s"/><circle class="flake" cx="66%" cy="78" r="1.2" style="animation-duration:11s"/><circle class="flake" cx="80%" cy="40" r="1.4" style="animation-duration:8s"/><circle class="flake" cx="92%" cy="66" r="1.1" style="animation-duration:13s"/>
+    </g>
+  </svg>
+  <div class="wrap">
+    <div class="eyebrow">CampScout · Ферії Зима 2027 · Судети</div>
+    <h1>Зимові табори у горах<span>Два табори на вибір · виїзд автобусом із Вроцлава</span></h1>
+    <p class="lede">Тиждень зимового скаутингу зі снігом під ногами: лижі й санки, пригоди в горах і команда. Обери гори під свою дитину — камерний Jugów для перших лиж або Kudowa-Zdrój із великим ski-центром і атракціями.</p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="facts">
+    <div><div class="k">1–6.02 · 15–21.02</div><div class="l">2 турнуси · ферії 2027</div></div>
+    <div><div class="k num">8–14</div><div class="l">років</div></div>
+    <div><div class="k">🚌 Wrocław</div><div class="l">збір і виїзд автобусом</div></div>
+    <div><div class="k">від 1 790 <span style="font-size:.6em">zł</span></div><div class="l">за турнус, все включено</div></div>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <!-- CAMPS -->
+  <section>
+    <div class="sec-head"><span class="eyebrow" style="align-self:center">Дві локації</span><h2>Обери свої гори</h2></div>
+    <p class="lead-copy">Обидва табори — той самий формат, кадра й програма CampScout. Різниця — характер гір і рівень «лижності». Ціни різняться лише через дорогу й гірський ski-пас.</p>
+
+    <div class="camps">
+      <article class="camp sowie">
+        <div class="top"><div class="badge">Góry Sowie · Совині гори</div><h3>Jugów</h3><div class="sub">камерно · для перших лиж · ~75 км від Вроцлава</div></div>
+        <div class="body">
+          <p class="desc">Тихе гірське село в серці Совиних гір із власним ski-парком просто на місці. Ідеально, щоб уперше стати на лижі без стресу великих курортів.</p>
+          <ul class="feat">
+            <li><span class="i">⛷</span><span><b>Jugów Sport Park / wyciąg Rymarz</b> — сучасні підйомники, штучний сніг, ратрак</span></li>
+            <li><span class="i">🍼</span><span>Зелені траси, лагідний схил <b>Besterek</b> і <b>baby-lift</b> для початківців</span></li>
+            <li><span class="i">🎿</span><span>Ski-школа на місці, бігова траса «Niedźwiedź» від Przełęczy Jugowskiej</span></li>
+            <li><span class="i">🌲</span><span>Спокій, ліс, мінімум натовпу — безпечно для наймолодших</span></li>
+          </ul>
+          <div class="forwho"><b>Для кого:</b> діти 8–14, які вперше на лижах або хочуть спокійніший, домашній табір.</div>
+        </div>
+        <div class="foot">
+          <div class="price"><div class="from">Ціна за турнус</div><div class="amt num">1 790 <small>zł</small></div></div>
+          <div class="dates"><b>Турнус I: 1–6.02</b>Турнус II: 15–21.02</div>
+        </div>
+      </article>
+
+      <article class="camp stolowe">
+        <div class="top"><div class="badge">Góry Stołowe · Столові гори</div><h3>Kudowa-Zdrój</h3><div class="sub">більше лиж і атракцій · ~110 км від Вроцлава</div></div>
+        <div class="body">
+          <p class="desc">Курортне містечко біля Столових гір і поряд із <b>Zieleniec</b> — найбільшим ski-центром Нижньої Сілезії. Більше траси, більше вражень, більше «вау».</p>
+          <ul class="feat">
+            <li><span class="i">⛷</span><span><b>Zieleniec</b> — 30 підйомників, сніг до 150 днів/рік, школи й прокат</span></li>
+            <li><span class="i">🛷</span><span>«Śnieżne koło» — тюбінг-траса 300 м, окремий хіт для дітей</span></li>
+            <li><span class="i">🪨</span><span>Столові гори: <b>Błędne Skały</b>, Szczeliniec — казкові скельні лабіринти в снігу</span></li>
+            <li><span class="i">🧸</span><span>Muzeum Zabawek, парки линові, курортний парк — є що робити й поза схилом</span></li>
+          </ul>
+          <div class="forwho"><b>Для кого:</b> діти 8–14, які вже катаються або хочуть максимум лиж, вражень і руху.</div>
+        </div>
+        <div class="foot">
+          <div class="price"><div class="from">Ціна за турнус</div><div class="amt num">1 990 <small>zł</small></div></div>
+          <div class="dates"><b>Турнус I: 1–6.02</b>Турнус II: 15–21.02</div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- WEBSITE COPY -->
+  <section>
+    <div class="sec-head"><span class="eyebrow" style="align-self:center">Готовий текст на сайт</span><h2>Опис послуги для батьків</h2></div>
+    <p class="lead-copy">Готові продаючі описи для сторінки-товару — можна ставити на сайт як є (по одному на кожен табір).</p>
+
+    <div class="site-copy">
+      <div class="blurb sowie">
+        <div class="tag">Товар на сайт · Табір 1</div>
+        <h3>Зимовий табір «Śnieżny Trop» · Jugów, Góry Sowie</h3>
+        <p class="slogan">«Перші лижі — без страху. Гори, сніг і команда.»</p>
+        <p>Тиждень у тихих Совиних горах, де ваша дитина вперше впевнено стане на лижі. Власний ski-парк просто в селі, лагідні зелені траси й baby-lift, ліцензовані інструктори в малих групах за рівнем. А поза схилом — зимовий скаутинг: сліди на снігу, вузли, командні ігри й вечірнє вогнище. Затишний, домашній формат для наймолодших.</p>
+        <p class="mini"><b>7 днів у горах · збір і виїзд автобусом із Вроцлава · проживання з повним харчуванням · 2 дні на схилі (karnet + прокат + інструктор) · страхування · кадра CampScout · нашивка і чустка.</b> Діти 8–14 років.</p>
+        <p class="mini">Турнуси: <b>1–6.02.2027</b> та <b>15–21.02.2027</b> · ціна від <b>1 790 zł</b></p>
+      </div>
+
+      <div class="blurb stolowe">
+        <div class="tag">Товар на сайт · Табір 2</div>
+        <h3>Зимовий табір «Śnieżny Trop» · Kudowa-Zdrój, Góry Stołowe</h3>
+        <p class="slogan">«Більше лиж, більше пригод. Столові гори у снігу.»</p>
+        <p>Курорт Kudowa-Zdrój поряд із Zieleniec — найбільшим ski-центром Нижньої Сілезії: десятки підйомників, гарантований сніг, тюбінг-траса «śnieżne koło». Плюс казкові скельні лабіринти Błędnych Skał у зимовому вбранні та курортні атракції. Максимум катання й вражень для дітей, які люблять рух. Усе — під наглядом кадри CampScout і в скаутському дусі команди.</p>
+        <p class="mini"><b>7 днів у горах · збір і виїзд автобусом із Вроцлава · проживання з повним харчуванням · 2 дні на схилі Zieleniec (karnet + прокат + інструктор) · екскурсія в Столові гори · страхування · кадра CampScout · нашивка і чустка.</b> Діти 8–14 років.</p>
+        <p class="mini">Турнуси: <b>1–6.02.2027</b> та <b>15–21.02.2027</b> · ціна від <b>1 990 zł</b></p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- PROGRAM -->
+  <section>
+    <div class="sec-head"><span class="eyebrow" style="align-self:center">Розклад</span><h2>Програма турнусу (6 днів)</h2></div>
+    <p class="lead-copy">Однаковий каркас для обох таборів — різниця лише в гірських екскурсіях (позначено кольором локації). Турнус II (15–21.02) на день довший — додатковий день на схилі.</p>
+    <div class="days">
+      <article class="day"><div class="rail"><span class="dn">День</span><span class="dd num">1</span></div><div class="body"><h3>Заїзд · Знайомство</h3><p>Виїзд автобусом із Вроцлава, заселення, обід. Поділ на патрулі, назви й гасла, правила BHP. Увечері — вогнище-старт і командні ігри.</p></div></article>
+      <article class="day"><div class="rail"><span class="dn">День</span><span class="dd num">2</span></div><div class="body"><h3>Школа зимового лісу</h3><p>Зимовий скаутинг: читання слідів на снігу, орієнтування, вузли, розпалювання, гарячий чай у полі. Підготовка спорядження до схилу.</p></div></article>
+      <article class="day"><div class="rail"><span class="dn">День</span><span class="dd num">3</span></div><div class="body"><h3>Схил · День 1</h3><p>Перший день на лижах: видача karnetів і спорядження, групи за рівнем з інструкторами — від «пляшечки» до траси.</p><div class="split"><div class="s1"><b>Jugów:</b> wyciąg Rymarz / Besterek, baby-lift для початківців</div><div class="s2"><b>Kudowa:</b> Zieleniec — школа й траси за рівнем</div></div></div></article>
+      <article class="day"><div class="rail"><span class="dn">День</span><span class="dd num">4</span></div><div class="body"><h3>Схил · День 2 + санки</h3><p>Закріплення техніки, міні-змагання, вручення «прав лижника». Санки/тюбінг і вечірній тематичний «Карнавал у горах».</p><div class="split"><div class="s1"><b>Jugów:</b> бігова траса «Niedźwiedź», санкова гірка</div><div class="s2"><b>Kudowa:</b> тюбінг «śnieżne koło» 300 м</div></div></div></article>
+      <article class="day"><div class="rail"><span class="dn">День</span><span class="dd num">5</span></div><div class="body"><h3>Пригода в горах</h3><p>Гірська екскурсія-квест патрулями, будівництво снігового схову-іглу, «зимовий квест» із ліхтариками ввечері (безпечно, на території).</p><div class="split"><div class="s1"><b>Jugów:</b> Przełęcz Jugowska, панорама Совиних гір</div><div class="s2"><b>Kudowa:</b> Błędne Skały — скельний лабіринт у снігу</div></div></div></article>
+      <article class="day"><div class="rail"><span class="dn">День</span><span class="dd num">6</span></div><div class="body"><h3>Фінал · Виїзд</h3><p>Майстерні, велика гра турнусу, <b>вогнище відзнак</b>: нашивки «Śnieżny Trop» і чустки. Прибирання, прощальне коло, трансфер автобусом до Вроцлава.</p></div></article>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- INCLUDES -->
+  <section>
+    <div class="sec-head"><span class="eyebrow" style="align-self:center">Умови</span><h2>Що входить у ціну</h2></div>
+    <div class="two">
+      <div class="card incl"><h3>✓ У вартості</h3><ul>
+        <li><span class="m">+</span><span>Проживання + повне харчування (5 ночей у турнусі I; 6 — у турнусі II)</span></li>
+        <li><span class="m">+</span><span>Трансфер автобусом Вроцлав ⇄ табір (туди й назад)</span></li>
+        <li><span class="m">+</span><span><b>2 дні на схилі</b>: karnet, прокат лиж/черевиків, інструктори</span></li>
+        <li><span class="m">+</span><span>Уся програма: скаутинг, санки/тюбінг, гірська екскурсія, майстерні, вогнище</span></li>
+        <li><span class="m">+</span><span>Кадра CampScout: kierownik, wychowawcy, опіка медична</span></li>
+        <li><span class="m">+</span><span>Страхування NNW · нашивка і чустка «Śnieżny Trop»</span></li>
+      </ul></div>
+      <div class="card excl"><h3>— Поза вартістю</h3><ul>
+        <li><span class="m">·</span><span>Особисте зимове вбрання (комбінезон, рукавиці — власне; шолом видаємо)</span></li>
+        <li><span class="m">·</span><span>Кишенькові гроші на дрібні покупки</span></li>
+        <li><span class="m">·</span><span>Проїзд родини до точки збору у Вроцлаві</span></li>
+      </ul>
+      <p style="font-size:.85rem;color:var(--ink-faint);margin:14px 0 0">Шолом на схилі обов'язковий і закладений у прокат.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- PRICES -->
+  <section>
+    <div class="sec-head"><span class="eyebrow" style="align-self:center">Ціни</span><h2>Тарифи заїздів</h2></div>
+    <div class="tbl-card">
+      <div class="cap"><h3>Ціна для батьків, zł</h3><p>усе включено · знижки: early-bird до 20.12 −100 zł · брат/сестра −100 zł</p></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Табір</th><th>Гори</th><th class="n">Турнус I (1–6.02) · 6 дн</th><th class="n">Турнус II (15–21.02) · 7 дн</th></tr></thead>
+          <tbody>
+            <tr><td><span class="pill s">Jugów</span></td><td>Góry Sowie</td><td class="n big">1 790</td><td class="n big">2 040</td></tr>
+            <tr><td><span class="pill k">Kudowa-Zdrój</span></td><td>Góry Stołowe</td><td class="n big">1 990</td><td class="n big">2 240</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="lead-copy" style="margin-top:14px">Конкурентно: типовий польський ski-обоз 6 днів коштує <b>1 900–2 900 zł</b> — наша ціна в нижній частині ринку завдяки близькості до Вроцлава (дешевший автобус) і власному ski-парку в Jugowie.</p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>CampScout · Ферії Зима 2027 · Судети (Jugów · Kudowa-Zdrój)</span>
+    <span>Ціни орієнтовні до підтвердження оферт осередків</span>
+  </div>
+</footer>
+</body>
+</html>
