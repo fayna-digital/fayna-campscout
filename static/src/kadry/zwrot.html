@@ -40,6 +40,16 @@
   button.ghost{background:var(--card);color:var(--forest);border:1.5px solid var(--forest);}
   .err{color:#b3261e;font-size:12px;margin-top:6px;display:none;}
   #done{display:none;background:rgba(27,67,50,.08);border:1px solid var(--forest);border-radius:12px;padding:18px;margin-top:16px;}
+  .form-intro{font-size:12.5px;color:var(--muted);margin:0 0 4px;padding:2px 2px 0;}
+  .form-intro .ua{display:block;margin-top:4px;}
+  .radio-group{display:flex;flex-direction:column;gap:2px;}
+  .radio-group.invalid{border:1px solid #b3261e;border-radius:8px;padding:6px;background:rgba(179,38,30,.06);}
+  .rd{display:flex;gap:9px;align-items:flex-start;padding:8px 2px;cursor:pointer;}
+  .rd input{margin-top:3px;width:17px;height:17px;accent-color:var(--forest);flex:0 0 auto}
+  .rd .pl{font-weight:600;}
+  .rd .ua{display:block;color:var(--muted);font-size:12px;margin-top:2px;}
+  .reason-note{font-size:11.5px;color:var(--muted);margin:8px 2px 0;}
+  #przyczynaInnaWrap{margin:8px 0 2px;display:none;}
 </style>
 <script src="/fayna_camp_portal/static/src/kadry/assets/pdfmake.min.js"></script>
 <script src="/fayna_camp_portal/static/src/kadry/assets/vfs_fonts.js"></script>
@@ -53,6 +63,8 @@
 </header>
 <main>
 <form id="f" novalidate>
+
+  <p class="form-intro">Poniższy formularz jest oficjalnym wnioskiem o zwrot wpłaty za turnus. Prosimy o wskazanie podstawy, która odpowiada Państwa sytuacji. Podane dane trafiają bezpośrednio do Organizatora i służą wyłącznie do rozpatrzenia zwrotu.<br><span class="ua">Наведена форма — це офіційна заява на повернення внеску за турнус. Просимо обрати підставу, яка відповідає Вашій ситуації. Вказані дані надходять напряму до Організатора і використовуються виключно для опрацювання повернення.</span></p>
 
   <section class="sec">
     <h2>Dane klienta / Дані клієнта</h2>
@@ -76,7 +88,16 @@
 
   <section class="sec">
     <h2>Przyczyna zwrotu / Причина повернення</h2>
-    <label class="chk"><input type="checkbox" name="przyczyna" checked><span><b>Odwołanie turnusu przez Organizatora (§6.5 Regulaminu)</b> / Скасування турнусу Організатором</span></label>
+    <div class="radio-group" id="przyczynaGroup">
+      <label class="rd"><input type="radio" name="przyczyna" value="osobista"><span><span class="pl">Rezygnacja z przyczyn osobistych lub rodzinnych (§6.1)</span><span class="ua">Відмова з особистих або сімейних причин</span></span></label>
+      <label class="rd"><input type="radio" name="przyczyna" value="zdrowotna"><span><span class="pl">Rezygnacja z przyczyn zdrowotnych (§6.3)</span><span class="ua">Відмова зі станом здоровʼя</span></span></label>
+      <label class="rd"><input type="radio" name="przyczyna" value="organizator"><span><span class="pl">Odwołanie lub zmiana terminu turnusu przez Organizatora (§6.5)</span><span class="ua">Скасування або зміна терміну турнусу Організатором</span></span></label>
+      <label class="rd"><input type="radio" name="przyczyna" value="sila_wyzsza"><span><span class="pl">Okoliczności niezależne od stron / siła wyższa (§9.3)</span><span class="ua">Обставини, незалежні від сторін</span></span></label>
+      <label class="rd"><input type="radio" name="przyczyna" value="inna"><span><span class="pl">Inna przyczyna</span><span class="ua">Інша причина</span></span></label>
+    </div>
+    <div id="przyczynaInnaWrap">
+      <input type="text" name="przyczyna_inna" placeholder="Proszę opisać / Опишіть, будь ласка">
+    </div>
   </section>
 
   <section class="sec">
@@ -160,6 +181,26 @@ document.getElementById('clearSig').onclick = () => { ctx.clearRect(0,0,canvas.w
   document.querySelector('input[name="data"]').value = d.toLocaleDateString('pl-PL');
 })();
 
+// Przyczyna — mapa etykiet (PL + §) do payload/PDF i pokazywanie pola "Inna"
+const PRZYCZYNA_LABELS = {
+  osobista:    'Rezygnacja z przyczyn osobistych lub rodzinnych (§6.1)',
+  zdrowotna:   'Rezygnacja z przyczyn zdrowotnych (§6.3)',
+  organizator: 'Odwołanie lub zmiana terminu turnusu przez Organizatora (§6.5)',
+  sila_wyzsza: 'Okoliczności niezależne od stron / siła wyższa (§9.3)',
+  inna:        'Inna przyczyna',
+};
+const przyczynaGroup = document.getElementById('przyczynaGroup');
+const przyczynaInnaWrap = document.getElementById('przyczynaInnaWrap');
+const przyczynaInnaInput = document.querySelector('input[name="przyczyna_inna"]');
+document.querySelectorAll('input[name="przyczyna"]').forEach(r => {
+  r.addEventListener('change', () => {
+    przyczynaGroup.classList.remove('invalid');
+    const isInna = r.value === 'inna' && r.checked;
+    przyczynaInnaWrap.style.display = isInna ? 'block' : 'none';
+    if (!isInna) { przyczynaInnaInput.value = ''; przyczynaInnaInput.classList.remove('invalid'); }
+  });
+});
+
 // IBAN — segmenty: tylko cyfry, auto-przejście do następnego pola
 const ibanInputs = Array.from(document.querySelectorAll('.iban'));
 ibanInputs.forEach((inp, i) => {
@@ -213,7 +254,12 @@ document.getElementById('f').addEventListener('submit', (e) => {
   const uczestnik = (fd.get('uczestnik') || '').trim();
   const turnus = (fd.get('turnus') || '').trim();
   const kwota = (fd.get('kwota') || '').trim();
-  const przyczyna = fd.get('przyczyna') === 'on';
+  const przyczynaVal = fd.get('przyczyna') || '';
+  const przyczynaInna = (fd.get('przyczyna_inna') || '').trim();
+  // ludzko-czytelny opis wybranej podstawy (PL + §) do payload/PDF/Telegram
+  const przyczynaText = przyczynaVal === 'inna'
+    ? (przyczynaInna ? 'Inna: ' + przyczynaInna : '')
+    : (PRZYCZYNA_LABELS[przyczynaVal] || '');
   const wlasciciel_rachunku = (fd.get('wlasciciel_rachunku') || '').trim();
   const miejscowosc = (fd.get('miejscowosc') || '').trim();
   const data = (fd.get('data') || '').trim();
@@ -225,9 +271,12 @@ document.getElementById('f').addEventListener('submit', (e) => {
   const imieEl = document.querySelector('input[name="imie"]');
   const wlascEl = document.querySelector('input[name="wlasciciel_rachunku"]');
   imieEl.classList.remove('invalid'); wlascEl.classList.remove('invalid');
+  przyczynaGroup.classList.remove('invalid'); przyczynaInnaInput.classList.remove('invalid');
   if (!imie){ imieEl.classList.add('invalid'); ok = false; }
   if (!wlasciciel_rachunku){ wlascEl.classList.add('invalid'); ok = false; }
   if (iban_digits.length !== 26){ ibanInputs.forEach(i => i.classList.add('invalid')); ok = false; }
+  if (!przyczynaVal){ przyczynaGroup.classList.add('invalid'); ok = false; }
+  else if (przyczynaVal === 'inna' && !przyczynaInna){ przyczynaInnaInput.classList.add('invalid'); ok = false; }
   if (!ok){ err.style.display = 'block'; return; }
   err.style.display = 'none';
 
@@ -262,7 +311,7 @@ document.getElementById('f').addEventListener('submit', (e) => {
     kv('Kwota wpłacona (zł) / Сплачена сума', kwota),
 
     sectionTitle('Przyczyna zwrotu / Причина повернення'),
-    { text: (przyczyna ? '☑ ' : '☐ ') + 'Odwołanie turnusu przez Organizatora (§6.5 Regulaminu) / Скасування турнусу Організатором', margin: [0, 1.5, 0, 0] },
+    { text: przyczynaText || '—', margin: [0, 1.5, 0, 0] },
 
     sectionTitle('Rachunek do zwrotu / Рахунок для повернення'),
     kv('Właściciel rachunku / Власник рахунку', wlasciciel_rachunku),
@@ -290,7 +339,7 @@ document.getElementById('f').addEventListener('submit', (e) => {
   };
 
   const payload = { imie, telefon, adres, email, nr_zamowienia, uczestnik, turnus, kwota,
-    przyczyna: przyczyna ? 'Odwołanie §6.5' : '', wlasciciel_rachunku, iban, miejscowosc, data, dateTimeStr };
+    przyczyna: przyczynaText, wlasciciel_rachunku, iban, miejscowosc, data, dateTimeStr };
   const filename = 'wniosek-zwrot_' + nazwisko + '_' + ts + '.pdf';
 
   const pdfDoc = pdfMake.createPdf(docDef);

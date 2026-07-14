@@ -171,7 +171,7 @@ class DocumentSubmissionController(http.Controller):
                 f"Сума: {payload.get('kwota') or '—'} zł",
                 f"Właściciel rachunku: {payload.get('wlasciciel_rachunku') or '—'}",
                 f"IBAN: {payload.get('iban') or '—'}",
-                "Причина: Odwołanie §6.5",
+                f"Причина: {payload.get('przyczyna') or '—'}",
                 f"Контакт: {evidence['contact'] or '—'}",
                 f"IP: {evidence['ip_address'] or '—'} · Час: {evidence['submitted_at']}",
             ]
