@@ -41,6 +41,11 @@ class KadryFormsController(http.Controller):
         PDF umowa zlecenia (art. 734 KC) у браузері й надсилає копію в Telegram."""
         return self._serve_html("wilcza.html")
 
+    @http.route(["/camp/zwrot"], type="http", auth="public", website=False, methods=["GET"])
+    def wniosek_zwrot(self, **kw):
+        """Публічна форма Wniosek o zwrot środków — заповнення заявником, PDF→сервер+Telegram+email."""
+        return self._serve_html("zwrot.html")
+
     @http.route(["/camp/oferta/ferie2027"], type="http", auth="public", website=False, methods=["GET"])
     def oferta_ferie2027(self, **kw):
         """Публічна офера зимових таборів Ферії 2027 (Jugów / Kudowa-Zdrój) — для батьків."""
