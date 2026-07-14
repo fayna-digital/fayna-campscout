@@ -104,6 +104,13 @@
     <h2>Rachunek do zwrotu / Рахунок для повернення</h2>
     <div><label>Właściciel rachunku / Власник рахунку *</label><input type="text" name="wlasciciel_rachunku" required></div>
     <div style="margin-top:12px">
+      <label>Rodzaj rachunku / Тип рахунку *</label>
+      <div class="radio-group" id="acctTypeGroup">
+        <label class="rd"><input type="radio" name="acct_type" value="pl" checked><span><span class="pl">Polski rachunek — IBAN PL</span><span class="ua">Польський рахунок — IBAN PL</span></span></label>
+        <label class="rd"><input type="radio" name="acct_type" value="ua"><span><span class="pl">Ukraiński — karta lub rachunek (UAH)</span><span class="ua">Українська картка або рахунок (грн)</span></span></label>
+      </div>
+    </div>
+    <div style="margin-top:12px" id="ibanPlWrap">
       <label>Nr rachunku (IBAN) / Номер рахунку *</label>
       <div class="iban-row" id="ibanRow">
         <span class="pl">PL</span>
@@ -116,6 +123,11 @@
         <input type="tel" class="iban" maxlength="4" inputmode="numeric" aria-label="IBAN segment 7">
       </div>
       <p class="req-note">PL + 26 cyfr · np. PL00 0000 0000 0000 0000 0000 0000 · wpisz numer rachunku w całości / впишіть номер рахунку повністю</p>
+    </div>
+    <div style="margin-top:12px; display:none" id="ibanUaWrap">
+      <label>Nr karty lub rachunku (UA) / Номер картки або рахунку (UA) *</label>
+      <input type="text" name="rachunek_ua" placeholder="numer karty lub rachunek UA / номер картки або UA-рахунок">
+      <p class="req-note">Ukraińska karta (16 cyfr) lub rachunek UA / Українська картка (16 цифр) або рахунок UA</p>
     </div>
   </section>
 
@@ -216,6 +228,21 @@ ibanInputs.forEach((inp, i) => {
 function ibanDigits(){ return ibanInputs.map(i => i.value).join(''); }
 function ibanFormatted(){ return 'PL' + ibanInputs.map(i => i.value).join(' '); }
 
+// Rodzaj rachunku — PL IBAN (segmenty) vs UA karta/rachunek (jedno pole)
+const ibanPlWrap = document.getElementById('ibanPlWrap');
+const ibanUaWrap = document.getElementById('ibanUaWrap');
+const rachunekUaInput = document.querySelector('input[name="rachunek_ua"]');
+function acctType(){ const c = document.querySelector('input[name="acct_type"]:checked'); return c ? c.value : 'pl'; }
+document.querySelectorAll('input[name="acct_type"]').forEach(r => {
+  r.addEventListener('change', () => {
+    const ua = acctType() === 'ua';
+    ibanUaWrap.style.display = ua ? 'block' : 'none';
+    ibanPlWrap.style.display = ua ? 'none' : 'block';
+    ibanInputs.forEach(i => i.classList.remove('invalid'));
+    rachunekUaInput.classList.remove('invalid');
+  });
+});
+
 if (typeof pdfMake !== 'undefined') {
   pdfMake.fonts = { Roboto: { normal:'Roboto-Regular.ttf', bold:'Roboto-Medium.ttf', italics:'Roboto-Italic.ttf', bolditalics:'Roboto-MediumItalic.ttf' } };
 }
@@ -263,8 +290,10 @@ document.getElementById('f').addEventListener('submit', (e) => {
   const wlasciciel_rachunku = (fd.get('wlasciciel_rachunku') || '').trim();
   const miejscowosc = (fd.get('miejscowosc') || '').trim();
   const data = (fd.get('data') || '').trim();
+  const acct = acctType();
+  const rachunekUa = (fd.get('rachunek_ua') || '').trim();
   const iban_digits = ibanDigits();
-  const iban = ibanFormatted();
+  const iban = acct === 'ua' ? rachunekUa : ibanFormatted();
 
   // walidacja: Imię i nazwisko + Właściciel rachunku + IBAN (26 cyfr po PL)
   let ok = true;
@@ -272,9 +301,14 @@ document.getElementById('f').addEventListener('submit', (e) => {
   const wlascEl = document.querySelector('input[name="wlasciciel_rachunku"]');
   imieEl.classList.remove('invalid'); wlascEl.classList.remove('invalid');
   przyczynaGroup.classList.remove('invalid'); przyczynaInnaInput.classList.remove('invalid');
+  rachunekUaInput.classList.remove('invalid');
   if (!imie){ imieEl.classList.add('invalid'); ok = false; }
   if (!wlasciciel_rachunku){ wlascEl.classList.add('invalid'); ok = false; }
-  if (iban_digits.length !== 26){ ibanInputs.forEach(i => i.classList.add('invalid')); ok = false; }
+  if (acct === 'ua'){
+    if (!rachunekUa){ rachunekUaInput.classList.add('invalid'); ok = false; }
+  } else {
+    if (iban_digits.length !== 26){ ibanInputs.forEach(i => i.classList.add('invalid')); ok = false; }
+  }
   if (!przyczynaVal){ przyczynaGroup.classList.add('invalid'); ok = false; }
   else if (przyczynaVal === 'inna' && !przyczynaInna){ przyczynaInnaInput.classList.add('invalid'); ok = false; }
   if (!ok){ err.style.display = 'block'; return; }
