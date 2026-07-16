@@ -5,7 +5,12 @@
 Мапінг: breakfast/lunch/dinner прямо; snacks → afternoon_snack;
 allergy_notes/diet-лічильники/state/prepared_by — у нові поля keeper'а;
 nutrition.notes дописується в keeper.notes. Upsert-safe за (event, date).
-Дані staging-тестові (STEP1_TZ)."""
+Дані staging-тестові (STEP1_TZ).
+
+jsonb: страви й notes у camp.menu.day — fields.Text(translate=True) (jsonb),
+а в legacy camp_nutrition вони text, тож переносяться загорнутими ОДИН раз у
+jsonb_build_object('en_US', ...); NULL лишається NULL, не {"en_US": null}.
+allergy_notes/state/prepared_by/лічильники — не translate, йдуть як є."""
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -24,9 +29,19 @@ def migrate(cr, version):
              allergy_notes, vegetarian_count, vegan_count, gluten_free_count,
              lactose_free_count, state, prepared_by, notes,
              create_uid, create_date, write_uid, write_date)
-        SELECT n.event_id, n.menu_date, n.breakfast, n.lunch, n.dinner, n.snacks,
+        SELECT n.event_id, n.menu_date,
+               CASE WHEN n.breakfast IS NULL THEN NULL
+                    ELSE jsonb_build_object('en_US', n.breakfast) END,
+               CASE WHEN n.lunch IS NULL THEN NULL
+                    ELSE jsonb_build_object('en_US', n.lunch) END,
+               CASE WHEN n.dinner IS NULL THEN NULL
+                    ELSE jsonb_build_object('en_US', n.dinner) END,
+               CASE WHEN n.snacks IS NULL THEN NULL
+                    ELSE jsonb_build_object('en_US', n.snacks) END,
                n.allergy_notes, n.vegetarian_count, n.vegan_count, n.gluten_free_count,
-               n.lactose_free_count, COALESCE(n.state, 'draft'), n.prepared_by, n.notes,
+               n.lactose_free_count, COALESCE(n.state, 'draft'), n.prepared_by,
+               CASE WHEN n.notes IS NULL THEN NULL
+                    ELSE jsonb_build_object('en_US', n.notes) END,
                n.create_uid, n.create_date, n.write_uid, n.write_date
         FROM camp_nutrition n
         WHERE NOT EXISTS (
@@ -45,7 +60,18 @@ def migrate(cr, version):
             gluten_free_count = n.gluten_free_count,
             lactose_free_count = n.lactose_free_count,
             allergy_notes = COALESCE(m.allergy_notes, n.allergy_notes),
-            notes = COALESCE(m.notes || E'\n\n', '') || COALESCE(n.notes, '')
+            notes = CASE
+                WHEN NULLIF(CONCAT_WS(E'\n\n',
+                                      COALESCE(m.notes ->> 'en_US',
+                                               m.notes ->> 'pl_PL'),
+                                      n.notes), '') IS NULL THEN NULL
+                ELSE jsonb_build_object(
+                         'en_US',
+                         NULLIF(CONCAT_WS(E'\n\n',
+                                          COALESCE(m.notes ->> 'en_US',
+                                                   m.notes ->> 'pl_PL'),
+                                          n.notes), ''))
+            END
         FROM camp_nutrition n
         WHERE m.event_id = n.event_id AND m.menu_date = n.menu_date
           AND n.notes IS NOT NULL
