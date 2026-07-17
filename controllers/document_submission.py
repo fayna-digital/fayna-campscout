@@ -75,7 +75,9 @@ def _notify_email_zwrot(full_name, doc_number, body_text, attachment):
     Збій пошти (нема вихідного mail-сервера тощо) НЕ повинен зривати збереження
     доказу й НЕ 500-ити клієнта — обгорнуто в try/except, як telegram."""
     try:
-        body_html = "<pre style=\"font-family:inherit;white-space:pre-wrap\">" + escape(body_text) + "</pre>"
+        body_html = (
+            '<pre style="font-family:inherit;white-space:pre-wrap">' + escape(body_text) + "</pre>"
+        )
         request.env["mail.mail"].sudo().create(
             {
                 "subject": f"Wniosek o zwrot — {full_name} — {doc_number or '—'}",
@@ -154,9 +156,7 @@ class DocumentSubmissionController(http.Controller):
         structured_text = self._telegram_text(doc_type, full_name, evidence)
         _notify_telegram(structured_text, pdf_base64, pdf_filename)
         if doc_type == "zwrot":
-            _notify_email_zwrot(
-                full_name, evidence["doc_number"], structured_text, attachment
-            )
+            _notify_email_zwrot(full_name, evidence["doc_number"], structured_text, attachment)
         return request.make_json_response({"ok": True, "id": attachment.id})
 
     @staticmethod

@@ -46,7 +46,9 @@ class KadryFormsController(http.Controller):
         """Публічна форма Wniosek o zwrot środków — заповнення заявником, PDF→сервер+Telegram+email."""
         return self._serve_html("zwrot.html")
 
-    @http.route(["/camp/oferta/ferie2027"], type="http", auth="public", website=False, methods=["GET"])
+    @http.route(
+        ["/camp/oferta/ferie2027"], type="http", auth="public", website=False, methods=["GET"]
+    )
     def oferta_ferie2027(self, **kw):
         """Публічна офера зимових таборів Ферії 2027 (Jugów / Kudowa-Zdrój) — для батьків."""
         return self._serve_html("ferie2027.html")
