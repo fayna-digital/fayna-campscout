@@ -129,7 +129,7 @@
     <h2>5. Wynagrodzenie <span class="req">*</span></h2>
     <div class="help">Kwota brutto i jednostka rozliczenia → § 4 umowy (np. <i>„220,00 zł brutto za dzień"</i>). Minimalna stawka godzinowa 31,40 zł/h (2026) jest gwarantowana klauzulą § 4.2 niezależnie od jednostki.</div>
     <div class="kwota-row">
-      <div class="f"><label>Kwota (zł brutto) <span class="req">*</span></label><input type="number" name="kwota" min="0" step="0.01" required placeholder="np. 220"></div>
+      <div class="f"><label>Kwota (zł brutto)</label><input type="number" name="kwota" min="0" step="0.01" placeholder="np. 220 (puste = linia do ręcznego uzupełnienia)"></div>
       <div class="f"><label>Jednostka <span class="req">*</span></label>
         <select name="jednostka" required>
           <option value="za dzień">za dzień</option>
@@ -333,7 +333,7 @@ function validate(fd){
   const errs=[];
   if(!(fd.fullname||'').trim()) errs.push('Podaj imię i nazwisko.');
   if(!(fd.przedmiot||'').trim()) errs.push('Opisz przedmiot zlecenia.');
-  if(!fd.kwota) errs.push('Podaj kwotę wynagrodzenia.');
+  // kwota opcjonalna: puste pole → linia do ręcznego uzupełnienia w PDF (kwotaNode=bl)
   if(!fd.data_od||!fd.data_do) errs.push('Podaj okres zlecenia (od / do).');
   return errs;
 }

@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CampScout — Wniosek o zwrot środków</title>
+<style>
+  :root{ --forest:#1B4332; --gold:#C08A2D; --bg:#f4f5f3; --card:#fff; --line:#dcdcd6; --ink:#1c2420; --muted:#6b6f6a; }
+  @media (prefers-color-scheme: dark){ :root{ --bg:#14181a; --card:#1e2426; --line:#33403a; --ink:#e8ece9; --muted:#9aa39d; --gold:#F7CB74; } }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif;line-height:1.5;}
+  header{background:var(--forest);color:#fff;padding:22px 18px;border-bottom:4px solid var(--gold);}
+  header .co{font-weight:800;font-size:19px;}
+  header .admin{font-size:11.5px;opacity:.85;margin-top:4px;}
+  header h1{font-size:16px;margin:10px 0 0;font-weight:600;}
+  header p{font-size:12.5px;opacity:.92;margin:6px 0 0;}
+  main{max-width:720px;margin:0 auto;padding:18px 16px 60px;}
+  .req-note{font-size:11.5px;color:var(--muted);margin:2px 0 0;}
+  .sec{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:16px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .sec h2{color:var(--gold);font-size:15px;margin:0 0 10px;border-bottom:2px solid var(--gold);padding-bottom:6px;}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px;}
+  @media(max-width:560px){.grid{grid-template-columns:1fr}}
+  .full{grid-column:1 / -1;}
+  label{font-size:12.5px;font-weight:600;margin-bottom:4px;display:block;}
+  input[type=text],input[type=tel],input[type=email]{width:100%;border:1px solid var(--line);border-radius:8px;padding:9px 10px;font-size:14px;background:var(--card);color:var(--ink);}
+  input.invalid{border-color:#b3261e;background:rgba(179,38,30,.06);}
+  .quote{font-size:13px;background:rgba(192,138,45,.08);border-left:3px solid var(--gold);padding:10px 12px;border-radius:6px;margin:8px 0;}
+  .quote p{margin:0 0 8px}
+  .quote p:last-child{margin:0}
+  .chk{display:flex;gap:9px;align-items:flex-start;padding:8px 0;}
+  .chk input{margin-top:3px;width:17px;height:17px;accent-color:var(--forest);flex:0 0 auto}
+  .iban-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+  .iban-row .pl{font-weight:800;font-size:15px;color:var(--forest);padding:0 4px;}
+  .iban-row input{width:60px;text-align:center;letter-spacing:1px;font-variant-numeric:tabular-nums;padding:9px 4px;}
+  .iban-row input.seg2{width:44px;}
+  canvas{border:2px dashed var(--line);border-radius:8px;width:100%;height:160px;touch-action:none;background:#fff;}
+  .sig-actions{display:flex;gap:10px;margin-top:8px;}
+  button{font-family:inherit;font-size:14px;font-weight:700;border:none;border-radius:8px;padding:10px 16px;cursor:pointer;}
+  button.primary{background:var(--forest);color:#fff;font-size:15px;padding:13px 22px;}
+  button.ghost{background:var(--card);color:var(--forest);border:1.5px solid var(--forest);}
+  .err{color:#b3261e;font-size:12px;margin-top:6px;display:none;}
+  #done{display:none;background:rgba(27,67,50,.08);border:1px solid var(--forest);border-radius:12px;padding:18px;margin-top:16px;}
+  .form-intro{font-size:12.5px;color:var(--muted);margin:0 0 4px;padding:2px 2px 0;}
+  .form-intro .ua{display:block;margin-top:4px;}
+  .radio-group{display:flex;flex-direction:column;gap:2px;}
+  .radio-group.invalid{border:1px solid #b3261e;border-radius:8px;padding:6px;background:rgba(179,38,30,.06);}
+  .rd{display:flex;gap:9px;align-items:flex-start;padding:8px 2px;cursor:pointer;}
+  .rd input{margin-top:3px;width:17px;height:17px;accent-color:var(--forest);flex:0 0 auto}
+  .rd .pl{font-weight:600;}
+  .rd .ua{display:block;color:var(--muted);font-size:12px;margin-top:2px;}
+  .reason-note{font-size:11.5px;color:var(--muted);margin:8px 2px 0;}
+  #przyczynaInnaWrap{margin:8px 0 2px;display:none;}
+</style>
+<script src="/fayna_camp_portal/static/src/kadry/assets/pdfmake.min.js"></script>
+<script src="/fayna_camp_portal/static/src/kadry/assets/vfs_fonts.js"></script>
+</head>
+<body>
+<header>
+  <div class="co">CAMP SCOUT</div>
+  <div class="admin">CAMPSCOUT — Volodymyr Shevchenko · ul. Kaliska 45, 63-400 Ostrów Wielkopolski · NIP 6222847059</div>
+  <h1>Wniosek o zwrot środków / Заява про повернення коштів</h1>
+  <p>Wypełnij, podpisz elektronicznie i wyślij. Zajmie 2 minuty. · Заповніть, підпишіть і надішліть.</p>
+</header>
+<main>
+<form id="f" novalidate>
+
+  <p class="form-intro">Poniższy formularz jest oficjalnym wnioskiem o zwrot wpłaty za turnus. Prosimy o wskazanie podstawy, która odpowiada Państwa sytuacji. Podane dane trafiają bezpośrednio do Organizatora i służą wyłącznie do rozpatrzenia zwrotu.<br><span class="ua">Наведена форма — це офіційна заява на повернення внеску за турнус. Просимо обрати підставу, яка відповідає Вашій ситуації. Вказані дані надходять напряму до Організатора і використовуються виключно для опрацювання повернення.</span></p>
+
+  <section class="sec">
+    <h2>Dane klienta / Дані клієнта</h2>
+    <div class="grid">
+      <div><label>Imię i nazwisko / Ім'я та прізвище *</label><input type="text" name="imie" required></div>
+      <div><label>Telefon / Телефон</label><input type="tel" name="telefon"></div>
+      <div class="full"><label>Adres / Адреса</label><input type="text" name="adres"></div>
+      <div class="full"><label>E-mail / E-mail</label><input type="email" name="email"></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>Dane zamówienia / Дані замовлення</h2>
+    <div class="grid">
+      <div><label>Nr zamówienia / Номер замовлення</label><input type="text" name="nr_zamowienia"></div>
+      <div><label>Uczestnik / Учасник</label><input type="text" name="uczestnik"></div>
+      <div><label>Turnus / Турнус</label><input type="text" name="turnus"></div>
+      <div><label>Kwota wpłacona (zł) / Сплачена сума</label><input type="text" name="kwota" inputmode="decimal"></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>Przyczyna zwrotu / Причина повернення</h2>
+    <div class="radio-group" id="przyczynaGroup">
+      <label class="rd"><input type="radio" name="przyczyna" value="osobista"><span><span class="pl">Rezygnacja z przyczyn osobistych lub rodzinnych (§6.1)</span><span class="ua">Відмова з особистих або сімейних причин</span></span></label>
+      <label class="rd"><input type="radio" name="przyczyna" value="zdrowotna"><span><span class="pl">Rezygnacja z przyczyn zdrowotnych (§6.3)</span><span class="ua">Відмова зі станом здоровʼя</span></span></label>
+      <label class="rd"><input type="radio" name="przyczyna" value="organizator"><span><span class="pl">Odwołanie lub zmiana terminu turnusu przez Organizatora (§6.5)</span><span class="ua">Скасування або зміна терміну турнусу Організатором</span></span></label>
+      <label class="rd"><input type="radio" name="przyczyna" value="sila_wyzsza"><span><span class="pl">Okoliczności niezależne od stron / siła wyższa (§9.3)</span><span class="ua">Обставини, незалежні від сторін</span></span></label>
+      <label class="rd"><input type="radio" name="przyczyna" value="inna"><span><span class="pl">Inna przyczyna</span><span class="ua">Інша причина</span></span></label>
+    </div>
+    <div id="przyczynaInnaWrap">
+      <input type="text" name="przyczyna_inna" placeholder="Proszę opisać / Опишіть, будь ласка">
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>Rachunek do zwrotu / Рахунок для повернення</h2>
+    <div><label>Właściciel rachunku / Власник рахунку *</label><input type="text" name="wlasciciel_rachunku" required></div>
+    <div style="margin-top:12px">
+      <label>Rodzaj rachunku / Тип рахунку *</label>
+      <div class="radio-group" id="acctTypeGroup">
+        <label class="rd"><input type="radio" name="acct_type" value="pl" checked><span><span class="pl">Polski rachunek — IBAN PL</span><span class="ua">Польський рахунок — IBAN PL</span></span></label>
+        <label class="rd"><input type="radio" name="acct_type" value="ua"><span><span class="pl">Ukraiński — karta lub rachunek (UAH)</span><span class="ua">Українська картка або рахунок (грн)</span></span></label>
+      </div>
+    </div>
+    <div style="margin-top:12px" id="ibanPlWrap">
+      <label>Nr rachunku (IBAN) / Номер рахунку *</label>
+      <div class="iban-row" id="ibanRow">
+        <span class="pl">PL</span>
+        <input type="tel" class="seg2 iban" maxlength="2" inputmode="numeric" aria-label="IBAN segment 1">
+        <input type="tel" class="iban" maxlength="4" inputmode="numeric" aria-label="IBAN segment 2">
+        <input type="tel" class="iban" maxlength="4" inputmode="numeric" aria-label="IBAN segment 3">
+        <input type="tel" class="iban" maxlength="4" inputmode="numeric" aria-label="IBAN segment 4">
+        <input type="tel" class="iban" maxlength="4" inputmode="numeric" aria-label="IBAN segment 5">
+        <input type="tel" class="iban" maxlength="4" inputmode="numeric" aria-label="IBAN segment 6">
+        <input type="tel" class="iban" maxlength="4" inputmode="numeric" aria-label="IBAN segment 7">
+      </div>
+      <p class="req-note">PL + 26 cyfr · np. PL00 0000 0000 0000 0000 0000 0000 · wpisz numer rachunku w całości / впишіть номер рахунку повністю</p>
+    </div>
+    <div style="margin-top:12px; display:none" id="ibanUaWrap">
+      <label>Nr karty lub rachunku (UA) / Номер картки або рахунку (UA) *</label>
+      <input type="text" name="rachunek_ua" placeholder="numer karty lub rachunek UA / номер картки або UA-рахунок">
+      <p class="req-note">Ukraińska karta (16 cyfr) lub rachunek UA / Українська картка (16 цифр) або рахунок UA</p>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>Oświadczenie / Заява</h2>
+    <div class="quote">
+      <p>Wnoszę o zwrot wpłaconej kwoty na wskazany powyżej rachunek bankowy. Oświadczam, że jestem osobą, która dokonała wpłaty, a podane dane są zgodne z prawdą.</p>
+      <p>Прошу повернути сплачену суму на вказаний вище банківський рахунок. Підтверджую, що я є особою, яка здійснила оплату, і що наведені дані відповідають дійсності.</p>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>Miejscowość, data i podpis / Місце, дата і підпис</h2>
+    <div class="grid">
+      <div><label>Miejscowość / Місто</label><input type="text" name="miejscowosc"></div>
+      <div><label>Data / Дата</label><input type="text" name="data" readonly></div>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin:12px 0 6px">Podpis wnioskodawcy — podpisz palcem/myszką poniżej. / Підпис заявника — підпишіть пальцем або мишкою нижче.</p>
+    <canvas id="sig"></canvas>
+    <div class="sig-actions">
+      <button type="button" class="ghost" id="clearSig">Wyczyść podpis / Очистити</button>
+    </div>
+  </section>
+
+  <div class="err" id="err">Uzupełnij wymagane pola: Imię i nazwisko, Właściciel rachunku oraz pełny numer rachunku (PL + 26 cyfr). / Заповніть обов'язкові поля.</div>
+  <div style="margin-top:16px">
+    <button type="submit" class="primary">Generuj PDF i wyślij / Згенерувати PDF і надіслати</button>
+  </div>
+
+  <div id="done">
+    <h3 style="color:var(--forest);margin:0 0 6px">Dziękujemy! / Дякуємо! ✅</h3>
+    <p style="font-size:13px;margin:0" id="donemsg">PDF został pobrany na Twoje urządzenie i przesłany do CampScout. Skontaktujemy się w sprawie zwrotu. / PDF завантажено на Ваш пристрій і надіслано до CampScout.</p>
+  </div>
+</form>
+</main>
+<script>
+const canvas = document.getElementById('sig');
+const ctx = canvas.getContext('2d');
+function resizeCanvas(){
+  const ratio = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * ratio; canvas.height = rect.height * ratio;
+  ctx.scale(ratio, ratio);
+  ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.strokeStyle = '#1c2420';
+}
+resizeCanvas();
+let drawing = false, hasSignature = false;
+function pos(e){
+  const rect = canvas.getBoundingClientRect();
+  const t = e.touches ? e.touches[0] : e;
+  return { x: t.clientX - rect.left, y: t.clientY - rect.top };
+}
+function start(e){ drawing = true; hasSignature = true; const p = pos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); e.preventDefault(); }
+function move(e){ if(!drawing) return; const p = pos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); e.preventDefault(); }
+function end(){ drawing = false; }
+canvas.addEventListener('mousedown', start); canvas.addEventListener('mousemove', move); window.addEventListener('mouseup', end);
+canvas.addEventListener('touchstart', start); canvas.addEventListener('touchmove', move); canvas.addEventListener('touchend', end);
+document.getElementById('clearSig').onclick = () => { ctx.clearRect(0,0,canvas.width,canvas.height); hasSignature = false; };
+
+// data — autouzupełnienie dzisiejszą datą
+(function(){
+  const d = new Date();
+  document.querySelector('input[name="data"]').value = d.toLocaleDateString('pl-PL');
+})();
+
+// Przyczyna — mapa etykiet (PL + §) do payload/PDF i pokazywanie pola "Inna"
+const PRZYCZYNA_LABELS = {
+  osobista:    'Rezygnacja z przyczyn osobistych lub rodzinnych (§6.1)',
+  zdrowotna:   'Rezygnacja z przyczyn zdrowotnych (§6.3)',
+  organizator: 'Odwołanie lub zmiana terminu turnusu przez Organizatora (§6.5)',
+  sila_wyzsza: 'Okoliczności niezależne od stron / siła wyższa (§9.3)',
+  inna:        'Inna przyczyna',
+};
+const przyczynaGroup = document.getElementById('przyczynaGroup');
+const przyczynaInnaWrap = document.getElementById('przyczynaInnaWrap');
+const przyczynaInnaInput = document.querySelector('input[name="przyczyna_inna"]');
+document.querySelectorAll('input[name="przyczyna"]').forEach(r => {
+  r.addEventListener('change', () => {
+    przyczynaGroup.classList.remove('invalid');
+    const isInna = r.value === 'inna' && r.checked;
+    przyczynaInnaWrap.style.display = isInna ? 'block' : 'none';
+    if (!isInna) { przyczynaInnaInput.value = ''; przyczynaInnaInput.classList.remove('invalid'); }
+  });
+});
+
+// IBAN — segmenty: tylko cyfry, auto-przejście do następnego pola
+const ibanInputs = Array.from(document.querySelectorAll('.iban'));
+ibanInputs.forEach((inp, i) => {
+  inp.addEventListener('input', () => {
+    inp.value = inp.value.replace(/\D/g, '');
+    inp.classList.remove('invalid');
+    if (inp.value.length >= inp.maxLength && i < ibanInputs.length - 1) ibanInputs[i+1].focus();
+  });
+  inp.addEventListener('keydown', (e) => {
+    if (e.key === 'Backspace' && inp.value === '' && i > 0) ibanInputs[i-1].focus();
+  });
+});
+function ibanDigits(){ return ibanInputs.map(i => i.value).join(''); }
+function ibanFormatted(){ return 'PL' + ibanInputs.map(i => i.value).join(' '); }
+
+// Rodzaj rachunku — PL IBAN (segmenty) vs UA karta/rachunek (jedno pole)
+const ibanPlWrap = document.getElementById('ibanPlWrap');
+const ibanUaWrap = document.getElementById('ibanUaWrap');
+const rachunekUaInput = document.querySelector('input[name="rachunek_ua"]');
+function acctType(){ const c = document.querySelector('input[name="acct_type"]:checked'); return c ? c.value : 'pl'; }
+document.querySelectorAll('input[name="acct_type"]').forEach(r => {
+  r.addEventListener('change', () => {
+    const ua = acctType() === 'ua';
+    ibanUaWrap.style.display = ua ? 'block' : 'none';
+    ibanPlWrap.style.display = ua ? 'none' : 'block';
+    ibanInputs.forEach(i => i.classList.remove('invalid'));
+    rachunekUaInput.classList.remove('invalid');
+  });
+});
+
+if (typeof pdfMake !== 'undefined') {
+  pdfMake.fonts = { Roboto: { normal:'Roboto-Regular.ttf', bold:'Roboto-Medium.ttf', italics:'Roboto-Italic.ttf', bolditalics:'Roboto-MediumItalic.ttf' } };
+}
+
+const SUBMIT_ENDPOINT = '/camp/submit-document';
+
+async function postToServer(payload, docNr, filename, base64){
+  try{
+    await fetch(SUBMIT_ENDPOINT, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        doc_type: 'zwrot',
+        full_name: payload.imie,
+        contact: payload.email || payload.telefon || '',
+        doc_number: payload.nr_zamowienia,
+        raw_payload: payload,
+        pdf_base64: base64,
+        pdf_filename: filename,
+      }),
+    });
+  }catch(e){
+    console.warn('submit-document: serwer niedostępny, PDF pozostał lokalnie', e);
+  }
+}
+
+document.getElementById('f').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const err = document.getElementById('err');
+  const fd = new FormData(e.target);
+  const imie = (fd.get('imie') || '').trim();
+  const telefon = (fd.get('telefon') || '').trim();
+  const adres = (fd.get('adres') || '').trim();
+  const email = (fd.get('email') || '').trim();
+  const nr_zamowienia = (fd.get('nr_zamowienia') || '').trim();
+  const uczestnik = (fd.get('uczestnik') || '').trim();
+  const turnus = (fd.get('turnus') || '').trim();
+  const kwota = (fd.get('kwota') || '').trim();
+  const przyczynaVal = fd.get('przyczyna') || '';
+  const przyczynaInna = (fd.get('przyczyna_inna') || '').trim();
+  // ludzko-czytelny opis wybranej podstawy (PL + §) do payload/PDF/Telegram
+  const przyczynaText = przyczynaVal === 'inna'
+    ? (przyczynaInna ? 'Inna: ' + przyczynaInna : '')
+    : (PRZYCZYNA_LABELS[przyczynaVal] || '');
+  const wlasciciel_rachunku = (fd.get('wlasciciel_rachunku') || '').trim();
+  const miejscowosc = (fd.get('miejscowosc') || '').trim();
+  const data = (fd.get('data') || '').trim();
+  const acct = acctType();
+  const rachunekUa = (fd.get('rachunek_ua') || '').trim();
+  const iban_digits = ibanDigits();
+  const iban = acct === 'ua' ? rachunekUa : ibanFormatted();
+
+  // walidacja: Imię i nazwisko + Właściciel rachunku + IBAN (26 cyfr po PL)
+  let ok = true;
+  const imieEl = document.querySelector('input[name="imie"]');
+  const wlascEl = document.querySelector('input[name="wlasciciel_rachunku"]');
+  imieEl.classList.remove('invalid'); wlascEl.classList.remove('invalid');
+  przyczynaGroup.classList.remove('invalid'); przyczynaInnaInput.classList.remove('invalid');
+  rachunekUaInput.classList.remove('invalid');
+  if (!imie){ imieEl.classList.add('invalid'); ok = false; }
+  if (!wlasciciel_rachunku){ wlascEl.classList.add('invalid'); ok = false; }
+  if (acct === 'ua'){
+    if (!rachunekUa){ rachunekUaInput.classList.add('invalid'); ok = false; }
+  } else {
+    if (iban_digits.length !== 26){ ibanInputs.forEach(i => i.classList.add('invalid')); ok = false; }
+  }
+  if (!przyczynaVal){ przyczynaGroup.classList.add('invalid'); ok = false; }
+  else if (przyczynaVal === 'inna' && !przyczynaInna){ przyczynaInnaInput.classList.add('invalid'); ok = false; }
+  if (!ok){ err.style.display = 'block'; return; }
+  err.style.display = 'none';
+
+  const sigDataUrl = hasSignature ? canvas.toDataURL('image/png') : null;
+  const now = new Date();
+  const dateTimeStr = now.toLocaleDateString('pl-PL') + ' ' + now.toLocaleTimeString('pl-PL');
+  const ts = now.getFullYear() + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0')
+    + '-' + String(now.getHours()).padStart(2,'0') + String(now.getMinutes()).padStart(2,'0') + String(now.getSeconds()).padStart(2,'0');
+
+  const nazwisko = (imie.split(/\s+/).pop() || imie).replace(/[^\p{L}\p{N}_-]/gu, '');
+
+  const kv = (label, val) => ({ text: [{ text: label + ': ', bold: true }, val || '—'], margin: [0, 1.5, 0, 0] });
+  const sectionTitle = (t) => ({ text: t, fontSize: 11, bold: true, color: '#1B4332', margin: [0, 12, 0, 4] });
+
+  const content = [
+    { text: 'CAMPSCOUT', bold: true, fontSize: 13, color: '#1B4332' },
+    { text: 'CAMPSCOUT — Volodymyr Shevchenko · ul. Kaliska 45, 63-400 Ostrów Wielkopolski · NIP 6222847059', fontSize: 8, color: '#555' },
+    { canvas: [{ type: 'line', x1: 0, y1: 2, x2: 515, y2: 2, lineWidth: 2, lineColor: '#C08A2D' }], margin: [0, 6, 0, 12] },
+    { text: 'WNIOSEK O ZWROT ŚRODKÓW', fontSize: 15, bold: true, color: '#1B4332', alignment: 'center', margin: [0, 0, 0, 1] },
+    { text: 'Заява про повернення коштів', fontSize: 9, color: '#C08A2D', bold: true, alignment: 'center', margin: [0, 0, 0, 12] },
+
+    sectionTitle('Dane klienta / Дані клієнта'),
+    kv('Imię i nazwisko / Ім\'я та прізвище', imie),
+    kv('Telefon / Телефон', telefon),
+    kv('Adres / Адреса', adres),
+    kv('E-mail', email),
+
+    sectionTitle('Dane zamówienia / Дані замовлення'),
+    kv('Nr zamówienia / Номер замовлення', nr_zamowienia),
+    kv('Uczestnik / Учасник', uczestnik),
+    kv('Turnus / Турнус', turnus),
+    kv('Kwota wpłacona (zł) / Сплачена сума', kwota),
+
+    sectionTitle('Przyczyna zwrotu / Причина повернення'),
+    { text: przyczynaText || '—', margin: [0, 1.5, 0, 0] },
+
+    sectionTitle('Rachunek do zwrotu / Рахунок для повернення'),
+    kv('Właściciel rachunku / Власник рахунку', wlasciciel_rachunku),
+    kv('Nr rachunku (IBAN)', iban),
+
+    sectionTitle('Oświadczenie / Заява'),
+    { text: 'Wnoszę o zwrot wpłaconej kwoty na wskazany powyżej rachunek bankowy. Oświadczam, że jestem osobą, która dokonała wpłaty, a podane dane są zgodne z prawdą.', alignment: 'justify', fontSize: 9, margin: [0, 2, 0, 4] },
+    { text: 'Прошу повернути сплачену суму на вказаний вище банківський рахунок. Підтверджую, що я є особою, яка здійснила оплату, і що наведені дані відповідають дійсності.', alignment: 'justify', fontSize: 9, margin: [0, 0, 0, 16] },
+
+    { columns: [
+        { width: '*', stack: [
+          { text: [{ text: 'Miejscowość i data / Місце і дата: ', bold: true }, (miejscowosc ? miejscowosc + ', ' : '') + data] },
+        ] },
+        { width: 'auto', stack: sigDataUrl
+            ? [ { image: sigDataUrl, width: 180, margin: [0, 0, 0, 2] }, { text: 'Podpis / Підпис', fontSize: 8, color: '#666', alignment: 'center' } ]
+            : [ { text: '', margin: [0, 30, 0, 0] }, { text: 'Podpis / Підпис', fontSize: 8, color: '#666', alignment: 'center' } ]
+        },
+      ], margin: [0, 8, 0, 0] },
+  ];
+
+  const docDef = {
+    pageSize: 'A4', pageMargins: [40, 44, 40, 40],
+    defaultStyle: { font: 'Roboto', fontSize: 10, color: '#1c2420' },
+    content,
+  };
+
+  const payload = { imie, telefon, adres, email, nr_zamowienia, uczestnik, turnus, kwota,
+    przyczyna: przyczynaText, wlasciciel_rachunku, iban, miejscowosc, data, dateTimeStr };
+  const filename = 'wniosek-zwrot_' + nazwisko + '_' + ts + '.pdf';
+
+  const pdfDoc = pdfMake.createPdf(docDef);
+  // POST NAJPIERW — na mobile pdfDoc.download() zawiesza/nawiguje stronę i przerywa
+  // asynchroniczny fetch, więc wysyłka na serwer musi pójść przed pobraniem pliku.
+  pdfDoc.getBase64(async base64 => {
+    await postToServer(payload, nr_zamowienia, filename, base64);
+    pdfDoc.download(filename);                                // lokalna kopia PO wysłaniu
+    document.getElementById('done').style.display = 'block';
+    document.getElementById('done').scrollIntoView({ behavior: 'smooth' });
+  });
+});
+window.addEventListener('resize', () => { resizeCanvas(); });
+</script>
+</body>
+</html>

@@ -17,6 +17,7 @@
 import base64
 import json
 import logging
+from html import escape
 
 import requests
 from odoo import fields, http
@@ -24,7 +25,9 @@ from odoo.http import request
 
 _logger = logging.getLogger(__name__)
 
-_ALLOWED_DOC_TYPES = ("wychowawca", "rodzic")
+_ALLOWED_DOC_TYPES = ("wychowawca", "rodzic", "zwrot")
+
+_ZWROT_EMAIL_TO = "admin@campscout.eu"
 
 _TELEGRAM_SECRETS_FILE = "/etc/odoo/telegram_secrets.env"
 _TELEGRAM_CHAT_ID = 1216572335  # @FaynaBrain_bot, той самий чат, що й inbox-agent
@@ -65,6 +68,24 @@ def _notify_telegram(text, pdf_base64=None, pdf_filename="dokument.pdf"):
             )
     except Exception as e:  # noqa: BLE001
         _logger.warning("[submit-document] telegram notify failed: %s", e)
+
+
+def _notify_email_zwrot(full_name, doc_number, body_text, attachment):
+    """Best-effort доставка заповненого wniosek o zwrot на admin@campscout.eu.
+    Збій пошти (нема вихідного mail-сервера тощо) НЕ повинен зривати збереження
+    доказу й НЕ 500-ити клієнта — обгорнуто в try/except, як telegram."""
+    try:
+        body_html = "<pre style=\"font-family:inherit;white-space:pre-wrap\">" + escape(body_text) + "</pre>"
+        request.env["mail.mail"].sudo().create(
+            {
+                "subject": f"Wniosek o zwrot — {full_name} — {doc_number or '—'}",
+                "email_to": _ZWROT_EMAIL_TO,
+                "body_html": body_html,
+                "attachment_ids": [(6, 0, [attachment.id])],
+            }
+        ).send()
+    except Exception as e:  # noqa: BLE001
+        _logger.warning("[submit-document] email notify (zwrot) failed: %s", e)
 
 
 class DocumentSubmissionController(http.Controller):
@@ -130,14 +151,31 @@ class DocumentSubmissionController(http.Controller):
             _logger.exception("[submit-document] failed: %s", e)
             return request.make_json_response({"ok": False, "error": "server_error"}, status=500)
 
-        _notify_telegram(
-            self._telegram_text(doc_type, full_name, evidence), pdf_base64, pdf_filename
-        )
+        structured_text = self._telegram_text(doc_type, full_name, evidence)
+        _notify_telegram(structured_text, pdf_base64, pdf_filename)
+        if doc_type == "zwrot":
+            _notify_email_zwrot(
+                full_name, evidence["doc_number"], structured_text, attachment
+            )
         return request.make_json_response({"ok": True, "id": attachment.id})
 
     @staticmethod
     def _telegram_text(doc_type, full_name, evidence):
         payload = evidence["raw_payload"] or {}
+        if doc_type == "zwrot":
+            lines = [
+                "💸 Новий wniosek o zwrot",
+                f"Заявник: {full_name}",
+                f"№ zamówienia: {evidence['doc_number'] or '—'}",
+                f"Турнус: {payload.get('turnus') or '—'}",
+                f"Сума: {payload.get('kwota') or '—'} zł",
+                f"Właściciel rachunku: {payload.get('wlasciciel_rachunku') or '—'}",
+                f"IBAN: {payload.get('iban') or '—'}",
+                f"Причина: {payload.get('przyczyna') or '—'}",
+                f"Контакт: {evidence['contact'] or '—'}",
+                f"IP: {evidence['ip_address'] or '—'} · Час: {evidence['submitted_at']}",
+            ]
+            return "\n".join(lines)
         lines = [f"📄 Нова заявка ({'кадра' if doc_type == 'wychowawca' else 'згода батьків'})"]
         if doc_type == "rodzic":
             lines.append(f"Дитина: {payload.get('dziecko') or '—'}")

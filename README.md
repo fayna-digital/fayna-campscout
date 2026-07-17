@@ -27,7 +27,11 @@ Reference deployment: [CampScout](https://campscout.eu) — child summer camps i
 - **Admin dashboard with view-as** — Organizator lands on `/admin/dashboard`, can `/admin/as-{role}` impersonate any role using `with_user()` (preserves ACL, never sudo); every impersonation logged to `camp.admin.access.log` (RODO art.30, 7-year retention)
 - **Polish camp law compliance** — Karta kwalifikacyjna (5 sections per Rozp. MEN 30.03.2016), Dziennik zajęć (Załącznik 5), Program Wypoczynku (Załącznik 9), Kuratorium notification (Załącznik 1), staff KRK + RPS verification
 - **Multi-language** — native Odoo `.po` translation pipeline with `i18n/uk_UA.po` and `i18n/pl_PL.po` (Ukrainian + Polish), all user-facing strings wrapped in `_()`
-- **Parent portal + REST API** — `/my` hero with active and upcoming registrations, qualification card flow, stories, documents, loyalty; `/api/v1/*` JSON endpoints for the mobile app
+- **Parent portal** — `/my` hero with active and upcoming registrations, qualification card flow, stories, documents, loyalty, and escort/asysta authorization + e-signature (`/my/escort`)
+- **Kierownik kiosk** — leader-facing kiosk endpoints (`/camp/kiosk/*`) with OWL PL/UA language bar (`set_lang`), layout and back-visibility toggles
+- **Recruitment / candidate portal** — public vacancy listing and apply (`/camp/vacancies`, `/camp/vacancy/<id>/apply`) plus a logged-in candidate cabinet (`/my/candidate` — declaration, document upload)
+- **Public login-free forms** — kadry and parent forms (`/camp/kadry/campscout`, `/camp/kadry/rodzice`, `/camp/kadry/wilcza`) with client-side PDF generation; every submission logged via `/camp/submit-document` (`controllers/document_submission.py`) capturing PDF + name + IP + timestamp as evidence
+- **Refund request + offer page** — parent refund form (`/camp/zwrot`) and the winter-2027 offer page (`/camp/oferta/ferie2027`)
 
 ---
 
@@ -53,9 +57,9 @@ Reference deployment: [CampScout](https://campscout.eu) — child summer camps i
 
 ```
 fayna_camp_portal/
-├── __manifest__.py                       # v17.0.3.0.0 · OPL-1 · application=True
+├── __manifest__.py                       # v17.0.4.1.8 · OPL-1 · application=True
 ├── hooks.py                              # post_init_hook — seed data, default config
-├── models/
+├── models/                              # 35 model files (selected below)
 │   ├── camp.py                           # camp.category, camp.activity, camp.room.type + event.event extensions
 │   ├── participant.py                    # camp.participant (5-section qualification card, immutability after sign-off)
 │   ├── operations.py                     # camp.report, camp.staff (+ certs), camp.daily.report, camp.program.wypoczynku (Załącznik 9), camp.program.structured (+day+activity.line), camp.dziennik, camp.kuratorium.*
@@ -79,11 +83,26 @@ fayna_camp_portal/
 │   ├── admin_access_log.py               # camp.admin.access.log — RODO art.30 register
 │   ├── participant_sms_extension.py      # SMS consent + reachable mobile resolution
 │   ├── staff_sms_extension.py            # wychowawca-side SMS broadcast hooks
-│   └── staff_sms_log.py                  # camp.staff.sms.log — append-only audit
-├── controllers/
+│   ├── staff_sms_log.py                  # camp.staff.sms.log — append-only audit
+│   ├── staffing.py                       # camp.staff.vacancy — wakat kadry (autoштат §2)
+│   ├── recruitment.py                    # camp.staff.application — candidate applications
+│   ├── camp_escort.py                    # camp.escort — indywidualna asysta / konwój uczestnika
+│   ├── camp_group.py                     # camp.group — grupa wychowawcza (art. 92c)
+│   ├── incident_card.py                  # camp.incident.card + camp.incident.register — Karta Wypadku (16 pkt)
+│   ├── regulamin.py                      # camp.regulamin (+ .ack) — regulamin wypoczynku + kadra acknowledgement
+│   ├── teczka_ko.py                      # camp.teczka.ko — Kuratorium inspection readiness folder
+│   ├── budget.py                         # camp.budget (+ .category) — shift budget (BEP + VAT/business margins)
+│   ├── document_submission_log.py        # camp.document.submission.log — public-form submission evidence (IP+timestamp)
+│   ├── art9_security.py                  # RODO art.9 ORM-level masking of children's medical data (read() guard)
+│   └── _role_taxonomy.py                 # canonical staff-role taxonomy (ADR-22) shared by staff + vacancy
+├── controllers/                          # 7 controllers
 │   ├── portal.py                         # /my home override (Odoo 17 _prepare_home_portal_values is AJAX-only)
 │   ├── admin.py                          # /admin/dashboard + /admin/as-{role} view-as endpoints
-│   └── api.py                            # /api/v1/* JSON endpoints for mobile app
+│   ├── kiosk.py                          # /camp/kiosk/* — OWL langbar (set_lang), layout + back-visibility toggles
+│   ├── recruitment_portal.py             # /camp/vacancies + apply, /my/candidate (declaration + document upload)
+│   ├── escort_portal.py                  # /my/escort — parent authorizes + e-signs child escort/asysta
+│   ├── kadry_forms.py                    # public login-free forms: /camp/kadry/{campscout,rodzice,wilcza}, /camp/zwrot, /camp/oferta/ferie2027
+│   └── document_submission.py            # /camp/submit-document — logs PDF + name + IP + timestamp (evidence)
 ├── views/
 │   ├── camp_views.xml                    # camp.category, activity, room.type, event.event extensions
 │   ├── participant_views.xml             # qualification card form (5 sections)
@@ -145,7 +164,7 @@ fayna_camp_portal/
 | i18n | Native Odoo `.po` (`uk_UA`, `pl_PL`) |
 | Testing | Odoo test framework + `pytest` |
 | RODO/GDPR | `fayna_rodo_compliance` (consent log + 7y retention) |
-| Module version | 17.0.3.0.0 |
+| Module version | 17.0.4.1.8 |
 | License | OPL-1 (proprietary) |
 
 ---
@@ -156,7 +175,7 @@ fayna_camp_portal/
 
 ```bash
 cd /opt/<client>/custom-addons
-git clone https://github.com/VladSh77/fayna_camp_portal.git
+git clone https://github.com/VladSh77/fayna-campscout.git
 git clone https://github.com/VladSh77/fayna-rodo-compliance.git
 git clone https://github.com/VladSh77/fayna_sms_base.git
 ```
@@ -239,7 +258,7 @@ Logo, brand colour and email footer are read from the active company. The portal
 4. **Stories** — `/my/stories` shows shift-scoped news posted by wychowawca
 5. **Documents** — `/my/documents` exposes signed PDFs (qualification card snapshot, regulamin, RODO consent receipts)
 6. **Loyalty** — `/my/loyalty` shows points + tier + active coupons
-7. **Mobile app** — JSON endpoints under `/api/v1/*` (auth=user)
+7. **Escort/asysta** — `/my/escort` lets the parent authorize and e-sign a child escort/handover, viewing and signing per-escort records
 
 ### Kierownik flow (own camp dashboard)
 
@@ -428,7 +447,7 @@ on RODO Art.9 medical fields (medical_officer group still required).
 
 ```bash
 # Clone module + dependencies
-git clone https://github.com/VladSh77/fayna_camp_portal.git
+git clone https://github.com/VladSh77/fayna-campscout.git
 git clone https://github.com/VladSh77/fayna-rodo-compliance.git
 git clone https://github.com/VladSh77/fayna_sms_base.git
 
