@@ -1,29 +1,6 @@
 // AUTO-GENERATED браузерний бандл (build_browser.js). НЕ редагувати вручну.
 (function(){
 "use strict";
-/* ─── SEZON: JEDYNE miejsce do zmiany przed nowym naborem ───────────────────
-   Data zawarcia jest FIKSOWANA celowo (nie new Date()) — wszystkie umowy jednego
-   naboru mają nosić tę samą datę. Ceną za to jest ręczna aktualizacja: gdy data
-   zostanie w tyle, kandydat dostaje umowę datowaną wstecz. Dlatego niżej stoi
-   ostrzeżenie w konsoli — żeby przeterminowany sezon było widać, a nie zgadywać. */
-const SEASON = {
-  data_zawarcia: '07.07.2026',   // dd.mm.rrrr
-  okres_od: '2026-07-08',        // domyślny okres obozu, gdy formularz nie poda dat
-  okres_do: '2026-07-21',
-  stawka_godz: '31,40',          // zł/godz. — minimalna stawka godzinowa (Dz.U. 2025 poz. 1242)
-  stawka_dzien: '220',           // zł brutto za dzień
-};
-
-(function ostrzezOPrzeterminowanymSezonie(){
-  try{
-    const [d, m, r] = SEASON.data_zawarcia.split('.');
-    if (new Date(`${r}-${m}-${d}T00:00:00`) < new Date(new Date().toDateString())) {
-      console.warn('[kadry] SEASON.data_zawarcia (' + SEASON.data_zawarcia +
-        ') jest w przeszłości — umowy będą datowane wstecz. Zaktualizuj blok SEASON.');
-    }
-  }catch(e){ /* noop */ }
-})();
-
 // Спільний модуль pdfmake для пакету документів вихователя CampScout (JDG — Volodymyr Shevchenko)
 const FOREST = '#1B4332', GOLD = '#F7CB74', INK = '#1c2420';
 
@@ -102,14 +79,32 @@ function h1(t, sub) {
 
 function h2(t) { return { text: t, fontSize: 9.5, color: FOREST, bold: true, margin: [0, 9, 0, 3] }; }
 
-// Дата підписання з номера документа (docNr = YYYYMMDD-HHMMSS, genDocNumber() в campscout.html) —
-// єдине джерело дати, щоб текст "zawarta w dniu"/"Дата" завжди збігався з номером договору.
-// Раніше кожен doc_*.js мав власну КОНСТАНТУ дати, зафіксовану на день запуску форми (07.07.2026) і
-// відтоді ніколи не оновлювану — номер (реальний час подання) і текст дати розходились (INC, знайдено 22.07).
-function dataZNumeru(nr, fallback) {
-  const m = String(nr || '').match(/^(\d{4})(\d{2})(\d{2})-/);
-  return m ? `${m[3]}.${m[2]}.${m[1]}` : fallback;
-}
+
+/* ─── SEZON: JEDYNE miejsce do zmiany przed nowym naborem ───────────────────
+   Data zawarcia jest FIKSOWANA celowo (nie new Date()) — wszystkie umowy jednego
+   naboru mają nosić tę samą datę. Ceną za to jest ręczna aktualizacja: gdy data
+   zostanie w tyle, kandydat dostaje umowę datowaną wstecz, dlatego niżej stoi
+   ostrzeżenie. Mieszka TU, a nie w pliku jednej umowy: bundle skleja każdy
+   dokument we własnych klamrach {}, więc stała z jednego pliku jest niewidoczna
+   dla pozostałych — stąd brały się dwa rozjeżdżające się komplety dat. */
+const SEASON = {
+  data_zawarcia: '07.07.2026',   // dd.mm.rrrr
+  okres_od: '2026-07-08',        // domyślny okres obozu, gdy formularz nie poda dat
+  okres_do: '2026-07-21',
+  stawka_godz: '31,40',          // zł/godz. — minimalna stawka godzinowa (Dz.U. 2025 poz. 1242)
+  stawka_dzien: '220',           // zł brutto za dzień
+};
+
+(function ostrzezOPrzeterminowanymSezonie(){
+  try{
+    const [d, m, r] = SEASON.data_zawarcia.split('.');
+    if (new Date(`${r}-${m}-${d}T00:00:00`) < new Date(new Date().toDateString())) {
+      console.warn('[kadry] SEASON.data_zawarcia (' + SEASON.data_zawarcia +
+        ') jest w przeszłości — umowy będą datowane wstecz. Zaktualizuj blok SEASON.');
+    }
+  }catch(e){ /* noop */ }
+})();
+
 
 const KADRY_DOCS = {};
 
@@ -118,6 +113,7 @@ const KADRY_DOCS = {};
 // Umowa zlecenia (instruktor) nr 1/WYC/2026 — pdfmake docDefinition, CampScout (POLSKA)
 // Wynagrodzenie: 220 zł/dzień, nie niżej minimalnej stawki godzinowej (31,40 zł/h); ewidencja godzin (dziennik zajęć)
 
+// wszystko z jednego bloku SEASON w campscout_pdf.js — bez własnych kopii
 const DATA_ZAWARCIA = SEASON.data_zawarcia;
 const DEFAULT_DATA_OD = SEASON.okres_od;
 const DEFAULT_DATA_DO = SEASON.okres_do;
@@ -175,7 +171,7 @@ function docUmowaWychowawcaPL(A) {
     ...header(),
     ...h1('UMOWA ZLECENIA nr ' + (A.umowa_nr || TERMS.nr), 'instruktor prowadzący zajęcia na wypoczynku dzieci i młodzieży (art. 734 i nast. Kodeksu cywilnego)'),
 
-    p(['zawarta w Ostrowie Wielkopolskim w dniu ', fld(dataZNumeru(A.umowa_nr, DATA_ZAWARCIA)), ' pomiędzy:']),
+    p(['zawarta w Ostrowie Wielkopolskim w dniu ', fld(DATA_ZAWARCIA), ' pomiędzy:']),
     p([
       { text: CAMPSCOUT.reprezentant, bold: true },
       `, prowadzącym jednoosobową działalność gospodarczą pod firmą „${CAMPSCOUT.nazwa}", wpisanym do CEIDG, ${CAMPSCOUT.adres}, NIP ${CAMPSCOUT.nip}, REGON ${CAMPSCOUT.regon}, ROT ${CAMPSCOUT.rot}, zwanym dalej „Zleceniodawcą",`,
@@ -639,7 +635,7 @@ function docUpowaznieniePL(A) {
       'art. 29 RODO — załącznik nr 1 do Umowy zlecenia'),
 
     { text: `Załącznik nr 1 do Umowy zlecenia nr ${nr}`, italics: true, fontSize: 7.6, color: '#666', margin: [0, 0, 0, 4] },
-    p(['Sporządzone w Ostrowie Wielkopolskim dnia ', fld(A.data_sporzadzenia || dataZNumeru(A.umowa_nr, DATA_SPORZADZENIA)), '.']),
+    p(['Sporządzone w Ostrowie Wielkopolskim dnia ', fld(DATA_SPORZADZENIA), '.']),
     p([
       { text: CAMPSCOUT.nazwa, bold: true },
       `, ${CAMPSCOUT.adres}, NIP ${CAMPSCOUT.nip}, REGON ${CAMPSCOUT.regon}, ROT ${CAMPSCOUT.rot}, `,
@@ -736,7 +732,7 @@ const TOV = {
 };
 
 const DATA_UKLADENNA = '07.07.2026';
-// ті самі daty co w bloku SEASON — bez własnej kopii, która rozjeżdża się po sezonie
+// ті самі дати, що й у блоці SEASON — без власної копії, яка розходиться після сезону
 const DEFAULT_OD = SEASON.okres_od;
 const DEFAULT_DO = SEASON.okres_do;
 
@@ -783,7 +779,7 @@ function docWolontariatWychowawcaUA(A) {
     {
       columns: [
         { text: ['№ ', fld(A.umowa_nr_ua || '___/2026')], fontSize: 9 },
-        { text: [TOV.misto.replace('м. ', 'м. '), ', ', fld(A.data_ukladennia || dataZNumeru(A.umowa_nr_ua, DATA_UKLADENNA))], fontSize: 9, alignment: 'right' },
+        { text: [TOV.misto.replace('м. ', 'м. '), ', ', fld(DATA_UKLADENNA)], fontSize: 9, alignment: 'right' },
       ], margin: [0, 0, 0, 6],
     },
 
@@ -909,7 +905,6 @@ function docZgodaRSPTS(A) {
       'ЗАЯВА-ЗГОДА на перевірку кандидата за реєстрами осіб,',
       'які вчинили злочини проти статевої свободи та недоторканості неповнолітніх',
     ),
-    { text: 'Український переклад документа зі стор. 9 (польська OŚWIADCZENIE-ZGODA) — той самий зміст двома мовами; підпис потрібен на обох.', fontSize: 7.5, italics: true, color: '#777', margin: [0, -6, 0, 8] },
 
     p([
       `${CAMPSCOUT.nazwa}, як організатор дитячого табору, з метою забезпечення безпеки дітей — учасників табору, `,
@@ -932,7 +927,7 @@ function docZgodaRSPTS(A) {
 
     {
       columns: [
-        { text: ['Місце і дата: ', fld(dataZNumeru(A.umowa_nr_ua, DATA_UKLADENNA))], fontSize: 9 },
+        { text: ['Місце і дата: ', fld(DATA_UKLADENNA)], fontSize: 9 },
       ],
       margin: [0, 16, 0, 0],
     },
@@ -1013,7 +1008,7 @@ function docZgodaRSPTSPL(A) {
 
     {
       columns: [
-        { text: ['Miejscowość i data: ', fld(dataZNumeru(A.umowa_nr, DATA_SPORZADZENIA))], fontSize: 9 },
+        { text: ['Miejscowość i data: ', fld(DATA_SPORZADZENIA)], fontSize: 9 },
       ],
       margin: [0, 16, 0, 0],
     },
@@ -1070,39 +1065,15 @@ function genRSPTS(A){ pdfMake.createPdf(KADRY_DOCS.docZgodaRSPTS(A)).download('z
 // ОДИН PDF з усіма документами (PL-пакет + UA-договір + RSPTS) — браузери
 // блокують 2-й+ .download() поспіль (та сама проблема, що й у форми Данієля,
 // виправлена там через combinePDF). Тут той самий фікс: усе в один файл.
-// Пояснювальний місток PL→UA (стор.9→10): без нього людина, що щойно підписала
-// оплачувану Umowę Zlecenia, натикається на "безоплатний" Договір волонтера ТОВ «Кемпскаут»
-// без жодного пояснення — виглядає як суперечність, а не як дві різні юрособи/ролі
-// (UX-аудит 22.07.2026, підтверджено власником). Пояснення лишається на ТІЙ САМІЙ сторінці,
-// що й шапка ТОВ «Кемпскаут» — тому pageBreak переносимо СЮДИ, а не на uaContent[0].
-function bridgePLtoUA() {
-  return {
-    table: { widths: ['*'], body: [[{
-      text: 'Далі — окремий Договір з ТОВ «Кемпскаут» (Україна, стор. 10-11) та супутня заява (стор. 12). ' +
-        'Оплату за проведення програмних занять ви отримуєте від CAMPSCOUT — Volodymyr Shevchenko (Польща) за Umową Zlecenia (стор. 1-8). ' +
-        'Договір з ТОВ «Кемпскаут» регулює лише волонтерську частину — опіку та супровід дітей — і не дублює й не скасовує цю оплату.',
-      fontSize: 8.3, italics: true, color: '#444', margin: [8, 6, 8, 6],
-    }]] },
-    layout: {
-      hLineWidth: (i) => i === 0 ? 0.8 : 0, vLineWidth: () => 0,
-      hLineColor: () => GOLD, paddingLeft: () => 0, paddingRight: () => 0, paddingTop: () => 0, paddingBottom: () => 0,
-    },
-    margin: [0, 0, 0, 14],
-    pageBreak: 'before',
-    unbreakable: true,
-  };
-}
-
 function docDefAll(A_PL, A_UA){
   const parts = [
     ...docDefPL(A_PL).content,
   ];
   const uaContent = KADRY_DOCS.docWolontariatWychowawcaUA(A_UA).content.slice();
-  // pageBreak тепер на bridgePLtoUA(), не на першому елементі UA-контенту —
-  // пояснення і шапка ТОВ «Кемпскаут» виходять на одній сторінці.
+  if (uaContent.length) uaContent[0] = Object.assign({}, uaContent[0], { pageBreak:'before' });
   const rsptsContent = KADRY_DOCS.docZgodaRSPTS(A_UA).content.slice();
   if (rsptsContent.length) rsptsContent[0] = Object.assign({}, rsptsContent[0], { pageBreak:'before' });
-  const content = parts.concat([bridgePLtoUA()], uaContent, rsptsContent);
+  const content = parts.concat(uaContent, rsptsContent);
   return { pageSize:'A4', pageMargins:[40,44,40,40], defaultStyle:{font:'Roboto',fontSize:9,color:INK}, content };
 }
 function genALL(A_PL, A_UA){ pdfMake.createPdf(docDefAll(A_PL, A_UA)).download('dokumenty_kadra_'+fname(A_PL)+'.pdf'); }
