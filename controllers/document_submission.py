@@ -275,6 +275,14 @@ class DocumentSubmissionController(http.Controller):
                 except ValueError:
                     prev = {}
                 evidence["first_seen"] = prev.get("first_seen") or evidence["first_seen"]
+                # Маячок `leaving` вилітає при вивантаженні сторінки й цілком
+                # може прийти ПІСЛЯ підтвердження подання. Без цієї заборони він
+                # затирав би «submitted», і людина, яка все подала, потрапляла б
+                # у звіт «почав і не закінчив» (знайдено тестом натовпу 01.08).
+                if prev.get("stage") == "submitted":
+                    evidence["stage"] = "submitted"
+                    if prev.get("submitted_attachment_id"):
+                        evidence["submitted_attachment_id"] = prev["submitted_attachment_id"]
                 merged = dict(prev.get("fields") or {})
                 merged.update({k: v for k, v in safe_fields.items() if v})
                 evidence["fields"] = merged
