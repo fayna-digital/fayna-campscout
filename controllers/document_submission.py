@@ -44,6 +44,37 @@ def _read_telegram_token():
     return None
 
 
+_SENSITIVE_HINTS = ("iban", "rachun", "pesel", "konto", "karta", "card")
+
+
+def _mask_sensitive(key, value):
+    """Чернетка — це слід спроби, а не сховище платіжних даних: номери рахунків
+    і PESEL лишаються лише хвостом у 4 знаки, решта — зірочки."""
+    if not isinstance(value, str):
+        value = str(value or "")
+    value = value.strip()[:300]
+    if value and any(h in (key or "").lower() for h in _SENSITIVE_HINTS):
+        digits = "".join(ch for ch in value if ch.isalnum())
+        if len(digits) > 6:
+            return "*" * (len(digits) - 4) + digits[-4:]
+    return value
+
+
+def _gc_drafts(env, days=60):
+    """Чернетки не мають накопичуватись роками — прибираємо старші за `days`.
+    Викликається зрідка з самого ендпоінта (окремий cron на staging не ставиться:
+    upgrade модуля тут зламаний, INC-216)."""
+    try:
+        limit = fields.Datetime.subtract(fields.Datetime.now(), days=days)
+        old = env["ir.attachment"].sudo().search(
+            [("name", "=like", "[DRAFT-LOG] %"), ("create_date", "<", limit)], limit=500
+        )
+        if old:
+            old.unlink()
+    except Exception as e:  # noqa: BLE001
+        _logger.warning("[submit-draft] gc failed: %s", e)
+
+
 def _notify_telegram(text, pdf_base64=None, pdf_filename="dokument.pdf"):
     """Best-effort — збій сповіщення НЕ повинен зривати збереження доказу.
     Якщо є PDF — шле sendDocument (файл одразу в чаті, caption=text);
@@ -153,11 +184,116 @@ class DocumentSubmissionController(http.Controller):
             _logger.exception("[submit-document] failed: %s", e)
             return request.make_json_response({"ok": False, "error": "server_error"}, status=500)
 
+        # Чернетку цієї ж сесії закриваємо на СЕРВЕРІ, а не покладаючись на
+        # клієнта: інакше вдале подання лишиться в звіті «почав і не закінчив».
+        sid = (data.get("sid") or "").strip()[:64]
+        if sid:
+            try:
+                draft = (
+                    request.env["ir.attachment"]
+                    .sudo()
+                    .search([("name", "=like", f"[DRAFT-LOG] {sid}%")], limit=1)
+                )
+                if draft:
+                    prev = json.loads(draft.description or "{}")
+                    prev.update({"stage": "submitted", "submitted_attachment_id": attachment.id,
+                                 "last_seen": str(fields.Datetime.now())})
+                    draft.write({"description": json.dumps(prev, ensure_ascii=False, indent=2)})
+            except Exception as e:  # noqa: BLE001
+                _logger.warning("[submit-document] draft close failed: %s", e)
+
         structured_text = self._telegram_text(doc_type, full_name, evidence)
         _notify_telegram(structured_text, pdf_base64, pdf_filename)
         if doc_type == "zwrot":
             _notify_email_zwrot(full_name, evidence["doc_number"], structured_text, attachment)
         return request.make_json_response({"ok": True, "id": attachment.id})
+
+    @http.route(
+        ["/camp/submit-draft"],
+        type="http",
+        auth="public",
+        website=False,
+        methods=["POST", "OPTIONS"],
+        csrf=False,
+        cors="*",
+    )
+    def submit_draft(self, **post):
+        """Чернетка: фіксує СПРОБУ заповнення ще до генерації PDF.
+
+        Потрібна тому, що PDF твориться цілком у браузері: між кліком і POST-ом
+        готового документа минає 1–5 с, і якщо в цей момент сторінку закрито
+        (iOS вивантажує вкладку при перемиканні застосунку / блокуванні екрана),
+        на сервер не потрапляє НІЧОГО — організатор не знає навіть, що людина
+        починала. Сюди ж шле `navigator.sendBeacon` на `pagehide`, який браузер
+        доставляє вже після вивантаження сторінки.
+
+        Один `sid` (сесія заповнення) = один запис, що оновлюється (upsert),
+        інакше кожне натискання клавіші плодило б рядок.
+
+        Мінімізація ПД: IBAN/PESEL маскуються, PDF не зберігається, чернетки
+        старші за 60 днів прибирає `_gc_drafts`.
+        """
+        try:
+            data = json.loads(request.httprequest.data.decode("utf-8"))
+        except (ValueError, UnicodeDecodeError):
+            return request.make_json_response({"ok": False, "error": "bad_json"}, status=400)
+
+        sid = (data.get("sid") or "").strip()[:64]
+        doc_type = data.get("doc_type") or "unknown"
+        if not sid or doc_type not in _ALLOWED_DOC_TYPES + ("unknown",):
+            return request.make_json_response({"ok": False, "error": "missing_sid"}, status=400)
+
+        fields_in = data.get("fields") or {}
+        if not isinstance(fields_in, dict):
+            fields_in = {}
+        safe_fields = {k[:60]: _mask_sensitive(k, v) for k, v in list(fields_in.items())[:60]}
+
+        ip_address = (
+            request.httprequest.headers.get("X-Forwarded-For", "").split(",")[0].strip()
+            or request.httprequest.remote_addr
+            or ""
+        )
+        evidence = {
+            "doc_type": doc_type,
+            "sid": sid,
+            "stage": (data.get("stage") or "typing")[:20],
+            "form_url": (data.get("url") or "")[:200],
+            "user_agent": request.httprequest.headers.get("User-Agent", "")[:250],
+            "ip_address": ip_address,
+            "first_seen": str(fields.Datetime.now()),
+            "last_seen": str(fields.Datetime.now()),
+            "filled_count": len([v for v in safe_fields.values() if v]),
+            "fields": safe_fields,
+        }
+
+        Att = request.env["ir.attachment"].sudo()
+        try:
+            existing = Att.search([("name", "=like", f"[DRAFT-LOG] {sid}%")], limit=1)
+            if existing:
+                try:
+                    prev = json.loads(existing.description or "{}")
+                except ValueError:
+                    prev = {}
+                evidence["first_seen"] = prev.get("first_seen") or evidence["first_seen"]
+                merged = dict(prev.get("fields") or {})
+                merged.update({k: v for k, v in safe_fields.items() if v})
+                evidence["fields"] = merged
+                evidence["filled_count"] = len([v for v in merged.values() if v])
+                existing.write({"description": json.dumps(evidence, ensure_ascii=False, indent=2)})
+                att_id = existing.id
+            else:
+                att_id = Att.create(
+                    {
+                        "name": f"[DRAFT-LOG] {sid} — {doc_type}",
+                        "mimetype": "text/plain",
+                        "description": json.dumps(evidence, ensure_ascii=False, indent=2),
+                    }
+                ).id
+        except Exception as e:  # noqa: BLE001 — чернетка ніколи не повинна ламати форму
+            _logger.warning("[submit-draft] failed: %s", e)
+            return request.make_json_response({"ok": False, "error": "server_error"}, status=200)
+
+        return request.make_json_response({"ok": True, "id": att_id})
 
     @staticmethod
     def _telegram_text(doc_type, full_name, evidence):

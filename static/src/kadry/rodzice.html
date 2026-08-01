@@ -48,6 +48,7 @@
 </style>
 <script src="/fayna_camp_portal/static/src/kadry/assets/pdfmake.min.js"></script>
 <script src="/fayna_camp_portal/static/src/kadry/assets/vfs_fonts.js"></script>
+<script src="/fayna_camp_portal/static/src/kadry/assets/draft_beacon.js"></script>
 </head>
 <body>
 <header>
@@ -162,9 +163,14 @@ if (typeof pdfMake !== 'undefined') {
 
 const SUBMIT_ENDPOINT = '/camp/submit-document';
 
+const ERR_WALIDACJA = 'Uzupełnij wymagane pola, potwierdź status opiekuna prawnego, dokonaj wyboru w Dodatku 4a i złóż podpis.';
+
+// Zwraca true TYLKO przy potwierdzonej dostawie (response.ok). Błąd fetch/HTTP → false.
+// NIE połykamy błędu po cichu: bez potwierdzenia serwera pokazujemy widoczny komunikat,
+// a nie „Dziękujemy" — to właśnie ciche połknięcie gubiło zgody rodziców na iPhone.
 async function postToServer(payload, docNr, filename, base64){
   try{
-    await fetch(SUBMIT_ENDPOINT, {
+    const resp = await fetch(SUBMIT_ENDPOINT, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -177,22 +183,74 @@ async function postToServer(payload, docNr, filename, base64){
         pdf_filename: filename,
       }),
     });
+    return resp.ok;
   }catch(e){
-    console.warn('submit-document: serwer niedostępny, PDF pozostał lokalnie', e);
+    console.error('submit-document niedostępny — kopia NIE dotarła do organizatora', e);
+    return false;
   }
+}
+
+// base64 z pdfmake jako Promise — JEDEN build PDF na kopię serwera i kopię lokalną.
+function pdfBase64(docDef){
+  return new Promise((resolve, reject) => {
+    try{
+      pdfMake.createPdf(docDef).getBase64(b64 => {
+        if (b64) resolve(b64); else reject(new Error('pdfMake getBase64 zwrócił pusty wynik'));
+      });
+    }catch(e){ reject(e); }
+  });
+}
+
+// Pobranie lokalne z TYCH SAMYCH bajtów (blob + a[download]) — zamiast pdfDoc.download(),
+// które na iOS/Safari nawiguje na adres blob: i ubija stronę, zanim POST zdąży wyjść.
+function downloadBase64Pdf(base64, filename){
+  try{
+    const bin = atob(base64), len = bin.length, bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) bytes[i] = bin.charCodeAt(i);
+    const url = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+  }catch(e){ console.warn('Lokalne pobranie PDF nieudane (kopia serwera i tak wysłana)', e); }
 }
 
 let pendingSubmit = null; // {docDef, payload, docNr, filename} — czeka na decyzję w popupie zgody
 
-document.getElementById('consentAccept').addEventListener('click', () => {
+document.getElementById('consentAccept').addEventListener('click', async () => {
   const p = pendingSubmit; if (!p) return;
-  document.getElementById('consentOverlay').style.display = 'none';
-  const pdfDoc = pdfMake.createPdf(p.docDef);
-  pdfDoc.download(p.filename);
-  pdfDoc.getBase64(base64 => postToServer(p.payload, p.docNr, p.filename, base64));
-  pendingSubmit = null;
-  document.getElementById('done').style.display = 'block';
-  document.getElementById('done').scrollIntoView({ behavior: 'smooth' });
+  const btn = document.getElementById('consentAccept');
+  const err = document.getElementById('err');
+  const overlay = document.getElementById('consentOverlay');
+  btn.disabled = true; btn.textContent = 'Wysyłanie…';
+  try{
+    // 1) JEDEN build PDF → base64
+    const base64 = await pdfBase64(p.docDef);
+    // 2) KOPIA NA SERWER NAJPIERW (await + sprawdzenie ok) — to ją gubiliśmy na iPhone
+    const ok = await postToServer(p.payload, p.docNr, p.filename, base64);
+    // 3) kopia lokalna rodzica z tych samych bajtów (nie decyduje o powodzeniu)
+    downloadBase64Pdf(base64, p.filename);
+    overlay.style.display = 'none';
+    if (ok){
+      pendingSubmit = null;
+      err.style.display = 'none';
+      document.getElementById('done').style.display = 'block';
+      document.getElementById('done').scrollIntoView({ behavior: 'smooth' });
+    } else {
+      // Zgoda NIE została złożona — mówimy to wprost, zamiast pokazywać „Dziękujemy"
+      err.textContent = 'Nie udało się przesłać zgody do organizatora — zgoda NIE została złożona. Sprawdź połączenie z internetem i kliknij „Generuj i pobierz PDF" jeszcze raz. Pobrany PDF to wyłącznie Twoja kopia — samo pobranie nie jest złożeniem zgody.';
+      err.style.display = 'block';
+      err.scrollIntoView({ behavior: 'smooth' });
+    }
+  }catch(e){
+    console.error('Błąd generowania PDF', e);
+    overlay.style.display = 'none';
+    err.textContent = 'Nie udało się wygenerować PDF. Odśwież stronę i spróbuj ponownie.';
+    err.style.display = 'block';
+    err.scrollIntoView({ behavior: 'smooth' });
+  } finally {
+    btn.disabled = false; btn.textContent = 'Zgadzam się i wysyłam';
+  }
 });
 
 document.getElementById('f').addEventListener('submit', (e) => {
@@ -204,6 +262,7 @@ document.getElementById('f').addEventListener('submit', (e) => {
   const marketing = fd.get('marketing') === 'on';
   const opiekunPrawny = fd.get('opiekun_prawny') === 'on';
   if (!dziecko || !dziecko_ur || !rodzic || !opiekunPrawny || !wizerunek || !hasSignature) {
+    err.textContent = ERR_WALIDACJA;   // przywracamy tekst walidacji (mógł go nadpisać błąd wysyłki)
     err.style.display = 'block'; return;
   }
   err.style.display = 'none';
