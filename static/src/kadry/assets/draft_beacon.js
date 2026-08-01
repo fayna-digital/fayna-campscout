@@ -96,7 +96,50 @@
     } catch (e) { /* мовчки */ }
   }
 
+  /* Локальна копія введеного — щоб випадкове перезавантаження чи «назад» не
+     стирало 45 заповнених полів.
+
+     Свідомо sessionStorage, а НЕ localStorage: форму часто заповнюють зі
+     спільного планшета табору, і localStorage підсунув би наступному кандидату
+     дані попереднього — це витік персональних даних. sessionStorage живе в межах
+     однієї вкладки й помирає разом з нею. Втрату при закритті вкладки покриває
+     не він, а слід на сервері. */
+  var LS_KEY = "campscout_draft_" + location.pathname;
+
+  function saveLocal() {
+    try {
+      var f = collect();
+      if (!Object.keys(f).length) return;
+      sessionStorage.setItem(LS_KEY, JSON.stringify({ t: Date.now(), fields: f }));
+    } catch (e) { /* приватний режим / переповнення — не критично */ }
+  }
+
+  function clearLocal() {
+    try { sessionStorage.removeItem(LS_KEY); } catch (e) { /* noop */ }
+  }
+
+  function restoreLocal() {
+    try {
+      var raw = sessionStorage.getItem(LS_KEY);
+      if (!raw) return;
+      var data = JSON.parse(raw);
+      if (!data || !data.fields) return;
+      var els = document.querySelectorAll("input, select, textarea"), n = 0;
+      for (var i = 0; i < els.length; i++) {
+        var el = els[i], v = data.fields[keyOf(el)];
+        if (v === undefined || el.type === "file" || el.type === "hidden") continue;
+        if (el.type === "checkbox") { el.checked = (v === "TAK"); }
+        else if (el.type === "radio") { if (el.value === v) el.checked = true; else continue; }
+        else { el.value = v; }
+        el.dispatchEvent(new Event("change", { bubbles: true }));
+        n++;
+      }
+      if (n) everFilled = true;
+    } catch (e) { /* noop */ }
+  }
+
   function onEdit() {
+    saveLocal();
     clearTimeout(timer);
     timer = setTimeout(function () { send("typing", false); }, 1200);
   }
@@ -122,6 +165,8 @@
             o.sid = sid;
             opts = Object.assign({}, opts, { body: JSON.stringify(o) });
           }
+          // подання відбулося — локальна копія більше не потрібна
+          setTimeout(clearLocal, 1500);
         }
       } catch (e) { /* будь-який збій — шлемо запит незміненим */ }
       return orig.apply(this, [input, opts]);
@@ -131,6 +176,11 @@
   try {
     init();
     patchFetch();
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", restoreLocal);
+    } else {
+      restoreLocal();
+    }
     document.addEventListener("input", onEdit, true);
     document.addEventListener("change", onEdit, true);
 

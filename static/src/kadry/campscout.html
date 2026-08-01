@@ -3,16 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CampScout — Анкета кадри табору</title>
+<title data-i18n="page_title">CampScout — Анкета кадри табору</title>
+<link rel="stylesheet" href="/fayna_camp_portal/static/src/kadry/assets/forms.css">
 <style>
   :root{ --forest:#1B4332; --gold:#C08A2D; --bg:#f4f5f3; --card:#fff; --line:#dcdcd6; --ink:#1c2420; --muted:#6b6f6a; --helpbg:rgba(192,138,45,.08); }
   @media (prefers-color-scheme: dark){ :root{ --bg:#14181a; --card:#1e2426; --line:#33403a; --ink:#e8ece9; --muted:#9aa39d; --gold:#F7CB74; --helpbg:rgba(247,203,116,.08); } }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif;line-height:1.5;}
   header{background:var(--forest);color:#fff;padding:22px 18px;border-bottom:4px solid var(--gold);}
+  header .toprow{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;}
   header .co{font-weight:800;font-size:19px;}
   header h1{font-size:16px;margin:10px 0 0;font-weight:600;}
   header p{font-size:12.5px;opacity:.92;margin:6px 0 0;max-width:760px;}
+  .langsw{display:flex;gap:0;border:1.5px solid rgba(255,255,255,.55);border-radius:8px;overflow:hidden;flex:0 0 auto;}
+  .langbtn{font-family:inherit;font-size:12.5px;font-weight:700;border:none;background:transparent;color:#fff;padding:7px 12px;cursor:pointer;opacity:.75;}
+  .langbtn.active{background:rgba(255,255,255,.92);color:var(--forest);opacity:1;}
   main{max-width:780px;margin:0 auto;padding:18px 16px 60px;}
   .sec{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:16px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
   .sec h2{color:var(--gold);font-size:15px;margin:0 0 4px;border-bottom:2px solid var(--gold);padding-bottom:6px;}
@@ -59,203 +64,485 @@
 </style>
 <script src="/fayna_camp_portal/static/src/kadry/assets/pdfmake.min.js"></script>
 <script src="/fayna_camp_portal/static/src/kadry/assets/vfs_fonts.js"></script>
+<script src="/fayna_camp_portal/static/src/kadry/assets/validators.js"></script>
+<script src="/fayna_camp_portal/static/src/kadry/assets/draft_beacon.js"></script>
 <script src="/fayna_camp_portal/static/src/kadry/kadry_browser_campscout.js"></script>
 </head>
 <body>
 <header>
-  <div class="co">CAMP SCOUT</div>
-  <h1>Анкета кадри дитячого табору</h1>
-  <p>Заповніть анкету — на її основі буде сформовано ДВА договори: волонтерський (опіка над дітьми, ТОВ КЕМПСКАУТ, Україна) та інструкторський (виконання програми табору, CampScout, 31,40 zł/год), а також окрема згода на перевірку кандидата. Займе 5–10 хвилин. Поля з <span style="color:#ffd9d4">*</span> обов'язкові.</p>
+  <div class="toprow">
+    <div>
+      <div class="co">CAMP SCOUT</div>
+      <h1 data-i18n="header_h1">Анкета кадри дитячого табору</h1>
+    </div>
+    <div class="langsw" role="group" aria-label="Мова / Język">
+      <button type="button" class="langbtn active" data-lang="uk">УКР</button>
+      <button type="button" class="langbtn" data-lang="pl">PL</button>
+    </div>
+  </div>
+  <p data-i18n-html="header_p">Заповніть анкету — на її основі буде сформовано ДВА договори: волонтерський (опіка над дітьми, ТОВ КЕМПСКАУТ, Україна) та інструкторський (виконання програми табору, CampScout, 31,40 zł/год), а також окрема згода на перевірку кандидата. Займе 5–10 хвилин. Поля з <span style="color:#ffd9d4">*</span> обов'язкові.</p>
 </header>
 <main>
 <form id="f" novalidate>
 
   <section class="sec">
-    <h2>1. Дані латинкою (для польського договору)</h2>
-    <div class="help">Пишіть ТОЧНО як у закордонному паспорті (латинськими літерами) — ці дані підуть саме у польський договір з CampScout.</div>
+    <h2 data-i18n="h2_1">1. Дані латинкою (для польського договору)</h2>
+    <div class="help" data-i18n="help_1">Пишіть ТОЧНО як у закордонному паспорті (латинськими літерами) — ці дані підуть саме у польський договір з CampScout.</div>
     <div class="grid">
-      <div class="f"><label>Прізвище <span class="req">*</span></label><input type="text" name="nazwisko_lat" required></div>
-      <div class="f"><label>Ім'я <span class="req">*</span></label><input type="text" name="imie_lat" required></div>
-      <div class="f"><label>Дата народження <span class="req">*</span></label><input type="date" name="data_urodzenia" required></div>
+      <div class="f"><label><span data-i18n="lbl_nazwisko_lat">Прізвище</span> <span class="req">*</span></label><input type="text" name="nazwisko_lat" required></div>
+      <div class="f"><label><span data-i18n="lbl_imie_lat">Ім'я</span> <span class="req">*</span></label><input type="text" name="imie_lat" required></div>
+      <div class="f"><label><span data-i18n="lbl_data_urodzenia">Дата народження</span> <span class="req">*</span></label><input type="date" name="data_urodzenia" required></div>
     </div>
   </section>
 
   <section class="sec">
-    <h2>2. Дані українською (для українського договору)</h2>
-    <div class="help">Повне ПІБ кирилицею піде в український договір волонтера (ТОВ КЕМПСКАУТ). По батькові вказуйте лише за наявності.</div>
+    <h2 data-i18n="h2_2">2. Дані українською (для українського договору)</h2>
+    <div class="help" data-i18n="help_2">Повне ПІБ кирилицею піде в український договір волонтера (ТОВ КЕМПСКАУТ). По батькові вказуйте лише за наявності.</div>
     <div class="grid">
-      <div class="f"><label>Прізвище <span class="req">*</span></label><input type="text" name="prizvyshche_ua" required></div>
-      <div class="f"><label>Ім'я <span class="req">*</span></label><input type="text" name="imia_ua" required></div>
-      <div class="f"><label>По батькові <span class="opt">(за наявності)</span></label><input type="text" name="po_batkovi"></div>
+      <div class="f"><label><span data-i18n="lbl_prizvyshche_ua">Прізвище</span> <span class="req">*</span></label><input type="text" name="prizvyshche_ua" required></div>
+      <div class="f"><label><span data-i18n="lbl_imia_ua">Ім'я</span> <span class="req">*</span></label><input type="text" name="imia_ua" required></div>
+      <div class="f"><label><span data-i18n="lbl_po_batkovi">По батькові</span> <span class="opt" data-i18n="opt_if_any">(за наявності)</span></label><input type="text" name="po_batkovi"></div>
     </div>
   </section>
 
   <section class="sec">
-    <h2>3. Документи, що посвідчують особу</h2>
+    <h2 data-i18n="h2_3">3. Документи, що посвідчують особу</h2>
     <div class="subblock">
-      <div class="sub" style="margin-top:0">Для польського договору</div>
-      <div class="help">Можна вказати або закордонний паспорт, або karta pobytu (посвідка на проживання в Польщі) — оберіть той, який маєте.</div>
+      <div class="sub" style="margin-top:0" data-i18n="sub_doc_pl">Для польського договору</div>
+      <div class="help" data-i18n="help_doc_pl">Можна вказати або закордонний паспорт, або karta pobytu (посвідка на проживання в Польщі) — оберіть той, який маєте.</div>
       <div class="grid">
-        <div class="f"><label>Тип документа <span class="req">*</span></label>
+        <div class="f"><label><span data-i18n="lbl_doc_type">Тип документа</span> <span class="req">*</span></label>
           <select name="dokument_pl_typ" required>
-            <option value="">— оберіть —</option>
-            <option value="paszport">паспорт для закордонних поїздок</option>
+            <option value="" data-i18n="opt_select">— оберіть —</option>
+            <option value="paszport" data-i18n="opt_paszport_zagr">паспорт для закордонних поїздок</option>
             <option value="karta_pobytu">karta pobytu</option>
           </select>
         </div>
-        <div class="f"><label>Серія і номер <span class="req">*</span></label><input type="text" name="dokument_pl_numer" required></div>
+        <div class="f"><label><span data-i18n="lbl_doc_seria">Серія і номер</span> <span class="req">*</span></label><input type="text" name="dokument_pl_numer" required></div>
       </div>
     </div>
     <div class="subblock">
-      <div class="sub" style="margin-top:0">Для українського договору</div>
-      <div class="help">Можна вказати або закордонний паспорт, або внутрішній паспорт України — оберіть той, який маєте.</div>
+      <div class="sub" style="margin-top:0" data-i18n="sub_doc_ua">Для українського договору</div>
+      <div class="help" data-i18n="help_doc_ua">Можна вказати або закордонний паспорт, або внутрішній паспорт України — оберіть той, який маєте.</div>
       <div class="grid">
-        <div class="f"><label>Тип документа <span class="req">*</span></label>
+        <div class="f"><label><span data-i18n="lbl_doc_type">Тип документа</span> <span class="req">*</span></label>
           <select name="dokument_ua_typ" required>
-            <option value="">— оберіть —</option>
-            <option value="zakordonnyi">паспорт для закордонних поїздок</option>
-            <option value="vnutrishnii">внутрішній паспорт</option>
+            <option value="" data-i18n="opt_select">— оберіть —</option>
+            <option value="zakordonnyi" data-i18n="opt_paszport_zagr">паспорт для закордонних поїздок</option>
+            <option value="vnutrishnii" data-i18n="opt_paszport_wewn">внутрішній паспорт</option>
           </select>
         </div>
-        <div class="f"><label>Серія і номер <span class="req">*</span></label><input type="text" name="dokument_ua_numer" required></div>
+        <div class="f"><label><span data-i18n="lbl_doc_seria">Серія і номер</span> <span class="req">*</span></label><input type="text" name="dokument_ua_numer" required></div>
       </div>
     </div>
   </section>
 
   <section class="sec">
-    <h2>4. Ідентифікаційні номери</h2>
+    <h2 data-i18n="h2_4">4. Ідентифікаційні номери</h2>
     <div class="grid">
       <div class="f">
         <label>PESEL</label>
         <input type="text" name="pesel" inputmode="numeric" maxlength="11">
-        <div class="help">PESEL — польський ідентифікаційний номер, потрібен для польського договору, ZUS та податків. Якщо не маєте — позначте чекбокс нижче.</div>
-        <label class="chk"><input type="checkbox" name="brak_pesel"><span class="txt">не маю PESEL</span></label>
+        <div class="help" data-i18n="help_pesel">PESEL — польський ідентифікаційний номер, потрібен для польського договору, ZUS та податків. Якщо не маєте — позначте чекбокс нижче.</div>
+        <label class="chk"><input type="checkbox" name="brak_pesel"><span class="txt" data-i18n="chk_brak_pesel">не маю PESEL</span></label>
       </div>
       <div class="f">
-        <label>РНОКПП / ІПН</label>
+        <label data-i18n="lbl_inn">РНОКПП / ІПН</label>
         <input type="text" name="inn_ua" inputmode="numeric" maxlength="10">
-        <div class="help">Український реєстраційний номер облікової картки платника податків (ІПН). Потрібен для українського договору.</div>
-        <label class="chk"><input type="checkbox" name="brak_inn"><span class="txt">не маю коду — релігійні переконання</span></label>
+        <div class="help" data-i18n="help_inn">Український реєстраційний номер облікової картки платника податків (ІПН). Потрібен для українського договору.</div>
+        <label class="chk"><input type="checkbox" name="brak_inn"><span class="txt" data-i18n="chk_brak_inn">не маю коду — релігійні переконання</span></label>
       </div>
     </div>
   </section>
 
   <section class="sec">
-    <h2>5. Адреса проживання</h2>
-    <div class="help">Вкажіть ОДНУ адресу кирилицею — вона автоматично транслітерується для польського договору, вводити двічі не потрібно. Приклад: «вул. Хрещатик 1, кв. 5, 01001 Київ».</div>
-    <div class="f full"><label>Адреса <span class="req">*</span></label><input type="text" name="adresa_ua" placeholder="вул. Хрещатик 1, кв. 5, 01001 Київ" required></div>
-    <div class="tip">Для польського договору автоматично: <span id="adresa_pl_preview"></span></div>
-    <div class="help" style="margin-top:10px">⚠️ Якщо ви вже проживаєте в Польщі — автоматична транслітерація може спотворити назви (напр. «Познань» ≠ «Poznań»). Впишіть нижче адресу ТОЧНО польською мовою, і вона матиме пріоритет.</div>
-    <div class="f full"><label>Адреса польською (опційно, якщо вже маєте польську адресу)</label><input type="text" name="adresa_pl_override" placeholder="напр. al. Niepodległości 26, 61-714 Poznań"></div>
+    <h2 data-i18n="h2_5">5. Адреса проживання</h2>
+    <div class="help" data-i18n="help_5">Вкажіть ОДНУ адресу кирилицею — вона автоматично транслітерується для польського договору, вводити двічі не потрібно. Приклад: «вул. Хрещатик 1, кв. 5, 01001 Київ».</div>
+    <div class="f full"><label><span data-i18n="lbl_adresa">Адреса</span> <span class="req">*</span></label><input type="text" name="adresa_ua" placeholder="вул. Хрещатик 1, кв. 5, 01001 Київ" required></div>
+    <div class="tip"><span data-i18n="tip_pl_auto">Для польського договору автоматично:</span> <span id="adresa_pl_preview"></span></div>
+    <div class="help" style="margin-top:10px" data-i18n="help_5b">⚠️ Якщо ви вже проживаєте в Польщі — автоматична транслітерація може спотворити назви (напр. «Познань» ≠ «Poznań»). Впишіть нижче адресу ТОЧНО польською мовою, і вона матиме пріоритет.</div>
+    <div class="f full"><label data-i18n="lbl_adresa_pl">Адреса польською (опційно, якщо вже маєте польську адресу)</label><input type="text" name="adresa_pl_override" placeholder="напр. al. Niepodległości 26, 61-714 Poznań"></div>
   </section>
 
   <section class="sec">
-    <h2>6. Рахунок для виплати</h2>
-    <div class="help">Вкажіть хоча б один рахунок. Якщо немає польського IBAN — достатньо вказати звичайний український рахунок.</div>
+    <h2 data-i18n="h2_6">6. Рахунок для виплати</h2>
+    <div class="help" data-i18n="help_6">Вкажіть хоча б один рахунок. Якщо немає польського IBAN — достатньо вказати звичайний український рахунок.</div>
     <div class="grid">
-      <div class="f"><label>IBAN PL <span class="opt">(за наявності)</span></label><input type="text" name="iban" placeholder="PL.."></div>
-      <div class="f"><label>Рахунок UA <span class="opt">(за наявності)</span></label><input type="text" name="rachunek_ua" placeholder="UA.."></div>
+      <div class="f"><label><span data-i18n="lbl_iban">IBAN PL</span> <span class="opt" data-i18n="opt_if_have">(за наявності)</span></label><input type="text" name="iban" placeholder="PL.."></div>
+      <div class="f"><label><span data-i18n="lbl_rachunek_ua">Рахунок UA</span> <span class="opt" data-i18n="opt_if_have">(за наявності)</span></label><input type="text" name="rachunek_ua" placeholder="UA.."></div>
     </div>
   </section>
 
   <section class="sec">
-    <h2>7. Родинні дані <span class="opt">(за наявності)</span></h2>
+    <h2><span data-i18n="h2_7">7. Родинні дані</span> <span class="opt" data-i18n="opt_if_have">(за наявності)</span></h2>
     <div class="grid">
-      <div class="f"><label>Прізвище родове (nazwisko rodowe)</label><input type="text" name="nazwisko_rodowe"></div>
-      <div class="f"><label>Ім'я батька</label><input type="text" name="imia_ojca"></div>
-      <div class="f"><label>Ім'я матері</label><input type="text" name="imia_matky"></div>
+      <div class="f"><label data-i18n="lbl_nazwisko_rodowe">Прізвище родове (nazwisko rodowe)</label><input type="text" name="nazwisko_rodowe"></div>
+      <div class="f"><label data-i18n="lbl_imia_ojca">Ім'я батька</label><input type="text" name="imia_ojca"></div>
+      <div class="f"><label data-i18n="lbl_imia_matky">Ім'я матері</label><input type="text" name="imia_matky"></div>
     </div>
   </section>
 
   <section class="sec">
-    <h2>8. Контакти</h2>
+    <h2 data-i18n="h2_8">8. Контакти</h2>
     <div class="grid">
-      <div class="f"><label>Телефон <span class="req">*</span></label><input type="tel" name="tel" required></div>
+      <div class="f"><label><span data-i18n="lbl_tel">Телефон</span> <span class="req">*</span></label><input type="tel" name="tel" required></div>
       <div class="f"><label>E-mail <span class="req">*</span></label><input type="email" name="email" required></div>
     </div>
   </section>
 
   <section class="sec">
-    <h2>9. Освіта / професія <span class="opt">(за наявності)</span></h2>
+    <h2><span data-i18n="h2_9">9. Освіта / професія</span> <span class="opt" data-i18n="opt_if_have">(за наявності)</span></h2>
     <div class="grid">
-      <div class="f"><label>Освіта</label><input type="text" name="wyksztalcenie" placeholder="напр. вища педагогічна"></div>
-      <div class="f"><label>Професія</label><input type="text" name="zawod"></div>
+      <div class="f"><label data-i18n="lbl_wyksztalcenie">Освіта</label><input type="text" name="wyksztalcenie" placeholder="напр. вища педагогічна" data-i18n-ph="ph_wyksztalcenie"></div>
+      <div class="f"><label data-i18n="lbl_zawod">Професія</label><input type="text" name="zawod"></div>
     </div>
   </section>
 
   <section class="sec">
-    <h2>10. Період роботи на таборі</h2>
+    <h2 data-i18n="h2_10">10. Період роботи на таборі</h2>
     <div class="grid">
-      <div class="f"><label>З дня <span class="req">*</span></label><input type="date" name="data_od" value="2026-07-08" required></div>
-      <div class="f"><label>По день <span class="req">*</span></label><input type="date" name="data_do" value="2026-07-21" required></div>
+      <div class="f"><label><span data-i18n="lbl_data_od">З дня</span> <span class="req">*</span></label><input type="date" name="data_od" value="2026-07-08" required></div>
+      <div class="f"><label><span data-i18n="lbl_data_do">По день</span> <span class="req">*</span></label><input type="date" name="data_do" value="2026-07-21" required></div>
     </div>
   </section>
 
   <section class="sec">
-    <h2>11. Польський податково-страховий блок</h2>
-    <p class="hint">Цей блок стосується польського договору (ZUS, NFZ, податки). Більшості української кадри без польської реєстрації ці поля не стосуються — залиште порожніми там, де не знаєте.</p>
+    <h2 data-i18n="h2_11">11. Польський податково-страховий блок</h2>
+    <p class="hint" data-i18n="hint_11">Цей блок стосується польського договору (ZUS, NFZ, податки). Більшості української кадри без польської реєстрації ці поля не стосуються — залиште порожніми там, де не знаєте.</p>
     <div class="grid">
-      <div class="f"><label>Громадянство</label><input type="text" name="obywatelstwo"></div>
-      <div class="f"><label>Місце народження</label><input type="text" name="miejsce_urodzenia"></div>
-      <div class="f full"><label>Adres korespondencyjny <span class="opt">(якщо інший ніж адреса проживання)</span></label><input type="text" name="adres_koresp" placeholder="залиште порожнім, якщо такий самий"></div>
-      <div class="f"><label>Województwo <span class="opt">(за наявності)</span></label><input type="text" name="adres_zam_woj"></div>
-      <div class="f"><label>Powiat / gmina <span class="opt">(за наявності)</span></label><input type="text" name="adres_zam_powiat_gmina"></div>
-      <div class="f"><label>Відділення NFZ</label><input type="text" name="nfz" placeholder="напр. Wielkopolski"></div>
+      <div class="f"><label data-i18n="lbl_obywatelstwo">Громадянство</label><input type="text" name="obywatelstwo"></div>
+      <div class="f"><label data-i18n="lbl_miejsce_urodzenia">Місце народження</label><input type="text" name="miejsce_urodzenia"></div>
+      <div class="f full"><label><span data-i18n="lbl_adres_koresp">Adres korespondencyjny</span> <span class="opt" data-i18n="opt_if_other">(якщо інший ніж адреса проживання)</span></label><input type="text" name="adres_koresp" placeholder="залиште порожнім, якщо такий самий" data-i18n-ph="ph_adres_koresp"></div>
+      <div class="f"><label><span data-i18n="lbl_woj">Województwo</span> <span class="opt" data-i18n="opt_if_have">(за наявності)</span></label><input type="text" name="adres_zam_woj"></div>
+      <div class="f"><label><span data-i18n="lbl_powiat">Powiat / gmina</span> <span class="opt" data-i18n="opt_if_have">(за наявності)</span></label><input type="text" name="adres_zam_powiat_gmina"></div>
+      <div class="f"><label data-i18n="lbl_nfz">Відділення NFZ</label><input type="text" name="nfz" placeholder="напр. Wielkopolski"></div>
       <div class="f"><label>Urząd Skarbowy</label><input type="text" name="us"></div>
     </div>
 
-    <div class="sub">Статус ZUS (позначте ТАК/НІ для кожного пункту)</div>
+    <div class="sub" data-i18n="sub_zus">Статус ZUS (позначте ТАК/НІ для кожного пункту)</div>
     <div id="zus"></div>
 
-    <div class="sub">Податки (PIT)</div>
-    <label class="chk"><input type="checkbox" name="pit2"><span class="txt"><b>Прошу застосовувати суму, що зменшує авансовий податок (PIT-2)</b>.</span></label>
-    <div class="help">Кожен має частину доходу без податку (приблизно 30 000 zł на рік ≈ 300 zł/міс). Позначте, якщо це ваш єдиний або основний договір у Польщі — тоді щомісяця утримуватимуть менше податку. Якщо PIT-2 подано в іншого роботодавця — тут не позначайте.</div>
+    <div class="sub" data-i18n="sub_pit">Податки (PIT)</div>
+    <label class="chk"><input type="checkbox" name="pit2"><span class="txt" data-i18n-html="chk_pit2"><b>Прошу застосовувати суму, що зменшує авансовий податок (PIT-2)</b>.</span></label>
+    <div class="help" data-i18n="help_pit2">Кожен має частину доходу без податку (приблизно 30 000 zł на рік ≈ 300 zł/міс). Позначте, якщо це ваш єдиний або основний договір у Польщі — тоді щомісяця утримуватимуть менше податку. Якщо PIT-2 подано в іншого роботодавця — тут не позначайте.</div>
     <div class="yn" style="margin:2px 0 4px 28px">
-      <span class="opt">якщо позначено, у якій частці:</span>
+      <span class="opt" data-i18n="pit2_czesc_lbl">якщо позначено, у якій частці:</span>
       <label><input type="radio" name="pit2_czesc" value="1/12" checked> 1/12</label>
       <label><input type="radio" name="pit2_czesc" value="1/24"> 1/24</label>
       <label><input type="radio" name="pit2_czesc" value="1/36"> 1/36</label>
     </div>
-    <div class="help" style="margin-left:28px">1/12 — якщо це у вас один такий договір (типово). 1/24 або 1/36 — якщо частку поділено між 2–3 роботодавцями. Не впевнені — залиште 1/12.</div>
-    <label class="chk"><input type="checkbox" name="bez_zaliczki"><span class="txt"><b>Непобирання авансового податку</b>.</span></label>
-    <div class="help">Позначте лише якщо за весь рік заробите дуже мало (менше ≈30 000 zł) — тоді податок не утримуватимуть взагалі. Якщо це основна робота — залиште не позначеним.</div>
+    <div class="help" style="margin-left:28px" data-i18n="help_pit2_czesc">1/12 — якщо це у вас один такий договір (типово). 1/24 або 1/36 — якщо частку поділено між 2–3 роботодавцями. Не впевнені — залиште 1/12.</div>
+    <label class="chk"><input type="checkbox" name="bez_zaliczki"><span class="txt" data-i18n-html="chk_bez_zaliczki"><b>Непобирання авансового податку</b>.</span></label>
+    <div class="help" data-i18n="help_bez_zaliczki">Позначте лише якщо за весь рік заробите дуже мало (менше ≈30 000 zł) — тоді податок не утримуватимуть взагалі. Якщо це основна робота — залиште не позначеним.</div>
   </section>
 
   <section class="sec">
-    <h2>★ 12. Згода на перевірку кандидата (безпека дітей)</h2>
-    <div class="help">CampScout, як організатор дитячого табору, ПЕРЕД допуском до роботи з дітьми перевіряє кандидатів за реєстрами осіб, які вчинили злочини проти статевої свободи та недоторканості неповнолітніх. Це стандартна практика захисту дітей.</div>
-    <label class="chk"><input type="checkbox" name="zgoda_rspts" required><span class="txt">Свідомо надаю згоду на таку перевірку та на обробку даних, необхідних для неї. <span class="req">*</span></span></label>
+    <h2 data-i18n="h2_12">★ 12. Згода на перевірку кандидата (безпека дітей)</h2>
+    <div class="help" data-i18n="help_12">CampScout, як організатор дитячого табору, ПЕРЕД допуском до роботи з дітьми перевіряє кандидатів за реєстрами осіб, які вчинили злочини проти статевої свободи та недоторканості неповнолітніх. Це стандартна практика захисту дітей.</div>
+    <label class="chk"><input type="checkbox" name="zgoda_rspts" required><span class="txt"><span data-i18n="chk_rspts">Свідомо надаю згоду на таку перевірку та на обробку даних, необхідних для неї.</span> <span class="req">*</span></span></label>
   </section>
 
   <section class="sec">
-    <h2 id="s13">13. Згоди</h2>
-    <label class="chk"><input type="checkbox" name="zgoda_gdpr" required><span class="txt">Надаю згоду на обробку моїх персональних даних для укладення та виконання договору (GDPR / Регламент ЄС 2016/679). <span class="req">*</span></span></label>
-    <label class="chk"><input type="checkbox" name="zgoda_bezpeka" required><span class="txt">Підтверджую, що зобов'язуюсь дотримуватися правил безпеки, опіки над дітьми та конфіденційності даних дітей. <span class="req">*</span></span></label>
-    <label class="chk"><input type="checkbox" name="zgoda_wizerunek"><span class="txt">(добровільно) Згоден(на) на використання мого зображення у промо-матеріалах CampScout.</span></label>
+    <h2 id="s13" data-i18n="h2_13">13. Згоди</h2>
+    <label class="chk"><input type="checkbox" name="zgoda_gdpr" required><span class="txt"><span data-i18n="chk_gdpr">Надаю згоду на обробку моїх персональних даних для укладення та виконання договору (GDPR / Регламент ЄС 2016/679).</span> <span class="req">*</span></span></label>
+    <label class="chk"><input type="checkbox" name="zgoda_bezpeka" required><span class="txt"><span data-i18n="chk_bezpeka">Підтверджую, що зобов'язуюсь дотримуватися правил безпеки, опіки над дітьми та конфіденційності даних дітей.</span> <span class="req">*</span></span></label>
+    <label class="chk"><input type="checkbox" name="zgoda_wizerunek"><span class="txt"><span data-i18n="chk_wizerunek">(добровільно) Згоден(на) на використання мого зображення у промо-матеріалах CampScout.</span></span></label>
   </section>
 
-  <div class="err" id="err">Заповніть, будь ласка, обов'язкові поля (*).</div>
+  <div class="err" id="err" data-i18n="err_required">Заповніть, будь ласка, обов'язкові поля (*).</div>
   <div class="actions">
-    <button type="submit" class="primary" id="send">Надішли документи</button>
+    <button type="submit" class="primary" id="send" data-i18n="btn_send">Надішли документи</button>
   </div>
 
   <div id="done">
-    <h3>Дякуємо! ✅</h3>
-    <p style="font-size:13px;margin:4px 0" id="donemsg">Документи згенеровано та завантажено на ваш пристрій. Копія разом з даними анкети вже передана організатору (з датою/часом подання) — нічого додатково пересилати не потрібно. Підпис документів відбудеться особисто при зустрічі з організатором.</p>
+    <h3 data-i18n="done_h3">Дякуємо! ✅</h3>
+    <p style="font-size:13px;margin:4px 0" id="donemsg" data-i18n="done_msg">Документи згенеровано та завантажено на ваш пристрій. Копія разом з даними анкети вже передана організатору (з датою/часом подання) — нічого додатково пересилати не потрібно. Підпис документів відбудеться особисто при зустрічі з організатором.</p>
   </div>
 </form>
 
 <div class="consent-overlay" id="consentOverlay">
   <div class="consent-box">
-    <h3>Підтвердіть подання</h3>
-    <p>Заповнена анкета та згенеровані PDF будуть передані на сервер CampScout разом з датою, годиною подання та IP-адресою — як підтвердження, що заявку подали саме ви. Це обов'язкова умова подання анкети (без цього кроку документи вважаються неподаними).</p>
+    <h3 data-i18n="consent_h3">Підтвердіть подання</h3>
+    <p data-i18n="consent_p">Заповнена анкета та згенеровані PDF будуть передані на сервер CampScout разом з датою, годиною подання та IP-адресою — як підтвердження, що заявку подали саме ви. Це обов'язкова умова подання анкети (без цього кроку документи вважаються неподаними).</p>
     <div class="row">
-      <button type="button" class="primary" id="consentAccept">Погоджуюсь і надсилаю</button>
+      <button type="button" class="primary" id="consentAccept" data-i18n="consent_btn">Погоджуюсь і надсилаю</button>
     </div>
   </div>
 </div>
 </main>
 <script>
+// === i18n: UA (за замовчуванням) + PL. Дані форми (name= в fd) НЕ залежать від мови інтерфейсу —
+// перемикач змінює лише видимий текст, польський/український генератори документів отримують ті самі поля. ===
+const I18N = {
+  uk: {
+    page_title: "CampScout — Анкета кадри табору",
+    header_h1: "Анкета кадри дитячого табору",
+    header_p: "Заповніть анкету — на її основі буде сформовано ДВА договори: волонтерський (опіка над дітьми, ТОВ КЕМПСКАУТ, Україна) та інструкторський (виконання програми табору, CampScout, 31,40 zł/год), а також окрема згода на перевірку кандидата. Займе 5–10 хвилин. Поля з <span style=\"color:#ffd9d4\">*</span> обов'язкові.",
+    h2_1: "1. Дані латинкою (для польського договору)",
+    help_1: "Пишіть ТОЧНО як у закордонному паспорті (латинськими літерами) — ці дані підуть саме у польський договір з CampScout.",
+    lbl_nazwisko_lat: "Прізвище",
+    lbl_imie_lat: "Ім'я",
+    lbl_data_urodzenia: "Дата народження",
+    h2_2: "2. Дані українською (для українського договору)",
+    help_2: "Повне ПІБ кирилицею піде в український договір волонтера (ТОВ КЕМПСКАУТ). По батькові вказуйте лише за наявності.",
+    lbl_prizvyshche_ua: "Прізвище",
+    lbl_imia_ua: "Ім'я",
+    lbl_po_batkovi: "По батькові",
+    opt_if_any: "(за наявності)",
+    h2_3: "3. Документи, що посвідчують особу",
+    sub_doc_pl: "Для польського договору",
+    help_doc_pl: "Можна вказати або закордонний паспорт, або karta pobytu (посвідка на проживання в Польщі) — оберіть той, який маєте.",
+    lbl_doc_type: "Тип документа",
+    opt_select: "— оберіть —",
+    opt_paszport_zagr: "паспорт для закордонних поїздок",
+    lbl_doc_seria: "Серія і номер",
+    sub_doc_ua: "Для українського договору",
+    help_doc_ua: "Можна вказати або закордонний паспорт, або внутрішній паспорт України — оберіть той, який маєте.",
+    opt_paszport_wewn: "внутрішній паспорт",
+    h2_4: "4. Ідентифікаційні номери",
+    help_pesel: "PESEL — польський ідентифікаційний номер, потрібен для польського договору, ZUS та податків. Якщо не маєте — позначте чекбокс нижче.",
+    chk_brak_pesel: "не маю PESEL",
+    lbl_inn: "РНОКПП / ІПН",
+    help_inn: "Український реєстраційний номер облікової картки платника податків (ІПН). Потрібен для українського договору.",
+    chk_brak_inn: "не маю коду — релігійні переконання",
+    h2_5: "5. Адреса проживання",
+    help_5: "Вкажіть ОДНУ адресу кирилицею — вона автоматично транслітерується для польського договору, вводити двічі не потрібно. Приклад: «вул. Хрещатик 1, кв. 5, 01001 Київ».",
+    lbl_adresa: "Адреса",
+    tip_pl_auto: "Для польського договору автоматично:",
+    help_5b: "⚠️ Якщо ви вже проживаєте в Польщі — автоматична транслітерація може спотворити назви (напр. «Познань» ≠ «Poznań»). Впишіть нижче адресу ТОЧНО польською мовою, і вона матиме пріоритет.",
+    lbl_adresa_pl: "Адреса польською (опційно, якщо вже маєте польську адресу)",
+    h2_6: "6. Рахунок для виплати",
+    help_6: "Вкажіть хоча б один рахунок. Якщо немає польського IBAN — достатньо вказати звичайний український рахунок.",
+    lbl_iban: "IBAN PL",
+    lbl_rachunek_ua: "Рахунок UA",
+    opt_if_have: "(за наявності)",
+    h2_7: "7. Родинні дані",
+    lbl_nazwisko_rodowe: "Прізвище родове (nazwisko rodowe)",
+    lbl_imia_ojca: "Ім'я батька",
+    lbl_imia_matky: "Ім'я матері",
+    h2_8: "8. Контакти",
+    lbl_tel: "Телефон",
+    h2_9: "9. Освіта / професія",
+    lbl_wyksztalcenie: "Освіта",
+    ph_wyksztalcenie: "напр. вища педагогічна",
+    lbl_zawod: "Професія",
+    h2_10: "10. Період роботи на таборі",
+    lbl_data_od: "З дня",
+    lbl_data_do: "По день",
+    h2_11: "11. Польський податково-страховий блок",
+    hint_11: "Цей блок стосується польського договору (ZUS, NFZ, податки). Більшості української кадри без польської реєстрації ці поля не стосуються — залиште порожніми там, де не знаєте.",
+    lbl_obywatelstwo: "Громадянство",
+    lbl_miejsce_urodzenia: "Місце народження",
+    lbl_adres_koresp: "Adres korespondencyjny",
+    opt_if_other: "(якщо інший ніж адреса проживання)",
+    ph_adres_koresp: "залиште порожнім, якщо такий самий",
+    lbl_woj: "Województwo",
+    lbl_powiat: "Powiat / gmina",
+    lbl_nfz: "Відділення NFZ",
+    sub_zus: "Статус ZUS (позначте ТАК/НІ для кожного пункту)",
+    sub_pit: "Податки (PIT)",
+    chk_pit2: "<b>Прошу застосовувати суму, що зменшує авансовий податок (PIT-2)</b>.",
+    help_pit2: "Кожен має частину доходу без податку (приблизно 30 000 zł на рік ≈ 300 zł/міс). Позначте, якщо це ваш єдиний або основний договір у Польщі — тоді щомісяця утримуватимуть менше податку. Якщо PIT-2 подано в іншого роботодавця — тут не позначайте.",
+    pit2_czesc_lbl: "якщо позначено, у якій частці:",
+    help_pit2_czesc: "1/12 — якщо це у вас один такий договір (типово). 1/24 або 1/36 — якщо частку поділено між 2–3 роботодавцями. Не впевнені — залиште 1/12.",
+    chk_bez_zaliczki: "<b>Непобирання авансового податку</b>.",
+    help_bez_zaliczki: "Позначте лише якщо за весь рік заробите дуже мало (менше ≈30 000 zł) — тоді податок не утримуватимуть взагалі. Якщо це основна робота — залиште не позначеним.",
+    h2_12: "★ 12. Згода на перевірку кандидата (безпека дітей)",
+    help_12: "CampScout, як організатор дитячого табору, ПЕРЕД допуском до роботи з дітьми перевіряє кандидатів за реєстрами осіб, які вчинили злочини проти статевої свободи та недоторканості неповнолітніх. Це стандартна практика захисту дітей.",
+    chk_rspts: "Свідомо надаю згоду на таку перевірку та на обробку даних, необхідних для неї.",
+    h2_13: "13. Згоди",
+    chk_gdpr: "Надаю згоду на обробку моїх персональних даних для укладення та виконання договору (GDPR / Регламент ЄС 2016/679).",
+    chk_bezpeka: "Підтверджую, що зобов'язуюсь дотримуватися правил безпеки, опіки над дітьми та конфіденційності даних дітей.",
+    chk_wizerunek: "(добровільно) Згоден(на) на використання мого зображення у промо-матеріалах CampScout.",
+    err_required: "Заповніть, будь ласка, обов'язкові поля (*).",
+    btn_send: "Надішли документи",
+    btn_sending: "Надсилаємо…",
+    err_send_failed: "Не вдалося надіслати документи організатору — заявку НЕ подано. Перевірте інтернет і натисніть «Надішли документи» ще раз. Завантажений PDF — лише ваша копія, сам по собі він не є поданням.",
+    err_pdf_failed: "Не вдалося створити документи. Перезавантажте сторінку і спробуйте ще раз — введені дані збережено.",
+    btn_generating: "Генерування…",
+    done_h3: "Дякуємо! ✅",
+    done_msg: "Документи згенеровано та завантажено на ваш пристрій. Копія разом з даними анкети вже передана організатору (з датою/часом подання) — нічого додатково пересилати не потрібно. Підпис документів відбудеться особисто при зустрічі з організатором.",
+    consent_h3: "Підтвердіть подання",
+    consent_p: "Заповнена анкета та згенеровані PDF будуть передані на сервер CampScout разом з датою, годиною подання та IP-адресою — як підтвердження, що заявку подали саме ви. Це обов'язкова умова подання анкети (без цього кроку документи вважаються неподаними).",
+    consent_btn: "Погоджуюсь і надсилаю",
+    alert_no_generator: "Генератор документів не завантажився. Оновіть сторінку.",
+    err_pesel: "Вкажіть PESEL або позначте «не маю PESEL».",
+    err_inn: "Вкажіть РНОКПП/ІПН або позначте «не маю коду».",
+    err_konto: "Вкажіть хоча б один рахунок — IBAN PL або рахунок UA.",
+    err_pesel_format: "PESEL записано з помилкою — перевірте всі 11 цифр (контрольна цифра не сходиться).",
+    err_inn_format: "РНОКПП (ІПН) записано з помилкою — перевірте всі 10 цифр.",
+    err_iban_format: "Польський рахунок записано з помилкою — після PL має бути рівно 26 цифр.",
+    err_iban_ua_format: "Український рахунок записано з помилкою — має починатися на UA і містити 29 знаків.",
+    err_nip_format: "NIP записано з помилкою — перевірте всі 10 цифр.",
+    lbl_tak: "ТАК",
+    lbl_ni: "НІ",
+    q_zus1: "Ви вже працюєте офіційно в іншого роботодавця (умова о pracę) із зарплатою не нижче мінімальної?",
+    help_zus1: "Постійна робота в іншого роботодавця. Якщо ТАК — з цього договору не стягуємо пенсійні внески (лише медичний). Немає іншої офіційної роботи → позначте НІ.",
+    q_zus2: "Маєте інший цивільно-правовий договір (zlecenie), з якого вже сплачується ZUS?",
+    help_zus2: "Інший договір-доручення, з якого хтось вже платить за вас ZUS. Немає такого → НІ.",
+    q_zus3: "Ведете власну підприємницьку діяльність (działalność gospodarcza) зі сплатою ZUS?",
+    help_zus3: "Зареєстрована діяльність, з якої ви платите ZUS. Немає такої → НІ.",
+    q_zus4: "Отримуєте пенсію за віком (emerytura)?",
+    help_zus4: "Якщо ви не пенсіонер → НІ.",
+    q_zus5: "Отримуєте пенсію по інвалідності (renta)?",
+    help_zus5: "Якщо не отримуєте → НІ.",
+    q_zus6: "Навчаєтесь (школа/виш) і вам менше 26 років?",
+    help_zus6: "Якщо ТАК — з цього договору не стягується ZUS і медичний внесок (більше «на руки»). Потрібен дійсний студентський/учнівський квиток.",
+    q_zus7: "Зареєстровані в службі зайнятості як безробітний(а)?",
+    help_zus7: "Увага: про початок роботи за договором зазвичай треба повідомити службу зайнятості.",
+    q_zus8: "Перебуваєте у декретній/батьківській відпустці або отримуєте передпенсійну виплату?",
+    help_zus8: "Якщо жодне з цього не стосується → НІ.",
+    q_zus9: "Застраховані в KRUS (сільськогосподарське страхування)?",
+    help_zus9: "Стосується фермерів. Якщо ні → НІ.",
+  },
+  pl: {
+    page_title: "CampScout — Formularz kadry obozu",
+    header_h1: "Formularz kadry obozu dziecięcego",
+    header_p: "Wypełnij formularz — na jego podstawie zostaną wygenerowane DWIE umowy: wolontariacka (opieka nad dziećmi, ТОВ KEMPSKAUT, Ukraina) oraz instruktorska (realizacja programu obozu, CampScout, 31,40 zł/godz.), a także osobna zgoda na weryfikację kandydata. Zajmie 5–10 minut. Pola oznaczone <span style=\"color:#ffd9d4\">*</span> są wymagane.",
+    h2_1: "1. Dane w alfabecie łacińskim (do umowy polskiej)",
+    help_1: "Wpisz DOKŁADNIE jak w paszporcie zagranicznym (literami łacińskimi) — te dane trafią do polskiej umowy z CampScout.",
+    lbl_nazwisko_lat: "Nazwisko",
+    lbl_imie_lat: "Imię",
+    lbl_data_urodzenia: "Data urodzenia",
+    h2_2: "2. Dane w języku ukraińskim (do umowy ukraińskiej)",
+    help_2: "Pełne imię i nazwisko cyrylicą trafi do ukraińskiej umowy wolontariackiej (ТОВ KEMPSKAUT). Imię odojcowskie (по батькові) podaj tylko jeśli dotyczy.",
+    lbl_prizvyshche_ua: "Nazwisko",
+    lbl_imia_ua: "Imię",
+    lbl_po_batkovi: "Imię odojcowskie",
+    opt_if_any: "(jeśli dotyczy)",
+    h2_3: "3. Dokumenty tożsamości",
+    sub_doc_pl: "Do umowy polskiej",
+    help_doc_pl: "Podaj paszport zagraniczny albo kartę pobytu — wybierz ten dokument, który posiadasz.",
+    lbl_doc_type: "Rodzaj dokumentu",
+    opt_select: "— wybierz —",
+    opt_paszport_zagr: "paszport zagraniczny",
+    lbl_doc_seria: "Seria i numer",
+    sub_doc_ua: "Do umowy ukraińskiej",
+    help_doc_ua: "Podaj paszport zagraniczny albo paszport wewnętrzny Ukrainy — wybierz ten, który posiadasz.",
+    opt_paszport_wewn: "paszport wewnętrzny",
+    h2_4: "4. Numery identyfikacyjne",
+    help_pesel: "PESEL — polski numer identyfikacyjny, potrzebny do polskiej umowy, ZUS i podatków. Jeśli go nie masz — zaznacz checkbox poniżej.",
+    chk_brak_pesel: "nie mam numeru PESEL",
+    lbl_inn: "RNOKPP / INN (ukraiński NIP)",
+    help_inn: "Ukraiński numer identyfikacji podatkowej (INN). Potrzebny do umowy ukraińskiej.",
+    chk_brak_inn: "nie mam numeru — względy religijne",
+    h2_5: "5. Adres zamieszkania",
+    help_5: "Podaj JEDEN adres cyrylicą — zostanie automatycznie transliterowany do polskiej umowy, nie trzeba wpisywać dwa razy. Przykład: «вул. Хрещатик 1, кв. 5, 01001 Київ».",
+    lbl_adresa: "Adres",
+    tip_pl_auto: "Automatycznie do umowy polskiej:",
+    help_5b: "⚠️ Jeśli już mieszkasz w Polsce — automatyczna transliteracja może zniekształcić nazwy (np. «Познань» ≠ «Poznań»). Wpisz poniżej adres DOKŁADNIE po polsku — będzie miał pierwszeństwo.",
+    lbl_adresa_pl: "Adres po polsku (opcjonalnie, jeśli już masz polski adres)",
+    h2_6: "6. Konto do wypłaty",
+    help_6: "Podaj przynajmniej jedno konto. Jeśli nie masz polskiego IBAN — wystarczy zwykłe konto ukraińskie.",
+    lbl_iban: "IBAN PL",
+    lbl_rachunek_ua: "Konto UA",
+    opt_if_have: "(jeśli posiadasz)",
+    h2_7: "7. Dane rodzinne",
+    lbl_nazwisko_rodowe: "Nazwisko rodowe",
+    lbl_imia_ojca: "Imię ojca",
+    lbl_imia_matky: "Imię matki",
+    h2_8: "8. Kontakt",
+    lbl_tel: "Telefon",
+    h2_9: "9. Wykształcenie / zawód",
+    lbl_wyksztalcenie: "Wykształcenie",
+    ph_wyksztalcenie: "np. wyższe pedagogiczne",
+    lbl_zawod: "Zawód",
+    h2_10: "10. Okres pracy na obozie",
+    lbl_data_od: "Od dnia",
+    lbl_data_do: "Do dnia",
+    h2_11: "11. Polski blok podatkowo-ubezpieczeniowy",
+    hint_11: "Ten blok dotyczy polskiej umowy (ZUS, NFZ, podatki). Większości ukraińskiej kadry bez polskiej rejestracji te pola nie dotyczą — zostaw puste tam, gdzie nie wiesz.",
+    lbl_obywatelstwo: "Obywatelstwo",
+    lbl_miejsce_urodzenia: "Miejsce urodzenia",
+    lbl_adres_koresp: "Adres korespondencyjny",
+    opt_if_other: "(jeśli inny niż adres zamieszkania)",
+    ph_adres_koresp: "zostaw puste, jeśli taki sam",
+    lbl_woj: "Województwo",
+    lbl_powiat: "Powiat / gmina",
+    lbl_nfz: "Oddział NFZ",
+    sub_zus: "Status ZUS (zaznacz TAK/NIE przy każdym punkcie)",
+    sub_pit: "Podatki (PIT)",
+    chk_pit2: "<b>Wnoszę o stosowanie kwoty zmniejszającej zaliczkę na podatek (PIT-2)</b>.",
+    help_pit2: "Każdy ma część dochodu wolną od podatku (ok. 30 000 zł rocznie ≈ 300 zł/mies.). Zaznacz, jeśli to twoja jedyna lub główna umowa w Polsce — wtedy co miesiąc będzie potrącana mniejsza zaliczka. Jeśli PIT-2 złożono u innego pracodawcy — tutaj nie zaznaczaj.",
+    pit2_czesc_lbl: "jeśli zaznaczono, w jakiej części:",
+    help_pit2_czesc: "1/12 — jeśli to twoja jedyna taka umowa (typowo). 1/24 lub 1/36 — jeśli część podzielono między 2–3 pracodawców. Nie jesteś pewien(-a) — zostaw 1/12.",
+    chk_bez_zaliczki: "<b>Niepobieranie zaliczki na podatek</b>.",
+    help_bez_zaliczki: "Zaznacz tylko jeśli w ciągu roku zarobisz bardzo mało (mniej niż ≈30 000 zł) — wtedy podatek nie będzie w ogóle potrącany. Jeśli to twoja główna praca — zostaw niezaznaczone.",
+    h2_12: "★ 12. Zgoda na weryfikację kandydata (bezpieczeństwo dzieci)",
+    help_12: "CampScout, jako organizator obozu dziecięcego, PRZED dopuszczeniem do pracy z dziećmi weryfikuje kandydatów w rejestrach osób skazanych za przestępstwa przeciwko wolności seksualnej i nietykalności małoletnich. To standardowa praktyka ochrony dzieci.",
+    chk_rspts: "Świadomie wyrażam zgodę na taką weryfikację oraz na przetwarzanie danych niezbędnych do jej przeprowadzenia.",
+    h2_13: "13. Zgody",
+    chk_gdpr: "Wyrażam zgodę na przetwarzanie moich danych osobowych w celu zawarcia i wykonania umowy (RODO / Rozporządzenie UE 2016/679).",
+    chk_bezpeka: "Potwierdzam, że zobowiązuję się przestrzegać zasad bezpieczeństwa, opieki nad dziećmi oraz poufności danych dzieci.",
+    chk_wizerunek: "(dobrowolnie) Wyrażam zgodę na wykorzystanie mojego wizerunku w materiałach promocyjnych CampScout.",
+    err_required: "Wypełnij, proszę, wymagane pola (*).",
+    btn_send: "Wyślij dokumenty",
+    btn_sending: "Wysyłamy…",
+    err_send_failed: "Nie udało się wysłać dokumentów do organizatora — zgłoszenie NIE zostało złożone. Sprawdź internet i naciśnij «Wyślij dokumenty» jeszcze raz. Pobrany PDF to wyłącznie Twoja kopia, sam w sobie nie jest zgłoszeniem.",
+    err_pdf_failed: "Nie udało się utworzyć dokumentów. Odśwież stronę i spróbuj ponownie — wprowadzone dane są zachowane.",
+    btn_generating: "Generowanie…",
+    done_h3: "Dziękujemy! ✅",
+    done_msg: "Dokumenty zostały wygenerowane i pobrane na twoje urządzenie. Kopia wraz z danymi formularza została już przekazana organizatorowi (z datą/godziną złożenia) — nie trzeba nic dodatkowo przesyłać. Podpisanie dokumentów nastąpi osobiście podczas spotkania z organizatorem.",
+    consent_h3: "Potwierdź złożenie",
+    consent_p: "Wypełniony formularz oraz wygenerowane pliki PDF zostaną przekazane na serwer CampScout wraz z datą, godziną złożenia oraz adresem IP — jako potwierdzenie, że wniosek złożyłeś(-aś) Ty. To obowiązkowy warunek złożenia formularza (bez tego kroku dokumenty uznaje się za niezłożone).",
+    consent_btn: "Zgadzam się i wysyłam",
+    alert_no_generator: "Generator dokumentów się nie załadował. Odśwież stronę.",
+    err_pesel: "Podaj PESEL albo zaznacz «nie mam numeru PESEL».",
+    err_inn: "Podaj RNOKPP/INN albo zaznacz «nie mam numeru».",
+    err_konto: "Podaj przynajmniej jedno konto — IBAN PL albo konto UA.",
+    err_pesel_format: "PESEL zapisany z błędem — sprawdź wszystkie 11 cyfr (cyfra kontrolna się nie zgadza).",
+    err_inn_format: "RNOKPP (INN) zapisany z błędem — sprawdź wszystkie 10 cyfr.",
+    err_iban_format: "Polskie konto zapisane z błędem — po PL musi być dokładnie 26 cyfr.",
+    err_iban_ua_format: "Ukraińskie konto zapisane z błędem — musi zaczynać się od UA i mieć 29 znaków.",
+    err_nip_format: "NIP zapisany z błędem — sprawdź wszystkie 10 cyfr.",
+    lbl_tak: "TAK",
+    lbl_ni: "NIE",
+    q_zus1: "Pracujesz już oficjalnie u innego pracodawcy (umowa o pracę) z wynagrodzeniem nie niższym niż minimalne?",
+    help_zus1: "Stała praca u innego pracodawcy. Jeśli TAK — z tej umowy nie pobieramy składek emerytalnych (tylko zdrowotną). Nie masz innej oficjalnej pracy → zaznacz NIE.",
+    q_zus2: "Masz inną umowę cywilnoprawną (zlecenie), z której już opłacany jest ZUS?",
+    help_zus2: "Inna umowa zlecenie, z której ktoś już płaci za ciebie ZUS. Nie masz takiej → NIE.",
+    q_zus3: "Prowadzisz własną działalność gospodarczą z opłacaniem ZUS?",
+    help_zus3: "Zarejestrowana działalność, z której płacisz ZUS. Nie masz takiej → NIE.",
+    q_zus4: "Otrzymujesz emeryturę?",
+    help_zus4: "Jeśli nie jesteś emerytem/emerytką → NIE.",
+    q_zus5: "Otrzymujesz rentę?",
+    help_zus5: "Jeśli nie otrzymujesz → NIE.",
+    q_zus6: "Uczysz się (szkoła/uczelnia) i masz mniej niż 26 lat?",
+    help_zus6: "Jeśli TAK — z tej umowy nie pobiera się ZUS ani składki zdrowotnej (więcej «na rękę»). Wymagana ważna legitymacja studencka/uczniowska.",
+    q_zus7: "Jesteś zarejestrowany(a) w urzędzie pracy jako bezrobotny(a)?",
+    help_zus7: "Uwaga: o rozpoczęciu pracy na umowę zwykle trzeba poinformować urząd pracy.",
+    q_zus8: "Przebywasz na urlopie macierzyńskim/wychowawczym lub otrzymujesz świadczenie przedemerytalne?",
+    help_zus8: "Jeśli żadne z tego nie dotyczy → NIE.",
+    q_zus9: "Jesteś ubezpieczony(a) w KRUS (ubezpieczenie rolnicze)?",
+    help_zus9: "Dotyczy rolników. Jeśli nie → NIE.",
+  },
+};
+let currentLang = localStorage.getItem('kadry_lang') === 'pl' ? 'pl' : 'uk';
+
+function applyLang(lang){
+  const dict = I18N[lang] || I18N.uk;
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k = el.getAttribute('data-i18n');
+    if(dict[k] !== undefined) el.textContent = dict[k];
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>{
+    const k = el.getAttribute('data-i18n-html');
+    if(dict[k] !== undefined) el.innerHTML = dict[k];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{
+    const k = el.getAttribute('data-i18n-ph');
+    if(dict[k] !== undefined) el.setAttribute('placeholder', dict[k]);
+  });
+  document.querySelectorAll('.langbtn').forEach(b=> b.classList.toggle('active', b.dataset.lang===lang));
+  currentLang = lang;
+  localStorage.setItem('kadry_lang', lang);
+}
+document.querySelectorAll('.langbtn').forEach(b=>{
+  b.addEventListener('click', ()=> applyLang(b.dataset.lang));
+});
+applyLang(currentLang);
+
 // === Транслітерація укр→лат (КМУ 55/2010, спрощена таблиця з ТЗ) ===
 const TRANSLIT_MAP = {
   'а':'a','б':'b','в':'v','г':'h','ґ':'g','д':'d','е':'e','є':'ie','ж':'zh','з':'z',
@@ -286,27 +573,19 @@ if(adresaInput && adresaPreview){
   adresaInput.addEventListener('input', ()=>{ adresaPreview.textContent = translitUaToLat(adresaInput.value); });
 }
 
-// 9 питань ZUS (з поясненнями, укр. переклад formularz.html)
-const ZUS = [
- ['zus1','Ви вже працюєте офіційно в іншого роботодавця (умова о pracę) із зарплатою не нижче мінімальної?','Постійна робота в іншого роботодавця. Якщо ТАК — з цього договору не стягуємо пенсійні внески (лише медичний). Немає іншої офіційної роботи → позначте НІ.'],
- ['zus2','Маєте інший цивільно-правовий договір (zlecenie), з якого вже сплачується ZUS?','Інший договір-доручення, з якого хтось вже платить за вас ZUS. Немає такого → НІ.'],
- ['zus3','Ведете власну підприємницьку діяльність (działalność gospodarcza) зі сплатою ZUS?','Зареєстрована діяльність, з якої ви платите ZUS. Немає такої → НІ.'],
- ['zus4','Отримуєте пенсію за віком (emerytura)?','Якщо ви не пенсіонер → НІ.'],
- ['zus5','Отримуєте пенсію по інвалідності (renta)?','Якщо не отримуєте → НІ.'],
- ['zus6','Навчаєтесь (школа/виш) і вам менше 26 років?','Якщо ТАК — з цього договору не стягується ZUS і медичний внесок (більше «на руки»). Потрібен дійсний студентський/учнівський квиток.'],
- ['zus7','Зареєстровані в службі зайнятості як безробітний(а)?','Увага: про початок роботи за договором зазвичай треба повідомити службу зайнятості.'],
- ['zus8','Перебуваєте у декретній/батьківській відпустці або отримуєте передпенсійну виплату?','Якщо жодне з цього не стосується → НІ.'],
- ['zus9','Застраховані в KRUS (сільськогосподарське страхування)?','Стосується фермерів. Якщо ні → НІ.'],
-];
+// 9 питань ZUS — текст рендериться через data-i18n (мова перемикається без втрати вже обраних ТАК/НІ)
+const ZUS = ['zus1','zus2','zus3','zus4','zus5','zus6','zus7','zus8','zus9'];
 const zc = document.getElementById('zus');
-ZUS.forEach(([k,q,help])=>{
+ZUS.forEach((k, idx)=>{
+  const n = idx + 1;
   const d=document.createElement('div'); d.className='zrow';
-  d.innerHTML = `<div class="q"><span class="txt">${q}</span>
-    <label><input type="radio" name="${k}" value="ТАК" required> ТАК</label>
-    <label><input type="radio" name="${k}" value="НІ"> НІ</label></div>
-    <div class="help">${help}</div>`;
+  d.innerHTML = `<div class="q"><span class="txt" data-i18n="q_zus${n}"></span>
+    <label><input type="radio" name="${k}" value="ТАК" required> <span data-i18n="lbl_tak"></span></label>
+    <label><input type="radio" name="${k}" value="НІ"> <span data-i18n="lbl_ni"></span></label></div>
+    <div class="help" data-i18n="help_zus${n}"></div>`;
   zc.appendChild(d);
 });
+applyLang(currentLang); // застосувати мову й до щойно згенерованих ZUS-рядків
 
 function collect(){
   const o={};
@@ -340,7 +619,7 @@ function buildA_PL(fd, docNr){
   const dokPL = fd.dokument_pl_typ==='karta_pobytu' ? 'karta pobytu' : 'paszport';
   return {
     umowa_nr: docNr + '/WYC/2026',
-    fullname: [fd.nazwisko_lat, fd.imie_lat].filter(Boolean).join(' '),
+    fullname: [fd.nazwisko_lat, fd.imie_lat].map(s => String(s||'').trim()).filter(Boolean).join(' '),
     data_urodzenia: fd.data_urodzenia,
     dowod: (dokPL+' '+(fd.dokument_pl_numer||'')).trim(),
     pesel: fd.brak_pesel ? '' : (fd.pesel||''),
@@ -372,7 +651,7 @@ function buildA_UA(fd, docNr){
   const dokUA = fd.dokument_ua_typ==='vnutrishnii' ? 'внутрішній паспорт' : 'закордонний паспорт';
   return {
     umowa_nr_ua: docNr + '/2026',
-    fullname: [fd.prizvyshche_ua, fd.imia_ua, fd.po_batkovi].filter(Boolean).join(' '),
+    fullname: [fd.prizvyshche_ua, fd.imia_ua, fd.po_batkovi].map(s => String(s||'').trim()).filter(Boolean).join(' '),
     data_urodzenia: fd.data_urodzenia,
     dowod: (dokUA+' '+(fd.dokument_ua_numer||'')).trim(),
     adres_zam_ulica: fd.adresa_ua,
@@ -384,12 +663,47 @@ function buildA_UA(fd, docNr){
 }
 
 // додаткова валідація, яку неможливо описати самими HTML-атрибутами required
+// Повертає [{field, msg}] — не просто текст, щоб можна було підсвітити САМЕ те поле,
+// у якому помилка. Раніше кандидат бачив «заповніть обов'язкові» і шукав сам.
 function customErrors(fd){
-  const errs=[];
-  if(!fd.pesel && !fd.brak_pesel) errs.push('Вкажіть PESEL або позначте «не маю PESEL».');
-  if(!fd.inn_ua && !fd.brak_inn) errs.push('Вкажіть РНОКПП/ІПН або позначте «не маю коду».');
-  if(!fd.iban && !fd.rachunek_ua) errs.push('Вкажіть хоча б один рахунок — IBAN PL або рахунок UA.');
+  const dict = I18N[currentLang] || I18N.uk;
+  const V = window.KADRY_VALID;
+  const errs = [];
+
+  if(!fd.pesel && !fd.brak_pesel) errs.push({field:'pesel', msg:dict.err_pesel});
+  else if(fd.pesel && V && !V.pesel(fd.pesel).ok) errs.push({field:'pesel', msg:dict.err_pesel_format});
+
+  if(!fd.inn_ua && !fd.brak_inn) errs.push({field:'inn_ua', msg:dict.err_inn});
+  else if(fd.inn_ua && V && !V.rnokpp(fd.inn_ua).ok) errs.push({field:'inn_ua', msg:dict.err_inn_format});
+
+  if(!fd.iban && !fd.rachunek_ua) errs.push({field:'iban', msg:dict.err_konto});
+  if(fd.iban && V && !V.ibanPL(fd.iban).ok) errs.push({field:'iban', msg:dict.err_iban_format});
+  if(fd.rachunek_ua && V && !V.ibanUA(fd.rachunek_ua).ok) errs.push({field:'rachunek_ua', msg:dict.err_iban_ua_format});
+
+  if(fd.nip && V && !V.nip(fd.nip).ok) errs.push({field:'nip', msg:dict.err_nip_format});
   return errs;
+}
+
+// Підсвічує помилкові поля, підписує причину під кожним і веде до першого з них.
+function showFieldErrors(errs){
+  document.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
+  document.querySelectorAll('.field-err').forEach(el => el.remove());
+  let first = null;
+  errs.forEach(e => {
+    const el = document.querySelector('[name="' + e.field + '"]');
+    if(!el) return;
+    el.classList.add('invalid');
+    const note = document.createElement('div');
+    note.className = 'field-err';
+    note.textContent = e.msg;
+    (el.parentNode || el).appendChild(note);
+    if(!first) first = el;
+  });
+  if(first){
+    first.scrollIntoView({behavior:'smooth', block:'center'});
+    try{ first.focus({preventScroll:true}); }catch(err){ /* старі браузери */ }
+  }
+  return !!first;
 }
 
 const SUBMIT_ENDPOINT = '/camp/submit-document';
@@ -399,9 +713,9 @@ const SUBMIT_ENDPOINT = '/camp/submit-document';
 // отримав локально завантажений PDF — try/catch не блокує основний потік.
 async function postToServer(fd, docNr, filename, base64){
   try{
-    const fullname = [fd.prizvyshche_ua, fd.imia_ua, fd.po_batkovi].filter(Boolean).join(' ')
-      || [fd.nazwisko_lat, fd.imie_lat].filter(Boolean).join(' ');
-    await fetch(SUBMIT_ENDPOINT, {
+    const trimJoin = arr => arr.map(s => String(s||'').trim()).filter(Boolean).join(' ');
+    const fullname = trimJoin([fd.prizvyshche_ua, fd.imia_ua, fd.po_batkovi]) || trimJoin([fd.nazwisko_lat, fd.imie_lat]);
+    const resp = await fetch(SUBMIT_ENDPOINT, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -414,9 +728,36 @@ async function postToServer(fd, docNr, filename, base64){
         pdf_filename: filename,
       }),
     });
+    return resp.ok;                       // мовчазний збій = кандидат бачить «Дякуємо», а ми нічого
   }catch(e){
-    console.warn('submit-document: сервер недоступний, PDF лишився локально', e);
+    console.error('submit-document недоступний — копія НЕ дійшла до організатора', e);
+    return false;
   }
+}
+
+// base64 з pdfmake як Promise — ОДИН білд PDF на копію серверу і копію кандидата.
+function pdfBase64(docDef){
+  return new Promise((resolve, reject)=>{
+    try{
+      pdfMake.createPdf(docDef).getBase64(b64=>{
+        if(b64) resolve(b64); else reject(new Error('pdfMake getBase64 повернув порожній результат'));
+      });
+    }catch(e){ reject(e); }
+  });
+}
+
+// Локальне завантаження з ТИХ САМИХ байтів (blob + a[download]) — замість pdfDoc.download(),
+// який на iOS/Safari навігує на blob: і вбиває сторінку до того, як POST встигне піти.
+function downloadBase64Pdf(base64, filename){
+  try{
+    const bin = atob(base64), len = bin.length, bytes = new Uint8Array(len);
+    for(let i=0;i<len;i++) bytes[i] = bin.charCodeAt(i);
+    const url = URL.createObjectURL(new Blob([bytes], {type:'application/pdf'}));
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 4000);
+  }catch(e){ console.warn('Локальне завантаження PDF не вдалося (копія серверу все одно надіслана)', e); }
 }
 
 let pendingSubmit = null; // {A_PL, A_UA, fd, docNr} — очікує рішення в попапі згоди
@@ -429,36 +770,68 @@ async function sendDocs(fd){
   document.getElementById('consentOverlay').style.display = 'flex';
 }
 
-document.getElementById('consentAccept').addEventListener('click', ()=>{
+document.getElementById('consentAccept').addEventListener('click', async ()=>{
   const p = pendingSubmit; if(!p) return;
-  document.getElementById('consentOverlay').style.display = 'none';
+  const dict = I18N[currentLang] || I18N.uk;
+  const btn = document.getElementById('consentAccept');
+  const err = document.getElementById('err');
+  const overlay = document.getElementById('consentOverlay');
   const filename = 'dokumenty_kadra_' + (p.fd.prizvyshche_ua||p.fd.nazwisko_lat||'kadra').replace(/\s+/g,'_') + '.pdf';
-  // ОДИН PDF з усіма документами (браузери блокують 2-й+ .download() поспіль —
-  // та сама проблема, що вже була виправлена у формі Данієля). createPdf
-  // викликаємо ОДИН раз — і .download(), і .getBase64() працюють з того самого об'єкта.
-  const pdfDoc = pdfMake.createPdf(window.KADRY.docDefAll(p.A_PL, p.A_UA));
-  pdfDoc.download(filename);
-  pdfDoc.getBase64(base64 => postToServer(p.fd, p.docNr, filename, base64));
-  pendingSubmit = null;
-  finishSubmit();
+  const btnLabel = btn.textContent;
+  btn.disabled = true; btn.textContent = dict.btn_sending;
+  try{
+    // ОДИН білд PDF з усіма документами → base64 (браузери блокують 2-й .download() поспіль)
+    const base64 = await pdfBase64(window.KADRY.docDefAll(p.A_PL, p.A_UA));
+    // КОПІЯ НА СЕРВЕР ПЕРША (await + перевірка ok) — саме її губили на iPhone:
+    // pdfDoc.download() навігував на blob: і вбивав сторінку до вильоту POST.
+    const ok = await postToServer(p.fd, p.docNr, filename, base64);
+    downloadBase64Pdf(base64, filename);          // копія кандидата з тих самих байтів
+    overlay.style.display = 'none';
+    if(ok){
+      pendingSubmit = null;
+      err.style.display = 'none';
+      finishSubmit();
+    }else{
+      err.textContent = dict.err_send_failed;
+      err.style.display = 'block';
+      err.scrollIntoView({behavior:'smooth', block:'center'});
+    }
+  }catch(e){
+    console.error('Генерація PDF не вдалася', e);
+    overlay.style.display = 'none';
+    err.textContent = dict.err_pdf_failed;
+    err.style.display = 'block';
+  }finally{
+    btn.disabled = false; btn.textContent = btnLabel;
+    const send = document.getElementById('send');
+    send.disabled = false; send.textContent = dict.btn_send;
+  }
 });
 
 function finishSubmit(){
+  const dict = I18N[currentLang] || I18N.uk;
   const btn = document.getElementById('send');
   document.getElementById('done').style.display='block';
   document.getElementById('done').scrollIntoView({behavior:'smooth'});
-  btn.disabled=false; btn.textContent='Надішли документи';
+  btn.disabled=false; btn.textContent=dict.btn_send;
 }
 
 document.getElementById('f').addEventListener('submit', async e=>{
   e.preventDefault();
+  const dict = I18N[currentLang] || I18N.uk;
   const err=document.getElementById('err'), btn=document.getElementById('send');
-  if(!e.target.checkValidity()){ err.style.display='block'; err.textContent='Заповніть, будь ласка, обов’язкові поля (*).'; e.target.reportValidity(); return; }
+  if(!e.target.checkValidity()){ err.style.display='block'; err.textContent=dict.err_required; e.target.reportValidity(); return; }
   const fd = collect();
   const custom = customErrors(fd);
-  if(custom.length){ err.style.display='block'; err.textContent=custom.join(' '); return; }
-  if(!window.KADRY||!window.pdfMake){ alert('Генератор документів не завантажився. Оновіть сторінку.'); return; }
-  err.style.display='none'; btn.disabled=true; btn.textContent='Генерування…';
+  if(custom.length){
+    err.style.display='block';
+    err.textContent = custom.map(c => c.msg).join(' ');
+    showFieldErrors(custom);          // підсвітка + прокрутка до першого хибного поля
+    return;
+  }
+  showFieldErrors([]);                 // попередні позначки прибираємо
+  if(!window.KADRY||!window.pdfMake){ alert(dict.alert_no_generator); return; }
+  err.style.display='none'; btn.disabled=true; btn.textContent=dict.btn_generating;
   await sendDocs(fd);
 });
 
