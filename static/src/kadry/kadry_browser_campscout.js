@@ -620,7 +620,7 @@ function h2(t) { return { text: t, fontSize: 9.5, color: FOREST, bold: true, mar
 
 const NR_UMOWY = '1/WYC/2026';
 // data sporządzenia — FIKSOWANA (nie new Date())
-const DATA_SPORZADZENIA = '07.07.2026';
+const DATA_SPORZADZENIA = dataZawarciaEfektywna();   // jedno źródło: SEASON, nigdy wstecz
 
 // pusta linia do uzupełnienia (podkreślona)
 function bl(w) {
@@ -744,7 +744,7 @@ const TOV = {
   tel: '+38(063)0202948',
 };
 
-const DATA_UKLADENNA = '07.07.2026';
+const DATA_UKLADENNA = dataZawarciaEfektywna();   // jedno źródło: SEASON, nigdy wstecz
 // ті самі дати, що й у блоці SEASON — без власної копії, яка розходиться після сезону
 const DEFAULT_OD = SEASON.okres_od;
 const DEFAULT_DO = SEASON.okres_do;
@@ -895,7 +895,7 @@ KADRY_DOCS.docWolontariatWychowawcaUA = docWolontariatWychowawcaUA;
 // свободи та недоторканості неповнолітніх (безпека дітей) — додаток до пакету документів
 // вихователя CampScout (УКРАЇНСЬКА). Адміністратор = CAMPSCOUT (JDG — Volodymyr Shevchenko).
 
-const DATA_UKLADENNA = '07.07.2026';
+const DATA_UKLADENNA = dataZawarciaEfektywna();   // jedno źródło: SEASON, nigdy wstecz
 
 function bl(w) {
   const n = Math.round((w || 160) / 5.6);
@@ -976,7 +976,7 @@ KADRY_DOCS.docZgodaRSPTS = docZgodaRSPTS;
 // przeciwko wolności seksualnej i nietykalności małoletnich (bezpieczeństwo dzieci) — załącznik
 // do pakietu dokumentów instruktora CampScout (POLSKA). Administrator = CAMPSCOUT (JDG — Volodymyr Shevchenko).
 
-const DATA_SPORZADZENIA = '07.07.2026';
+const DATA_SPORZADZENIA = dataZawarciaEfektywna();   // jedno źródło: SEASON, nigdy wstecz
 
 function bl(w) {
   const n = Math.round((w || 160) / 5.6);
