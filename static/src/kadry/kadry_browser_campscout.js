@@ -1,6 +1,29 @@
 // AUTO-GENERATED браузерний бандл (build_browser.js). НЕ редагувати вручну.
 (function(){
 "use strict";
+/* ─── SEZON: JEDYNE miejsce do zmiany przed nowym naborem ───────────────────
+   Data zawarcia jest FIKSOWANA celowo (nie new Date()) — wszystkie umowy jednego
+   naboru mają nosić tę samą datę. Ceną za to jest ręczna aktualizacja: gdy data
+   zostanie w tyle, kandydat dostaje umowę datowaną wstecz. Dlatego niżej stoi
+   ostrzeżenie w konsoli — żeby przeterminowany sezon było widać, a nie zgadywać. */
+const SEASON = {
+  data_zawarcia: '07.07.2026',   // dd.mm.rrrr
+  okres_od: '2026-07-08',        // domyślny okres obozu, gdy formularz nie poda dat
+  okres_do: '2026-07-21',
+  stawka_godz: '31,40',          // zł/godz. — minimalna stawka godzinowa (Dz.U. 2025 poz. 1242)
+  stawka_dzien: '220',           // zł brutto za dzień
+};
+
+(function ostrzezOPrzeterminowanymSezonie(){
+  try{
+    const [d, m, r] = SEASON.data_zawarcia.split('.');
+    if (new Date(`${r}-${m}-${d}T00:00:00`) < new Date(new Date().toDateString())) {
+      console.warn('[kadry] SEASON.data_zawarcia (' + SEASON.data_zawarcia +
+        ') jest w przeszłości — umowy będą datowane wstecz. Zaktualizuj blok SEASON.');
+    }
+  }catch(e){ /* noop */ }
+})();
+
 // Спільний модуль pdfmake для пакету документів вихователя CampScout (JDG — Volodymyr Shevchenko)
 const FOREST = '#1B4332', GOLD = '#F7CB74', INK = '#1c2420';
 
@@ -94,29 +117,6 @@ const KADRY_DOCS = {};
 {
 // Umowa zlecenia (instruktor) nr 1/WYC/2026 — pdfmake docDefinition, CampScout (POLSKA)
 // Wynagrodzenie: 220 zł/dzień, nie niżej minimalnej stawki godzinowej (31,40 zł/h); ewidencja godzin (dziennik zajęć)
-
-/* ─── SEZON: JEDYNE miejsce do zmiany przed nowym naborem ───────────────────
-   Data zawarcia jest FIKSOWANA celowo (nie new Date()) — wszystkie umowy jednego
-   naboru mają nosić tę samą datę. Ceną za to jest ręczna aktualizacja: gdy data
-   zostanie w tyle, kandydat dostaje umowę datowaną wstecz. Dlatego niżej stoi
-   ostrzeżenie w konsoli — żeby przeterminowany sezon było widać, a nie zgadywać. */
-const SEASON = {
-  data_zawarcia: '07.07.2026',   // dd.mm.rrrr
-  okres_od: '2026-07-08',        // domyślny okres obozu, gdy formularz nie poda dat
-  okres_do: '2026-07-21',
-  stawka_godz: '31,40',          // zł/godz. — minimalna stawka godzinowa (Dz.U. 2025 poz. 1242)
-  stawka_dzien: '220',           // zł brutto za dzień
-};
-
-(function ostrzezOPrzeterminowanymSezonie(){
-  try{
-    const [d, m, r] = SEASON.data_zawarcia.split('.');
-    if (new Date(`${r}-${m}-${d}T00:00:00`) < new Date(new Date().toDateString())) {
-      console.warn('[kadry] SEASON.data_zawarcia (' + SEASON.data_zawarcia +
-        ') jest w przeszłości — umowy będą datowane wstecz. Zaktualizuj blok SEASON.');
-    }
-  }catch(e){ /* noop */ }
-})();
 
 const DATA_ZAWARCIA = SEASON.data_zawarcia;
 const DEFAULT_DATA_OD = SEASON.okres_od;
