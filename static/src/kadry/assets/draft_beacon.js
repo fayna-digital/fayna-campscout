@@ -51,6 +51,13 @@
     return el.tagName.toLowerCase() + "-" + (el.type || "");
   }
 
+  /* Збираємо лише те, що людина справді ВВЕЛА.
+
+     Частина полів має значення, проставлені в розмітці заздалегідь (типові дати
+     турнусу, «1/12» у PIT-2). Якщо їх рахувати за заповнені, кожне випадкове
+     відкриття сторінки лишало б чернетку з трьох «полів», і звіт «хто почав і не
+     закінчив» потонув би в порожніх записах. Тому значення, що дорівнює
+     початковому (defaultValue / defaultChecked), пропускаємо. */
   function collect() {
     var out = {};
     try {
@@ -59,9 +66,20 @@
         var el = els[i];
         if (el.type === "file" || el.type === "hidden" || el.disabled) continue;
         var k = keyOf(el), v = "";
-        if (el.type === "checkbox") { if (!el.checked) continue; v = "TAK"; }
-        else if (el.type === "radio") { if (!el.checked) continue; v = el.value || "TAK"; }
-        else { v = (el.value || "").trim(); }
+        if (el.type === "checkbox") {
+          if (!el.checked || el.defaultChecked) continue;
+          v = "TAK";
+        } else if (el.type === "radio") {
+          if (!el.checked || el.defaultChecked) continue;
+          v = el.value || "TAK";
+        } else if (el.tagName === "SELECT") {
+          var opt = el.options[el.selectedIndex];
+          if (!opt || opt.defaultSelected) continue;
+          v = (el.value || "").trim();
+        } else {
+          v = (el.value || "").trim();
+          if (v === String(el.defaultValue || "").trim()) continue;
+        }
         if (!v) continue;
         out[k] = String(v).slice(0, 300);
       }
