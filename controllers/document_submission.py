@@ -66,8 +66,10 @@ def _gc_drafts(env, days=60):
     upgrade модуля тут зламаний, INC-216)."""
     try:
         limit = fields.Datetime.subtract(fields.Datetime.now(), days=days)
-        old = env["ir.attachment"].sudo().search(
-            [("name", "=like", "[DRAFT-LOG] %"), ("create_date", "<", limit)], limit=500
+        old = (
+            env["ir.attachment"]
+            .sudo()
+            .search([("name", "=like", "[DRAFT-LOG] %"), ("create_date", "<", limit)], limit=500)
         )
         if old:
             old.unlink()
@@ -196,8 +198,13 @@ class DocumentSubmissionController(http.Controller):
                 )
                 if draft:
                     prev = json.loads(draft.description or "{}")
-                    prev.update({"stage": "submitted", "submitted_attachment_id": attachment.id,
-                                 "last_seen": str(fields.Datetime.now())})
+                    prev.update(
+                        {
+                            "stage": "submitted",
+                            "submitted_attachment_id": attachment.id,
+                            "last_seen": str(fields.Datetime.now()),
+                        }
+                    )
                     draft.write({"description": json.dumps(prev, ensure_ascii=False, indent=2)})
             except Exception as e:  # noqa: BLE001
                 _logger.warning("[submit-document] draft close failed: %s", e)
