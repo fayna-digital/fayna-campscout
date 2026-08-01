@@ -95,15 +95,28 @@ const SEASON = {
   stawka_dzien: '220',           // zł brutto za dzień
 };
 
-(function ostrzezOPrzeterminowanymSezonie(){
+/* Data zawarcia, która faktycznie trafia do umowy.
+
+   Sama SEASON.data_zawarcia jest ustawiana ręcznie i nieuchronnie zostaje w tyle
+   po sezonie. Umowa z datą WSTECZNĄ to wada prawna, nie drobiazg, więc gdy wpis
+   jest przeterminowany, bierzemy dzień dzisiejszy i głośno ostrzegamy w konsoli.
+   Dopóki wpis jest aktualny — wszystkie umowy jednego naboru noszą tę samą datę,
+   czyli zachowujemy pierwotny zamysł (dlatego nie ma tu po prostu new Date()). */
+function dataZawarciaEfektywna(){
   try{
-    const [d, m, r] = SEASON.data_zawarcia.split('.');
-    if (new Date(`${r}-${m}-${d}T00:00:00`) < new Date(new Date().toDateString())) {
-      console.warn('[kadry] SEASON.data_zawarcia (' + SEASON.data_zawarcia +
-        ') jest w przeszłości — umowy będą datowane wstecz. Zaktualizuj blok SEASON.');
-    }
-  }catch(e){ /* noop */ }
-})();
+    const [d, m, r] = String(SEASON.data_zawarcia).split('.');
+    const wpis = new Date(`${r}-${m}-${d}T00:00:00`);
+    const dzis = new Date(new Date().toDateString());
+    if (!isNaN(wpis) && wpis >= dzis) return SEASON.data_zawarcia;
+    const dd = String(dzis.getDate()).padStart(2, '0');
+    const mm = String(dzis.getMonth() + 1).padStart(2, '0');
+    const zastepcza = `${dd}.${mm}.${dzis.getFullYear()}`;
+    console.warn('[kadry] SEASON.data_zawarcia (' + SEASON.data_zawarcia +
+      ') jest w przeszłości — umowa dostaje datę dzisiejszą (' + zastepcza +
+      '). Zaktualizuj blok SEASON przed naborem.');
+    return zastepcza;
+  }catch(e){ return SEASON.data_zawarcia; }
+}
 
 
 const KADRY_DOCS = {};
@@ -114,7 +127,7 @@ const KADRY_DOCS = {};
 // Wynagrodzenie: 220 zł/dzień, nie niżej minimalnej stawki godzinowej (31,40 zł/h); ewidencja godzin (dziennik zajęć)
 
 // wszystko z jednego bloku SEASON w campscout_pdf.js — bez własnych kopii
-const DATA_ZAWARCIA = SEASON.data_zawarcia;
+const DATA_ZAWARCIA = dataZawarciaEfektywna();   // nigdy wstecz — patrz campscout_pdf.js
 const DEFAULT_DATA_OD = SEASON.okres_od;
 const DEFAULT_DATA_DO = SEASON.okres_do;
 
