@@ -206,3 +206,9 @@ access_event_stage_camp_read,event.stage camp read,event.model_event_stage,base.
 access_event_type_camp_read,event.type camp read,event.model_event_type,base.group_user,1,0,0,0
 access_camp_document_submission_log_admin,camp.document.submission.log admin,model_camp_document_submission_log,base.group_system,1,1,1,1
 access_camp_document_submission_log_organizator,camp.document.submission.log organizator,model_camp_document_submission_log,fayna_camp_portal.group_camp_organizator,1,1,0,0
+access_camp_medication_registry_medical,camp.medication.registry medical officer,model_camp_medication_registry,fayna_camp_portal.group_medical_officer,1,1,1,0
+access_camp_medication_registry_kierownik,camp.medication.registry kierownik,model_camp_medication_registry,fayna_camp_portal.group_camp_kierownik,1,1,1,0
+access_camp_medication_registry_system,camp.medication.registry system,model_camp_medication_registry,base.group_system,1,1,1,1
+access_camp_medication_schedule_medical,camp.medication.schedule medical officer,model_camp_medication_schedule,fayna_camp_portal.group_medical_officer,1,1,1,1
+access_camp_medication_schedule_kierownik,camp.medication.schedule kierownik,model_camp_medication_schedule,fayna_camp_portal.group_camp_kierownik,1,1,1,1
+access_camp_medication_schedule_system,camp.medication.schedule system,model_camp_medication_schedule,base.group_system,1,1,1,1

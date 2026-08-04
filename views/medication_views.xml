@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ================================================================ -->
+        <!-- camp.medication.registry — Rejestr leków (przyjęcie od rodzica)  -->
+        <!-- ТЗ тема 2 (гейт Fable 2026-08-03). RODO art. 9: pola medyczne    -->
+        <!-- niosą groups= — Odoo сам ховає їх для ролей без art.9-доступу.   -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_medication_registry_tree" model="ir.ui.view">
+            <field name="name">camp.medication.registry.tree</field>
+            <field name="model">camp.medication.registry</field>
+            <field name="arch" type="xml">
+                <tree decoration-muted="state == 'draft'"
+                      decoration-danger="is_critical"
+                      decoration-success="state == 'closed'">
+                    <field name="name" string="Referencja"/>
+                    <field name="participant_id" string="Dziecko"/>
+                    <field name="event_id" string="Turnus"/>
+                    <field name="medication_name" string="Lek" optional="show"/>
+                    <field name="is_critical" string="Krytyczny" widget="boolean_toggle" optional="show"/>
+                    <field name="received_date" string="Przyjęto"/>
+                    <field name="received_by" string="Przyjął" optional="hide"/>
+                    <field name="signed_date" string="Podpis rodzica" optional="show"/>
+                    <field name="state" string="Status" widget="badge"
+                           decoration-info="state == 'draft'"
+                           decoration-success="state == 'active'"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_medication_registry_search" model="ir.ui.view">
+            <field name="name">camp.medication.registry.search</field>
+            <field name="model">camp.medication.registry</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="participant_id"/>
+                    <field name="event_id"/>
+                    <field name="medication_name"/>
+                    <filter name="filter_active" string="Aktywne kursy"
+                            domain="[('state', '=', 'active')]"/>
+                    <filter name="filter_draft" string="Szkice"
+                            domain="[('state', '=', 'draft')]"/>
+                    <filter name="filter_critical" string="Leki krytyczne"
+                            domain="[('is_critical', '=', True)]"/>
+                    <filter name="filter_unsigned" string="Bez podpisu rodzica"
+                            domain="[('signed_date', '=', False)]"/>
+                    <group expand="1" string="Group By">
+                        <filter name="group_by_event" string="Turnus"
+                                context="{'group_by': 'event_id'}"/>
+                        <filter name="group_by_participant" string="Dziecko"
+                                context="{'group_by': 'participant_id'}"/>
+                        <filter name="group_by_state" string="Status"
+                                context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="view_camp_medication_registry_form" model="ir.ui.view">
+            <field name="name">camp.medication.registry.form</field>
+            <field name="model">camp.medication.registry</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_sign" type="object"
+                                string="Zarejestruj podpis rodzica"
+                                class="btn-secondary"
+                                invisible="state != 'draft' or signed_date"
+                                help="Zapisuje narysowany podpis + wpis RODO consent (canvas, wzór camp.escort)."/>
+                        <button name="action_activate" type="object"
+                                string="Aktywuj kurs (generuj grafik)"
+                                class="btn-primary"
+                                invisible="state != 'draft'"
+                                confirm="Aktywacja wygeneruje pełny grafik wydań (dni × dawki). Kontynuować?"/>
+                        <button name="action_close" type="object"
+                                string="Zamknij kurs"
+                                invisible="state != 'active'"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,active,closed"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1><field name="name" readonly="1"/></h1>
+                        </div>
+
+                        <group string="Powiązania (T5-K)">
+                            <group>
+                                <field name="participant_id"/>
+                                <field name="event_id"/>
+                            </group>
+                            <group>
+                                <field name="incident_card_id"/>
+                                <field name="dziennik_id"/>
+                            </group>
+                        </group>
+
+                        <group string="Lek i schemat przyjmowania (RODO art. 9)">
+                            <group>
+                                <field name="medication_name"/>
+                                <field name="quantity"/>
+                                <field name="unit"/>
+                                <field name="is_critical" widget="boolean_toggle"/>
+                            </group>
+                            <group>
+                                <field name="dosage_frequency"/>
+                                <field name="dosage_duration"/>
+                                <field name="dosage_times"
+                                       placeholder="np. 08:00, 20:00"/>
+                                <field name="dosage_interval"/>
+                            </group>
+                        </group>
+
+                        <group string="Przyjęcie od rodzica">
+                            <group>
+                                <field name="received_date"/>
+                                <field name="received_by"/>
+                                <field name="handed_by"/>
+                            </group>
+                            <group>
+                                <field name="signed_date"/>
+                                <field name="signed_by"/>
+                                <field name="signed_ip"/>
+                                <field name="rodo_consent_id"/>
+                            </group>
+                        </group>
+
+                        <group string="Podpis rodzica (zgoda art. 9(2)(a))">
+                            <field name="parent_signature" widget="signature"
+                                   nolabel="1" readonly="signed_date"/>
+                        </group>
+
+                        <notebook>
+                            <page string="Grafik wydań" name="schedule">
+                                <field name="schedule_ids">
+                                    <tree decoration-danger="status == 'missed'"
+                                          decoration-success="status == 'issued'"
+                                          decoration-bf="is_critical">
+                                        <field name="scheduled_time" string="Plan"/>
+                                        <field name="status" string="Status" widget="badge"
+                                               decoration-warning="status == 'pending'"
+                                               decoration-success="status == 'issued'"
+                                               decoration-danger="status == 'missed'"/>
+                                        <field name="issued_time" string="Wydano o"/>
+                                        <field name="issued_by" string="Wydał"/>
+                                        <field name="is_critical" column_invisible="1"/>
+                                        <field name="notes" string="Uwagi" optional="hide"/>
+                                        <field name="alerted_at" string="Alert" optional="hide"/>
+                                        <field name="escalated_at" string="Eskalacja" optional="hide"/>
+                                        <button name="action_issue" type="object"
+                                                string="Wydano" icon="fa-check"
+                                                invisible="status != 'pending'"/>
+                                        <button name="action_miss" type="object"
+                                                string="Pominięto" icon="fa-times"
+                                                invisible="status != 'pending'"
+                                                confirm="Oznaczyć dawkę jako pominiętą? Kierownik otrzyma alert."/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_camp_medication_registry" model="ir.actions.act_window">
+            <field name="name">Rejestr leków</field>
+            <field name="res_model">camp.medication.registry</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_camp_medication_registry_search"/>
+            <field name="context">{'search_default_filter_active': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Przyjmij lek od rodzica
+                </p>
+                <p>
+                    Rodzic przekazuje lek medykowi, podpisuje zgodę (canvas),
+                    a system generuje grafik wydań. Pominięte dawki alarmują
+                    kierownika (leki krytyczne — dodatkowo SMS CRITICAL).
+                </p>
+            </field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- camp.medication.schedule — grafik wydań                          -->
+        <!-- ================================================================ -->
+
+        <record id="view_camp_medication_schedule_tree" model="ir.ui.view">
+            <field name="name">camp.medication.schedule.tree</field>
+            <field name="model">camp.medication.schedule</field>
+            <field name="arch" type="xml">
+                <tree decoration-danger="status == 'missed'"
+                      decoration-success="status == 'issued'"
+                      decoration-bf="is_critical">
+                    <field name="scheduled_time" string="Plan"/>
+                    <field name="participant_id" string="Dziecko"/>
+                    <field name="registry_id" string="Rejestr"/>
+                    <field name="event_id" string="Turnus" optional="hide"/>
+                    <field name="is_critical" string="Krytyczny" optional="show"/>
+                    <field name="status" string="Status" widget="badge"
+                           decoration-warning="status == 'pending'"
+                           decoration-success="status == 'issued'"
+                           decoration-danger="status == 'missed'"/>
+                    <field name="issued_time" string="Wydano o" optional="show"/>
+                    <field name="issued_by" string="Wydał" optional="show"/>
+                    <field name="alerted_at" string="Alert" optional="hide"/>
+                    <field name="escalated_at" string="Eskalacja" optional="hide"/>
+                    <button name="action_issue" type="object"
+                            string="Wydano" icon="fa-check"
+                            invisible="status != 'pending'"/>
+                    <button name="action_miss" type="object"
+                            string="Pominięto" icon="fa-times"
+                            invisible="status != 'pending'"
+                            confirm="Oznaczyć dawkę jako pominiętą? Kierownik otrzyma alert."/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_camp_medication_schedule_search" model="ir.ui.view">
+            <field name="name">camp.medication.schedule.search</field>
+            <field name="model">camp.medication.schedule</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="participant_id"/>
+                    <field name="registry_id"/>
+                    <field name="event_id"/>
+                    <filter name="filter_pending" string="Do wydania"
+                            domain="[('status', '=', 'pending')]"/>
+                    <filter name="filter_missed" string="Pominięte"
+                            domain="[('status', '=', 'missed')]"/>
+                    <filter name="filter_critical" string="Krytyczne"
+                            domain="[('is_critical', '=', True)]"/>
+                    <separator/>
+                    <filter name="filter_today" string="Dziś"
+                            domain="[('scheduled_time', '&gt;=', datetime.datetime.combine(context_today(), datetime.time(0, 0, 0))),
+                                     ('scheduled_time', '&lt;=', datetime.datetime.combine(context_today(), datetime.time(23, 59, 59)))]"/>
+                    <group expand="1" string="Group By">
+                        <filter name="group_by_registry" string="Rejestr (kurs)"
+                                context="{'group_by': 'registry_id'}"/>
+                        <filter name="group_by_participant" string="Dziecko"
+                                context="{'group_by': 'participant_id'}"/>
+                        <filter name="group_by_status" string="Status"
+                                context="{'group_by': 'status'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="view_camp_medication_schedule_form" model="ir.ui.view">
+            <field name="name">camp.medication.schedule.form</field>
+            <field name="model">camp.medication.schedule</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_issue" type="object"
+                                string="Wydano" class="btn-success"
+                                invisible="status != 'pending'"/>
+                        <button name="action_miss" type="object"
+                                string="Pominięto" class="btn-danger"
+                                invisible="status != 'pending'"
+                                confirm="Oznaczyć dawkę jako pominiętą? Kierownik otrzyma alert."/>
+                        <field name="status" widget="statusbar"
+                               statusbar_visible="pending,issued"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="registry_id"/>
+                                <field name="participant_id"/>
+                                <field name="event_id"/>
+                                <field name="is_critical" widget="boolean_toggle"/>
+                            </group>
+                            <group>
+                                <field name="scheduled_time"/>
+                                <field name="issued_time"/>
+                                <field name="issued_by"/>
+                                <field name="alerted_at"/>
+                                <field name="escalated_at"/>
+                            </group>
+                        </group>
+                        <group string="Uwagi (RODO art. 9)">
+                            <field name="notes" nolabel="1"
+                                   placeholder="np. dziecko odmówiło, zwymiotowało, dawka połówkowa…"/>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Kanban medyka — tablet/telefon, wielkie przyciski dotykowe.
+             ТЗ UI-точка 3: kiosk-style form z «Wydano»/«Pominięto». -->
+        <record id="view_camp_medication_schedule_kanban" model="ir.ui.view">
+            <field name="name">camp.medication.schedule.kanban</field>
+            <field name="model">camp.medication.schedule</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile" records_draggable="0"
+                        quick_create="false" default_order="scheduled_time">
+                    <field name="participant_id"/>
+                    <field name="registry_id"/>
+                    <field name="scheduled_time"/>
+                    <field name="status"/>
+                    <field name="is_critical"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_card oe_kanban_global_click p-3">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <strong class="fs-4">
+                                        <field name="participant_id"/>
+                                    </strong>
+                                    <span t-if="record.is_critical.raw_value"
+                                          class="badge text-bg-danger fs-6">CRITICAL</span>
+                                </div>
+                                <div class="fs-5 mt-1">
+                                    <i class="fa fa-clock-o me-1" title="Planowany czas"/>
+                                    <field name="scheduled_time" widget="datetime"/>
+                                </div>
+                                <div class="text-muted">
+                                    <field name="registry_id"/>
+                                </div>
+                                <div t-if="record.status.raw_value == 'pending'"
+                                     class="d-grid gap-2 mt-3">
+                                    <button name="action_issue" type="object"
+                                            class="btn btn-success btn-lg py-3 fs-4">
+                                        Wydano
+                                    </button>
+                                    <button name="action_miss" type="object"
+                                            class="btn btn-outline-danger btn-lg py-2">
+                                        Pominięto
+                                    </button>
+                                </div>
+                                <div t-else="" class="mt-3">
+                                    <field name="status" widget="badge"
+                                           decoration-success="status == 'issued'"
+                                           decoration-danger="status == 'missed'"/>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="action_camp_medication_schedule" model="ir.actions.act_window">
+            <field name="name">Grafik wydań leków</field>
+            <field name="res_model">camp.medication.schedule</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_camp_medication_schedule_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Brak zaplanowanych wydań
+                </p>
+                <p>
+                    Grafik generuje się automatycznie po aktywacji kursu
+                    w Rejestrze leków.
+                </p>
+            </field>
+        </record>
+
+        <!-- Tablet medyka: pending dziś, kanban z wielkimi przyciskami -->
+        <record id="action_camp_medication_kiosk" model="ir.actions.act_window">
+            <field name="name">Wydania leków — tablet</field>
+            <field name="res_model">camp.medication.schedule</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="search_view_id" ref="view_camp_medication_schedule_search"/>
+            <field name="context">{'search_default_filter_pending': 1, 'search_default_filter_today': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Wszystkie dzisiejsze dawki wydane
+                </p>
+                <p>
+                    Duże przyciski «Wydano» / «Pominięto» — widok dla medyka
+                    z telefonem/tabletem podczas wydawania leków.
+                </p>
+            </field>
+        </record>
+
+        <!-- ================================================================ -->
+        <!-- Menu — pod «Operacje» (menus.xml), tylko medyk + kierownik.      -->
+        <!-- Organizator dziedziczy przez implied group_medical_officer.      -->
+        <!-- ================================================================ -->
+
+        <menuitem id="menu_camp_medication_registry"
+            name="Rejestr leków (RODO art. 9)"
+            parent="menu_operations"
+            action="action_camp_medication_registry"
+            sequence="62"
+            groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik"/>
+
+        <menuitem id="menu_camp_medication_kiosk"
+            name="Wydania leków — tablet medyka"
+            parent="menu_operations"
+            action="action_camp_medication_kiosk"
+            sequence="63"
+            groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik"/>
+
+        <menuitem id="menu_camp_medication_schedule"
+            name="Grafik wydań leków"
+            parent="menu_operations"
+            action="action_camp_medication_schedule"
+            sequence="64"
+            groups="fayna_camp_portal.group_medical_officer,fayna_camp_portal.group_camp_kierownik"/>
+
+    </data>
+</odoo>

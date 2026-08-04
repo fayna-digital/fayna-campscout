@@ -79,3 +79,7 @@ from . import art9_security  # noqa: E402,I001
 # Append-only submission log (kadry-forms/campscout + kadry-forms/rodzice —
 # статичні форми поза порталом) — доказ IP+час подання (INC-216).
 from . import document_submission_log  # noqa: E402,I001
+
+# Rejestr leków — прийом → графік → видача/пропуск + SMS CRITICAL (ТЗ тема 2,
+# гейт Fable 2026-08-03). MUST import after participant + admin_access_log.
+from . import medication  # noqa: E402,I001

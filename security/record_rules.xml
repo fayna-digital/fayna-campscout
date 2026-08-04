@@ -894,5 +894,40 @@
             <field name="perm_unlink" eval="False"/>
         </record>
 
+        <!-- ─── camp.medication.registry / .schedule (ТЗ тема 2, T6-K) ───
+             ACL restricts the models to medical officer + kierownik (+system).
+             Rules scope both roles to their own camps, same event_id pyramid
+             as camp.incident.card. Organizator bypasses via base.group_system.
+             Wychowawca has NO ACL row at all → no records, no fields. -->
+
+        <!-- Medic sees/handles only the camps where they are on the kadra -->
+        <record id="rule_medication_registry_medical_own_camp" model="ir.rule">
+            <field name="name">Medical Officer: medication registry of own camp</field>
+            <field name="model_id" ref="model_camp_medication_registry"/>
+            <field name="groups" eval="[(4, ref('group_medical_officer'))]"/>
+            <field name="domain_force">[('event_id.staff_ids.user_id', '=', user.id)]</field>
+        </record>
+
+        <record id="rule_medication_registry_kierownik_own" model="ir.rule">
+            <field name="name">Kierownik: medication registry of own camp</field>
+            <field name="model_id" ref="model_camp_medication_registry"/>
+            <field name="groups" eval="[(4, ref('group_camp_kierownik'))]"/>
+            <field name="domain_force">['|', ('event_id.user_id', '=', user.id), ('event_id.staff_ids.user_id', '=', user.id)]</field>
+        </record>
+
+        <record id="rule_medication_schedule_medical_own_camp" model="ir.rule">
+            <field name="name">Medical Officer: medication schedule of own camp</field>
+            <field name="model_id" ref="model_camp_medication_schedule"/>
+            <field name="groups" eval="[(4, ref('group_medical_officer'))]"/>
+            <field name="domain_force">[('registry_id.event_id.staff_ids.user_id', '=', user.id)]</field>
+        </record>
+
+        <record id="rule_medication_schedule_kierownik_own" model="ir.rule">
+            <field name="name">Kierownik: medication schedule of own camp</field>
+            <field name="model_id" ref="model_camp_medication_schedule"/>
+            <field name="groups" eval="[(4, ref('group_camp_kierownik'))]"/>
+            <field name="domain_force">['|', ('registry_id.event_id.user_id', '=', user.id), ('registry_id.event_id.staff_ids.user_id', '=', user.id)]</field>
+        </record>
+
     </data>
 </odoo>

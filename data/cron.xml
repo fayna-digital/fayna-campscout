@@ -88,6 +88,24 @@
             <field name="user_id" ref="base.user_root"/>
         </record>
 
+        <!-- Rejestr leków (ТЗ тема 2, T4-K): щогодини прострочені pending →
+             missed + mail.activity керівнику; is_critical → SMS CRITICAL через
+             fayna.sms.dispatcher; повторний алерт (ESKALACJA) після 24h без
+             підтвердження. Вся логіка в _cron_mark_missed_and_alert
+             (models/medication.py) — cron лише викликає метод.
+             base.user_root → su, тож art.9 field-groups не блокують search. -->
+        <record id="cron_medication_missed_doses" model="ir.cron">
+            <field name="name">CampScout: Medication — missed doses + kierownik alerts</field>
+            <field name="model_id" ref="model_camp_medication_schedule"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_mark_missed_and_alert()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="active">True</field>
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+
         <!-- Optional monthly auto-evidence to the external księgowa (§10/§4c).
              INACTIVE by default — opt-in: organizator włącza w Ustawieniach
              technicznych po ustawieniu adresu księgowej. RODO art.9 — tylko

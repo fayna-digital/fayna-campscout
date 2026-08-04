@@ -103,6 +103,7 @@ License: OPL-1 (Odoo Proprietary License v1.0)
         "views/staff_sms_views.xml",
         "views/reports_views.xml",
         "views/res_company_views.xml",
+        "views/medication_views.xml",
         "reports/teczka_report_templates.xml",
         "reports/teczka_reports.xml",
         "reports/budget_report_templates.xml",
