@@ -168,9 +168,7 @@ class TestMedication(TransactionCase):
         )
 
     def _escalation_alerts(self, registry):
-        return registry.activity_ids.filtered(
-            lambda a: (a.summary or "").startswith("ESKALACJA")
-        )
+        return registry.activity_ids.filtered(lambda a: (a.summary or "").startswith("ESKALACJA"))
 
     # ------------------------------------------------------------------
     # 1. Reception constraints — порожній/битий прийом (T1-K)
@@ -310,9 +308,7 @@ class TestMedication(TransactionCase):
             self.env["camp.medication.schedule"]._cron_mark_missed_and_alert()
         self.assertTrue(self._missed_alerts(registry))
         # Kierownik ignores the alert for >24h.
-        registry.schedule_ids.write(
-            {"alerted_at": fields.Datetime.now() - timedelta(hours=25)}
-        )
+        registry.schedule_ids.write({"alerted_at": fields.Datetime.now() - timedelta(hours=25)})
         with self._mock_sms():
             self.env["camp.medication.schedule"]._cron_mark_missed_and_alert()
         self.assertTrue(all(s.escalated_at for s in registry.schedule_ids))
@@ -326,9 +322,7 @@ class TestMedication(TransactionCase):
             self.env["camp.medication.schedule"]._cron_mark_missed_and_alert()
         # Kierownik confirms: the missed-dose activity is marked done (gone).
         self._missed_alerts(registry).unlink()
-        registry.schedule_ids.write(
-            {"alerted_at": fields.Datetime.now() - timedelta(hours=25)}
-        )
+        registry.schedule_ids.write({"alerted_at": fields.Datetime.now() - timedelta(hours=25)})
         with self._mock_sms():
             self.env["camp.medication.schedule"]._cron_mark_missed_and_alert()
         # Escalation window is closed without a repeat alert.
@@ -350,9 +344,7 @@ class TestMedication(TransactionCase):
         self.assertTrue(first.issued_time)
 
         # Medic changes the scheme 2 → 3 doses/day.
-        registry.write(
-            {"dosage_frequency": 3, "dosage_times": "08:00, 14:00, 20:00"}
-        )
+        registry.write({"dosage_frequency": 3, "dosage_times": "08:00, 14:00, 20:00"})
 
         # Issued row survived untouched — it is legal evidence.
         self.assertIn(first, registry.schedule_ids)

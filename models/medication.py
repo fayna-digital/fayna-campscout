@@ -242,12 +242,8 @@ class CampMedicationRegistry(models.Model):
     def _compute_name(self):
         for rec in self:
             who = rec.participant_id.display_name or _("Medication")
-            day = (
-                fields.Date.to_string(rec.received_date.date())
-                if rec.received_date
-                else ""
-            )
-            rec.name = "{} — leki {}".format(who, day).strip()
+            day = fields.Date.to_string(rec.received_date.date()) if rec.received_date else ""
+            rec.name = f"{who} — leki {day}".strip()
 
     @api.onchange("participant_id")
     def _onchange_participant_id(self):
@@ -362,9 +358,7 @@ class CampMedicationRegistry(models.Model):
                 continue
             if not rec.rodo_consent_id:
                 # Art. 9(2)(a): no signed parent consent → no processing.
-                raise UserError(
-                    _("Sign the parent consent before activating the course.")
-                )
+                raise UserError(_("Sign the parent consent before activating the course."))
             rec.state = "active"
             self.env["camp.medication.schedule"].create(rec._schedule_vals())
             rec._log_medical_access(reason="course activated")
@@ -393,13 +387,8 @@ class CampMedicationRegistry(models.Model):
         if self.dosage_interval:
             step = self.dosage_interval
         else:
-            step = max(
-                1, (_LAST_DOSE_HOUR - _FIRST_DOSE_HOUR) // (self.dosage_frequency - 1)
-            )
-        return [
-            time(min(_FIRST_DOSE_HOUR + i * step, 23), 0)
-            for i in range(self.dosage_frequency)
-        ]
+            step = max(1, (_LAST_DOSE_HOUR - _FIRST_DOSE_HOUR) // (self.dosage_frequency - 1))
+        return [time(min(_FIRST_DOSE_HOUR + i * step, 23), 0) for i in range(self.dosage_frequency)]
 
     def _schedule_vals(self):
         """Full course grid: dosage_duration days × dosage_frequency doses."""
@@ -430,11 +419,7 @@ class CampMedicationRegistry(models.Model):
             handled = rec.schedule_ids - pending
             pending.unlink()
             cutoff = max(handled.mapped("scheduled_time"), default=False)
-            vals = [
-                v
-                for v in rec._schedule_vals()
-                if not cutoff or v["scheduled_time"] > cutoff
-            ]
+            vals = [v for v in rec._schedule_vals() if not cutoff or v["scheduled_time"] > cutoff]
             self.env["camp.medication.schedule"].create(vals)
             _logger.info(
                 "fayna_camp_portal.medication.regen: registry=%s pending=%s handled=%s",
@@ -616,11 +601,10 @@ class CampMedicationSchedule(models.Model):
     def unlink(self):
         # Issued/missed rows are the evidence trail (kejs Tsybulko) —
         # only regeneration of PENDING rows may delete. System can clean up.
-        if not (self.env.su or self.env.user.has_group("base.group_system")):
-            if any(rec.status != "pending" for rec in self):
-                raise UserError(
-                    _("Issued/missed doses are evidence and cannot be deleted.")
-                )
+        if not (self.env.su or self.env.user.has_group("base.group_system")) and any(
+            rec.status != "pending" for rec in self
+        ):
+            raise UserError(_("Issued/missed doses are evidence and cannot be deleted."))
         return super().unlink()
 
     # ------------------------------------------------------------------
@@ -637,9 +621,7 @@ class CampMedicationSchedule(models.Model):
         for registry in self.mapped("registry_id"):
             doses = self.filtered(lambda s, r=registry: s.registry_id == r)
             kierownik = registry.event_id.user_id
-            times = ", ".join(
-                fields.Datetime.to_string(d) for d in doses.mapped("scheduled_time")
-            )
+            times = ", ".join(fields.Datetime.to_string(d) for d in doses.mapped("scheduled_time"))
             if kierownik:
                 registry.activity_schedule(
                     "mail.mail_activity_data_todo",
