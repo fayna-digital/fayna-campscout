@@ -424,13 +424,13 @@ async function doSubmit(){
     } else {
       // Збій доставки — НЕ тихо: показуємо видиму помилку
       err.style.display='block';
-      err.textContent='Nie udało się wysłać do organizatora. Odśwież stronę (Cmd+Shift+R) i spróbuj ponownie. Kopia PDF została pobrana.';
+      err.textContent='Nie udało się wysłać do organizatora. Sprawdź internet i kliknij „Generuj i wyślij" jeszcze raz. Kopia PDF została pobrana.';
       console.error('postToServer: kopia NIE dotarła do organizatora (response.ok=false)');
     }
   }catch(e){
     // Виняток у білді/getBase64/fetch — теж ВИДИМО, не тихо
     err.style.display='block';
-    err.textContent='Błąd generowania lub wysyłki dokumentu: '+((e&&e.message)||e)+'. Odśwież stronę (Cmd+Shift+R) i spróbuj ponownie.';
+    err.textContent='Błąd generowania lub wysyłki dokumentu: '+((e&&e.message)||e)+'. Sprawdź internet i kliknij „Generuj i wyślij" jeszcze raz.';
     console.error('doSubmit failed', e);
   }finally{
     btn.disabled=false; btn.textContent='Generuj i wyślij';

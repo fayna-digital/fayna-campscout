@@ -309,7 +309,17 @@ document.getElementById('f').addEventListener('submit', (e) => {
   };
   document.getElementById('consentOverlay').style.display = 'flex';
 });
-window.addEventListener('resize', () => { const data = canvas.toDataURL(); resizeCanvas(); });
+// resize (obrót ekranu, klawiatura) zeruje bufor canvas — przenosimy podpis przez dataURL,
+// inaczej do PDF trafiał biały prostokąt zamiast podpisu.
+window.addEventListener('resize', () => {
+  const data = canvas.toDataURL();          // znimok PRZED resize — zmiana width/height czyści piksele
+  resizeCanvas();
+  if (hasSignature){
+    const img = new Image();
+    img.onload = () => { const r = canvas.getBoundingClientRect(); ctx.drawImage(img, 0, 0, r.width, r.height); };
+    img.src = data;
+  }
+});
 </script>
 </body>
 </html>

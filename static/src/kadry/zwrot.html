@@ -156,7 +156,7 @@
 
   <div class="err" id="err">Uzupełnij wymagane pola: Imię i nazwisko, Właściciel rachunku oraz pełny numer rachunku (PL + 26 cyfr). / Заповніть обов'язкові поля.</div>
   <div style="margin-top:16px">
-    <button type="submit" class="primary">Generuj PDF i wyślij / Згенерувати PDF і надіслати</button>
+    <button type="submit" class="primary" id="send">Generuj PDF i wyślij / Згенерувати PDF і надіслати</button>
   </div>
 
   <div id="done">
@@ -251,9 +251,15 @@ if (typeof pdfMake !== 'undefined') {
 
 const SUBMIT_ENDPOINT = '/camp/submit-document';
 
+// tekst walidacji z #err — przywracany przed pokazaniem (mógł go nadpisać błąd wysyłki)
+const ERR_WALIDACJA = 'Uzupełnij wymagane pola: Imię i nazwisko, Właściciel rachunku oraz pełny numer rachunku (PL + 26 cyfr). / Заповніть обов\'язкові поля.';
+
+// Zwraca true TYLKO przy potwierdzonej dostawie (response.ok). Błąd fetch/HTTP → false.
+// NIE połykamy błędu po cichu: bez potwierdzenia serwera pokazujemy widoczny komunikat,
+// a nie „Dziękujemy" — ten sam incydent iOS, który naprawiono już w rodzice/wilcza.
 async function postToServer(payload, docNr, filename, base64){
   try{
-    await fetch(SUBMIT_ENDPOINT, {
+    const resp = await fetch(SUBMIT_ENDPOINT, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -266,8 +272,10 @@ async function postToServer(payload, docNr, filename, base64){
         pdf_filename: filename,
       }),
     });
+    return resp.ok;
   }catch(e){
-    console.warn('submit-document: serwer niedostępny, PDF pozostał lokalnie', e);
+    console.error('submit-document niedostępny — wniosek NIE dotarł do organizatora', e);
+    return false;
   }
 }
 
@@ -313,8 +321,11 @@ document.getElementById('f').addEventListener('submit', (e) => {
   }
   if (!przyczynaVal){ przyczynaGroup.classList.add('invalid'); ok = false; }
   else if (przyczynaVal === 'inna' && !przyczynaInna){ przyczynaInnaInput.classList.add('invalid'); ok = false; }
-  if (!ok){ err.style.display = 'block'; return; }
+  if (!ok){ err.textContent = ERR_WALIDACJA; err.style.display = 'block'; return; }   // przywracamy tekst walidacji (mógł go nadpisać błąd wysyłki)
   err.style.display = 'none';
+
+  // podpis nie blokuje wysyłki, ale brak podpisu ma być decyzją świadomą, nie przeoczeniem
+  if (!hasSignature && !confirm('Nie złożono podpisu. Wysłać wniosek bez podpisu? / Підпис не поставлено. Надіслати заяву без підпису?')) return;
 
   const sigDataUrl = hasSignature ? canvas.toDataURL('image/png') : null;
   const now = new Date();
@@ -378,17 +389,51 @@ document.getElementById('f').addEventListener('submit', (e) => {
     przyczyna: przyczynaText, wlasciciel_rachunku, iban, miejscowosc, data, dateTimeStr };
   const filename = 'wniosek-zwrot_' + nazwisko + '_' + ts + '.pdf';
 
+  // busy-stan jak w wilcza: przycisk zablokowany na czas budowy PDF i wysyłki,
+  // żeby podwójne kliknięcie nie złożyło dwóch wniosków
+  const btn = document.getElementById('send');
+  const btnLabel = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Wysyłanie…';
   const pdfDoc = pdfMake.createPdf(docDef);
   // POST NAJPIERW — na mobile pdfDoc.download() zawiesza/nawiguje stronę i przerywa
   // asynchroniczny fetch, więc wysyłka na serwer musi pójść przed pobraniem pliku.
-  pdfDoc.getBase64(async base64 => {
-    await postToServer(payload, nr_zamowienia, filename, base64);
-    pdfDoc.download(filename);                                // lokalna kopia PO wysłaniu
-    document.getElementById('done').style.display = 'block';
-    document.getElementById('done').scrollIntoView({ behavior: 'smooth' });
-  });
+  try{
+    pdfDoc.getBase64(async base64 => {
+      try{
+        const ok = await postToServer(payload, nr_zamowienia, filename, base64);
+        pdfDoc.download(filename);                            // lokalna kopia — niezależnie od wyniku wysyłki
+        if (ok){
+          err.style.display = 'none';
+          document.getElementById('done').style.display = 'block';
+          document.getElementById('done').scrollIntoView({ behavior: 'smooth' });
+        } else {
+          // Wniosek NIE został złożony — mówimy to wprost, zamiast pokazywać „Dziękujemy"
+          err.textContent = 'Nie udało się przesłać wniosku do organizatora — wniosek NIE został złożony. Sprawdź połączenie z internetem i kliknij „Generuj PDF i wyślij" jeszcze raz. Pobrany PDF to wyłącznie Twoja kopia — samo pobranie nie jest złożeniem wniosku.';
+          err.style.display = 'block';
+          err.scrollIntoView({ behavior: 'smooth' });
+        }
+      } finally {
+        btn.disabled = false; btn.textContent = btnLabel;
+      }
+    });
+  }catch(e){
+    console.error('Błąd generowania PDF', e);
+    btn.disabled = false; btn.textContent = btnLabel;
+    err.textContent = 'Nie udało się wygenerować PDF. Sprawdź internet i kliknij „Generuj PDF i wyślij" jeszcze raz.';
+    err.style.display = 'block';
+  }
 });
-window.addEventListener('resize', () => { resizeCanvas(); });
+// resize (obrót ekranu, klawiatura) zeruje bufor canvas — przenosimy podpis przez dataURL,
+// inaczej do PDF trafiał biały prostokąt zamiast podpisu.
+window.addEventListener('resize', () => {
+  const data = canvas.toDataURL();          // znimok PRZED resize — zmiana width/height czyści piksele
+  resizeCanvas();
+  if (hasSignature){
+    const img = new Image();
+    img.onload = () => { const r = canvas.getBoundingClientRect(); ctx.drawImage(img, 0, 0, r.width, r.height); };
+    img.src = data;
+  }
+});
 </script>
 </body>
 </html>

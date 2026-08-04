@@ -175,19 +175,26 @@
     if (!window.fetch) return;
     var orig = window.fetch;
     window.fetch = function (input, opts) {
+      var isSubmit = false;
       try {
         var url = typeof input === "string" ? input : (input && input.url) || "";
         if (url.indexOf("submit-document") >= 0 && opts && typeof opts.body === "string") {
+          isSubmit = true;
           var o = JSON.parse(opts.body);
           if (o && typeof o === "object" && !o.sid) {
             o.sid = sid;
             opts = Object.assign({}, opts, { body: JSON.stringify(o) });
           }
-          // подання відбулося — локальна копія більше не потрібна
-          setTimeout(clearLocal, 1500);
         }
       } catch (e) { /* будь-який збій — шлемо запит незміненим */ }
-      return orig.apply(this, [input, opts]);
+      var p = orig.apply(this, [input, opts]);
+      if (isSubmit) {
+        // копію стираємо лише після ПІДТВЕРДЖЕНОЇ доставки (resp.ok), а не таймером
+        // від ініціації запиту: збій мережі не має стирати єдину вцілілу копію введеного
+        p.then(function (resp) { if (resp && resp.ok) clearLocal(); })
+         .catch(function () { /* доставки не було — копія лишається */ });
+      }
+      return p;
     };
   }
 
