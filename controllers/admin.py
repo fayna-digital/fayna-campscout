@@ -128,10 +128,12 @@ class CampscoutAdmin(http.Controller):
             )
         except (AccessError, MissingError, KeyError) as e:
             _logger.warning("[ADMIN-KPI] business overview failed: %s", e)
+            # None = data-error sentinel (TZ §8 22д): the template renders
+            # "—" + «помилка даних» so a query failure never reads as 0.
             values.update(
-                kpi_active_events=0,
-                kpi_paid_registrations=0,
-                kpi_revenue_month=0.0,
+                kpi_active_events=None,
+                kpi_paid_registrations=None,
+                kpi_revenue_month=None,
                 kpi_revenue_currency="PLN",
             )
 
@@ -238,24 +240,27 @@ class CampscoutAdmin(http.Controller):
                     ("registration_ids.state", "!=", "cancel"),
                 ]
             )
-        except (AccessError, MissingError, KeyError):
-            return 0
+        except (AccessError, MissingError, KeyError) as e:
+            _logger.warning("[ADMIN-KPI] alarm_unsigned_cards failed: %s", e)
+            return None
 
     def _count_open_incidents(self, env_sudo):
         try:
             return env_sudo["camp.incident.report"].search_count(
                 [("state", "in", ("draft", "investigating", "open", "escalated"))]
             )
-        except (AccessError, MissingError, KeyError):
-            return 0
+        except (AccessError, MissingError, KeyError) as e:
+            _logger.warning("[ADMIN-KPI] alarm_open_incidents failed: %s", e)
+            return None
 
     def _count_kuratorium_pending(self, env_sudo):
         try:
             return env_sudo["camp.kuratorium.notification"].search_count(
                 [("state", "in", ("draft", "ready", "submitted", "deficiency"))]
             )
-        except (AccessError, MissingError, KeyError):
-            return 0
+        except (AccessError, MissingError, KeyError) as e:
+            _logger.warning("[ADMIN-KPI] alarm_kuratorium_pending failed: %s", e)
+            return None
 
     def _build_active_camps(self, env_sudo, now):
         try:
@@ -331,8 +336,9 @@ class CampscoutAdmin(http.Controller):
     def _rodo_consent_rate(self, env_sudo):
         """Return percentage of partners with active RODO consent (best-effort).
 
-        Reads from fayna.rodo.consent.log if available — falls back to 0 when
-        the dependency is not installed.
+        Reads from fayna.rodo.consent.log if available — falls back to None
+        (data-error sentinel, TZ §8 22д) when the dependency is not installed
+        or the query fails; 0 is reserved for a genuine zero.
         """
         try:
             total = env_sudo["res.partner"].search_count(
@@ -342,8 +348,9 @@ class CampscoutAdmin(http.Controller):
                 return 0
             consented = env_sudo["fayna.rodo.consent.log"].search_count([("state", "=", "granted")])
             return round(min(consented, total) * 100.0 / total, 1)
-        except (AccessError, MissingError, KeyError, ValueError):
-            return 0
+        except (AccessError, MissingError, KeyError, ValueError) as e:
+            _logger.warning("[ADMIN-KPI] rodo_consent_rate failed: %s", e)
+            return None
 
     def _top_camps_by_sales(self, env_sudo, month_start):
         try:

@@ -30,7 +30,11 @@
                             <div class="card h-100 shadow-sm">
                                 <div class="card-body">
                                     <h6 class="text-muted mb-1">Активні табори</h6>
-                                    <div class="display-6 fw-bold" t-esc="kpi_active_events"/>
+                                    <t t-if="kpi_active_events is None">
+                                        <div class="display-6 fw-bold">—</div>
+                                        <span class="badge bg-warning text-dark">помилка даних</span>
+                                    </t>
+                                    <div t-else="" class="display-6 fw-bold" t-esc="kpi_active_events"/>
                                 </div>
                             </div>
                         </div>
@@ -38,7 +42,11 @@
                             <div class="card h-100 shadow-sm">
                                 <div class="card-body">
                                     <h6 class="text-muted mb-1">Оплачені реєстрації (місяць)</h6>
-                                    <div class="display-6 fw-bold" t-esc="kpi_paid_registrations"/>
+                                    <t t-if="kpi_paid_registrations is None">
+                                        <div class="display-6 fw-bold">—</div>
+                                        <span class="badge bg-warning text-dark">помилка даних</span>
+                                    </t>
+                                    <div t-else="" class="display-6 fw-bold" t-esc="kpi_paid_registrations"/>
                                 </div>
                             </div>
                         </div>
@@ -46,7 +54,11 @@
                             <div class="card h-100 shadow-sm">
                                 <div class="card-body">
                                     <h6 class="text-muted mb-1">Дохід місяця</h6>
-                                    <div class="display-6 fw-bold">
+                                    <t t-if="kpi_revenue_month is None">
+                                        <div class="display-6 fw-bold">—</div>
+                                        <span class="badge bg-warning text-dark">помилка даних</span>
+                                    </t>
+                                    <div t-else="" class="display-6 fw-bold">
                                         <t t-esc="'%.2f' % (kpi_revenue_month or 0)"/>
                                         <small class="text-muted ms-2" t-esc="kpi_revenue_currency"/>
                                     </div>
@@ -64,7 +76,11 @@
                             <div class="card h-100 shadow-sm border-danger">
                                 <div class="card-body">
                                     <h6 class="text-muted mb-1">Непідписані картки (&lt;14 днів)</h6>
-                                    <div class="display-6 fw-bold text-danger" t-esc="alarm_unsigned_cards"/>
+                                    <t t-if="alarm_unsigned_cards is None">
+                                        <div class="display-6 fw-bold text-danger">—</div>
+                                        <span class="badge bg-warning text-dark">помилка даних</span>
+                                    </t>
+                                    <div t-else="" class="display-6 fw-bold text-danger" t-esc="alarm_unsigned_cards"/>
                                 </div>
                             </div>
                         </div>
@@ -72,7 +88,11 @@
                             <div class="card h-100 shadow-sm border-warning">
                                 <div class="card-body">
                                     <h6 class="text-muted mb-1">Відкриті інциденти</h6>
-                                    <div class="display-6 fw-bold text-warning" t-esc="alarm_open_incidents"/>
+                                    <t t-if="alarm_open_incidents is None">
+                                        <div class="display-6 fw-bold text-warning">—</div>
+                                        <span class="badge bg-warning text-dark">помилка даних</span>
+                                    </t>
+                                    <div t-else="" class="display-6 fw-bold text-warning" t-esc="alarm_open_incidents"/>
                                 </div>
                             </div>
                         </div>
@@ -80,7 +100,11 @@
                             <div class="card h-100 shadow-sm border-info">
                                 <div class="card-body">
                                     <h6 class="text-muted mb-1">Кураторіум — у роботі</h6>
-                                    <div class="display-6 fw-bold text-info" t-esc="alarm_kuratorium_pending"/>
+                                    <t t-if="alarm_kuratorium_pending is None">
+                                        <div class="display-6 fw-bold text-info">—</div>
+                                        <span class="badge bg-warning text-dark">помилка даних</span>
+                                    </t>
+                                    <div t-else="" class="display-6 fw-bold text-info" t-esc="alarm_kuratorium_pending"/>
                                 </div>
                             </div>
                         </div>
@@ -180,7 +204,11 @@
                             <div class="card h-100 shadow-sm">
                                 <div class="card-body">
                                     <h6 class="text-muted mb-1">RODO consent rate</h6>
-                                    <div class="display-6 fw-bold">
+                                    <t t-if="rodo_consent_rate is None">
+                                        <div class="display-6 fw-bold">—</div>
+                                        <span class="badge bg-warning text-dark">помилка даних</span>
+                                    </t>
+                                    <div t-else="" class="display-6 fw-bold">
                                         <t t-esc="rodo_consent_rate"/>%
                                     </div>
                                 </div>
