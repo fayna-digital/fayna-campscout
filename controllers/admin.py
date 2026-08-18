@@ -387,7 +387,13 @@ class CampscoutAdmin(http.Controller):
         if not event:
             raise UserError(_("Event not found."))
 
-        target_user = event.user_id or request.env.user
+        if not event.user_id:
+            raise UserError(
+                _(
+                    "Dla tego wydarzenia nie przypisano użytkownika — podgląd jako kierownik niemożliwy."
+                )
+            )
+        target_user = event.user_id
         self._log_access(
             "kierownik",
             target_user=target_user,
@@ -436,7 +442,13 @@ class CampscoutAdmin(http.Controller):
         if not staff:
             raise UserError(_("Staff record not found."))
 
-        target_user = staff.user_id or request.env.user
+        if not staff.user_id:
+            raise UserError(
+                _(
+                    "Dla tego pracownika nie przypisano użytkownika — podgląd jako wychowawca niemożliwy."
+                )
+            )
+        target_user = staff.user_id
         self._log_access(
             "wychowawca",
             target_user=target_user,
@@ -482,7 +494,13 @@ class CampscoutAdmin(http.Controller):
         if not staff:
             raise UserError(_("Staff record not found."))
 
-        target_user = staff.user_id or request.env.user
+        if not staff.user_id:
+            raise UserError(
+                _(
+                    "Dla tego pracownika nie przypisano użytkownika — podgląd jako instruktor niemożliwy."
+                )
+            )
+        target_user = staff.user_id
         self._log_access(
             "instructor",
             target_user=target_user,
@@ -526,7 +544,11 @@ class CampscoutAdmin(http.Controller):
         if not partner:
             raise UserError(_("Partner not found."))
 
-        target_user = partner.user_ids[:1] or request.env.user
+        if not partner.user_ids[:1]:
+            raise UserError(
+                _("Dla tego partnera nie przypisano użytkownika — podgląd jako rodzic niemożliwy.")
+            )
+        target_user = partner.user_ids[:1]
         self._log_access(
             "parent",
             target_user=target_user,
@@ -579,6 +601,25 @@ class CampscoutAdmin(http.Controller):
         # No privilege escalation — never become an admin / organizator.
         if target.has_group("base.group_system") or target.has_group(ORGANIZATOR_GROUP):
             raise UserError(_("Nie można impersonować administratora/organizatora."))
+
+        # Rate limit: max 10 successful login-as per admin per 5 minutes.
+        recent = (
+            request.env["camp.admin.access.log"]
+            .sudo()
+            .search_count(
+                [
+                    ("user_id", "=", request.env.user.id),
+                    ("impersonated_role", "=", "login_as"),
+                    ("create_date", ">=", datetime.now() - timedelta(minutes=5)),
+                ]
+            )
+        )
+        if recent >= 10:
+            raise UserError(
+                _(
+                    "Zbyt wiele prób impersonacji w krótkim czasie — spróbuj ponownie za kilka minut."
+                )
+            )
 
         original_uid = request.env.user.id
         self._log_access("login_as", target_user=target, reason=reason or "login-as")
