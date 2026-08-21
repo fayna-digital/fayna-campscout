@@ -43,6 +43,16 @@ echo "::endgroup::"
 COVERAGE_CMD=()
 if [ "${COVERAGE:-0}" = "1" ]; then
   echo "Coverage gate ENABLED (min ${COVERAGE_MIN}%)."
+  # `coverage run` does NOT do PATH resolution — it treats the first non-option
+  # arg as a file path relative to CWD. The `odoo` entrypoint is a Python script
+  # (/usr/bin/odoo), so we must pass its ABSOLUTE path or coverage fails with
+  # "No file to run: '/odoo'". Resolve it via `command -v`.
+  ODOO_BIN="$(command -v "${ODOO_BIN}")"
+  # The odoo:17 container runs as the non-root `odoo` user with CWD `/` (not
+  # writable), so coverage would fail to write its data file to `/.coverage`.
+  # Point it at a writable path in /tmp; `coverage report` picks it up from the
+  # same env var automatically.
+  export COVERAGE_FILE="/tmp/.coverage"
   COVERAGE_CMD=(coverage run --source="/mnt/addons/${MODULE}" --branch -a)
 fi
 set -x
