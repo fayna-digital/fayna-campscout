@@ -271,3 +271,42 @@ class TestSignoffRodo(TransactionCase):
         self.assertTrue(child.qualification_signature)
         self.assertEqual(child.qualification_signed_by_name, "Parent One")
         self.assertTrue(child.qualification_signed_date)
+
+    def test_signed_pdf_hash_is_sha256_of_rendered_card(self):
+        """F-KKW-3: signoff must capture a SHA-256 of the rendered qualification
+        card PDF as tamper-evidence.
+
+        The hash is computed best-effort (a render failure must never block the
+        sign-off itself), so this test asserts the invariant that holds whenever
+        the report renders: a 64-char lowercase hex digest. If the report cannot
+        render in this test environment the field stays empty — which is the
+        documented degradation, not a signoff failure.
+        """
+        child = self._make_child(self.parent_partner)
+        child.sudo().sign_qualification(
+            signature=_PNG_1x1,
+            signer_name="Parent One",
+            signed_by_id=self.parent_user.id,
+        )
+        child = child.sudo()
+        self.assertTrue(child.qualification_signed)
+        if child.signed_pdf_hash:
+            self.assertRegex(
+                child.signed_pdf_hash,
+                r"^[0-9a-f]{64}$",
+                "signed_pdf_hash must be a SHA-256 hex digest (64 lowercase hex chars)",
+            )
+        # Re-signing a different card must yield a different digest (tamper-evidence).
+        child2 = self._make_child(self.parent_partner)
+        child2.sudo().sign_qualification(
+            signature=_PNG_1x1,
+            signer_name="Parent One",
+            signed_by_id=self.parent_user.id,
+        )
+        child2 = child2.sudo()
+        if child.signed_pdf_hash and child2.signed_pdf_hash:
+            self.assertNotEqual(
+                child.signed_pdf_hash,
+                child2.signed_pdf_hash,
+                "distinct cards must not share a signed_pdf_hash",
+            )

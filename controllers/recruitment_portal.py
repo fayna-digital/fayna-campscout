@@ -19,6 +19,8 @@ from odoo.addons.portal.controllers.portal import CustomerPortal
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.http import request
 
+from ..models.rate_limit import check_public_form_rate_limit, client_ip
+
 _logger = logging.getLogger(__name__)
 
 _APPLY_WHITELIST = ("candidate_name", "candidate_email", "candidate_phone", "message")
@@ -93,6 +95,22 @@ class RecruitmentPortal(CustomerPortal):
         vacancy = request.env["camp.staff.vacancy"].sudo().browse(vacancy_id)
         if not vacancy.exists() or vacancy.state != "open":
             return request.redirect("/camp/vacancies")
+
+        # N-9: honeypot + IP-frequency rate-limit on this public form.
+        if not check_public_form_rate_limit(
+            request.env,
+            "vacancy_apply",
+            client_ip(request),
+            honeypot_value=post.get("website"),
+        ):
+            return request.render(
+                "fayna_camp_portal.portal_vacancy_apply",
+                {
+                    "vacancy": vacancy,
+                    "page_name": "vacancies",
+                    "error": "Забагато спроб. Спробуйте пізніше.",
+                },
+            )
 
         # Whitelist — ніяких зайвих полів
         vals = {k: (post.get(k) or "").strip() for k in _APPLY_WHITELIST if post.get(k)}

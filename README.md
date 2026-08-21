@@ -24,7 +24,7 @@ Reference deployment: [CampScout](https://campscout.eu) — child summer camps i
 - **Native Odoo chat + auto-subscribers** — every camp shift auto-creates a `discuss.channel` (kierownik + staff); qualification cards, journals and incidents auto-subscribe the right partners on create/write so notifications dispatch without manual subscribe
 - **SMS three-tier priority** — `CRITICAL` (incidents, unsigned card <3d) / `IMPORTANT` (journal comments, daily reports) / `INFO` (stories, marketing) routed through `fayna_sms_base` → TurboSMS / Twilio with per-partner `sms_opt_in` consent enforcement
 - **Ustawa Kamilka 2024 escalation** — `severity='kamilka'` triggers `CRITICAL_OVERRIDE` SMS that bypasses opt-in (GDPR art.6.1.d vital interest); 5-minute cron escalates to deputy kierownik / organizator if primary did not acknowledge; immutable Kuratorium audit trail
-- **Admin dashboard with view-as** — Organizator lands on `/admin/dashboard`, can `/admin/as-{role}` impersonate any role using `with_user()` (preserves ACL, never sudo); every impersonation logged to `camp.admin.access.log` (RODO art.30, 7-year retention)
+- **Admin dashboard with view-as** — Organizator lands on `/admin/dashboard`, can `/admin/as-{role}` impersonate any role using `env(user=...)` (preserves ACL, never sudo); every impersonation logged to `camp.admin.access.log` (RODO art.30, 7-year retention)
 - **Polish camp law compliance** — Karta kwalifikacyjna (5 sections per Rozp. MEN 30.03.2016), Dziennik zajęć (Załącznik 5), Program Wypoczynku (Załącznik 9), Kuratorium notification (Załącznik 1), staff KRK + RPS verification
 - **Multi-language** — native Odoo `.po` translation pipeline with `i18n/uk_UA.po` and `i18n/pl_PL.po` (Ukrainian + Polish), all user-facing strings wrapped in `_()`
 - **Parent portal** — `/my` hero with active and upcoming registrations, qualification card flow, stories, documents, loyalty, and escort/asysta authorization + e-signature (`/my/escort`)
@@ -282,7 +282,7 @@ Logo, brand colour and email footer are read from the active company. The portal
 1. Organizator logs in (top-level role per Rozp. MEN §2.1) — login redirect to `/admin/dashboard`
 2. Server-rendered dashboard with KPI cards: registrations, revenue, occupancy, unsigned cards, open incidents, upcoming kuratorium deadlines
 3. **Drill-down** — click a camp → see attendance, staff, journal entries, incidents, daily reports
-4. **View-as** — `/admin/as-kierownik?event_id=...` renders the kierownik portal with `with_user(target_user)` — ACL of the target role is preserved, the Organizator does NOT gain write-bypass on RODO Art.9 fields
+4. **View-as** — `/admin/as-kierownik?event_id=...` renders the kierownik portal with `env(user=target_user.id)` — ACL of the target role is preserved, the Organizator does NOT gain write-bypass on RODO Art.9 fields
 5. Every view-as call writes a row to `camp.admin.access.log` (RODO art.30 register) before the render — even if the render fails the trace exists
 
 ---
@@ -435,7 +435,7 @@ CampscoutAdmin._log_access(
       │ (sudo create — RODO art.30 register, never silently skipped)
       ▼
 request.env(user=target_user).render('portal.portal_my_home', values)
-      │ (with_user — NOT sudo — preserves target ACL + ir.rule)
+      │ (env(user=...) — NOT sudo — preserves target ACL + ir.rule)
       ▼
 Browser sees the kierownik view; Organizator did NOT gain write-bypass
 on RODO Art.9 medical fields (medical_officer group still required).
@@ -508,7 +508,7 @@ docker exec camp_dev odoo \
 | **Emergency Manager** | Full incident lifecycle (close, reopen, override) | — | — |
 | **Parent** (portal) | Own qualification card Sections I-II (until signed), own contact data | Own children's status, stories of own shifts, documents, loyalty | Other parents' data, internal journal, kuratorium docs |
 
-Record rules (`security/record_rules.xml`) enforce per-shift scoping for staff roles and per-parent scoping for portal users; `with_user()` impersonation in admin view-as preserves these rules — Organizator only "sees what the role would see".
+Record rules (`security/record_rules.xml`) enforce per-shift scoping for staff roles and per-parent scoping for portal users; `env(user=...)` impersonation in admin view-as preserves these rules — Organizator only "sees what the role would see".
 
 ---
 

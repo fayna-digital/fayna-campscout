@@ -14,6 +14,9 @@ from . import (  # noqa: I001 — preserve historical order; new imports appende
 # SMS notification layer — appended at the end per module conventions.
 from . import res_partner_inherit, sms_notify  # noqa: E402,I001
 
+# N-9 — public-form rate-limit + retry-with-backoff helpers (pure functions).
+from . import rate_limit  # noqa: E402,I001
+
 # SMS staff broadcast (wychowawca → group) — RODO + cost audit.
 from . import (  # noqa: E402,I001
     participant_sms_extension,
@@ -83,3 +86,7 @@ from . import document_submission_log  # noqa: E402,I001
 # Rejestr leków — прийом → графік → видача/пропуск + SMS CRITICAL (ТЗ тема 2,
 # гейт Fable 2026-08-03). MUST import after participant + admin_access_log.
 from . import medication  # noqa: E402,I001
+
+# F-DOC-4 — retention-matrix auto-execution (daily cron flags + logs; real
+# erasure is a separate wizard-confirmed step, first deletions 2033).
+from . import retention  # noqa: E402,I001

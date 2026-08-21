@@ -127,6 +127,9 @@ License: OPL-1 (Odoo Proprietary License v1.0)
         "templates/website_templates.xml",
         "templates/admin_dashboard.xml",
     ],
+    "demo": [
+        "demo/demo.xml",
+    ],
     "assets": {
         "web.assets_frontend": [
             "fayna_camp_portal/static/src/scss/portal_hero.scss",
@@ -144,6 +147,8 @@ License: OPL-1 (Odoo Proprietary License v1.0)
             "fayna_camp_portal/static/src/xml/kiosk_toggle_systray.xml",
             "fayna_camp_portal/static/src/js/kiosk_back_systray.js",
             "fayna_camp_portal/static/src/xml/kiosk_back_systray.xml",
+            # Kiosk UI tour (OCA review — JS smoke test)
+            "fayna_camp_portal/static/src/js/kiosk_tour.js",
         ],
     },
     "post_init_hook": "post_init_hook",

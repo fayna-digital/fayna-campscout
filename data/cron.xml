@@ -7,40 +7,40 @@
              Legal: RODO + PL Rozp. MEN invariant. -->
         <record id="cron_auto_refusal_unsigned" model="ir.cron">
             <field name="name">CampScout: Auto-refusal for unsigned qualification cards</field>
-            <field name="model_id" ref="model_camp_participant"/>
+            <field name="model_id" ref="model_camp_participant" />
             <field name="state">code</field>
             <field name="code">model._cron_auto_refusal_scan()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
             <field name="active">True</field>
-            <field name="user_id" ref="base.user_root"/>
+            <field name="user_id" ref="base.user_root" />
         </record>
 
         <!-- Qualification card reminder emails: 14d / 7d / 3d before camp -->
         <record id="cron_qualification_reminders" model="ir.cron">
             <field name="name">CampScout: Qualification card reminder emails</field>
-            <field name="model_id" ref="model_camp_participant"/>
+            <field name="model_id" ref="model_camp_participant" />
             <field name="state">code</field>
             <field name="code">model._cron_auto_refusal_reminders()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
             <field name="active">True</field>
-            <field name="user_id" ref="base.user_root"/>
+            <field name="user_id" ref="base.user_root" />
         </record>
 
         <!-- Payment installment overdue check: daily -->
         <record id="cron_installment_overdue" model="ir.cron">
             <field name="name">CampScout: Mark overdue payment installments</field>
-            <field name="model_id" ref="model_fayna_payment_installment"/>
+            <field name="model_id" ref="model_fayna_payment_installment" />
             <field name="state">code</field>
             <field name="code">model._cron_mark_overdue()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
             <field name="active">True</field>
-            <field name="user_id" ref="base.user_root"/>
+            <field name="user_id" ref="base.user_root" />
         </record>
 
         <!-- Training: expire camp.staff.training.record when expiry_date passes (5y MEN).
@@ -50,7 +50,7 @@
              at all despite having an `expired` state (latent dead feature, now fixed). -->
         <record id="cron_expire_camp_staff_training_records" model="ir.cron">
             <field name="name">CampScout: Mark Expired Staff Training Records</field>
-            <field name="model_id" ref="model_camp_staff_training_record"/>
+            <field name="model_id" ref="model_camp_staff_training_record" />
             <field name="state">code</field>
             <field name="code">model._cron_expire_training_records()</field>
             <field name="interval_number">1</field>
@@ -58,34 +58,34 @@
             <field name="numbercall">-1</field>
             <field name="active">True</field>
             <field name="priority">10</field>
-            <field name="user_id" ref="base.user_root"/>
+            <field name="user_id" ref="base.user_root" />
         </record>
 
         <!-- Daily reports — 7y RODO-retention archive (reuse S1 пара 2:
              у camp.journal метод був мертвий без ir.cron; тут підключено) -->
         <record id="ir_cron_daily_report_archive" model="ir.cron">
             <field name="name">CampScout: Archive 7y-old daily reports</field>
-            <field name="model_id" ref="model_camp_daily_report"/>
+            <field name="model_id" ref="model_camp_daily_report" />
             <field name="state">code</field>
             <field name="code">model.cron_archive_old_reports()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">weeks</field>
             <field name="numbercall">-1</field>
-            <field name="active" eval="True"/>
-            <field name="user_id" ref="base.user_root"/>
+            <field name="active" eval="True" />
+            <field name="user_id" ref="base.user_root" />
         </record>
 
         <!-- Camp Reports — daily KPI snapshot for dashboard -->
         <record id="cron_daily_analytics_snapshot" model="ir.cron">
             <field name="name">Camp Reports: Daily Analytics Snapshot</field>
-            <field name="model_id" ref="model_camp_analytics_snapshot"/>
+            <field name="model_id" ref="model_camp_analytics_snapshot" />
             <field name="state">code</field>
             <field name="code">model._cron_take_daily_snapshot()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
-            <field name="active" eval="True"/>
-            <field name="user_id" ref="base.user_root"/>
+            <field name="active" eval="True" />
+            <field name="user_id" ref="base.user_root" />
         </record>
 
         <!-- Rejestr leków (ТЗ тема 2, T4-K): щогодини прострочені pending →
@@ -96,14 +96,14 @@
              base.user_root → su, тож art.9 field-groups не блокують search. -->
         <record id="cron_medication_missed_doses" model="ir.cron">
             <field name="name">CampScout: Medication — missed doses + kierownik alerts</field>
-            <field name="model_id" ref="model_camp_medication_schedule"/>
+            <field name="model_id" ref="model_camp_medication_schedule" />
             <field name="state">code</field>
             <field name="code">model._cron_mark_missed_and_alert()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">hours</field>
             <field name="numbercall">-1</field>
             <field name="active">True</field>
-            <field name="user_id" ref="base.user_root"/>
+            <field name="user_id" ref="base.user_root" />
         </record>
 
         <!-- Optional monthly auto-evidence to the external księgowa (§10/§4c).
@@ -112,14 +112,32 @@
              kwoty zbiorcze, bez danych dzieci. -->
         <record id="cron_monthly_evidence_ksiegowa" model="ir.cron">
             <field name="name">CampScout: Miesięczna ewidencja do księgowej</field>
-            <field name="model_id" ref="model_camp_budget"/>
+            <field name="model_id" ref="model_camp_budget" />
             <field name="state">code</field>
             <field name="code">model._cron_send_monthly_evidence()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">months</field>
             <field name="numbercall">-1</field>
-            <field name="active" eval="False"/>
-            <field name="user_id" ref="base.user_root"/>
+            <field name="active" eval="False" />
+            <field name="user_id" ref="base.user_root" />
+        </record>
+
+        <!-- F-DOC-4 — retention-matrix auto-execution (daily).
+             Flags records past their retention deadline as to_erase, pauses
+             those with an active claim (court case), and logs every decision
+             to camp.retention.log (append-only, RODO art.30). NEVER deletes:
+             real erasure is a separate wizard-confirmed step (first deletions
+             2033 per ТЗ). -->
+        <record id="cron_retention_scan" model="ir.cron">
+            <field name="name">CampScout: Retention-matrix scan (F-DOC-4)</field>
+            <field name="model_id" ref="model_camp_retention_engine" />
+            <field name="state">code</field>
+            <field name="code">model._cron_retention_scan()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True" />
+            <field name="user_id" ref="base.user_root" />
         </record>
 
     </data>

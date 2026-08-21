@@ -23,6 +23,8 @@ import requests
 from odoo import fields, http
 from odoo.http import request
 
+from ..models.rate_limit import check_public_form_rate_limit, client_ip
+
 _logger = logging.getLogger(__name__)
 
 _ALLOWED_DOC_TYPES = ("wychowawca", "rodzic", "zwrot")
@@ -69,7 +71,10 @@ def _gc_drafts(env, days=60):
         old = (
             env["ir.attachment"]
             .sudo()
-            .search([("name", "=like", "[DRAFT-LOG] %"), ("create_date", "<", limit)], limit=500)
+            .search(
+                [("name", "=like", "[DRAFT-LOG] %"), ("create_date", "<", limit)],
+                limit=500,
+            )
         )
         if old:
             old.unlink()
@@ -90,7 +95,13 @@ def _notify_telegram(text, pdf_base64=None, pdf_filename="dokument.pdf"):
             requests.post(
                 f"https://api.telegram.org/bot{token}/sendDocument",
                 data={"chat_id": _TELEGRAM_CHAT_ID, "caption": text[:1024]},
-                files={"document": (pdf_filename, base64.b64decode(pdf_base64), "application/pdf")},
+                files={
+                    "document": (
+                        pdf_filename,
+                        base64.b64decode(pdf_base64),
+                        "application/pdf",
+                    )
+                },
                 timeout=15,
             )
         else:
@@ -140,6 +151,16 @@ class DocumentSubmissionController(http.Controller):
             data = json.loads(request.httprequest.data.decode("utf-8"))
         except (ValueError, UnicodeDecodeError):
             return request.make_json_response({"ok": False, "error": "bad_json"}, status=400)
+
+        # N-9: honeypot + IP-frequency rate-limit on this public form. Kadry forms
+        # POST here without portal login, so this is the only gate against bots.
+        if not check_public_form_rate_limit(
+            request.env,
+            "submit_document",
+            client_ip(request),
+            honeypot_value=data.get("website"),
+        ):
+            return request.make_json_response({"ok": False, "error": "rate_limited"}, status=429)
 
         doc_type = data.get("doc_type")
         full_name = (data.get("full_name") or "").strip()

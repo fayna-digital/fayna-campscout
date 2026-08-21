@@ -1085,12 +1085,32 @@ class SaleOrderLineCommercial(models.Model):
         service products with a camp_program link that event_sale skips.
 
         Idempotent: skips lines that already carry the expected registration count.
+
+        Race-condition guard: the order lines are locked with a pessimistic
+        ``SELECT ... FOR UPDATE`` row lock before the "missing seats" count is
+        computed and the registrations are created. Two concurrent confirmations
+        of the same order can therefore never both see the same shortfall and
+        double-create seats — the second transaction blocks on the row lock until
+        the first commits, then re-reads the (now updated) registration count.
+
+        NB: this Odoo build does not expose ``BaseModel.with_for_update()``, so
+        the row lock is taken with an explicit ``SELECT ... FOR UPDATE`` on the
+        order-line rows (portable across Odoo versions).
         """
         if not self.env["sale.order"]._fayna_sales_active():
             return True
 
+        # Lock the order lines we are about to mutate so a concurrent confirm
+        # cannot double-create seats from the same shortfall (see docstring).
+        line_ids = self.ids
+        if line_ids:
+            self.env.cr.execute(
+                "SELECT id FROM sale_order_line WHERE id IN %s FOR UPDATE",
+                (tuple(line_ids),),
+            )
+        lines = self.sudo()
         registrations_vals = []
-        for line in self:
+        for line in lines:
             if getattr(line, "product_type", False) == "event":
                 continue
             if not line.event_id:
@@ -1792,7 +1812,8 @@ class FaynaPaymentInstallment(models.Model):
                 self._notify_overdue(rec)
             except Exception:  # noqa: BLE001
                 _logger.exception(
-                    "[INSTALLMENTS] failed to send overdue notification for id=%s", rec.id
+                    "[INSTALLMENTS] failed to send overdue notification for id=%s",
+                    rec.id,
                 )
         _logger.info("[INSTALLMENTS] marked %d installments as overdue", len(overdue_recs))
         return len(overdue_recs)

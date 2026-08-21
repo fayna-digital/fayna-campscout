@@ -1,6 +1,7 @@
 # Copyright Fayna Digital — Volodymyr Shevchenko
 # License OPL-1 (Odoo Proprietary License v1.0) — see LICENSE for full terms.
 # Fayna CampScout — Participant & Qualification Card models
+import hashlib
 import logging
 import re
 from datetime import date, timedelta
@@ -555,6 +556,16 @@ class CampParticipant(models.Model):
         string=_("Signer name (typed)"),
         readonly=True,
         help=_("Name typed by the parent next to their drawn signature at sign-off."),
+    )
+    signed_pdf_hash = fields.Char(
+        string=_("Signed card PDF hash (SHA-256)"),
+        readonly=True,
+        index=True,
+        help=_(
+            "SHA-256 of the rendered qualification-card PDF captured at sign-off "
+            "(F-KKW-3). Tamper-evidence: any later change to the card yields a "
+            "different hash, proving the signed document is the one the parent saw."
+        ),
     )
 
     # --- Sections III-VI — Karta Kwalifikacyjna (master TZ §2.10) ----------
@@ -1234,7 +1245,8 @@ class CampParticipant(models.Model):
                 chosen = future.sorted(lambda r: r.event_id.date_begin)[0]
             else:
                 chosen = regs.sorted(
-                    lambda r: r.event_id.date_begin or fields.Datetime.now(), reverse=True
+                    lambda r: r.event_id.date_begin or fields.Datetime.now(),
+                    reverse=True,
                 )[0]
             rec.current_registration_id = chosen
             rec.current_sale_order_id = chosen.sale_order_id or False
@@ -1251,9 +1263,22 @@ class CampParticipant(models.Model):
         Heuristic: identifies products by Ukrainian/Polish keywords in name.
         Migration-safe — does not require structured product categories.
         """
-        ins_kw = ("страхування", "ubezpiecz", "медичний захист", "ochrona medyczna", "nnw", "oc ")
+        ins_kw = (
+            "страхування",
+            "ubezpiecz",
+            "медичний захист",
+            "ochrona medyczna",
+            "nnw",
+            "oc ",
+        )
         merch_kw = ("набір", "zestaw", "merch")
-        skip_kw = ("сервісний збір", "знижк", "наконкретні", "rabat", "opłata serwisowa")
+        skip_kw = (
+            "сервісний збір",
+            "знижк",
+            "наконкретні",
+            "rabat",
+            "opłata serwisowa",
+        )
         for rec in self:
             order = rec.current_sale_order_id
             if not order:
@@ -1563,6 +1588,7 @@ class CampParticipant(models.Model):
         if signer_name:
             vals["qualification_signed_by_name"] = signer_name
         self.write(vals)
+        self._store_signed_pdf_hash()
         _logger.info(
             "fayna_camp_portal.signoff: participant=%s parent=%s ip=%s consent=%s",
             self.id,
@@ -1571,6 +1597,34 @@ class CampParticipant(models.Model):
             consent.id,
         )
         return True
+
+    def _store_signed_pdf_hash(self):
+        """Best-effort SHA-256 of the rendered qualification-card PDF (F-KKW-3).
+
+        Renders the exact PDF the parent saw at sign-off and stores its SHA-256
+        in ``signed_pdf_hash`` as tamper-evidence. A render failure must never
+        block the sign-off itself, so any exception is logged and swallowed.
+        """
+        self.ensure_one()
+        try:
+            report = self.env.ref("fayna_camp_portal.action_report_karta_kwalifikacyjna")
+            pdf_content, _ext = report.sudo()._render_qweb_pdf(
+                "fayna_camp_portal.action_report_karta_kwalifikacyjna",
+                res_ids=self.ids,
+            )
+            digest = hashlib.sha256(pdf_content).hexdigest()
+            self.sudo().write({"signed_pdf_hash": digest})
+            _logger.info(
+                "fayna_camp_portal.signoff.hash: participant=%s sha256=%s",
+                self.id,
+                digest,
+            )
+        except Exception as exc:  # noqa: BLE001
+            _logger.warning(
+                "fayna_camp_portal.signoff.hash: failed to hash card PDF " "participant=%s err=%s",
+                self.id,
+                exc,
+            )
 
     def complete_section_iii(self):
         """Kierownik finalizes Section III — locks iii_* body fields.
@@ -1665,28 +1719,71 @@ class CampParticipant(models.Model):
             _logger.exception("auto_refusal: RODO log failed participant=%s: %s", self.id, exc)
             return False
 
-    def _schedule_refund(self):
-        """Placeholder for Phase 3 (fayna_camp_sales).
+    def _schedule_refund(self, registrations=None):
+        """Create a real refund obligation per Umowa §6.x (F-KKW-6 / F-FIN-5).
 
-        Records a mail.thread message + logger entry so the refund obligation
-        is visible to finance until the real integration lands. When
-        fayna_camp_sales is installed this method will be overridden to create
-        an actual account.move credit per Umowa §6.x.
+        For each (cancelled) registration of this participant, create a
+        ``camp.support.request`` of type ``cancel``. The model's ``_compute_refund``
+        then derives the retention %, refund % and estimated refund from the
+        linked ``sale.order`` amount and the days-to-event, and stamps a
+        ``refund_due_date`` (14 days per §6.4). This replaces the former
+        placeholder that only posted a mail.thread message.
+
+        ``registrations`` may be passed explicitly (e.g. the set that was just
+        cancelled by the auto-refusal flow); otherwise it defaults to the
+        participant's active (draft/open) registrations.
+
+        Best-effort: a failure to create the support request must never block
+        the auto-refusal flow, so it is wrapped and logged.
         """
         self.ensure_one()
-        self.message_post(
-            body=_(
-                "Refund scheduled (placeholder — fayna_camp_sales not yet "
-                "installed). Finance should process manually per Umowa §6.x "
-                "until Phase 3 lands."
+        partner_id = self.parent_partner_id.id or self.partner_id.id
+        created = 0
+        if registrations is None:
+            registrations = self.registration_ids.filtered(lambda r: r.state in ("draft", "open"))
+        for reg in registrations:
+            try:
+                self.env["camp.support.request"].sudo().create(
+                    {
+                        "partner_id": partner_id,
+                        "registration_id": reg.id,
+                        "request_type": "cancel",
+                        "state": "submitted",
+                        "submission_date": fields.Datetime.now(),
+                        "subject": _("Auto-refusal refund (qualification card unsigned)"),
+                        "description": _(
+                            "Automatic refund obligation created by the auto-refusal "
+                            "cron because the qualification card was not signed by "
+                            "%(deadline)s. Refund %% and due date are computed per "
+                            "Umowa §6.x.",
+                            deadline=self.auto_refusal_date,
+                        ),
+                    }
+                )
+                created += 1
+            except Exception as exc:  # noqa: BLE001
+                _logger.exception(
+                    "auto_refusal: refund request creation failed participant=%s "
+                    "registration=%s: %s",
+                    self.id,
+                    reg.id,
+                    exc,
+                )
+        if created:
+            self.message_post(
+                body=_(
+                    "Refund obligation created for %(count)d registration(s) "
+                    "per Umowa §6.x (see support requests).",
+                    count=created,
+                )
             )
-        )
         _logger.info(
-            "auto_refusal: refund placeholder logged participant=%s parent=%s",
+            "auto_refusal: refund requests created participant=%s parent=%s count=%d",
             self.id,
-            self.parent_partner_id.id,
+            partner_id,
+            created,
         )
-        return True
+        return created > 0
 
     def _apply_auto_refusal(self):
         """Execute the refusal for one participant — cancel active registrations,
@@ -1704,7 +1801,7 @@ class CampParticipant(models.Model):
         active.sudo().action_cancel()
         self.sudo().write({"auto_refusal_refused_at": fields.Datetime.now()})
         self._log_rodo_auto_refusal()
-        self._schedule_refund()
+        self._schedule_refund(active)
         # Best-effort notification — don't block the refusal if the email fails.
         try:
             self._send_auto_refusal_email("refusal")
@@ -2081,7 +2178,10 @@ class CampParticipant(models.Model):
                 if not dry_run:
                     order_ids = [o.id for o in orders]
                     orphan_regs = event_registration.sudo().search(
-                        [("sale_order_id", "in", order_ids), ("participant_id", "=", False)]
+                        [
+                            ("sale_order_id", "in", order_ids),
+                            ("participant_id", "=", False),
+                        ]
                     )
                     if orphan_regs:
                         orphan_regs.write({"participant_id": existing.id})
@@ -2119,7 +2219,10 @@ class CampParticipant(models.Model):
                     child = self.sudo().create(vals)
                     order_ids = [o.id for o in orders]
                     orphan_regs = event_registration.sudo().search(
-                        [("sale_order_id", "in", order_ids), ("participant_id", "=", False)]
+                        [
+                            ("sale_order_id", "in", order_ids),
+                            ("participant_id", "=", False),
+                        ]
                     )
                     if orphan_regs:
                         orphan_regs.write({"participant_id": child.id})

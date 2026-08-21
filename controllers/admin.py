@@ -265,7 +265,10 @@ class CampscoutAdmin(http.Controller):
     def _build_active_camps(self, env_sudo, now):
         try:
             events = env_sudo["event.event"].search(
-                [("date_begin", "<=", now + timedelta(days=180)), ("date_end", ">=", now)],
+                [
+                    ("date_begin", "<=", now + timedelta(days=180)),
+                    ("date_end", ">=", now),
+                ],
                 order="date_begin asc",
                 limit=20,
             )
@@ -401,7 +404,7 @@ class CampscoutAdmin(http.Controller):
             reason=reason,
         )
 
-        # Build values via with_user(target_user) so we honour the kierownik's ACL.
+        # Build values via env(user=target_user.id) so we honour the kierownik's ACL.
         try:
             scoped_env = request.env(user=target_user.id)
             scoped_event = scoped_env["event.event"].browse(event.id)

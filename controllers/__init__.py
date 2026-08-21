@@ -4,6 +4,7 @@ from . import (
     admin,
     document_submission,
     escort_portal,
+    health,
     kadry_forms,
     kiosk,
     portal,

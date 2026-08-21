@@ -18,7 +18,14 @@ LOREM = (
 LOREM_SHORT = "Lorem ipsum dolor sit amet"
 
 CAMP_NAME = "ДУРДОМ СОНЕЧКО"
-GROUP_NAMES = ["Палата номер 6", "Чортики", "Водолази", "Наполеони", "Русалки", "Медузи"]
+GROUP_NAMES = [
+    "Палата номер 6",
+    "Чортики",
+    "Водолази",
+    "Наполеони",
+    "Русалки",
+    "Медузи",
+]
 N_CHILDREN = 60
 DAYS = 14
 START = date(2026, 7, 1)
@@ -100,10 +107,10 @@ else:
         parents.append(
             env["res.partner"].create(
                 {
-                    "name": "Rodzic Test %02d %s" % (i + 1, LAST[i % len(LAST)]),
+                    "name": f"Rodzic Test {i + 1:02d} {LAST[i % len(LAST)]}",
                     "is_company": False,
-                    "email": "rodzic.test%02d@example.test" % (i + 1),
-                    "phone": "+48 600 %03d %03d" % (i, i),
+                    "email": f"rodzic.test{i + 1:02d}@example.test",
+                    "phone": f"+48 600 {i:03d} {i:03d}",
                 }
             )
         )

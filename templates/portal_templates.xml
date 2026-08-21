@@ -842,5 +842,63 @@
     </xpath>
 </template>
 
+<!-- ============================================================================
+     /my/preferences — notification preferences (SMS opt-out, F-MY-5).
+     Route: controllers/portal.py → portal_my_preferences / _save.
+     ============================================================================ -->
+
+<template id="portal_preferences" name="Notification Preferences">
+    <t t-call="portal.portal_layout">
+        <t t-set="additional_title">Сповіщення</t>
+
+        <div class="cs-page">
+            <div class="cs-page-back mb-3">
+                <a href="/my" class="cs-back-link">← До кабінету</a>
+            </div>
+
+            <div class="cs-page-header mb-4">
+                <h2 class="cs-page-title">Сповіщення</h2>
+                <p class="cs-page-subtitle">Керуйте способами зв'язку з вами щодо табору вашої дитини</p>
+            </div>
+
+            <t t-if="request.params.get('updated')">
+                <div class="alert alert-success" role="alert">
+                    ✅ Налаштування збережено.
+                </div>
+            </t>
+
+            <form method="post" action="/my/preferences/save" class="cs-card">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" name="sms_opt_in" id="sms_opt_in"
+                           value="1" t-att-checked="sms_opt_in"/>
+                    <label class="form-check-label" for="sms_opt_in">
+                        <strong>Отримувати SMS-сповіщення</strong>
+                        <span class="d-block text-muted small">
+                            Важливі події: інциденти, не підписана картка, нагадування про оплату.
+                            Якщо вимкнути — SMS не надсилатимуться навіть для критичних подій,
+                            але лишаться email та push-сповіщення.
+                        </span>
+                    </label>
+                </div>
+
+                <div class="form-check form-switch mb-4">
+                    <input class="form-check-input" type="checkbox" name="sms_opt_in_marketing" id="sms_opt_in_marketing"
+                           value="1" t-att-checked="sms_opt_in_marketing"/>
+                    <label class="form-check-label" for="sms_opt_in_marketing">
+                        <strong>Отримувати маркетингові SMS</strong>
+                        <span class="d-block text-muted small">
+                            Промо-акції та новини CampScout. За замовчуванням вимкнено.
+                        </span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Зберегти</button>
+            </form>
+        </div>
+    </t>
+</template>
+
 
 </odoo>

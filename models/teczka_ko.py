@@ -536,7 +536,10 @@ class CampTeczkaKO(models.Model):
             (self.dziennik_ready, _("Dziennik zajęć (Załącznik 5)")),
             (self.wypadki_ready, _("Rejestr wypadków")),
             (self.program_ready, _("Program wypoczynku (Załącznik 9)")),
-            (self.zgloszenie_ready, _("Zgłoszenie wypoczynku do Kuratorium (Załącznik 1)")),
+            (
+                self.zgloszenie_ready,
+                _("Zgłoszenie wypoczynku do Kuratorium (Załącznik 1)"),
+            ),
         )
         return [label for ready, label in items if not ready]
 
@@ -649,5 +652,143 @@ class CampTeczkaKO(models.Model):
                 "message": _("Teczka została wysłana na adres %s.") % email_to,
                 "type": "success",
                 "sticky": False,
+            },
+        }
+
+    # ------------------------------------------------------------------
+    # F-DOC-3 — «Надіслати інспектору» (send selected documents to the
+    # Kuratorium inspector via mail.compose.message + chatter audit log)
+    # ------------------------------------------------------------------
+
+    def _collect_event_attachments(self):
+        """Return every ir.attachment linked to this teczka or its event.
+
+        F-DOC-3 source set: documents attached directly on the teczka
+        (res_model=camp.teczka.ko) plus those attached on the event itself
+        (res_model=event.event). The kierownik picks from this set via
+        checkboxes in the wizard; only the selected ones are sent.
+        """
+        self.ensure_one()
+        Attachment = self.env["ir.attachment"].sudo()
+        teczka_att = Attachment.search([("res_model", "=", self._name), ("res_id", "=", self.id)])
+        event_att = Attachment.search(
+            [
+                ("res_model", "=", "event.event"),
+                ("res_id", "=", self.event_id.id),
+            ]
+        )
+        return (teczka_att | event_att).filtered(lambda a: a.type == "binary")
+
+    def action_send_documents_to_inspector(self, attachment_ids=None):
+        """F-DOC-3 — send the selected documents to the Kuratorium inspector.
+
+        Creates a ``mail.compose.message`` pre-filled with the chosen
+        attachments and the delegatura (inspector) e-mail as recipient, and
+        logs who/when/how-many to the camp chatter for the audit trail.
+
+        EARS criterion: WHEN the user selects documents with checkboxes and
+        clicks «Надіслати інспектору», THEN the system creates a
+        mail.compose.message with the selected attachments and logs the action
+        in the camp chatter.
+
+        Args:
+            attachment_ids: list of ir.attachment ids to include. When empty,
+                the compose is created with NO attachments (user adds them in
+                the compose dialog) — still logged.
+        """
+        self.ensure_one()
+        email_to = (self.delegatura_email or "").strip()
+        if not email_to:
+            raise UserError(
+                _(
+                    "Brak adresu e-mail delegatury Kuratorium Oświaty. "
+                    "Uzupełnij pole „E-mail delegatury KO” lub parametr systemu."
+                )
+            )
+
+        attachments = self.env["ir.attachment"].sudo().browse(attachment_ids or [])
+        # Only allow attachments that belong to this teczka/event (defense in
+        # depth — never leak another record's document into the inspector mail).
+        allowed = self._collect_event_attachments()
+        if attachments - allowed:
+            raise UserError(
+                _(
+                    "Wybrano dokumenty spoza teczki tego turnusu. "
+                    "Wybierz tylko dokumenty z teczki KO."
+                )
+            )
+
+        company = self.event_id.company_id or self.env.company
+        email_from = company.email or self.env.user.email_formatted or "noreply@campscout.eu"
+
+        compose = (
+            self.env["mail.compose.message"]
+            .sudo()
+            .with_context(
+                default_model=self._name,
+                default_res_ids=[self.id],
+                default_composition_mode="comment",
+                default_email_from=email_from,
+                default_email_to=email_to,
+                default_subject=_("Dokumenty turnusu — %s", self.event_id.name or ""),
+                default_body=_(
+                    "<p>Szanowni Państwo,</p>"
+                    "<p>przesyłamy wybrane dokumenty turnusu "
+                    "<strong>%(event)s</strong>.</p>"
+                    "<p>Z poważaniem,<br/>%(sender)s</p>",
+                    event=self.event_id.name or "—",
+                    sender=self.env.user.name or "CampScout",
+                ),
+            )
+            .create(
+                {
+                    "composition_mode": "comment",
+                    "model": self._name,
+                    "res_ids": [self.id],
+                    "partner_ids": [],
+                    "attachment_ids": [(6, 0, attachments.ids)],
+                }
+            )
+        )
+
+        # Audit trail in the chatter — who / when / how many documents.
+        log = _(
+            "📎 Dokumenty wysłane do inspektora (F-DOC-3).<br/>"
+            "Odbiorca: <strong>%(to)s</strong><br/>"
+            "Dokumentów: %(count)d<br/>"
+            "Wysłał(a): %(user)s<br/>"
+            "Data: %(when)s",
+            to=email_to,
+            count=len(attachments),
+            user=self.env.user.name,
+            when=fields.Datetime.to_string(fields.Datetime.now()),
+        )
+        if attachments:
+            log += _("<br/>Załączniki: %s") % ", ".join(attachments.mapped("name"))
+        # sudo: the kierownik has read-only access on the teczka (record rule);
+        # the audit note must still be written regardless of write rights.
+        self.sudo().message_post(body=log)
+
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "mail.compose.message",
+            "res_id": compose.id,
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_model": self._name,
+                "default_res_id": self.id,
+                "default_composition_mode": "comment",
+                "default_email_from": email_from,
+                "default_email_to": email_to,
+                "default_subject": _("Dokumenty turnusu — %s", self.event_id.name or ""),
+                "default_body": _(
+                    "<p>Szanowni Państwo,</p>"
+                    "<p>przesyłamy wybrane dokumenty turnusu "
+                    "<strong>%(event)s</strong>.</p>"
+                    "<p>Z poważaniem,<br/>%(sender)s</p>",
+                    event=self.event_id.name or "—",
+                    sender=self.env.user.name or "CampScout",
+                ),
             },
         }

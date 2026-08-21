@@ -669,3 +669,65 @@ class CampscoutPortal(CustomerPortal):
             }
         )
         return http.request.render("fayna_camp_portal.portal_support_detail", values)
+
+    # ──────────────────────────────────────────────────────────────────────
+    # /my/preferences — SMS opt-out (F-MY-5)
+    # ──────────────────────────────────────────────────────────────────────
+
+    @http.route("/my/preferences", type="http", auth="user", website=True)
+    def portal_my_preferences(self, **kw):
+        """Render the notification-preferences page (SMS opt-in toggles).
+
+        F-MY-5: a parent can disable SMS here (keeping email/push). The toggles
+        write to ``res.partner.sms_opt_in`` / ``sms_opt_in_marketing``, which the
+        SMS layer (``sms_notify._notify_thread_by_sms``) already respects — so an
+        opted-out parent receives no SMS even for CRITICAL events, only email/push.
+        """
+        partner = http.request.env.user.partner_id
+        values = self._prepare_portal_layout_values()
+        values.update(
+            {
+                "partner": partner,
+                "sms_opt_in": partner.sms_opt_in,
+                "sms_opt_in_marketing": partner.sms_opt_in_marketing,
+                "page_name": "preferences",
+            }
+        )
+        return http.request.render("fayna_camp_portal.portal_preferences", values)
+
+    @http.route(
+        "/my/preferences/save",
+        type="http",
+        auth="user",
+        website=True,
+        methods=["POST"],
+        csrf=True,
+    )
+    def portal_my_preferences_save(self, **post):
+        """Persist the parent's notification preferences (F-MY-5).
+
+        Only the two SMS opt-in flags are accepted — nothing else is writable
+        from this endpoint. The partner is the current user's own partner, so no
+        cross-account write is possible.
+        """
+        partner = http.request.env.user.partner_id
+        sms_opt_in = post.get("sms_opt_in") in ("1", "true", "on", True)
+        sms_opt_in_marketing = post.get("sms_opt_in_marketing") in (
+            "1",
+            "true",
+            "on",
+            True,
+        )
+        partner.write(
+            {
+                "sms_opt_in": sms_opt_in,
+                "sms_opt_in_marketing": sms_opt_in_marketing,
+            }
+        )
+        _logger.info(
+            "fayna_camp_portal.preferences: partner=%s sms_opt_in=%s sms_marketing=%s",
+            partner.id,
+            sms_opt_in,
+            sms_opt_in_marketing,
+        )
+        return http.request.redirect("/my/preferences?updated=1")

@@ -69,6 +69,17 @@ class CampActivity(models.Model):
     icon = fields.Char(
         help=_("FontAwesome class shown next to the activity (e.g. 'fa-volleyball-ball')."),
     )
+    # F-WIZ-7: high-risk activities (ski, water, …) require licensed instructor
+    # + mandatory insurance before the camp shift can be approved.
+    is_high_risk = fields.Boolean(
+        string="High-risk activity",
+        default=False,
+        index=True,
+        help=_(
+            "High-risk activities (e.g. skiing, water sports) require a licensed "
+            "instructor and mandatory insurance before the camp is approved (F-WIZ-7)."
+        ),
+    )
     active = fields.Boolean(default=True)
 
 
@@ -216,6 +227,38 @@ class CampEvent(models.Model):
         ),
     )
 
+    # --- F-WIZ-7: high-risk camps (ski / water → licensed instructor + insurance)
+    is_high_risk = fields.Boolean(
+        string="High-risk camp",
+        compute="_compute_is_high_risk",
+        store=True,
+        index=True,
+        help=_(
+            "True when the linked camp program includes a high-risk activity "
+            "(ski, water, …). Such camps require a licensed instructor and "
+            "mandatory insurance before approval (F-WIZ-7)."
+        ),
+    )
+    insurance_required = fields.Boolean(
+        string="Insurance required",
+        compute="_compute_is_high_risk",
+        store=True,
+        help=_(
+            "Mandatory insurance attachment is required for high-risk camps "
+            "(F-WIZ-7). Mirrors is_high_risk for clarity in forms."
+        ),
+    )
+    insurance_attachment_id = fields.Many2one(
+        "ir.attachment",
+        string="Insurance policy",
+        ondelete="restrict",
+        copy=False,
+        help=_(
+            "Uploaded insurance policy covering the high-risk activity. "
+            "Required before a high-risk camp can be approved (F-WIZ-7)."
+        ),
+    )
+
     # --- Structured program (ADR Фаза A §1) ----------------------------------
 
     structured_program_ids = fields.One2many(
@@ -326,6 +369,74 @@ class CampEvent(models.Model):
                 self.id,
             )
 
+    # --- F-WIZ-7: high-risk detection + instructor vacancy -------------------
+
+    @api.depends("camp_program_id", "camp_program_id.camp_activities_ids.is_high_risk")
+    def _compute_is_high_risk(self):
+        """A camp is high-risk when any linked activity is flagged high-risk
+        (ski, water, …). Also drives insurance_required (F-WIZ-7)."""
+        for event in self:
+            high_risk = bool(
+                event.camp_program_id
+                and event.camp_program_id.camp_activities_ids.filtered(lambda a: a.is_high_risk)
+            )
+            event.is_high_risk = high_risk
+            event.insurance_required = high_risk
+
+    def _ensure_high_risk_vacancy(self):
+        """Auto-create an instructor vacancy for a high-risk camp (F-WIZ-7).
+
+        Idempotent: does nothing if an open/candidate/hired instructor vacancy
+        already exists for this event. Never raises — a vacancy-creation failure
+        must not silently break approval (it is re-checked at approve time).
+        """
+        self.ensure_one()
+        if not self.is_high_risk:
+            return
+        try:
+            existing = self.staff_vacancy_ids.filtered(
+                lambda v: (v.role == "instruktor" and v.state in ("open", "candidate", "hired"))
+            )
+            if existing:
+                return
+            self.env["camp.staff.vacancy"].sudo().create(
+                {
+                    "event_id": self.id,
+                    "role": "instruktor",
+                    "name": _("Wakat instruktor (high-risk)"),
+                    "created_reason": "F-WIZ-7 high-risk camp",
+                }
+            )
+            self._post_note(
+                _(
+                    "High-risk табір: створено вакансію інструктора з обов'язковою "
+                    "ліцензією та страхуванням (F-WIZ-7)."
+                )
+            )
+        except Exception:  # noqa: BLE001
+            _logger.exception(
+                "fayna_camp_portal: failed to auto-create instructor vacancy for event=%s",
+                self.id,
+            )
+
+    def _check_high_risk_approval(self):
+        """Block approval of a high-risk camp lacking insurance or a licensed
+        instructor vacancy (F-WIZ-7). Returns a list of blocking reasons."""
+        self.ensure_one()
+        if not self.is_high_risk:
+            return []
+        problems = []
+        if not self.insurance_attachment_id:
+            problems.append(
+                _("High-risk табір потребує завантаженого страхового полісу (insurance).")
+            )
+        instructor_vacancy = self.staff_vacancy_ids.filtered(
+            lambda v: (v.role == "instruktor" and v.state in ("open", "candidate", "hired"))
+        )
+        if not instructor_vacancy:
+            problems.append(_("High-risk табір потребує вакансії ліцензованого інструктора."))
+        return problems
+
     def action_submit_for_approval(self):
         """Kierownik submits the shift to organizator for approval.
         Event stays unpublished (website_published=False, sale_ok=False on ticket).
@@ -336,6 +447,8 @@ class CampEvent(models.Model):
                 _("Тільки чернетку можна надіслати на погодження (поточний стан: %s).")
                 % self.camp_approval_state
             )
+        # F-WIZ-7: ensure a licensed-instructor vacancy exists for high-risk camps.
+        self._ensure_high_risk_vacancy()
         self.sudo().write({"camp_approval_state": "pending_approval"})
         self._post_note(_("Табір надіслано на погодження організатора."))
 
@@ -350,6 +463,13 @@ class CampEvent(models.Model):
             raise UserError(
                 _("Погодити можна лише табір зі статусом «На погодженні» (поточний: %s).")
                 % self.camp_approval_state
+            )
+        # F-WIZ-7: block approval of a high-risk camp missing insurance or a
+        # licensed-instructor vacancy.
+        high_risk_problems = self._check_high_risk_approval()
+        if high_risk_problems:
+            raise UserError(
+                _("High-risk табір не можна погодити: %s") % ("; ".join(high_risk_problems))
             )
         self.sudo().write(
             {

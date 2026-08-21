@@ -11,7 +11,7 @@ no-escalation rule) and the as-parent read-only view.
 
 from odoo.tests.common import HttpCase, tagged
 
-from .http_lang import open_functional
+from .http_lang import HTTP_TIMEOUT, open_functional
 
 ORGANIZATOR_GROUP = "fayna_camp_portal.group_camp_organizator"
 WYCHOWAWCA_GROUP = "fayna_camp_portal.group_camp_wychowawca"
@@ -193,7 +193,8 @@ class TestAdminDashboard(HttpCase):
     def test_as_parent_renders_children_and_logs(self):
         self.authenticate(ADMIN_LOGIN, PASSWORD)
         resp = self.url_open(
-            f"/admin/as-parent?partner_id={self.parent_partner.id}&reason=kontrola"
+            f"/admin/as-parent?partner_id={self.parent_partner.id}&reason=kontrola",
+            timeout=HTTP_TIMEOUT,
         )
         self.assertEqual(resp.status_code, 200)
         self.assertIn("DzieckoDash", resp.text)

@@ -2,6 +2,14 @@
 
 All notable changes to `fayna_camp_portal` are documented here.
 
+## 17.0.4.1.8 — 2026-08-21
+- **OCA/Odoo review gap-closing** — закрито прогалини review checklist:
+  - Pessimistic locking місць реєстрації: `_init_camp_registrations` (models/commercial.py) використовує raw SQL `SELECT ... FOR UPDATE` замість `with_for_update()` (ця збірка Odoo не має `BaseModel.with_for_update()`).
+  - Тести: `assertQueryCount` (N+1) — tests/test_query_count.py; `odoo.tests.Form` onchange — tests/test_onchange_form.py; multi-company; upgrade (`-u`); JS tours (`@odoo/tour`) + tests/test_ui.py.
+  - CI: coverage gate (report + `fail_under`); pylint-odoo у pre-commit/CI.
+  - Demo data (demo/).
+- **Документаційні фікси**: README/коментарі/help приведено до фактичного API — `with_user()` → `env(user=...)` (у цій збірці Odoo немає `Environment.with_user()`; controllers/admin.py:406 використовує `request.env(user=target_user.id)`).
+
 ## 17.0.4.1.7 — 2026-07-05
 - Reuse S1 пара 6 (найбільша, 713 LOC): три системи обліку тренінгів кадри злиті в одну — keeper `camp.staff.training.record` (extends native `slide.channel`, website_slides вже в depends — ADR-001/Community-only). Видалено `fayna.vozhatyi.training(+module+certificate)` та `vozhatyi.training.record` (models/training_vozhatyi.py, views/training_vozhatyi_views.xml, 16 ACL-рядків, 6+3 record-rules — усе прибрано). Keeper отримав: `online_platform` course type, `session_start_date/end_date/location/instructor_id` (офлайн-логістика), printable QWeb-сертифікат (`action_print_certificate`), portal ACL+record rules (штат на umowa zlecenie часто без internal-акаунту). Module-level гранулярність НЕ перенесена окремою моделлю — вже нативно покрита `slide.channel`/`slide.slide` (сильніший reuse). Бонус-фікс: keeper мав `expired` стан і ручну action_expire(), але жодного cron, що його вмикав, — мертва функція; тепер `_cron_expire_training_records` підключений (data/cron.xml), консолідує обидва легасі expiry-crons в один. migrations/17.0.4.1.7: SQL+ORM (get-or-create 5 slide.channel-каналів по типу курсу) перенос за ir_model_data-мітками + `ON CONFLICT` на unique_partner_channel (ідемпотентно); notes/модулі — chatter-провенанс. git grep сиріт = 0 (крім provenance-коментарів і синтетичного lossless-тесту).
 

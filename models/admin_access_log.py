@@ -74,7 +74,7 @@ class CampAdminAccessLog(models.Model):
         ondelete="set null",
         index=True,
         string=_("Target user"),
-        help=_("System user whose ACL was applied via with_user()."),
+        help=_("System user whose ACL was applied via env(user=...)."),
     )
     accessed_at = fields.Datetime(
         default=fields.Datetime.now,

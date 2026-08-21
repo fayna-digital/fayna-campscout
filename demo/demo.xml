@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Fayna CampScout demo data (loaded only with demo=True).
+  Provides a minimal, self-contained showcase: one camp program product,
+  one camp shift (event), one parent and one child participant.
+  Uses noupdate="1" so re-installs do not duplicate records.
+-->
+<odoo>
+    <data noupdate="1">
+
+        <!-- Demo camp program (product.template flagged as a camp). -->
+        <record id="demo_camp_program" model="product.template">
+            <field name="name">Obóz Letni 2026 — Demo</field>
+            <field name="type">service</field>
+            <field name="list_price">2499.0</field>
+            <field name="is_camp_program">True</field>
+            <field name="camp_status">published</field>
+            <field name="camp_age_min">7</field>
+            <field name="camp_age_max">16</field>
+            <field name="camp_location">Mazury, Polska</field>
+            <field name="camp_location_country">PL</field>
+        </record>
+
+        <!-- Demo camp shift (event) linked to the program. -->
+        <record id="demo_camp_event" model="event.event">
+            <field name="name">Obóz Letni 2026 — Turnus 1 (Demo)</field>
+            <field name="date_begin">2026-07-01 08:00:00</field>
+            <field name="date_end">2026-07-14 18:00:00</field>
+            <field name="camp_program_id" ref="demo_camp_program" />
+            <field name="vacation_form">oboz</field>
+        </record>
+
+        <!-- Demo parent (buyer / legal guardian). -->
+        <record id="demo_parent" model="res.partner">
+            <field name="name">Anna Kowalska</field>
+            <field name="email">anna.kowalska@example.com</field>
+            <field name="phone">+48 600 100 200</field>
+        </record>
+
+        <!-- Demo child participant (delegates to its own res.partner). -->
+        <record id="demo_child_partner" model="res.partner">
+            <field name="name">Jan Kowalski</field>
+        </record>
+        <record id="demo_participant" model="camp.participant">
+            <field name="partner_id" ref="demo_child_partner" />
+            <field name="first_name">Jan</field>
+            <field name="last_name">Kowalski</field>
+            <field name="birth_date">2015-04-12</field>
+            <field name="parent_partner_id" ref="demo_parent" />
+        </record>
+
+    </data>
+</odoo>

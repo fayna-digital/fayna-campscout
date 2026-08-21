@@ -13,6 +13,9 @@
 #   ADDONS     comma addons-path         (default: built from /addons layout)
 #   ODOO_BIN   odoo entrypoint           (default: odoo)
 #   LOG        log file path             (default: /tmp/odoo-test.log)
+#   COVERAGE   "1" → wrap the run in `coverage run` and enforce fail_under
+#              (default: unset → no coverage gate)
+#   COVERAGE_MIN  minimum coverage % for the gate (default: 70)
 set -uo pipefail
 
 DB="${DB:-test_camp}"
@@ -20,6 +23,7 @@ MODULE="${MODULE:-fayna_camp_portal}"
 ODOO_BIN="${ODOO_BIN:-odoo}"
 LOG="${LOG:-/tmp/odoo-test.log}"
 ADDONS="${ADDONS:-/addons/fayna_camp_portal,/addons/deps}"
+COVERAGE_MIN="${COVERAGE_MIN:-70}"
 
 echo "::group::Odoo test run config"
 echo "  module     = ${MODULE}"
@@ -32,8 +36,17 @@ echo "::endgroup::"
 # --test-enable + --test-tags /<module> runs only this module's tagged tests
 # (the leading slash scopes tags to the module). post_install tests included,
 # at_install excluded by the tests' own @tagged decorators.
+#
+# When COVERAGE=1 we wrap the whole Odoo run in `coverage run` so the module's
+# Python is measured, then enforce fail_under below. `coverage` must be
+# installed in the container (CI installs it; local runs opt in explicitly).
+COVERAGE_CMD=()
+if [ "${COVERAGE:-0}" = "1" ]; then
+  echo "Coverage gate ENABLED (min ${COVERAGE_MIN}%)."
+  COVERAGE_CMD=(coverage run --source="/mnt/addons/${MODULE}" --branch -a)
+fi
 set -x
-"${ODOO_BIN}" \
+"${COVERAGE_CMD[@]}" "${ODOO_BIN}" \
   -d "${DB}" \
   --db_host="${PGHOST:-db}" \
   --db_port="${PGPORT:-5432}" \
@@ -58,9 +71,14 @@ echo "::group::Test failure scan"
 #   ... <Test>: <n> failed, <m> error(s) of <N> tests               (suite summary)
 # Patterns:
 #   - per-test marker:  ": FAIL:" / ": ERROR:" on an odoo.tests/odoo.addons.*.tests line
-#   - summary counts:   only when failed/error count is NON-ZERO ([1-9]...)
+#   - summary counts:   only the Odoo suite summary line, and only when the
+#                       failed/error count is NON-ZERO ([1-9]...).
+#                       Anchored to the full summary format
+#                       "<n> failed, <m> error(s) of <N> tests" so benign
+#                       WARNING lines like "attempt 1/2 failed" (rate-limit
+#                       backoff) do NOT false-positive.
 FAIL_LINES=$(grep -E \
-  "(odoo\.tests|odoo\.addons\.[a-z0-9_.]+\.tests)[^ ]*: (FAIL|ERROR):|[1-9][0-9]* failed|[1-9][0-9]* error" \
+  "(odoo\.tests|odoo\.addons\.[a-z0-9_.]+\.tests)[^ ]*: (FAIL|ERROR):|[1-9][0-9]* failed, [0-9]* error\(s\) of [0-9]+ tests" \
   "${LOG}" || true)
 
 if [ -n "${FAIL_LINES}" ]; then
@@ -84,6 +102,19 @@ fi
 if ! grep -qE "odoo\.tests" "${LOG}"; then
   echo "::error::No 'odoo.tests' lines found in log — tests did not run. Failing job."
   exit 1
+fi
+
+# Coverage gate (opt-in via COVERAGE=1). Generates the report and fails the job
+# when the module's line coverage drops below COVERAGE_MIN. Uses the same
+# fail_under semantics as pyproject.toml [tool.coverage.report].
+if [ "${COVERAGE:-0}" = "1" ]; then
+  echo "::group::Coverage report"
+  coverage report --fail-under="${COVERAGE_MIN}" --show-missing \
+    --omit="*/tests/*,*/migrations/*,__manifest__.py" || {
+    echo "::error::Coverage below ${COVERAGE_MIN}% — failing job."
+    exit 1
+  }
+  echo "::endgroup::"
 fi
 
 echo "All ${MODULE} tests passed."

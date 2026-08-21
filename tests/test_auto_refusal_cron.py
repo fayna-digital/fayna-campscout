@@ -30,7 +30,10 @@ class TestAutoRefusalCron(TransactionCase):
             }
         )
         cls.parent = cls.env["res.partner"].create(
-            {"name": "AutoRefusal Parent", "email": "auto_refusal_parent@campscout.test"}
+            {
+                "name": "AutoRefusal Parent",
+                "email": "auto_refusal_parent@campscout.test",
+            }
         )
 
     def _make_child(self, name, signed=False):
@@ -92,3 +95,28 @@ class TestAutoRefusalCron(TransactionCase):
         second = self.env["camp.participant"]._cron_auto_refusal_scan()
         self.assertEqual(second["refused"], 0, "second pass must refuse nothing (latched)")
         self.assertEqual(reg.state, "cancel")
+
+    def test_refusal_creates_real_refund_request(self):
+        """F-KKW-6 / F-FIN-5 — refund is a real camp.support.request, not a stub.
+
+        After the auto-refusal cron fires, a ``camp.support.request`` of type
+        ``cancel`` must exist for the cancelled registration, carrying the
+        computed refund % and estimated refund per Umowa §6.x.
+        """
+        child, reg = self._make_child("RefundReal")
+        self.env["camp.participant"]._cron_auto_refusal_scan()
+
+        reqs = (
+            self.env["camp.support.request"]
+            .sudo()
+            .search([("registration_id", "=", reg.id), ("request_type", "=", "cancel")])
+        )
+        self.assertEqual(len(reqs), 1, "exactly one refund request must be created")
+        req = reqs[0]
+        # The refund computation must have run (refund_pct in 0..100).
+        self.assertGreaterEqual(req.refund_pct, 0)
+        self.assertLessEqual(req.refund_pct, 100)
+        # A due date within 14 days of submission must be stamped (§6.4).
+        self.assertTrue(req.refund_due_date, "refund due date must be set")
+        # The request must be linked to the participant for traceability.
+        self.assertEqual(req.participant_id.id, child.id)

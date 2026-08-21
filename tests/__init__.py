@@ -12,20 +12,28 @@ from . import (
     test_campscout,
     test_card_generator,  # noqa: E402,F401
     test_compute_sudo_consistency,  # noqa: E402,F401
+    test_documents_inspector_retention,  # noqa: E402,F401
     test_dziennik_pdf,  # noqa: E402,F401
     test_escort_portal,  # noqa: E402,F401
     test_escort_signoff,  # noqa: E402,F401
+    test_health_metrics,  # noqa: E402,F401
+    test_high_risk_camps,  # noqa: E402,F401
     test_incident_card,  # noqa: E402,F401
     test_karta_2026,
     test_karta_pdf,  # noqa: E402,F401
     test_legacy_program_migration,  # noqa: E402,F401
     test_medication,  # noqa: E402,F401
+    test_multi_company,  # noqa: E402,F401
     test_native_approval,  # noqa: E402,F401
+    test_onchange_form,  # noqa: E402,F401
     test_phase_c_wychowawca,  # noqa: E402,F401
     test_phase_d_split,  # noqa: E402,F401
     test_portal_camp_day,  # noqa: E402,F401
+    test_preferences,  # noqa: E402,F401
     test_pricing_calculator,  # noqa: E402,F401
     test_program_skeleton,  # noqa: E402,F401
+    test_query_count,  # noqa: E402,F401
+    test_rate_limit,  # noqa: E402,F401
     test_registration_seats,  # noqa: E402,F401
     test_regulamin_teczka,  # noqa: E402,F401
     test_rodo_consent_immutable,  # noqa: E402,F401
@@ -44,5 +52,6 @@ from . import (
     test_staffing,  # noqa: E402,F401
     test_story_photo_consent_gate,  # noqa: E402,F401
     test_training_migration,  # noqa: E402,F401
+    test_ui,  # noqa: E402,F401
     test_vacation_forms,  # noqa: E402,F401
 )

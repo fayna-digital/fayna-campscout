@@ -19,6 +19,18 @@ repos:
       - id: oca-checks-odoo-module
       - id: oca-checks-po
 
+  # OCA pylint-odoo — Odoo-specific pylint checks (sql-injection,
+  # api-one-deprecated, missing-newline-extrafiles, etc.). Runs on the module.
+  - repo: https://github.com/OCA/pylint-odoo
+    rev: v9.3.24
+    hooks:
+      - id: pylint_odoo
+        args:
+          - --errors-only
+          - --disable=all
+          - --enable=api-one-deprecated,api-one-multi-together,attribute-deprecated,class-camelcase,context-overridden,deprecated-openerp-xml-node,deprecated-odoo-openerp-module,file-not-used,invalid-commit,missing-newline-extrafiles,missing-readme,missing-return,missing-return-type,old-api7-method-defined,openerp-exception-warning,redundant-modulename-xml,renamed-field-parameter,sql-injection,too-few-format-args,translation-field,translation-required,use-vim-comment
+          - --dummy-variables-rgx=_+|dummy|dummy_[a-z_]+|ignore_[a-z_]+|_doctest|_test
+
   # Security: secret scanner
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.18.4

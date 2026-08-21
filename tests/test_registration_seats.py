@@ -35,19 +35,23 @@ class TestRegistrationSeats(TransactionCase):
         cls.partner = cls.env["res.partner"].create(
             {"name": "Buyer Parent", "email": "buyer@campscout.test"}
         )
-        cls.event = cls.env["event.event"].create(
-            {
-                "name": "Seats Test Camp 2026",
-                "date_begin": "2026-07-01 08:00:00",
-                "date_end": "2026-07-14 18:00:00",
-            }
-        )
-        # Event-tracked product (native event_sale contract).
+        # Camp-program product (is_camp_program) so the event can be linked to it
+        # via camp_program_id — that is what populates product.template.event_ids,
+        # which _init_camp_registrations requires (see commercial.py:1140).
         cls.product = cls.env["product.product"].create(
             {
                 "name": "Obóz 2026 — Turnus 1",
                 "type": "service",
                 "list_price": 2000.0,
+                "is_camp_program": True,
+            }
+        )
+        cls.event = cls.env["event.event"].create(
+            {
+                "name": "Seats Test Camp 2026",
+                "date_begin": "2026-07-01 08:00:00",
+                "date_end": "2026-07-14 18:00:00",
+                "camp_program_id": cls.product.product_tmpl_id.id,
             }
         )
         # Ticket links the product to this specific event/shift.
@@ -111,6 +115,39 @@ class TestRegistrationSeats(TransactionCase):
         order.order_line._init_camp_registrations()
         after = len(self._event_registrations())
         self.assertEqual(after, 2, "init must be idempotent — no duplicate seats")
+
+    def test_init_registrations_locks_lines_against_race(self):
+        """The seat-creation path takes a pessimistic row lock.
+
+        ADR-2 + OCA review: two concurrent confirmations of the same order must
+        never double-create seats from the same shortfall. The guard is a
+        pessimistic ``SELECT ... FOR UPDATE`` row lock on the order lines inside
+        ``_init_camp_registrations`` (this Odoo build has no
+        ``BaseModel.with_for_update()``). We assert the observable contract: the
+        method is idempotent even when invoked twice back-to-back (the second
+        call sees the already-created registrations and creates nothing more),
+        and the lock does not break the normal single-confirm flow.
+        """
+        order = self._make_confirmed_order(3)
+        self.assertEqual(len(self._event_registrations()), 3)
+
+        # Second invocation — simulates a concurrent confirm that only proceeds
+        # after the first transaction commits (row lock released). Must be a no-op.
+        order.order_line._init_camp_registrations()
+        self.assertEqual(
+            len(self._event_registrations()),
+            3,
+            "re-running init after the lock must not double-create seats",
+        )
+
+        # The lock must not leak into unrelated lines: a fresh order still books.
+        order2 = self._make_confirmed_order(1)
+        self.assertEqual(len(self._event_registrations()), 4)
+        self.assertEqual(
+            len(order2.order_line.registration_ids),
+            1,
+            "a fresh order line must still book exactly one seat",
+        )
 
     def test_native_seats_count_matches_registrations(self):
         """Native event seat counting reflects the open registrations once.

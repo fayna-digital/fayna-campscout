@@ -41,6 +41,7 @@ from urllib.parse import urlparse
 from odoo.tests.common import HttpCase, tagged
 
 from .http_lang import (
+    HTTP_TIMEOUT,
     REDIRECT_CODES,
     lang_prefix_of,
     location_path,
@@ -138,7 +139,7 @@ class TestArt9HttpIsolation(HttpCase):
     def test_parent_a_sees_own_child_art9_card(self):
         """Parent A GETs their own child's card → 200 with art.9 special_needs."""
         self.authenticate("art9_http_parent_a@campscout.test", "Art9HttpA-1234!")
-        resp = self.url_open(f"/my/participants/{self.child_a.id}")
+        resp = self.url_open(f"/my/participants/{self.child_a.id}", timeout=HTTP_TIMEOUT)
         self.assertEqual(
             resp.status_code,
             200,

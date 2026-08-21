@@ -87,11 +87,12 @@ jobs:
           ssh-key: ${{ secrets.CI_DEPS_KEY_SMS }}
           path: addons/deps/fayna_sms_base
 
-      - name: Run Odoo tests inside odoo:17 (Community)
+      - name: Run Odoo tests inside odoo:17 (Community) + coverage gate
         # odoo:17 — офіційний образ Community. Бере native-модулі з образу
         # (base, mail, contacts, portal, website, sale, event, event_sale,
         # account, loyalty, sms), а портал+deps монтуємо в addons-path.
-        # Гейт (греп логу + exit code) — у tools/run_odoo_tests.sh.
+        # Гейт (греп логу + exit code + coverage fail_under) — у
+        # tools/run_odoo_tests.sh. COVERAGE=1 вмикає coverage-обгортку.
         run: |
           docker run --rm \
             --network host \
@@ -103,6 +104,96 @@ jobs:
             -e MODULE=fayna_camp_portal \
             -e ADDONS=/mnt/addons,/mnt/addons/deps \
             -e LOG=/tmp/odoo-test.log \
+            -e COVERAGE=1 \
+            -e COVERAGE_MIN=70 \
             -v "${{ github.workspace }}/addons:/mnt/addons:ro" \
             --entrypoint bash \
-            odoo:17 /mnt/addons/fayna_camp_portal/tools/run_odoo_tests.sh
+            odoo:17 -c "pip install coverage && /mnt/addons/fayna_camp_portal/tools/run_odoo_tests.sh"
+
+  upgrade:
+    name: Odoo upgrade (-u) migration test
+    runs-on: ubuntu-latest
+
+    # OCA review: verify the module upgrades cleanly from a previous version.
+    # Strategy: install the module into a fresh DB, then run `-u` (upgrade) on
+    # the SAME DB so every migrations/<version>/post-migrate.py executes against
+    # real pre-upgrade data. A migration that raises → Odoo exits non-zero →
+    # job red. This is the standard OCA upgrade-gate (equivalent to the
+    # `oca-ci` upgrade job).
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: odoo
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U odoo"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - name: Checkout portal (this repo)
+        uses: actions/checkout@v4
+        with:
+          path: addons/fayna_camp_portal
+
+      - name: Checkout dep — fayna_rodo_compliance
+        uses: actions/checkout@v4
+        with:
+          repository: VladSh77/fayna-rodo-compliance
+          ref: main
+          ssh-key: ${{ secrets.CI_DEPS_KEY_RODO }}
+          path: addons/deps/fayna_rodo_compliance
+
+      - name: Checkout dep — fayna_sms_base
+        uses: actions/checkout@v4
+        with:
+          repository: VladSh77/fayna-sms-base
+          ref: main
+          ssh-key: ${{ secrets.CI_DEPS_KEY_SMS }}
+          path: addons/deps/fayna_sms_base
+
+      - name: Install module (baseline)
+        # Fresh DB, install only — no tests. Establishes the pre-upgrade schema.
+        run: |
+          docker run --rm \
+            --network host \
+            -e PGHOST=127.0.0.1 \
+            -e PGPORT=5432 \
+            -e PGUSER=odoo \
+            -e PGPASSWORD=odoo \
+            -v "${{ github.workspace }}/addons:/mnt/addons:ro" \
+            --entrypoint odoo \
+            odoo:17 \
+            -d upgrade_camp \
+            --db_host=127.0.0.1 --db_port=5432 \
+            --db_user=odoo --db_password=odoo \
+            --addons-path=/mnt/addons,/mnt/addons/deps \
+            -i fayna_camp_portal \
+            --stop-after-init --no-http \
+            --log-level=warn
+
+      - name: Upgrade module (-u) and verify migrations run cleanly
+        # Same DB, `-u` triggers every pending migrations/<version>/post-migrate.
+        # Any migration error → non-zero exit → job red.
+        run: |
+          docker run --rm \
+            --network host \
+            -e PGHOST=127.0.0.1 \
+            -e PGPORT=5432 \
+            -e PGUSER=odoo \
+            -e PGPASSWORD=odoo \
+            -v "${{ github.workspace }}/addons:/mnt/addons:ro" \
+            --entrypoint odoo \
+            odoo:17 \
+            -d upgrade_camp \
+            --db_host=127.0.0.1 --db_port=5432 \
+            --db_user=odoo --db_password=odoo \
+            --addons-path=/mnt/addons,/mnt/addons/deps \
+            -u fayna_camp_portal \
+            --stop-after-init --no-http \
+            --log-level=warn
