@@ -42,12 +42,10 @@ jobs:
     # Провалений Odoo-тест → червоний job → merge у main заблоковано
     # (за умови branch protection «require status check: test»).
     #
-    # Приватні dep-репо чекаутимо через read-only SSH deploy keys
-    # (least-privilege: лише читання, лише ці два репо):
-    #   secrets.CI_DEPS_KEY_RODO  → deploy key на VladSh77/fayna-rodo-compliance
-    #   secrets.CI_DEPS_KEY_SMS   → deploy key на VladSh77/fayna-sms-base
-    # Вбудований GITHUB_TOKEN бачить лише цей репозиторій, тому deps — окремими ключами.
-    # Без секретів обидва SSH-checkout впадуть → job червоний.
+    # Dep-репо тепер публічні в організації fayna-digital, тому чекаутимо їх
+    # напряму без SSH deploy keys (публічний доступ не потребує авторизації):
+    #   fayna-digital/fayna-rodo-compliance
+    #   fayna-digital/fayna-sms-base
 
     services:
       postgres:
@@ -74,17 +72,15 @@ jobs:
       - name: Checkout dep — fayna_rodo_compliance
         uses: actions/checkout@v4
         with:
-          repository: VladSh77/fayna-rodo-compliance
+          repository: fayna-digital/fayna-rodo-compliance
           ref: main
-          ssh-key: ${{ secrets.CI_DEPS_KEY_RODO }}
           path: addons/deps/fayna_rodo_compliance
 
       - name: Checkout dep — fayna_sms_base
         uses: actions/checkout@v4
         with:
-          repository: VladSh77/fayna-sms-base
+          repository: fayna-digital/fayna-sms-base
           ref: main
-          ssh-key: ${{ secrets.CI_DEPS_KEY_SMS }}
           path: addons/deps/fayna_sms_base
 
       - name: Run Odoo tests inside odoo:17 (Community) + coverage gate
@@ -147,17 +143,15 @@ jobs:
       - name: Checkout dep — fayna_rodo_compliance
         uses: actions/checkout@v4
         with:
-          repository: VladSh77/fayna-rodo-compliance
+          repository: fayna-digital/fayna-rodo-compliance
           ref: main
-          ssh-key: ${{ secrets.CI_DEPS_KEY_RODO }}
           path: addons/deps/fayna_rodo_compliance
 
       - name: Checkout dep — fayna_sms_base
         uses: actions/checkout@v4
         with:
-          repository: VladSh77/fayna-sms-base
+          repository: fayna-digital/fayna-sms-base
           ref: main
-          ssh-key: ${{ secrets.CI_DEPS_KEY_SMS }}
           path: addons/deps/fayna_sms_base
 
       - name: Install module (baseline)

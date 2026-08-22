@@ -26,5 +26,4 @@ credentials*
 *secret*
 secrets.yml
 
-# Claude Code local session data (agent worktrees etc.)
 .claude/
