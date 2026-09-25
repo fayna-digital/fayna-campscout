@@ -123,9 +123,9 @@ fayna-campscout/
 
 ```bash
 cd /opt/<klient>/custom-addons
-git clone https://github.com/VladSh77/fayna-campscout.git
-git clone https://github.com/VladSh77/fayna-rodo-compliance.git
-git clone https://github.com/VladSh77/fayna_sms_base.git
+git clone https://github.com/fayna-digital/fayna-campscout.git
+git clone https://github.com/fayna-digital/fayna-rodo-compliance.git
+git clone https://github.com/fayna-digital/fayna-sms-base.git
 ```
 
 ### 2. Najpierw zainstaluj zależności
